@@ -2,6 +2,7 @@
 
 var ShelterHomePage = require('./shelterhomepage');
 var ShelterSearchPage = require('./sheltersearchpage');
+var MyNavBar = require('./navbar');
 
 var React = require('react');
 
@@ -13,10 +14,7 @@ var Home = React.createClass({
     render: function() {
         return (
           <div>
-            <ul>
-              <li><Link to="shelterSearchPage">Shelter Search Page</Link></li>
-              <li><Link to="shelterHomePage">Shelter Home Page</Link></li>
-            </ul>
+            <MyNavBar/>
             {this.props.children}
           </div>
       );
