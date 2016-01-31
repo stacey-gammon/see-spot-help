@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\home.jsx" />
+    <Content Include="App\navbar.jsx" />
     <Content Include="App\shelterhomepage.jsx" />
     <Content Include="App\sheltersearchpage.jsx" />
     <Content Include="Built\main.bundle.js" />
