@@ -51,8 +51,9 @@
 	
 	var ShelterHomePage = __webpack_require__(/*! ./shelterhomepage */ 1);
 	var ShelterSearchPage = __webpack_require__(/*! ./sheltersearchpage */ 2);
+	var MyNavBar = __webpack_require__(/*! ./navbar */ 3);
 	
-	var React = __webpack_require__(/*! react */ 3);
+	var React = __webpack_require__(/*! react */ 4);
 	
 	var Router = ReactRouter.Router;
 	var Route = ReactRouter.Route;
@@ -62,10 +63,7 @@
 	    render: function() {
 	        return (
 	          React.createElement("div", null, 
-	            React.createElement("ul", null, 
-	              React.createElement("li", null, React.createElement(Link, {to: "shelterSearchPage"}, "Shelter Search Page")), 
-	              React.createElement("li", null, React.createElement(Link, {to: "shelterHomePage"}, "Shelter Home Page"))
-	            ), 
+	            React.createElement(MyNavBar, null), 
 	            this.props.children
 	          )
 	      );
@@ -128,6 +126,37 @@
 
 /***/ },
 /* 3 */
+/*!********************!*\
+  !*** ./navbar.jsx ***!
+  \********************/
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */var Navbar = ReactBootstrap.Navbar;
+	var Nav = ReactBootstrap.Nav;
+	var NavItem = ReactBootstrap.NavItem;
+	var MenuItem = ReactBootstrap.MenuItem;
+	var Link = ReactRouter.Link;
+	
+	var MyNavBar = React.createClass({displayName: "MyNavBar",
+	    render: function() {
+	        return (
+	            React.createElement(Navbar, {inverse: true, fluid: true, staticTop: true}, 
+	                React.createElement(Navbar.Toggle, null), 
+	                React.createElement(Navbar.Collapse, null, 
+	                    React.createElement(Nav, {navbar: true}, 
+	                        React.createElement(NavItem, null, React.createElement(Link, {to: "shelterHomePage"}, "Saratoga County Humane Society")), 
+	                        React.createElement(NavItem, null, React.createElement(Link, {to: "shelterSearchPage"}, "Search"))
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+	
+	module.exports = MyNavBar;
+
+/***/ },
+/* 4 */
 /*!************************!*\
   !*** external "React" ***!
   \************************/
