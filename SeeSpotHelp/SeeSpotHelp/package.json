@@ -1,0 +1,22 @@
+{
+  "name": "see-spot-help",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stacey-Gammon/see-spot-help.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Stacey-Gammon/see-spot-help/issues"
+  },
+  "homepage": "https://github.com/Stacey-Gammon/see-spot-help#readme",
+  "devDependencies": {
+    "jsx-loader": "^0.13.2"
+  }
+}
