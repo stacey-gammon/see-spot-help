@@ -4,6 +4,9 @@ var React = require('react');
 var FakeData = require('../scripts/fakedata');
 var AnimalActionsBox = require('./animalactionsbox');
 
+// Animal home page displays animal information, photos and activies and notes made
+// by volunteers, as well as ability to edit, delete and add a new activity or note
+// about the specific animal.
 var AnimalHomePage = React.createClass({
     render: function () {
         var query = this.props.location.query;
