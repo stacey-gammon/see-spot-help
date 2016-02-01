@@ -2,6 +2,7 @@
 
 var ShelterHomePage = require('./shelterhomepage');
 var ShelterSearchPage = require('./sheltersearchpage');
+var AnimalHomePage = require('./animalHomePage');
 var MyNavBar = require('./navbar');
 
 var React = require('react');
@@ -25,6 +26,7 @@ var routes = (
   <Router path="/" component={Home}>
     <Route path="shelterSearchPage" component={ShelterSearchPage}/>
     <Route path="shelterHomePage" component={ShelterHomePage}/>
+    <Route path="animalHomePage" component={AnimalHomePage} />
   </Router>
 );
 
