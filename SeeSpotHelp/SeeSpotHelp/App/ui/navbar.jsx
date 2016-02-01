@@ -10,22 +10,19 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 var MyNavBar = React.createClass({
     render: function() {
         return (
-            <Navbar inverse fluid staticTop>
-                <Navbar.Toggle />
-                <Navbar.Collapse>
-                    <Nav navbar>
-                        <LinkContainer to="shelterHomePage">
+            <Navbar className="navbar navbar-light bg-faded">
+                <Nav className="nav navbar-nav navbar-custom">
+                    <LinkContainer to="shelterHomePage">
                         <NavItem>
-                            <span className="glyphicon glyphicon-home"/>
+                            <span className="glyphicon glyphicon-home" />
                         </NavItem>
-                        </LinkContainer>
-                        <LinkContainer to="shelterSearchPage">
-                        <NavItem>
-                            <span className="glyphicon glyphicon-search"/>
-                        </NavItem>
-                        </LinkContainer>
-                    </Nav>
-                </Navbar.Collapse>
+                    </LinkContainer>
+                    <LinkContainer to="shelterSearchPage">
+                    <NavItem>
+                        <span className="glyphicon glyphicon-search" />
+                    </NavItem>
+                    </LinkContainer>
+                </Nav>
             </Navbar>
         );
     }
