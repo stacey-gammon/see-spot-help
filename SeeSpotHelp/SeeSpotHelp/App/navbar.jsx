@@ -15,7 +15,7 @@ var MyNavBar = React.createClass({
                 <Navbar.Collapse>
                     <Nav navbar>
                         <LinkContainer to="shelterHomePage">
-                        <NavItem>Saratoga County Humane Society</NavItem>
+                        <NavItem>Shelter Home Page</NavItem>
                         </LinkContainer>
                         <LinkContainer to="shelterSearchPage">
                         <NavItem>Search</NavItem>

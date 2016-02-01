@@ -1,16 +1,18 @@
 ﻿var React = require('react');
+var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
 var ShelterSearchResults = React.createClass({
     loadShelter: function(shelter) {
-        // TODO(sgammon): Implement
+        
     },
 
     generateResult: function(result) {
         return (
-            <button className="btn btn-primary shelterResult"
-                onClick={this.loadShelter.bind(null, result.name)}>
-               {result.name}
-            </button>
+            <LinkContainer to={{pathname: 'shelterHomePage', query: { shelterName: result.name } }}>
+                <button className="btn btn-primary shelterResult">
+                   {result.name}
+                </button>
+            </LinkContainer>
         );
     },
 
