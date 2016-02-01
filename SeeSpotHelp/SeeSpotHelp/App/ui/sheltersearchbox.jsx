@@ -1,7 +1,7 @@
 ﻿'use strict'
 
 var React = require('react');
-var ShelterSearch = require('./sheltersearch');
+var ShelterSearch = require('../scripts/sheltersearch');
 var ShelterSearchResults = require('./sheltersearchresults');
 
 var ShelterSearchBox = React.createClass({
