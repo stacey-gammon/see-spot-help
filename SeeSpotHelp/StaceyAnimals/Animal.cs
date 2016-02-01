@@ -13,9 +13,9 @@ namespace StaceyAnimals
         private static int currentID;
 
         //Properties.
-        protected int ID { get; set; }
-        protected string Name { get; set; }
-        protected string Description { get; set; }
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
         protected TimeSpan jobLength { get; set; }
 
         // Default constructor. If a derived class does not invoke a base-
@@ -48,7 +48,7 @@ namespace StaceyAnimals
         public void getAnimal(int id)
         {
             System.Data.DataTable dt;
-            dt = Helpers.DBHelper.ExecuteQuery("select * from animals");
+            dt = Helpers.DBHelper.ExecuteQuery("select * from animals where AnimalID = '" + id + "'");
 
             foreach (System.Data.DataRow  element in dt.Rows)
             {
