@@ -168,20 +168,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App\animalactionsbox.jsx" />
-    <Content Include="App\animalgroup.jsx" />
-    <Content Include="App\animalhomepage.jsx" />
-    <Content Include="App\animalthumbnail.jsx" />
-    <Content Include="App\fakedata.js" />
-    <Content Include="App\home.jsx" />
-    <Content Include="App\navbar.jsx" />
-    <Content Include="App\shelteractionsbox.jsx" />
-    <Content Include="App\shelterhomepage.jsx" />
-    <Content Include="App\shelterinfobox.jsx" />
-    <Content Include="App\sheltersearch.js" />
-    <Content Include="App\sheltersearchbox.jsx" />
-    <Content Include="App\sheltersearchpage.jsx" />
-    <Content Include="App\sheltersearchresults.jsx" />
+    <Content Include="App\ui\animalactionsbox.jsx" />
+    <Content Include="App\ui\animallist.jsx" />
+    <Content Include="App\ui\animalhomepage.jsx" />
+    <Content Include="App\ui\animalthumbnail.jsx" />
+    <Content Include="App\scripts\fakedata.js" />
+    <Content Include="App\ui\home.jsx" />
+    <Content Include="App\ui\navbar.jsx" />
+    <Content Include="App\ui\shelteractionsbox.jsx" />
+    <Content Include="App\ui\shelterhomepage.jsx" />
+    <Content Include="App\ui\shelterinfobox.jsx" />
+    <Content Include="App\scripts\sheltersearch.js" />
+    <Content Include="App\ui\sheltersearchbox.jsx" />
+    <Content Include="App\ui\sheltersearchpage.jsx" />
+    <Content Include="App\ui\sheltersearchresults.jsx" />
     <Content Include="Built\main.bundle.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
