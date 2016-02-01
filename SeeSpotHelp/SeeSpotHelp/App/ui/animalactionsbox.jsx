@@ -2,6 +2,8 @@
 
 var React = require('react');
 
+// Actions to display on the animal home page, such as Add Activity,
+// Edit and Delete.
 var AnimalActionsBox = React.createClass({
     alertNotImplemented: function () {
         alert('Sorry, that functionality is not implemented yet!');
