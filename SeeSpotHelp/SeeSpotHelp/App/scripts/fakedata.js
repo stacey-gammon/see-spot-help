@@ -1,25 +1,24 @@
 ﻿
+var VolunteerGroup = require('volunteergroup');
+
 function FakeData() {}
 
 FakeData.fakeVolunteerGroupData = {
-    "123": {
-        "name": "Friends of Saratoga County Humane Society",
-        "shelterName": "Saratoga County Humane Society",
-        "id": "123",
-        "address": "Saratoga Springs, NY"
-    },
-    "456": {
-        "name": "Friends of Newark AHS",
-        "shelterName": "Newark Humane Society",
-        "id": "456",
-        "address": "Newark, NJ"
-    },
-    "789": {
-        "name": "Dog Walkers at Halfway Hounds",
-        "shelterName": "Halfway Hounds",
-        "id": "789",
-        "address": "Park Ridge, NJ"
-    }
+    "123": new VolunteerGroup(
+            "Friends of Saratoga County Humane Society",
+            "Saratoga County Humane Society",
+            "123",
+            "Saratoga Springs, NY"),
+    "456": new VolunteerGroup(
+            "Friends of Newark AHS",
+            "Newark Humane Society",
+            "456",
+            "Newark, NJ"),
+    "789": new VolunteerGroup(
+            "Dog Walkers at Halfway Hounds",
+            "Halfway Hounds",
+            "789",
+            "Park Ridge, NJ")
 };
 
 FakeData.getFakeAnimalData = function () {
