@@ -2,15 +2,13 @@
 
 var ShelterSearch = {
     GetShelterSearchResults: function (searchText) {
-        console.log("Search for " + searchText);
         var results = [];
-        var fakeShelters = FakeData.GetFakeShelterData();
-        for (var i = 0; i < fakeShelters.length; i++) {
-            if (fakeShelters[i].name.indexOf(searchText) > -1) {
-                results.push(fakeShelters[i]);
+        var fakeGroups = FakeData.GetFakeVolunteerGroupData();
+        for (var i = 0; i < fakeGroups.length; i++) {
+            if (fakeGroups[i].name.indexOf(searchText) > -1) {
+                results.push(fakeGroups[i]);
             }
         }
-        console.log("Resurning " + results);
         return results;
     }
 }

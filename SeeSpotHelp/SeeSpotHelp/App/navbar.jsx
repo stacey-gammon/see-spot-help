@@ -15,10 +15,14 @@ var MyNavBar = React.createClass({
                 <Navbar.Collapse>
                     <Nav navbar>
                         <LinkContainer to="shelterHomePage">
-                        <NavItem>Shelter Home Page</NavItem>
+                        <NavItem>
+                            <span className="glyphicon glyphicon-home"/>
+                        </NavItem>
                         </LinkContainer>
                         <LinkContainer to="shelterSearchPage">
-                        <NavItem>Search</NavItem>
+                        <NavItem>
+                            <span className="glyphicon glyphicon-search"/>
+                        </NavItem>
                         </LinkContainer>
                     </Nav>
                 </Navbar.Collapse>
