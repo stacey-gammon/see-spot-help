@@ -2,3 +2,8 @@
 .shelterResult {
     width: 100%;
 }
+
+.navbar-custom>li {
+    display: inline-block;
+    float: left;
+}

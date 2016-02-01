@@ -25937,7 +25937,6 @@
 	        var query = this.props.location.query;
 	        var animal = null;
 	        if (query && query.animalId) {
-	            console.log("group id = " + query.groupId);
 	            animal = FakeData.getFakeAnimalDataForGroup(query.groupId)[query.animalId];
 	        }
 	        if (animal) {
@@ -26013,20 +26012,17 @@
 	var MyNavBar = React.createClass({displayName: "MyNavBar",
 	    render: function() {
 	        return (
-	            React.createElement(Navbar, {inverse: true, fluid: true, staticTop: true}, 
-	                React.createElement(Navbar.Toggle, null), 
-	                React.createElement(Navbar.Collapse, null, 
-	                    React.createElement(Nav, {navbar: true}, 
-	                        React.createElement(LinkContainer, {to: "shelterHomePage"}, 
+	            React.createElement(Navbar, {className: "navbar navbar-light bg-faded"}, 
+	                React.createElement(Nav, {className: "nav navbar-nav navbar-custom"}, 
+	                    React.createElement(LinkContainer, {to: "shelterHomePage"}, 
 	                        React.createElement(NavItem, null, 
 	                            React.createElement("span", {className: "glyphicon glyphicon-home"})
 	                        )
-	                        ), 
-	                        React.createElement(LinkContainer, {to: "shelterSearchPage"}, 
-	                        React.createElement(NavItem, null, 
-	                            React.createElement("span", {className: "glyphicon glyphicon-search"})
-	                        )
-	                        )
+	                    ), 
+	                    React.createElement(LinkContainer, {to: "shelterSearchPage"}, 
+	                    React.createElement(NavItem, null, 
+	                        React.createElement("span", {className: "glyphicon glyphicon-search"})
+	                    )
 	                    )
 	                )
 	            )
@@ -26035,6 +26031,7 @@
 	});
 	
 	module.exports = MyNavBar;
+
 
 /***/ },
 /* 234 */
