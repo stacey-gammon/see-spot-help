@@ -3,6 +3,8 @@
 var React = require('react');
 var AnimalGroup = require('./animalgroup');
 var ShelterSearchBox = require('./sheltersearchbox');
+var ShelterInfoBox = require('./shelterinfobox');
+var ShelterActionsBox = require('./shelteractionsbox');
 var FakeData = require('./fakedata');
 
 var ShelterHomePage = React.createClass({
@@ -17,9 +19,8 @@ var ShelterHomePage = React.createClass({
             var animals = FakeData.getFakeAnimalDataForGroup(group.id);
             return (
                 <div>
-                    <h1>{group.name}</h1>
-                    <h2>{group.shelterName} - {group.address}</h2>
-                    <span>15 Volunteers</span>
+                    <ShelterInfoBox group={group}/>
+                    <ShelterActionsBox />
                     <hr/>
                     <AnimalGroup animals={animals}/>
                     {this.props.children}
