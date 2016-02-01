@@ -176,7 +176,6 @@
     <Content Include="App\sheltersearchbox.jsx" />
     <Content Include="App\sheltersearchpage.jsx" />
     <Content Include="App\sheltersearchresults.jsx" />
-    <Content Include="App\appstate.js" />
     <Content Include="Built\main.bundle.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
