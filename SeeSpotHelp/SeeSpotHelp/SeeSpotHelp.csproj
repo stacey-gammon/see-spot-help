@@ -175,7 +175,9 @@
     <Content Include="App\fakedata.js" />
     <Content Include="App\home.jsx" />
     <Content Include="App\navbar.jsx" />
+    <Content Include="App\shelteractionsbox.jsx" />
     <Content Include="App\shelterhomepage.jsx" />
+    <Content Include="App\shelterinfobox.jsx" />
     <Content Include="App\sheltersearch.js" />
     <Content Include="App\sheltersearchbox.jsx" />
     <Content Include="App\sheltersearchpage.jsx" />
