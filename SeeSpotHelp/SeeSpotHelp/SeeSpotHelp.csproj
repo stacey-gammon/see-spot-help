@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\animalgroup.jsx" />
+    <Content Include="App\animalhomepage.jsx" />
     <Content Include="App\animalthumbnail.jsx" />
     <Content Include="App\fakedata.js" />
     <Content Include="App\home.jsx" />
