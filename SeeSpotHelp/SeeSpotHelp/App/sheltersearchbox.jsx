@@ -7,14 +7,14 @@ var ShelterSearchResults = require('./sheltersearchresults');
 var ShelterSearchBox = React.createClass({
     shelterSearch: function () {
         var searchText = document.getElementById('shelterSearchText').value;
-        var results = ShelterSearch.GetShelterSearchResults(searchText);
+        var results = ShelterSearch.getShelterSearchResults(searchText);
         this.setState({
             results: results
         });
     },
     getInitialState:function(){
         return{
-            results:[]
+            results: []
         }
     },
     render: function() {
