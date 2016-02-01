@@ -8,9 +8,9 @@ var ShelterSearchResults = React.createClass({
 
     generateResult: function(result) {
         return (
-            <LinkContainer to={{pathname: 'shelterHomePage', query: { shelterName: result.name } }}>
+            <LinkContainer to={{ pathname: 'shelterHomePage', query: { groupName: result.name } }}>
                 <button className="btn btn-primary shelterResult">
-                   {result.name}
+                   {result.name} - {result.shelterName} - {result.address}
                 </button>
             </LinkContainer>
         );
