@@ -1,7 +1,7 @@
 ﻿'use strict'
 
 var React = require('react');
-var FakeData = require('./fakedata');
+var FakeData = require('../scripts/fakedata');
 var AnimalActionsBox = require('./animalactionsbox');
 
 var AnimalHomePage = React.createClass({
