@@ -1,8 +1,11 @@
-﻿var Navbar = ReactBootstrap.Navbar;
+﻿var React = require('react');
+var ReactRouterBootstrap = require('react-router-bootstrap');
+var ReactBootstrap = require('react-bootstrap');
+
+var Navbar = ReactBootstrap.Navbar;
 var Nav = ReactBootstrap.Nav;
 var NavItem = ReactBootstrap.NavItem;
-var MenuItem = ReactBootstrap.MenuItem;
-var Link = ReactRouter.Link;
+var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 var MyNavBar = React.createClass({
     render: function() {
@@ -11,8 +14,12 @@ var MyNavBar = React.createClass({
                 <Navbar.Toggle />
                 <Navbar.Collapse>
                     <Nav navbar>
-                        <NavItem ><Link to="shelterHomePage" >Saratoga County Humane Society</Link></NavItem>
-                        <NavItem ><Link to="shelterSearchPage" >Search</Link></NavItem>
+                        <LinkContainer to="shelterHomePage">
+                        <NavItem>Saratoga County Humane Society</NavItem>
+                        </LinkContainer>
+                        <LinkContainer to="shelterSearchPage">
+                        <NavItem>Search</NavItem>
+                        </LinkContainer>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

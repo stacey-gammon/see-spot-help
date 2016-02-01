@@ -1,4 +1,6 @@
-﻿
+﻿'use strict'
+var React = require('react');
+
 var ShelterSearchPage = React.createClass({
     render: function() {
         return (
