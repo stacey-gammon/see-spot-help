@@ -3,14 +3,10 @@
 var ShelterSearch = {
     GetShelterSearchResults: function (searchText) {
         var results = [];
-        var fakeGroupHash = FakeData.GetFakeVolunteerGroupData();
-        for (var key in fakeGroupHash) {
-            if (!fakeGroupHash.hasOwnProperty(key)) {
-                continue;
-            }
-            var fakeGroup = fakeGroupHash[key];
-            if (fakeGroup.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
-                results.push(fakeGroup);
+        var fakeGroups = FakeData.GetFakeVolunteerGroupData();
+        for (var i = 0; i < fakeGroups.length; i++) {
+            if (fakeGroups[i].name.indexOf(searchText) > -1) {
+                results.push(fakeGroups[i]);
             }
         }
         return results;
