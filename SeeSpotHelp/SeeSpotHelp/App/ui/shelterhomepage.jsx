@@ -1,7 +1,7 @@
 ﻿'use strict'
 
 var React = require('react');
-var AnimalList = require('./animalgroup');
+var AnimalList = require('./animallist');
 var ShelterSearchBox = require('./sheltersearchbox');
 var ShelterInfoBox = require('./shelterinfobox');
 var ShelterActionsBox = require('./shelteractionsbox');
@@ -17,6 +17,7 @@ var ShelterHomePage = React.createClass({
         var group = JSON.parse(localStorage.getItem('activeGroup'));
         if (group) {
             var animals = FakeData.getFakeAnimalDataForGroup(group.id);
+            console.log("Animals are = " + animals);
             return (
                 <div>
                     <ShelterInfoBox group={group}/>
