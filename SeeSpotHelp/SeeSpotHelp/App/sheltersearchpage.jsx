@@ -1,12 +1,13 @@
 ﻿'use strict'
 var React = require('react');
+var ShelterSearchBox = require('./sheltersearchbox');
 
 var ShelterSearchPage = React.createClass({
     render: function() {
         return (
           <div>
-            Shelter Search Page
-    {this.props.children}
+            <ShelterSearchBox />
+            {this.props.children}
           </div>
       );
 }

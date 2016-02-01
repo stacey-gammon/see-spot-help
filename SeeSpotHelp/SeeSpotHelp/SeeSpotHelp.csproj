@@ -168,10 +168,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\fakedata.js" />
     <Content Include="App\home.jsx" />
     <Content Include="App\navbar.jsx" />
     <Content Include="App\shelterhomepage.jsx" />
+    <Content Include="App\sheltersearch.js" />
+    <Content Include="App\sheltersearchbox.jsx" />
     <Content Include="App\sheltersearchpage.jsx" />
+    <Content Include="App\sheltersearchresults.jsx" />
     <Content Include="Built\main.bundle.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -495,6 +499,7 @@
     <Content Include="Content\kendo\2016.1.112\Uniform\sprite_2x.png" />
     <Content Include="Content\kendo\2016.1.112\Uniform\sprite_kpi.png" />
     <Content Include="Content\kendo\2016.1.112\Uniform\sprite_kpi_2x.png" />
+    <Content Include="Content\site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="gulpfile.js" />
@@ -588,6 +593,7 @@
     <Content Include="Content\kendo\2016.1.112\fonts\DejaVu\DejaVuSans-Bold.ttf" />
     <Content Include="package.json" />
     <Content Include="webpack.config.js" />
+    <Content Include="App_Code\GlyphIcon.cshtml" />
     <None Include="scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />
