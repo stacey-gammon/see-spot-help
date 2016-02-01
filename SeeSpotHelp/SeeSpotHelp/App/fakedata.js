@@ -1,15 +1,24 @@
 ﻿
 var FakeData = {
-    GetFakeShelterData: function() {
+    GetFakeVolunteerGroupData: function() {
         return [
             {
-                "name": "Saratoga County Humane Society"
+                "name": "Friends of Saratoga County Humane Society",
+                "shelterName": "Saratoga County Humane Society",
+                "id": "123",
+                "address": "Saratoga Springs, NY"
             },
             {
-                "name": "Newark Humane Society"
+                "name": "Friends of Newark AHS",
+                "shelterName": "Newark Humane Society",
+                "id": "456",
+                "address": "Newark, NJ"
             },
             {
-                "name": "Halfway Hounds"
+                "name": "Dog Walkers at Halfway Hounds",
+                "shelterName": "Halfway Hounds",
+                "id": "789",
+                "address": "Park Ridge, NJ"
             }
         ];
     }

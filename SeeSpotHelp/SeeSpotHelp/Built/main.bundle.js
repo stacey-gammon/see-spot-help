@@ -95,12 +95,13 @@
 	var ShelterHomePage = React.createClass({displayName: "ShelterHomePage",
 	    render: function () {
 	        var query = this.props.location.query;
-	        var shelterName = "Search for a shelter to join one!";
-	        if (query && query.shelterName)
-	            shelterName = query.shelterName;
+	        var groupName = "Search for a shelter volunteer group to join!";
+	        if (query && query.groupName) {
+	            groupName = query.groupName;
+	        }
 	        return (
 	          React.createElement("div", null, 
-	            shelterName, 
+	            groupName, 
 	        this.props.children
 	          )
 	      );
@@ -20228,7 +20229,7 @@
 	                React.createElement("div", {className: "input-group"}, 
 	                    React.createElement("input", {type: "text", className: "form-control", 
 	                            id: "shelterSearchText", 
-	                            placeholder: "Search for a shelter..."}), 
+	                            placeholder: "Search for a shelter or volunteer group..."}), 
 	                    React.createElement("span", {className: "input-group-btn"}, 
 	                        React.createElement("button", {type: "button", className: "btn btn-primary", 
 	                           onClick: this.shelterSearch}, 
@@ -20255,15 +20256,13 @@
 	
 	var ShelterSearch = {
 	    GetShelterSearchResults: function (searchText) {
-	        console.log("Search for " + searchText);
 	        var results = [];
-	        var fakeShelters = FakeData.GetFakeShelterData();
-	        for (var i = 0; i < fakeShelters.length; i++) {
-	            if (fakeShelters[i].name.indexOf(searchText) > -1) {
-	                results.push(fakeShelters[i]);
+	        var fakeGroups = FakeData.GetFakeVolunteerGroupData();
+	        for (var i = 0; i < fakeGroups.length; i++) {
+	            if (fakeGroups[i].name.indexOf(searchText) > -1) {
+	                results.push(fakeGroups[i]);
 	            }
 	        }
-	        console.log("Resurning " + results);
 	        return results;
 	    }
 	}
@@ -20280,16 +20279,25 @@
 
 	
 	var FakeData = {
-	    GetFakeShelterData: function() {
+	    GetFakeVolunteerGroupData: function() {
 	        return [
 	            {
-	                "name": "Saratoga County Humane Society"
+	                "name": "Friends of Saratoga County Humane Society",
+	                "shelterName": "Saratoga County Humane Society",
+	                "id": "123",
+	                "address": "Saratoga Springs, NY"
 	            },
 	            {
-	                "name": "Newark Humane Society"
+	                "name": "Friends of Newark AHS",
+	                "shelterName": "Newark Humane Society",
+	                "id": "456",
+	                "address": "Newark, NJ"
 	            },
 	            {
-	                "name": "Halfway Hounds"
+	                "name": "Dog Walkers at Halfway Hounds",
+	                "shelterName": "Halfway Hounds",
+	                "id": "789",
+	                "address": "Park Ridge, NJ"
 	            }
 	        ];
 	    }
@@ -20314,9 +20322,9 @@
 	
 	    generateResult: function(result) {
 	        return (
-	            React.createElement(LinkContainer, {to: {pathname: 'shelterHomePage', query: { shelterName: result.name }}}, 
+	            React.createElement(LinkContainer, {to: { pathname: 'shelterHomePage', query: { groupName: result.name }}}, 
 	                React.createElement("button", {className: "btn btn-primary shelterResult"}, 
-	                   result.name
+	                   result.name, " - ", result.shelterName, " - ", result.address
 	                )
 	            )
 	        );
@@ -25680,10 +25688,14 @@
 	                React.createElement(Navbar.Collapse, null, 
 	                    React.createElement(Nav, {navbar: true}, 
 	                        React.createElement(LinkContainer, {to: "shelterHomePage"}, 
-	                        React.createElement(NavItem, null, "Saratoga County Humane Society")
+	                        React.createElement(NavItem, null, 
+	                            React.createElement("span", {className: "glyphicon glyphicon-home"})
+	                        )
 	                        ), 
 	                        React.createElement(LinkContainer, {to: "shelterSearchPage"}, 
-	                        React.createElement(NavItem, null, "Search")
+	                        React.createElement(NavItem, null, 
+	                            React.createElement("span", {className: "glyphicon glyphicon-search"})
+	                        )
 	                        )
 	                    )
 	                )
