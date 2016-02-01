@@ -6,7 +6,7 @@ var AnimalThumbnail = require('./animalthumbnail');
 var AnimalGroup = React.createClass({
     generateAnimal: function (animal) {
         return (
-            <AnimalThumbnail animalName={animal.name}/>
+            <AnimalThumbnail animal={animal} groupId={this.props.groupId}/>
         );
     },
 
