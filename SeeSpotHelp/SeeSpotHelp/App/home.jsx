@@ -9,7 +9,6 @@ var ReactDOM = require('react-dom');
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
-var Link = ReactRouter.Link;
 
 var Home = React.createClass({
     render: function() {
