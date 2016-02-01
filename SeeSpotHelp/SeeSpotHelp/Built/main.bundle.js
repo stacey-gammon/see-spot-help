@@ -20207,7 +20207,7 @@
 	var React = __webpack_require__(/*! react */ 2);
 	var AnimalThumbnail = __webpack_require__(/*! ./animalthumbnail */ 160);
 	
-	var AnimalGroup = React.createClass({displayName: "AnimalGroup",
+	var AnimalGroup = React.createClass({displayName: "AnimalList",
 	    generateAnimal: function (animal) {
 	        return (
 	            React.createElement(AnimalThumbnail, {animal: animal, groupId: this.props.groupId})

@@ -3,7 +3,8 @@
 var React = require('react');
 var AnimalThumbnail = require('./animalthumbnail');
 
-var AnimalGroup = React.createClass({
+// A list of animals managed by the current volunteer group.
+var AnimalList = React.createClass({
     generateAnimal: function (animal) {
         return (
             <AnimalThumbnail animal={animal} groupId={this.props.groupId}/>
@@ -25,4 +26,4 @@ var AnimalGroup = React.createClass({
     }
 });
 
-module.exports = AnimalGroup;
+module.exports = AnimalList;
