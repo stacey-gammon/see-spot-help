@@ -20307,17 +20307,22 @@
 	    loadShelter: function(shelter) {
 	        // TODO(sgammon): Implement
 	    },
+	
 	    generateResult: function(result) {
-	        return React.createElement("button", {onClick: this.loadShelter.bind(null, result.name)}, 
-	                       result.name
-	               )
+	        return (
+	            React.createElement("button", {className: "btn btn-primary shelterResult", 
+	                onClick: this.loadShelter.bind(null, result.name)}, 
+	               result.name
+	            )
+	        );
 	    },
+	
 	    render: function() {
 	        var items = this.props.results.map(this.generateResult);
 	        return (
 	            React.createElement("div", null, 
-	          items
-	          )
+	            items
+	            )
 	        );
 	    }
 	});
