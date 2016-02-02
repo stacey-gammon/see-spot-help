@@ -175,6 +175,7 @@
     <Content Include="App\ui\animalhomepage.jsx" />
     <Content Include="App\ui\animalthumbnail.jsx" />
     <Content Include="App\scripts\fakedata.js" />
+    <Content Include="App\ui\facebooklogin.jsx" />
     <Content Include="App\ui\home.jsx" />
     <Content Include="App\ui\navbar.jsx" />
     <Content Include="App\ui\shelteractionsbox.jsx" />
