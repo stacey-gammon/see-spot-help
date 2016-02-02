@@ -1,35 +1,19 @@
-﻿'use strict'
+﻿"use strict"
 
-var React = require('react');
-var AnimalList = require('./animallist');
-var ShelterSearchBox = require('./sheltersearchbox');
-var ShelterInfoBox = require('./shelterinfobox');
-var ShelterActionsBox = require('./shelteractionsbox');
-var FakeData = require('../scripts/fakedata');
-var FacebookUser = require('../scripts/facebookuser');
-var Volunteer = require('../scripts/volunteer');
+var React = require("react");
+var AnimalList = require("./animallist");
+var ShelterSearchBox = require("./sheltersearchbox");
+var ShelterInfoBox = require("./shelterinfobox");
+var ShelterActionsBox = require("./shelteractionsbox");
+var FakeData = require("../scripts/fakedata");
+var FacebookUser = require("../scripts/facebookuser");
+var Volunteer = require("../scripts/volunteer");
 
 var ShelterHomePage = React.createClass({
-    loadPageForVolunteer: function(facebookUser) {
+    loadPageForVolunteer: function(volunteer) {
         console.log("loadPageForVolunteer");
-        if (!facebookUser) {
-            console.log("initiating new facebook user");
-            facebookUser = new FacebookUser();
-        }
-
-        // TODO: Check multi-threaded access to this variable. And clean this up.
-        // It's messy, there has to be a better way using callbacks instead of
-        // a wait loop.   Probably should pass in to facebookUser a callback
-        // function so we can load the right page once the user is logged in.
-        // Make sure to avoid a flicker of "not logged in page" to "logged in page".
-        if (facebookUser.loading) {
-            console.log("Facebook user still loading, try again");
-            setTimeout(this.loadPageForVolunteer.bind(this, facebookUser), 10);
-            return;
-        }
-
-        this.setState({volunteer: facebookUser.volunteer});
-        sessionStorage.setItem("volunteer", JSON.stringify(facebookUser.volunteer));
+        this.setState({volunteer: volunteer, loggingIn: false});
+        sessionStorage.setItem("volunteer", JSON.stringify(volunteer));
 
         // If there isn't yet a default group choosen for this session, seed it from
         // server side data, whatever group the volunteer is a part of.  Searching and
@@ -38,25 +22,33 @@ var ShelterHomePage = React.createClass({
         // server unless the volunteer is an actual group member.  Will have to work
         // this use case out more.
         if (!this.state.defaultGroup) {
-            this.setState({ "defaultGroup": facebookUser.volunteer.GetDefaultVolunteerGroup() });
+            this.setState({ "defaultGroup": volunteer.GetDefaultVolunteerGroup() });
         }
     },
 
+    loadFacebookUser: function() {
+        console.log("loadFacebookUser");
+        // The FB sdk id loaded async, we need to make sure it's available.
+        if (!FB) {
+            console.log("FB null, trying again");
+            setTimeout(this.loadFacebookUser.bind(this), 10);
+            return;
+        }
+        FacebookUser.getVolunteer(this.loadPageForVolunteer);
+    },
+
     getInitialState: function() {
-        console.log("ShelterHomePage::getInitialState");
         var defaultGroup = null;
         if (sessionStorage.getItem("defaultGroup")) {
-            console.log("defaultGroup stored as " + sessionStorage.getItem("defaultGroup"));
             defaultGroup = JSON.parse(sessionStorage.getItem("defaultGroup"));
         }
 
-        // TODO: We are waiting 1 second because FB SDK is loaded async, you may get a
-        // "FB is undefined" error. Will work on it.
-        setTimeout(this.loadPageForVolunteer, 1000);
+        this.loadFacebookUser();
 
         return {
             defaultGroup: defaultGroup,
-            volunteer: null
+            volunteer: null,
+            loggingIn: true
         }
     },
 
@@ -71,6 +63,7 @@ var ShelterHomePage = React.createClass({
             sessionStorage.setItem("defaultGroup", JSON.stringify(defaultGroup));
         }
         if (defaultGroup) {
+            console.log("Default group selected");
             var animals = FakeData.getFakeAnimalDataForGroup(defaultGroup.id);
             return (
                 <div>
@@ -81,7 +74,11 @@ var ShelterHomePage = React.createClass({
                     {this.props.children}
                 </div>
             );
+        } else if (this.state.loggingIn) {
+            console.log("We are still logging in...");
+            return(<div></div>);
         } else {
+            console.log("No user logged in...");
             return (
                 <div>
                     <ShelterSearchBox/>
