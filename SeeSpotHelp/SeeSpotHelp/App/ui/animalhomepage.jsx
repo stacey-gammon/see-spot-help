@@ -16,13 +16,18 @@ var AnimalHomePage = React.createClass({
         }
         if (animal) {
             return (
-                <div>
-                    <h1>{animal.name}</h1>
-                    <h2>Age: {animal.age} years</h2>
-                    <h2>Breed: {animal.breed}</h2>
-                    Add photo here.
-                    <AnimalActionsBox/>
-                    Notes will go here.
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-xs-6">
+                                <img className="img-rounded img-responsive animalImg" src={animal.photo} />
+                            </div>
+                            <div className="col-xs-6">
+                                <h1 className="animalInfo">{animal.name}</h1>
+                                <h2 className="animalInfo">{animal.age} years old</h2>
+                                <h2 className="animalInfo">{animal.breed}</h2>
+                            </div>
+                        </div>
+                        <AnimalActionsBox/>
                     {this.props.children}
                 </div>
             );
