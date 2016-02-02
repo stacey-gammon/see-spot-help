@@ -1,32 +1,28 @@
 ﻿var Volunteer = require('../scripts/volunteer');
 
-// Attempts to load a facebook user asynchronously.
-var FacebookUser = function (callback) {
-    this.loading = true;
-    this.volunteer = null;
-    this.loggedIn = false;
+var FacebookUser = function () {}
 
-    // Helpful to reference this outer class from the inner functions.
-    var facebookUser = this;
-
-    this.loadVolunteer = function() {
-        console.log('Welcome!  Fetching your information.... ');
+FacebookUser.getVolunteer = function (callback) {
+    console.log("FacebookUser.getVolunteer");
+    var outer = this;
+    this.loadVolunteer = function () {
+        console.log("FacebookUser::login : loadVolunteer");
         FB.api('/me', function (response) {
             console.log('Successful login for: ' + response.name);
-            facebookUser.volunteer = new Volunteer(
+            var volunteer = new Volunteer(
                 response.name,
                 "fakeemail",
                 "fakeid");
-            facebookUser.loading = false;
-            facebookUser.loggedIn = true;
+            callback(volunteer);
         });
     };
 
-    this.loginCallback = function(response) {
+    this.loginCallback = function (response) {
+        console.log("FacebookUser::login : loginCallback");
         if (response.status === 'connected') {
-            facebookUser.loadVolunteer();
+            outer.loadVolunteer();
         } else {
-            facebookUser.loading = facebookUser.loggedIn = false;
+            callback(null);
         }
     }
 
