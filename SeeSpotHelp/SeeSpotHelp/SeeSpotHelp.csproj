@@ -186,6 +186,7 @@
     <Content Include="App\ui\sheltersearchbox.jsx" />
     <Content Include="App\ui\sheltersearchpage.jsx" />
     <Content Include="App\ui\sheltersearchresults.jsx" />
+    <Content Include="BHGtest.aspx" />
     <Content Include="Built\main.bundle.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -1220,6 +1221,13 @@
   <ItemGroup>
     <Compile Include="App_Start\ReactConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="BHGtest.aspx.cs">
+      <DependentUpon>BHGtest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BHGtest.aspx.designer.cs">
+      <DependentUpon>BHGtest.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -1247,6 +1255,16 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StaceyAnimals\StaceyAnimals.csproj">
+      <Project>{58a46f9d-d9fa-4847-b465-ddf20a14ee4b}</Project>
+      <Name>StaceyAnimals</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StaceyData\StaceyData.csproj">
+      <Project>{c86a8063-4217-442d-b82e-1a1df384a20d}</Project>
+      <Name>StaceyData</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

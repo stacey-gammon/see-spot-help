@@ -11,7 +11,8 @@ namespace Helpers
     public static class DBHelper
     {
 #if DEBUG
-        private static string defaultConnectionString = "Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;Integrated Security=True";
+        private static string defaultConnectionString = "Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11";
+        //private static string defaultConnectionString = "Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;Integrated Security=True";
 #else
         private static string defaultConnectionString = "";
 #endif
