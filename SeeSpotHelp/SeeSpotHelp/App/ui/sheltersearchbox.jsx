@@ -12,8 +12,8 @@ var ShelterSearchBox = React.createClass({
             results: results
         });
     },
-    getInitialState:function(){
-        return{
+    getInitialState:function() {
+        return {
             results: []
         }
     },

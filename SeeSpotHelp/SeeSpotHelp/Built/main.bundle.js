@@ -25616,8 +25616,8 @@
 	            results: results
 	        });
 	    },
-	    getInitialState:function(){
-	        return{
+	    getInitialState:function() {
+	        return {
 	            results: []
 	        }
 	    },
@@ -26069,12 +26069,10 @@
 	
 	    endWalk: function() {
 	        var startWalk = this.state.startWalkTime;
-	        var totalWalkTimeInMS = Date.now() - startWalk;
-	        console.log("Total walk time in ms = " + totalWalkTimeInMS)
-	        var totalWalkTimeInMinutes = totalWalkTimeInMS / (1000 * 60);
+	        var totalWalkTimeInMinutes = (Date.now() - startWalk) / (1000 * 60);
 	        this.setState({ walking: false });
-	        console.log("start walk time = " + startWalk);
-	        console.log("end walk time = " + Date.now())
+	
+	        // TODO(stacey): Temporary, implement this feature fully.
 	        console.log("You walked the dog for " + totalWalkTimeInMinutes + " minutes");
 	    },
 	
@@ -26119,6 +26117,7 @@
 	/** @jsx React.DOM */var React = __webpack_require__(/*! react */ 2);
 	var ReactRouterBootstrap = __webpack_require__(/*! react-router-bootstrap */ 161);
 	var ReactBootstrap = __webpack_require__(/*! react-bootstrap */ 234);
+	var FacebookLogin = __webpack_require__(/*! ./facebooklogin */ 479);
 	
 	var Navbar = ReactBootstrap.Navbar;
 	var Nav = ReactBootstrap.Nav;
@@ -26139,6 +26138,11 @@
 	                    React.createElement(NavItem, null, 
 	                        React.createElement("span", {className: "glyphicon glyphicon-search"})
 	                    )
+	                    )
+	                    ), 
+	                React.createElement(Nav, {className: "nav navbar-nav navbar-right navbar-right-custom "}, 
+	                    React.createElement(NavItem, null, 
+	                        React.createElement(FacebookLogin, null)
 	                    )
 	                )
 	            )
@@ -43870,6 +43874,28 @@
 	
 	exports['default'] = Well;
 	module.exports = exports['default'];
+
+/***/ },
+/* 479 */
+/*!******************************!*\
+  !*** ./ui/facebooklogin.jsx ***!
+  \******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */'use strict'
+	
+	var React = __webpack_require__(/*! react */ 2);
+	
+	var FacebookLogin = React.createClass({displayName: "FacebookLogin",
+	    render: function () {
+	        return (
+	            React.createElement("div", {className: "fb-login-button", "data-max-rows": "1", "data-size": "large", "data-show-faces": "false", "data-auto-logout-link": "true"})
+	            );
+	        }
+	});
+	
+	module.exports = FacebookLogin;
+
 
 /***/ }
 /******/ ]);
