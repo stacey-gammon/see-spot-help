@@ -10,6 +10,7 @@ var ReactDOM = require('react-dom');
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
+var IndexRoute = ReactRouter.IndexRoute;
 
 var Home = React.createClass({
     render: function() {
@@ -27,6 +28,7 @@ var routes = (
     <Route path="shelterSearchPage" component={ShelterSearchPage}/>
     <Route path="shelterHomePage" component={ShelterHomePage}/>
     <Route path="animalHomePage" component={AnimalHomePage} />
+    <IndexRoute component={ShelterHomePage} />
   </Router>
 );
 
