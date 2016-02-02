@@ -1,7 +1,7 @@
 ﻿'use strict'
 
 var React = require('react');
-var Link = require('react-router').Link;
+var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
 // A small representation of an animal to be displayed in the animal
 // list. Clicking on the thumbnail will direct the user to the chosen
@@ -10,14 +10,19 @@ var AnimalThumbnail = React.createClass({
     render: function () {
         return (
             <div>
-                <Link to={{
+                <LinkContainer to={{
                         pathname: "animalHomePage",
                         query: {
                             animalId: this.props.animal.id,
                             groupId: this.props.animal.volunteerGroup.id
                         }
                     }
-                }>{this.props.animal.name}</Link>
+                }>
+                    <div className="col-md-1 col-sm-2 col-xs-3">
+                        <img className="img-rounded img-responsive animalThumbnailImg" src={this.props.animal.photo} />
+                        <p className="animalThumbnailText">{this.props.animal.name}</p>
+                    </div>
+                </LinkContainer>
             </div>
         );
     }
