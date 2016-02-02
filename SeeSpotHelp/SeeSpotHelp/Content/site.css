@@ -1,4 +1,68 @@
-﻿
+﻿h1 {
+    font-size: 15px;
+    text-align: center;
+    font-weight: bold;
+    margin: 2px;
+    letter-spacing: 2px;
+}
+
+h2 {
+    font-size: 12px;
+    text-align: center;
+    margin: 2px;
+    letter-spacing: 2px;
+}
+
+p {
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.animalImg {
+    width: 100px;
+    height: 100px;
+    margin: 5px;
+}
+
+.animalInfo {
+    text-align: left;
+}
+
+.animalThumbnailText {
+    font-size: 10px;
+    text-align: center;
+}
+
+.animalThumbnailImg {
+    width: 75px;
+    height: 75px;
+    text-align: center;
+}
+
 .shelterResult {
     width: 100%;
+}
+
+.center-cropped-image {
+  width: 100px;
+  height: 100px;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.navbar-custom>li {
+    display: inline-block;
+    float: left;
+}
+
+.navbar-right {
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.navbar-right > li {
+    display: inline-block;
+    margin-top: 4px;
 }
