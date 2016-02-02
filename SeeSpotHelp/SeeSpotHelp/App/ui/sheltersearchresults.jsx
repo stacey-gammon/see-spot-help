@@ -1,14 +1,20 @@
 ﻿var React = require('react');
-var LinkContainer = require('react-router-bootstrap').LinkContainer;
+var Router = require('react-router');
 
 var ShelterSearchResults = React.createClass({
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
+    goToGroup: function(group) {
+        console.log("Going to home page for group " + group.id);
+        sessionStorage.setItem("defaultGroup", JSON.stringify(group));
+        this.context.router.push({ pathname: "/shelterHomePage", query: { groupId: group.id }, state: {defaultGroup: group}});
+    },
     generateResult: function(result) {
         return (
-            <LinkContainer to={{ pathname: 'shelterHomePage', query: { groupId: result.id } }}>
-                <button className="btn btn-primary shelterResult">
-                   {result.name} - {result.shelterName} - {result.address}
-                </button>
-            </LinkContainer>
+            <button className="btn btn-primary shelterResult" onClick={this.goToGroup.bind(this, result)}>
+                {result.name} - {result.shelterName} - {result.address}
+            </button>
         );
     },
 
