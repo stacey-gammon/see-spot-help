@@ -59,6 +59,7 @@
 	var ReactRouter = __webpack_require__(/*! react-router */ 164);
 	var Router = ReactRouter.Router;
 	var Route = ReactRouter.Route;
+	var IndexRoute = ReactRouter.IndexRoute;
 	
 	var Home = React.createClass({displayName: "Home",
 	    render: function() {
@@ -75,7 +76,8 @@
 	  React.createElement(Router, {path: "/", component: Home}, 
 	    React.createElement(Route, {path: "shelterSearchPage", component: ShelterSearchPage}), 
 	    React.createElement(Route, {path: "shelterHomePage", component: ShelterHomePage}), 
-	    React.createElement(Route, {path: "animalHomePage", component: AnimalHomePage})
+	    React.createElement(Route, {path: "animalHomePage", component: AnimalHomePage}), 
+	    React.createElement(IndexRoute, {component: ShelterHomePage})
 	  )
 	);
 	
@@ -20223,7 +20225,7 @@
 	            }
 	        }
 	        return (
-	            React.createElement("div", null, 
+	            React.createElement("div", {className: "container-fluid"}, 
 	                animals
 	            )
 	        );
@@ -25705,7 +25707,7 @@
 	    return {
 	        "123": {
 	            "dogId1": new Animal(
-	                "Cococo",
+	                "Coco",
 	                "Dog",
 	                "Pitbull",
 	                1,
@@ -26022,13 +26024,18 @@
 	        }
 	        if (animal) {
 	            return (
-	                React.createElement("div", null, 
-	                    React.createElement("h1", null, animal.name), 
-	                    React.createElement("h2", null, "Age: ", animal.age, " years"), 
-	                    React.createElement("h2", null, "Breed: ", animal.breed), 
-	                    "Add photo here.", 
-	                    React.createElement(AnimalActionsBox, null), 
-	                    "Notes will go here.", 
+	                    React.createElement("div", {className: "container-fluid"}, 
+	                        React.createElement("div", {className: "row"}, 
+	                            React.createElement("div", {className: "col-xs-6"}, 
+	                                React.createElement("img", {className: "img-rounded img-responsive animalImg", src: animal.photo})
+	                            ), 
+	                            React.createElement("div", {className: "col-xs-6"}, 
+	                                React.createElement("h1", {className: "animalInfo"}, animal.name), 
+	                                React.createElement("h2", {className: "animalInfo"}, animal.age, " years old"), 
+	                                React.createElement("h2", {className: "animalInfo"}, animal.breed)
+	                            )
+	                        ), 
+	                        React.createElement(AnimalActionsBox, null), 
 	                    this.props.children
 	                )
 	            );
