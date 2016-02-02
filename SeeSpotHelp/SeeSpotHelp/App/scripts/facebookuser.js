@@ -7,25 +7,28 @@ FacebookUser.getVolunteer = function (callback) {
     var outer = this;
     this.loadVolunteer = function () {
         console.log("FacebookUser::login : loadVolunteer");
-        FB.api('/me', function (response) {
-            console.log('Successful login for: ' + response.name);
+        FB.api("/me", function (response) {
+            console.log("Successful login for " + response.name +
+                        " with id " + response.id);
             var volunteer = new Volunteer(
                 response.name,
-                "fakeemail",
-                "fakeid");
+                response.email,
+                response.id);
+            volunteer.LoadVolunteer();
             callback(volunteer);
         });
     };
 
     this.loginCallback = function (response) {
         console.log("FacebookUser::login : loginCallback");
-        if (response.status === 'connected') {
+        if (response.status === "connected") {
             outer.loadVolunteer();
         } else {
             callback(null);
         }
     }
 
+    console.log("Getting fb login status");
     FB.getLoginStatus(this.loginCallback.bind(this));
 }
 
