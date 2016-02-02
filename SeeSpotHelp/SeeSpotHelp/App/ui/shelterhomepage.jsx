@@ -1,11 +1,11 @@
 ﻿'use strict'
 
 var React = require('react');
-var AnimalGroup = require('./animalgroup');
+var AnimalList = require('./animallist');
 var ShelterSearchBox = require('./sheltersearchbox');
 var ShelterInfoBox = require('./shelterinfobox');
 var ShelterActionsBox = require('./shelteractionsbox');
-var FakeData = require('./fakedata');
+var FakeData = require('../scripts/fakedata');
 
 var ShelterHomePage = React.createClass({
     render: function () {
@@ -22,7 +22,7 @@ var ShelterHomePage = React.createClass({
                     <ShelterInfoBox group={group}/>
                     <ShelterActionsBox />
                     <hr/>
-                    <AnimalGroup animals={animals}/>
+                    <AnimalList animals={animals}/>
                     {this.props.children}
                 </div>
             );
