@@ -185,6 +185,7 @@
     <Content Include="App\ui\sheltersearchbox.jsx" />
     <Content Include="App\ui\sheltersearchpage.jsx" />
     <Content Include="App\ui\sheltersearchresults.jsx" />
+    <Content Include="BHGtest.aspx" />
     <Content Include="Built\main.bundle.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -1219,6 +1220,13 @@
   <ItemGroup>
     <Compile Include="App_Start\ReactConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="BHGtest.aspx.cs">
+      <DependentUpon>BHGtest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BHGtest.aspx.designer.cs">
+      <DependentUpon>BHGtest.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
