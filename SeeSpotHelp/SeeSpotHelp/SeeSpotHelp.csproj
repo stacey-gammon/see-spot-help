@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\scripts\animal.js" />
+    <Content Include="App\scripts\volunteer.js" />
     <Content Include="App\scripts\volunteergroup.js" />
     <Content Include="App\ui\animalactionsbox.jsx" />
     <Content Include="App\ui\animallist.jsx" />
