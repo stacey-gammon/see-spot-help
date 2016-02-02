@@ -19,7 +19,7 @@ var AnimalList = React.createClass({
             }
         }
         return (
-            <div>
+            <div className="container-fluid">
                 {animals}
             </div>
         );
