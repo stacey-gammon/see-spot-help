@@ -124,7 +124,7 @@
 	    loadFacebookUser: function() {
 	        console.log("loadFacebookUser");
 	        // The FB sdk id loaded async, we need to make sure it's available.
-	        if (!FB) {
+	        if (typeof FB === "undefined") {
 	            console.log("FB null, trying again");
 	            setTimeout(this.loadFacebookUser.bind(this), 10);
 	            return;
@@ -20313,7 +20313,7 @@
 	                        }
 	                    }
 	                }, 
-	                    React.createElement("div", {className: "col-md-1 col-sm-2 col-xs-3"}, 
+	                    React.createElement("div", {className: "col-md-2 col-sm-3 col-xs-4"}, 
 	                        React.createElement("img", {className: "img-rounded img-responsive animalThumbnailImg", src: this.props.animal.photo}), 
 	                        React.createElement("p", {className: "animalThumbnailText"}, this.props.animal.name)
 	                    )
@@ -26049,25 +26049,27 @@
 	    var outer = this;
 	    this.loadVolunteer = function () {
 	        console.log("FacebookUser::login : loadVolunteer");
-	        FB.api('/me', function (response) {
-	            console.log('Successful login for: ' + response.name);
+	        FB.api("/me", function (response) {
+	            console.log("Successful login with response: " + response.name + " and id " + response.id);
 	            var volunteer = new Volunteer(
 	                response.name,
-	                "fakeemail",
-	                "fakeid");
+	                response.email,
+	                response.id);
+	            volunteer.LoadVolunteer();
 	            callback(volunteer);
 	        });
 	    };
 	
 	    this.loginCallback = function (response) {
 	        console.log("FacebookUser::login : loginCallback");
-	        if (response.status === 'connected') {
+	        if (response.status === "connected") {
 	            outer.loadVolunteer();
 	        } else {
 	            callback(null);
 	        }
 	    }
 	
+	    console.log("Getting fb login status");
 	    FB.getLoginStatus(this.loginCallback.bind(this));
 	}
 	

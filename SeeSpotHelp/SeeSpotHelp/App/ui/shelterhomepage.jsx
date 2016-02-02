@@ -29,7 +29,7 @@ var ShelterHomePage = React.createClass({
     loadFacebookUser: function() {
         console.log("loadFacebookUser");
         // The FB sdk id loaded async, we need to make sure it's available.
-        if (!FB) {
+        if (typeof FB === "undefined") {
             console.log("FB null, trying again");
             setTimeout(this.loadFacebookUser.bind(this), 10);
             return;
