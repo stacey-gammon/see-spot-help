@@ -1,12 +1,13 @@
 ﻿// An animal that is currently being managed by a volunteer group.
 
-var Animal = function(name, type, breed, age, volunteerGroup, status, id) {
+var Animal = function(name, type, breed, age, volunteerGroup, status, photo, id) {
     this.name = name;
     this.type = type;
     this.breed = breed;
     this.age = age;
     this.volunteerGroup = volunteerGroup;
     this.status = status;
+    this.photo = photo;
     this.id = id;
 }
 
