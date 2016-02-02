@@ -22,7 +22,7 @@ Volunteer.prototype.GetDefaultVolunteerGroup = function () {
 
 // Updates the default volunteer group associated with the current
 // volunteer.
-Volunteer.prototype.SetDefaultVolunteerGroup = function ()
+Volunteer.prototype.SetDefaultVolunteerGroup = function (groupId)
 {
     // TODO: implement
 }
