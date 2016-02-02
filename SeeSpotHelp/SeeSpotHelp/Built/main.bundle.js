@@ -26059,19 +26059,47 @@
 	// Actions to display on the animal home page, such as Add Activity,
 	// Edit and Delete.
 	var AnimalActionsBox = React.createClass({displayName: "AnimalActionsBox",
+	    getInitialState:function() {
+	        return {walking: false}
+	    },
+	
 	    alertNotImplemented: function () {
 	        alert('Sorry, that functionality is not implemented yet!');
 	    },
+	
+	    endWalk: function() {
+	        var startWalk = this.state.startWalkTime;
+	        var totalWalkTimeInMS = Date.now() - startWalk;
+	        console.log("Total walk time in ms = " + totalWalkTimeInMS)
+	        var totalWalkTimeInMinutes = totalWalkTimeInMS / (1000 * 60);
+	        this.setState({ walking: false });
+	        console.log("start walk time = " + startWalk);
+	        console.log("end walk time = " + Date.now())
+	        console.log("You walked the dog for " + totalWalkTimeInMinutes + " minutes");
+	    },
+	
+	    startWalk: function() {
+	        this.setState({walking: true, startWalkTime: Date.now() });
+	        var walkButton = document.getElementById('walkButton');
+	        walkButton.text = "End Walk";
+	        walkButton.onClick = this.endWalk;
+	    },
+	
 	    render: function () {
+	        var walkFunction = this.state.walking ? this.endWalk : this.startWalk;
+	        var walkText = this.state.walking ? "End walk" : "Walk";
 	        return (
 	            React.createElement("div", null, 
-	                React.createElement("button", {className: "btn", onClick: this.alertNotImplemented}, 
-	                    React.createElement("span", {className: "glyphicon glyphicon-plus-sign"})
+	                React.createElement("button", {className: "btn btn-info", id: "walkButton", onClick: walkFunction}, 
+	                    walkText
 	                ), 
-	                React.createElement("button", {className: "btn", onClick: this.alertNotImplemented}, 
-	                    React.createElement("span", {className: "glyphicon glyphicon-edit"})
+	                React.createElement("button", {className: "btn btn-info"}, 
+	                    "Add Note"
 	                ), 
-	                React.createElement("button", {className: "btn", onClick: this.alertNotImplemented}, 
+	                React.createElement("button", {className: "btn btn-info", onClick: this.alertNotImplemented}, 
+	                    "Edit"
+	                ), 
+	                React.createElement("button", {className: "btn btn-warning", onClick: this.alertNotImplemented}, 
 	                    React.createElement("span", {className: "glyphicon glyphicon-trash"})
 	                )
 	            )
