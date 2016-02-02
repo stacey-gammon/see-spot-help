@@ -25952,13 +25952,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(/*! react */ 2);
-	
-	//var LinkContainer = require('react-router-bootstrap').LinkContainer;
 	var Router = __webpack_require__(/*! react-router */ 164);
-	//var Navigation = Router.Navigation;
-	//var Link = Router.Link;
-	//var ShelterHomePage = require('./shelterhomepage');
-	//var History = Router.history;
 	
 	var ShelterSearchResults = React.createClass({displayName: "ShelterSearchResults",
 	    contextTypes: {
@@ -26051,29 +26045,33 @@
 
 	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 231);
 	
-	var FacebookUser = function () {
-	    var facebookUser = this;
+	// Attempts to load a facebook user asynchronously.
+	var FacebookUser = function (callback) {
 	    this.loading = true;
 	    this.volunteer = null;
+	    this.loggedIn = false;
+	
+	    // Helpful to reference this outer class from the inner functions.
+	    var facebookUser = this;
 	
 	    this.loadVolunteer = function() {
 	        console.log('Welcome!  Fetching your information.... ');
 	        FB.api('/me', function (response) {
 	            console.log('Successful login for: ' + response.name);
-	            facebookUser.volunteer = new Volunteer(response.name, "fakeemail", "fakeid");
-	            sessionStorage.setItem("volunteer", facebookUser.volunteer);
-	            console.log("Setting loading to false");
+	            facebookUser.volunteer = new Volunteer(
+	                response.name,
+	                "fakeemail",
+	                "fakeid");
 	            facebookUser.loading = false;
-	        }.bind(this));
-	    }.bind(this);
+	            facebookUser.loggedIn = true;
+	        });
+	    };
 	
 	    this.loginCallback = function(response) {
 	        if (response.status === 'connected') {
-	            console.log("connected and logged in, loading volunteer");
 	            facebookUser.loadVolunteer();
 	        } else {
-	            console.log("Setting loading to false, no login made.");
-	            facebookUser.loading = false;
+	            facebookUser.loading = facebookUser.loggedIn = false;
 	        }
 	    }
 	
@@ -26100,6 +26098,18 @@
 	
 	    // The id is the user id given by facebook.
 	    this.id = id;
+	}
+	
+	// Using this.id, attempt to load the volunteer from the
+	// database.  If no such volunteer exists, AddNewVolunteer
+	// will be called with some basic defaults supplied by
+	// facebook.
+	Volunteer.prototype.LoadVolunteer = function () {
+	    // TODO: Implement
+	}
+	
+	Volunteer.prototype.AddNewVolunteer = function() {
+	    // TODO: Implement
 	}
 	
 	// Returns the default volunteer group this volunteer belongs to,

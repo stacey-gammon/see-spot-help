@@ -11,6 +11,18 @@ var Volunteer = function (name, email, id) {
     this.id = id;
 }
 
+// Using this.id, attempt to load the volunteer from the
+// database.  If no such volunteer exists, AddNewVolunteer
+// will be called with some basic defaults supplied by
+// facebook.
+Volunteer.prototype.LoadVolunteer = function () {
+    // TODO: Implement
+}
+
+Volunteer.prototype.AddNewVolunteer = function() {
+    // TODO: Implement
+}
+
 // Returns the default volunteer group this volunteer belongs to,
 // if any. If the volunteer does not exist yet in the server db, they
 // will be inserted. Returns null if user is not attached to any
@@ -22,8 +34,7 @@ Volunteer.prototype.GetDefaultVolunteerGroup = function () {
 
 // Updates the default volunteer group associated with the current
 // volunteer.
-Volunteer.prototype.SetDefaultVolunteerGroup = function (groupId)
-{
+Volunteer.prototype.SetDefaultVolunteerGroup = function (groupId) {
     // TODO: implement
 }
 
