@@ -18,7 +18,7 @@ var AnimalThumbnail = React.createClass({
                         }
                     }
                 }>
-                    <div className="col-md-1 col-sm-2 col-xs-3">
+                    <div className="col-md-2 col-sm-3 col-xs-4">
                         <img className="img-rounded img-responsive animalThumbnailImg" src={this.props.animal.photo} />
                         <p className="animalThumbnailText">{this.props.animal.name}</p>
                     </div>
