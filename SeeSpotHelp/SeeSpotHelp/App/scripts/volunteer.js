@@ -12,12 +12,11 @@ var Volunteer = function(name, email, id) {
     this.id = id;
 };
 
-// Casts the given obj as a Volunteer.  Careful -
-// obj must have originally been a type of Volunteer
-// for this to work as expected.  Helpful when passing around
-// objects via React state and props.  Can use this to restore the
-// original class, complete with functions, from an object with only
-// properties.
+// Casts the given obj as a Volunteer.  Careful - obj must have
+// originally been a type of Volunteer for this to work as expected.
+// Helpful when passing around objects via React state and props.
+// Can use this to restore the original class, complete with functions,
+// from an object with only properties.
 Volunteer.castObject = function (obj) {
     console.log("Loading volunteer from object");
     var volunteer = new Volunteer();
