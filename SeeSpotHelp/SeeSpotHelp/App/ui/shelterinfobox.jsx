@@ -4,6 +4,7 @@ var React = require('react');
 
 var ShelterInfoBox = React.createClass({
     render: function () {
+        console.log("ShelterInfoBox:render");
         return (
             <div>
                 <h1>{this.props.group.name}</h1>

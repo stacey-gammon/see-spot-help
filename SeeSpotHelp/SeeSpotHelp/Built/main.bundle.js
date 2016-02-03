@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "2977085a0b571b026982"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "788867e6112b8f5a7e80"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -8423,9 +8423,17 @@
 	        // properties via LinkContainer and am passing state instead,
 	        // where user is stored varies depending on how the user got
 	        // here.
-	        var user = this.props.user;
+	        console.log("shelterhomepage::render: props.user = ");
+	        console.log(this.props.user);
+	        var user = this.props.user ? Volunteer.castObject(this.props.user) : null;
+	
+	        console.log("shelterhomepage::render: props.user after cast = ");
+	        console.log(user);
+	
 	        if (!user && this.props.location.state) {
-	            user = Volunteer.castObject(this.props.location.state.user);
+	            console.log("shelterhomepage:render: Grabbing volunteer object from props.location.state");
+	            user = this.props.location.state.user ?
+	                   Volunteer.castObject(this.props.location.state.user) : null;
 	        }
 	
 	        if (query && query.groupId) {
@@ -8437,6 +8445,8 @@
 	            console.log("no query group so get default group from user ");
 	            console.log(user);
 	            defaultGroup = user.getDefaultVolunteerGroup();
+	            console.log("DefaultGroup = ");
+	            console.log(defaultGroup);
 	        }
 	        if (defaultGroup) {
 	            console.log("Default group found");
@@ -33925,7 +33935,7 @@
 	
 	VolunteerGroup.castObject = function(obj) {
 	    console.log("Loading volunteer group from object");
-	    var group = {};
+	    var group = new VolunteerGroup();
 	    for (var prop in obj) group[prop] = obj[prop];
 	    return group;
 	};
@@ -33939,7 +33949,7 @@
 	);
 	
 	VolunteerGroup.getFakeGroups = function() {
-	    var fakeGroups = {
+	    return {
 	        "123": new VolunteerGroup(
 	            "Friends of Saratoga County Humane Society",
 	            "Saratoga County Humane Society",
@@ -33974,6 +33984,7 @@
 	};
 	
 	VolunteerGroup.prototype.getUserPermissions = function (userId) {
+	    console.log("VolunteerGroup.prototype.getUserPermissions");
 	    if (this.userPermissionsMap.hasOwnProperty(userId)) {
 	        return this.userPermissionsMap[userId];
 	    } else {
@@ -34054,6 +34065,7 @@
 	
 	var ShelterInfoBox = React.createClass({displayName: "ShelterInfoBox",
 	    render: function () {
+	        console.log("ShelterInfoBox:render");
 	        return (
 	            React.createElement("div", null, 
 	                React.createElement("h1", null, this.props.group.name), 
@@ -34139,7 +34151,7 @@
 	
 	Volunteer.castObject = function (obj) {
 	    console.log("Loading volunteer from object");
-	    var volunteer = {};
+	    var volunteer = new Volunteer();
 	    for (var prop in obj) volunteer[prop] = obj[prop];
 	    return volunteer;
 	};
@@ -34160,45 +34172,43 @@
 	    //    error: function () { alert("Ajax Error"); }
 	    //});
 	
-	    $.ajax({
-	        type: "POST",
-	        url: "WebServices/volunteerServices.asmx/getVolunteer",
-	        data: '{anID: ' + anID + '}',
-	        contentType: "application/json; charset=utf-8",
-	        dataType: "json",
-	        success: function (data) {
-	            var volLit = JSON.parse(data.d);
-	            var newVol = new Volunteer();
-	            for (var prop in volLit)
-	                newVol[prop] = volLit[prop];
-	            return newVol;
-	        },
+	    //$.ajax({
+	    //    type: "POST",
+	    //    url: "WebServices/volunteerServices.asmx/getVolunteer",
+	    //    data: '{anID: ' + anID + '}',
+	    //    contentType: "application/json; charset=utf-8",
+	    //    dataType: "json",
+	    //    success: function (data) {
+	    //        var volLit = JSON.parse(data.d);
+	    //        var newVol = new Volunteer();
+	    //        for (var prop in volLit)
+	    //            newVol[prop] = volLit[prop];
+	    //        return newVol;
+	    //    },
 	
-	        error: function (ts) { alert(ts.responseText); }
-	    });
-	
-	
-	}
+	    //    error: function (ts) { alert(ts.responseText); }
+	    //});
+	};
 	
 	Volunteer.prototype.AddNewVolunteer = function() {
 	    // TODO: Implement
 	
-	}
+	};
 	
 	// Returns the default volunteer group this volunteer belongs to,
 	// if any. If the volunteer does not exist yet in the server db, they
 	// will be inserted. Returns null if user is not attached to any
 	// groups.
-	Volunteer.prototype.getDefaultVolunteerGroup = function () {
+	Volunteer.prototype.getDefaultVolunteerGroup = function() {
 	    // TODO: implement
 	    return VolunteerGroup.getFakeGroups()["123"];
-	}
+	};
 	
 	// Updates the default volunteer group associated with the current
 	// volunteer.
-	Volunteer.prototype.setDefaultVolunteerGroup = function (groupId) {
+	Volunteer.prototype.setDefaultVolunteerGroup = function(groupId) {
 	    // TODO: implement
-	}
+	};
 	
 	module.exports = Volunteer;
 
