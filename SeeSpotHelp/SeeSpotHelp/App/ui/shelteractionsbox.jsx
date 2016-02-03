@@ -13,7 +13,7 @@ var LeaveShelterButton = React.createClass({
         if (this.props.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER)
             return null;
         return (
-            <div>
+            <div className="leaveShelterButton">
                 <button className="btn btn-warning"
                         id="leaveShelterButton"
                         onClick={this.alertNotImplemented}>

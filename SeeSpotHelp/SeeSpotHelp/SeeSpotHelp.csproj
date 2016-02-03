@@ -173,6 +173,7 @@
     <Content Include="App\scripts\volunteer.js" />
     <Content Include="App\scripts\volunteergroup.js" />
     <Content Include="App\tests\shelteractionsbox-test.jsx" />
+    <Content Include="App\tests\shelterhomepage-test.jsx" />
     <Content Include="App\ui\addnewshelter.jsx" />
     <Content Include="App\ui\animalactionsbox.jsx" />
     <Content Include="App\ui\animallist.jsx" />
@@ -535,7 +536,6 @@
     <Content Include="images\dogthumbnails-4.jpg" />
     <Content Include="images\dogthumbnails-5.jpg" />
     <Content Include="images\dogthumbnails.jpg" />
-    <Content Include="karma.conf.backup.js" />
     <Content Include="Resources\babel.js" />
     <Content Include="Resources\react.js" />
     <Content Include="scripts\ai.0.15.0-build58334.js" />
