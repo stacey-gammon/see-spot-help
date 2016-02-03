@@ -28,7 +28,6 @@ var AnimalHomePage = React.createClass({
                             </div>
                         </div>
                         <AnimalActionsBox/>
-                    {this.props.children}
                 </div>
             );
         }
