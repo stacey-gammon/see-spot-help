@@ -172,6 +172,7 @@
     <Content Include="App\scripts\facebookuser.js" />
     <Content Include="App\scripts\volunteer.js" />
     <Content Include="App\scripts\volunteergroup.js" />
+    <Content Include="App\ui\addnewshelter.jsx" />
     <Content Include="App\ui\animalactionsbox.jsx" />
     <Content Include="App\ui\animallist.jsx" />
     <Content Include="App\ui\animalhomepage.jsx" />
@@ -187,6 +188,8 @@
     <Content Include="App\ui\sheltersearchbox.jsx" />
     <Content Include="App\ui\sheltersearchpage.jsx" />
     <Content Include="App\ui\sheltersearchresults.jsx" />
+    <Content Include="App\ui\testA.jsx" />
+    <Content Include="App\ui\testB.jsx" />
     <Content Include="BHGtest.aspx" />
     <Content Include="Built\main.bundle.js" />
     <Content Include="Content\bootstrap-theme.css" />

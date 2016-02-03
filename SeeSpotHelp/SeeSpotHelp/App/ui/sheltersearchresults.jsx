@@ -1,5 +1,6 @@
 ﻿var React = require('react');
 var Router = require('react-router');
+var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
 var ShelterSearchResults = React.createClass({
     contextTypes: {
@@ -8,7 +9,9 @@ var ShelterSearchResults = React.createClass({
     goToGroup: function(group) {
         console.log("Going to home page for group " + group.id);
         sessionStorage.setItem("defaultGroup", JSON.stringify(group));
-        this.context.router.push({ pathname: "/shelterHomePage", query: { groupId: group.id }, state: {defaultGroup: group}});
+        this.context.router.push({ pathname: "/shelterHomePage",
+                                   query: { groupId: group.id },
+                                   state: { defaultGroup: group, user: this.props.user } });
     },
     generateResult: function(result) {
         return (
@@ -18,11 +21,15 @@ var ShelterSearchResults = React.createClass({
         );
     },
 
+    getLoggedInUser: function() {
+        
+    },
+
     render: function() {
         var items = this.props.results.map(this.generateResult);
         return (
             <div>
-            {items}
+                {items}
             </div>
         );
     }

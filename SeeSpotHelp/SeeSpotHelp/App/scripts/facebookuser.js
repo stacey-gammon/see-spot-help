@@ -15,6 +15,8 @@ FacebookUser.getVolunteer = function (callback) {
                 response.email,
                 response.id);
             volunteer.LoadVolunteer();
+            console.log("Loaded volunteer: ");
+            console.log(volunteer);
             callback(volunteer);
         });
     };
