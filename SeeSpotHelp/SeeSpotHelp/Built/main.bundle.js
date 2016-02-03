@@ -244,16 +244,13 @@
 	                    React.createElement(ShelterInfoBox, {group: defaultGroup, user: user}), 
 	                    React.createElement(ShelterActionsBox, {user: user}), 
 	                    React.createElement("hr", null), 
-	                    React.createElement(AnimalList, {animals: animals, user: user}), 
-	                    this.props.children
+	                    React.createElement(AnimalList, {animals: animals, user: user})
 	                )
 	            );
 	        } else {
 	            console.log("No user logged in...");
 	            return (
-	                React.createElement("div", null, 
-	                    React.createElement(ShelterSearchBox, {user: user})
-	                )
+	                React.createElement(ShelterSearchBox, {user: user})
 	            );
 	        }
 	    }
@@ -26296,10 +26293,7 @@
 	            user = this.props.location.state.user;
 	        }
 	        return (
-	            React.createElement("div", null, 
-	            React.createElement(ShelterSearchBox, {user: user}), 
-	            this.props.children
-	            )
+	            React.createElement(ShelterSearchBox, {user: user})
 	        );
 	    }
 	});

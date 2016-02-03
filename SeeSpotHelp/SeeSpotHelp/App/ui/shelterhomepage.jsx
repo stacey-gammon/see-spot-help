@@ -46,15 +46,12 @@ var ShelterHomePage = React.createClass({
                     <ShelterActionsBox user={user}/>
                     <hr/>
                     <AnimalList animals={animals} user={user}/>
-                    {this.props.children}
                 </div>
             );
         } else {
             console.log("No user logged in...");
             return (
-                <div>
-                    <ShelterSearchBox user={user}/>
-                </div>
+                <ShelterSearchBox user={user}/>
             );
         }
     }
