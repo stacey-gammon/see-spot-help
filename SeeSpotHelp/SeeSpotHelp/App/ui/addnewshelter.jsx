@@ -4,7 +4,11 @@ var React = require("react");
 
 var AddNewShelter = React.createClass({
     render: function () {
-        if (this.props.user) {
+        var user = this.props.user;
+        if (!user && this.props.location.state && this.props.location.state.user) {
+            user = this.props.location.state.user;
+        }
+        if (user) {
             return (
                 <div>
                     <h1>Add New Group</h1>
