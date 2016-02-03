@@ -20,25 +20,48 @@ var Home = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState: function() {
+        return {};
+    },
+
+    logInEvent: function() {
+        console.log("logInEvent");
+        this.loadFacebookUser();
+    },
+
+    logOutEvent: function() {
+        console.log("logOutEvent");
+        this.loadFacebookUser();
+    },
+
+    componentDidMount: function() {
+        FB.Event.subscribe("auth.login", this.logInEvent);
+        FB.Event.subscribe("auth.logout", this.logOutEvent);
+
         var defaultGroup = null;
         if (sessionStorage.getItem("defaultGroup")) {
             defaultGroup = JSON.parse(sessionStorage.getItem("defaultGroup"));
         }
 
+        this.loadFacebookUser();
         // Temporary fix for the stupid bug of FB not loading by the time this
         // is called.
-        setTimeout(this.loadFacebookUser, 500);
+       //  setTimeout(this.loadFacebookUser, 500);
 
-        return {
+        this.setState({
             defaultGroup: defaultGroup,
             volunteer: null,
             loggingIn: true
-        }
+        });
+    },
+
+    reloadFacebookUser: function() {
+        console.log("reloading facebook user");
+        FacebookUser.getVolunteer(this.loadPageForVolunteer);
     },
 
     loadPageForVolunteer: function(volunteer) {
-        console.log("loadPageForVolunteer v= " + volunteer);
         this.setState({user: volunteer, loggingIn: false});
         sessionStorage.setItem("volunteer", JSON.stringify(volunteer));
 
@@ -52,13 +75,16 @@ var Home = React.createClass({
             this.setState({ "defaultGroup": volunteer.GetDefaultVolunteerGroup() });
         }
 
+        // TODO: What do we want to happen when a user logs in while on the search pane?
+        // Currently we will force them to pop over to the shelter home page. This fell
+        // out naturally and was not specifically decided. Figure out what to do.
         if (volunteer && volunteer.GetDefaultVolunteerGroup()) {
             console.log("Default volunteer group found, loading shelter home page, volunteer is: ");
             console.log(volunteer);
             this.context.router.push(
-                { pathname: "/shelterHomePage",
-                  query: { test: "test" },
-                  state: { user: volunteer }
+                {
+                    pathname: "/shelterHomePage",
+                    state: { user: volunteer }
                 }
             );
         }
@@ -75,7 +101,7 @@ var Home = React.createClass({
             setTimeout(this.loadFacebookUser, 250);
             return;
         }
-        FacebookUser.getVolunteer(this.loadPageForVolunteer);
+        this.reloadFacebookUser();
     },
 
     render: function() {
@@ -100,7 +126,16 @@ var routes = (
   </Router>
 );
 
-ReactDOM.render(
-    <Router routes={routes}/>,
-    document.getElementById('content')
-);
+var render = function() {
+    console.log("render");
+    ReactDOM.render(
+        <Router routes={routes}/>,
+        document.getElementById('content')
+    );
+}
+
+render();
+//ReactDOM.render(
+//    <Router routes={routes}/>,
+//        document.getElementById('content')
+//    );
