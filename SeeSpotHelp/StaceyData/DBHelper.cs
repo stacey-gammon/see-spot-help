@@ -22,12 +22,17 @@ namespace Helpers
             {
                 return defaultConnectionString;
             }
+            set
+            {
+                defaultConnectionString = value;
+            }
         }
 
-        public static DataTable ExecuteProcedure(string PROC_NAME, params object[] parameters)
+        public static DataTable ExecuteProcedure(string connectionqString, string PROC_NAME, params object[] parameters)
         {
             try
             {
+                defaultConnectionString = connectionqString;
                 if (parameters.Length % 2 != 0)
                     throw new ArgumentException("Wrong number of parameters sent to procedure. Expected an even number.");
                 DataTable a = new DataTable();
@@ -52,10 +57,11 @@ namespace Helpers
             }
         }
 
-        public static DataTable ExecuteQuery(string query, params object[] parameters)
+        public static DataTable ExecuteQuery(string connectionqString, string query, params object[] parameters)
         {
             try
             {
+                defaultConnectionString = connectionqString;
                 if (parameters.Length % 2 != 0)
                     throw new ArgumentException("Wrong number of parameters sent to procedure. Expected an even number.");
                 DataTable a = new DataTable();
@@ -73,10 +79,11 @@ namespace Helpers
             }
         }
 
-        public static int ExecuteNonQuery(string query, params object[] parameters)
+        public static int ExecuteNonQuery(string connectionqString, string query, params object[] parameters)
         {
             try
             {
+                defaultConnectionString = connectionqString;
                 if (parameters.Length % 2 != 0)
                     throw new ArgumentException("Wrong number of parameters sent to procedure. Expected an even number.");
                 List<SqlParameter> filters = new List<SqlParameter>();
@@ -91,10 +98,11 @@ namespace Helpers
             }
         }
 
-        public static object ExecuteScalar(string query, params object[] parameters)
+        public static object ExecuteScalar(string connectionqString, string query, params object[] parameters)
         {
             try
             {
+                defaultConnectionString = connectionqString;
                 if (parameters.Length % 2 != 0)
                     throw new ArgumentException("Wrong number of parameters sent to query. Expected an even number.");
                 List<SqlParameter> filters = new List<SqlParameter>();

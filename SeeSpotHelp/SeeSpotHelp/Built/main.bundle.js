@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "6e76f4f51637679c3e51"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "2977085a0b571b026982"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -33928,7 +33928,7 @@
 	    var group = {};
 	    for (var prop in obj) group[prop] = obj[prop];
 	    return group;
-	}
+	};
 	
 	VolunteerGroup.PermissionsEnum = Object.freeze(
 	    {
@@ -33973,10 +33973,12 @@
 	    return results;
 	};
 	
-	VolunteerGroup.prototype.getUserPermissions = function(userId) {
-	    var permissions = this.userPermissionsMap[userId];
-	    if (!permissions) return VolunteerGroup.PermissionsEnum.NONMEMBER;
-	    return permissions;
+	VolunteerGroup.prototype.getUserPermissions = function (userId) {
+	    if (this.userPermissionsMap.hasOwnProperty(userId)) {
+	        return this.userPermissionsMap[userId];
+	    } else {
+	        return VolunteerGroup.PermissionsEnum.NONMEMBER;
+	    }
 	};
 	
 	VolunteerGroup.prototype.saveVolunteerGroup = function() {
@@ -34100,12 +34102,10 @@
 	
 	var ShelterActionsBox = React.createClass({displayName: "ShelterActionsBox",
 	    render: function () {
-	        console.log("ShelterActionsBox:render, user:");
+	        console.log("ShelterActionsBox:render:");
 	        var volunteer = this.props.user ? Volunteer.castObject(this.props.user) : null;
-	        console.log(volunteer);
 	        var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
 	        var permissions = group.getUserPermissions(volunteer.id);
-	        console.log("user permissions for volunteer with id " + volunteer.id + " = " + permissions);
 	        return (
 	            React.createElement("div", null, 
 	                React.createElement(LeaveShelterButton, {permissions: permissions})
@@ -34135,25 +34135,54 @@
 	
 	    // The id is the user id given by facebook.
 	    this.id = id;
-	}
+	};
 	
-	Volunteer.castObject = function (volunteer) {
+	Volunteer.castObject = function (obj) {
 	    console.log("Loading volunteer from object");
-	    var newVolunteer = {};
-	    for (var prop in volunteer) newVolunteer[prop] = volunteer[prop];
-	    return newVolunteer;
+	    var volunteer = {};
+	    for (var prop in obj) volunteer[prop] = obj[prop];
+	    return volunteer;
 	};
 	
 	// Using this.id, attempt to load the volunteer from the
 	// database.  If no such volunteer exists, AddNewVolunteer
 	// will be called with some basic defaults supplied by
 	// facebook.
-	Volunteer.prototype.LoadVolunteer = function () {
+	Volunteer.LoadVolunteer = function(anID) {
 	    // TODO: Implement
+	    //$.ajax({
+	    //    url: "BHGtest.aspx",
+	    //    dataType: "json",
+	    //    success: function (data) {
+	    //        alert(data);
+	    //    },
+	
+	    //    error: function () { alert("Ajax Error"); }
+	    //});
+	
+	    $.ajax({
+	        type: "POST",
+	        url: "WebServices/volunteerServices.asmx/getVolunteer",
+	        data: '{anID: ' + anID + '}',
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        success: function (data) {
+	            var volLit = JSON.parse(data.d);
+	            var newVol = new Volunteer();
+	            for (var prop in volLit)
+	                newVol[prop] = volLit[prop];
+	            return newVol;
+	        },
+	
+	        error: function (ts) { alert(ts.responseText); }
+	    });
+	
+	
 	}
 	
 	Volunteer.prototype.AddNewVolunteer = function() {
 	    // TODO: Implement
+	
 	}
 	
 	// Returns the default volunteer group this volunteer belongs to,
@@ -34371,7 +34400,8 @@
 	                response.name,
 	                response.email,
 	                response.id);
-	            volunteer.LoadVolunteer();
+	            // todo:fix this
+	            // volunteer.LoadVolunteer();
 	            console.log("Loaded volunteer: ");
 	            console.log(volunteer);
 	            callback(volunteer);
