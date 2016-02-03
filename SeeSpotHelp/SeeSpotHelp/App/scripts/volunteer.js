@@ -3,18 +3,21 @@
 
 var VolunteerGroup = require('./volunteergroup');
 
-var Volunteer = function (name, email, id) {
+var Volunteer = function(name, email, id) {
+    console.log("Loading volunteer with id " + id);
     this.name = name;
     this.email = email;
 
     // The id is the user id given by facebook.
     this.id = id;
-}
+};
 
-function Volunteer(volunteer) {
-    for (var prop in Volunteer) this[prop] = Volunteer[prop];
-}
-
+Volunteer.castObject = function (obj) {
+    console.log("Loading volunteer from object");
+    var volunteer = {};
+    for (var prop in obj) volunteer[prop] = obj[prop];
+    return volunteer;
+};
 
 // Using this.id, attempt to load the volunteer from the
 // database.  If no such volunteer exists, AddNewVolunteer

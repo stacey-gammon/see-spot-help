@@ -19,6 +19,13 @@ var VolunteerGroup = function(name, shelter, address, id) {
     this.userPermissionsMap = {};
 };
 
+VolunteerGroup.castObject = function(obj) {
+    console.log("Loading volunteer group from object");
+    var group = {};
+    for (var prop in obj) group[prop] = obj[prop];
+    return group;
+};
+
 VolunteerGroup.PermissionsEnum = Object.freeze(
     {
         MEMBER: 0,
@@ -28,7 +35,7 @@ VolunteerGroup.PermissionsEnum = Object.freeze(
 );
 
 VolunteerGroup.getFakeGroups = function() {
-    return {
+    var fakeGroups = {
         "123": new VolunteerGroup(
             "Friends of Saratoga County Humane Society",
             "Saratoga County Humane Society",
@@ -62,13 +69,12 @@ VolunteerGroup.search = function (searchText) {
     return results;
 };
 
-VolunteerGroup.prototype.getUserPermissions = function(userId) {
-    return VolunteerGroup.PermissionsEnum.MEMBER;
-
-    // TODO: Use once loadVolunteerGroup is working.
-    var permissions = userPermissionsMap[userId];
-    if (!permissions) return this.PermissionsEnum.NONMEMBER;
-    return permissions;
+VolunteerGroup.prototype.getUserPermissions = function (userId) {
+    if (this.userPermissionsMap.hasOwnProperty(userId)) {
+        return this.userPermissionsMap[userId];
+    } else {
+        return VolunteerGroup.PermissionsEnum.NONMEMBER;
+    }
 };
 
 VolunteerGroup.prototype.saveVolunteerGroup = function() {

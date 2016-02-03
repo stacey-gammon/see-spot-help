@@ -25,7 +25,7 @@ var ShelterHomePage = React.createClass({
         // here.
         var user = this.props.user;
         if (!user && this.props.location.state) {
-            user = new Volunteer(this.props.location.state.user);
+            user = Volunteer.castObject(this.props.location.state.user);
         }
 
         if (query && query.groupId) {
