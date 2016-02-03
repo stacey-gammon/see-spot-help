@@ -15,12 +15,12 @@ var MyNavBar = React.createClass({
         return (
             <Navbar className="navbar navbar-light bg-faded">
                 <Nav className="nav navbar-nav navbar-custom">
-                    <LinkContainer to={{pathname: "shelterHomePage", state: this.props.user}}>
+                    <LinkContainer to={{ pathname: "shelterHomePage", state: { user: this.props.user } }}>
                         <NavItem>
                             <span className="glyphicon glyphicon-home" />
                         </NavItem>
                     </LinkContainer>
-                    <LinkContainer  to={{pathname: "shelterSearchPage", state: this.props.user}}>
+                    <LinkContainer  to={{pathname: "shelterSearchPage", state: {user: this.props.user } }}>
                     <NavItem>
                         <span className="glyphicon glyphicon-search" />
                     </NavItem>
