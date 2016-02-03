@@ -23,9 +23,17 @@ var ShelterHomePage = React.createClass({
         // properties via LinkContainer and am passing state instead,
         // where user is stored varies depending on how the user got
         // here.
-        var user = this.props.user;
+        console.log("shelterhomepage::render: props.user = ");
+        console.log(this.props.user);
+        var user = this.props.user ? Volunteer.castObject(this.props.user) : null;
+
+        console.log("shelterhomepage::render: props.user after cast = ");
+        console.log(user);
+
         if (!user && this.props.location.state) {
-            user = Volunteer.castObject(this.props.location.state.user);
+            console.log("shelterhomepage:render: Grabbing volunteer object from props.location.state");
+            user = this.props.location.state.user ?
+                   Volunteer.castObject(this.props.location.state.user) : null;
         }
 
         if (query && query.groupId) {
@@ -37,6 +45,8 @@ var ShelterHomePage = React.createClass({
             console.log("no query group so get default group from user ");
             console.log(user);
             defaultGroup = user.getDefaultVolunteerGroup();
+            console.log("DefaultGroup = ");
+            console.log(defaultGroup);
         }
         if (defaultGroup) {
             console.log("Default group found");
