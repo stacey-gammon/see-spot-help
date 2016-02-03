@@ -11,6 +11,11 @@ var Volunteer = function (name, email, id) {
     this.id = id;
 }
 
+function Volunteer(volunteer) {
+    for (var prop in Volunteer) this[prop] = Volunteer[prop];
+}
+
+
 // Using this.id, attempt to load the volunteer from the
 // database.  If no such volunteer exists, AddNewVolunteer
 // will be called with some basic defaults supplied by
