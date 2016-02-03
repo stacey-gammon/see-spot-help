@@ -10,78 +10,50 @@ var FacebookUser = require("../scripts/facebookuser");
 var Volunteer = require("../scripts/volunteer");
 
 var ShelterHomePage = React.createClass({
-    loadPageForVolunteer: function(volunteer) {
-        console.log("loadPageForVolunteer");
-        this.setState({volunteer: volunteer, loggingIn: false});
-        sessionStorage.setItem("volunteer", JSON.stringify(volunteer));
-
-        // If there isn't yet a default group choosen for this session, seed it from
-        // server side data, whatever group the volunteer is a part of.  Searching and
-        // selecting another group will overrie the session default, so the user
-        // continues to see their last selected group, but it will not be stored on the
-        // server unless the volunteer is an actual group member.  Will have to work
-        // this use case out more.
-        if (!this.state.defaultGroup) {
-            this.setState({ "defaultGroup": volunteer.GetDefaultVolunteerGroup() });
-        }
-    },
-
-    loadFacebookUser: function() {
-        console.log("loadFacebookUser");
-        // The FB sdk id loaded async, we need to make sure it's available.
-        if (typeof FB === "undefined") {
-            console.log("FB null, trying again");
-            setTimeout(this.loadFacebookUser.bind(this), 10);
-            return;
-        }
-        FacebookUser.getVolunteer(this.loadPageForVolunteer);
-    },
-
-    getInitialState: function() {
-        var defaultGroup = null;
-        if (sessionStorage.getItem("defaultGroup")) {
-            defaultGroup = JSON.parse(sessionStorage.getItem("defaultGroup"));
-        }
-
-        this.loadFacebookUser();
-
-        return {
-            defaultGroup: defaultGroup,
-            volunteer: null,
-            loggingIn: true
-        }
+    getInitialState: function() { return {}
     },
 
     render: function () {
         console.log("shelterhomepage::render");
         var query = this.props.location.query;
-        var defaultGroup = this.state.defaultGroup;
-        
-        console.log("state default group? " + defaultGroup);
+        var defaultGroup = null;
+
+        // This is stupid but because I can't figure out how to pass
+        // properties via LinkContainer and am passing state instead,
+        // where user is stored varies depending on how the user got
+        // here.
+        var user = this.props.user;
+        if (!user && this.props.location.state) {
+            user = new Volunteer(this.props.location.state.user);
+        }
+
         if (query && query.groupId) {
             defaultGroup = FakeData.fakeVolunteerGroupData[query.groupId];
             sessionStorage.setItem("defaultGroup", JSON.stringify(defaultGroup));
         }
+
+        if (!defaultGroup && user) {
+            console.log("no query group so get default group from user ");
+            console.log(user);
+            defaultGroup = user.GetDefaultVolunteerGroup();
+        }
         if (defaultGroup) {
-            console.log("Default group selected");
+            console.log("Default group found");
             var animals = FakeData.getFakeAnimalDataForGroup(defaultGroup.id);
             return (
                 <div>
-                    <ShelterInfoBox group={defaultGroup}/>
-                    <ShelterActionsBox />
+                    <ShelterInfoBox group={defaultGroup} user={user}/>
+                    <ShelterActionsBox user={user}/>
                     <hr/>
-                    <AnimalList animals={animals}/>
+                    <AnimalList animals={animals} user={user}/>
                     {this.props.children}
                 </div>
             );
-        } else if (this.state.loggingIn) {
-            console.log("We are still logging in...");
-            return(<div></div>);
         } else {
             console.log("No user logged in...");
             return (
                 <div>
-                    <ShelterSearchBox/>
+                    <ShelterSearchBox user={user}/>
                 </div>
             );
         }

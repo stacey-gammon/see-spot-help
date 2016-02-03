@@ -6,7 +6,7 @@ var ShelterSearchPage = React.createClass({
     render: function() {
         return (
           <div>
-            <ShelterSearchBox />
+            <ShelterSearchBox user={this.props.user}/>
             {this.props.children}
           </div>
       );

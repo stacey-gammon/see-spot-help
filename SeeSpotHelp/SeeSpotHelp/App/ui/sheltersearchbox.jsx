@@ -1,15 +1,40 @@
-﻿'use strict'
+﻿"use strict";
 
-var React = require('react');
-var ShelterSearch = require('../scripts/sheltersearch');
-var ShelterSearchResults = require('./sheltersearchresults');
+var React = require("react");
+var LinkContainer = require("react-router-bootstrap").LinkContainer;
+var ShelterSearch = require("../scripts/sheltersearch");
+var ShelterSearchResults = require("./sheltersearchresults");
+
+var AddNewShelterButton = React.createClass({
+    render: function() {
+        console.log("AddNewShelterButton:render: User = " + this.props.user);
+        var disabled = !this.props.user;
+        var disabledDiv = "";
+        if (disabled) {
+            disabledDiv = (<div>*You must be logged in to add a new group</div>);
+        }
+        if (this.props.searchText) {
+            return (
+                <div>
+                    <LinkContainer to="addNewShelter" disabled={disabled}>
+                    <button className="btn btn-warning shelterResult"
+                            user={this.props.user} disabled={disabled}>Add New Group
+                    </button>
+                    </LinkContainer>
+                    {disabledDiv}
+                </div>
+            );
+        } else return (<div/>);
+    }
+});
 
 var ShelterSearchBox = React.createClass({
     shelterSearch: function () {
-        var searchText = document.getElementById('shelterSearchText').value;
+        var searchText = document.getElementById("shelterSearchText").value;
         var results = ShelterSearch.getShelterSearchResults(searchText);
         this.setState({
-            results: results
+            results: results,
+            searchText: searchText
         });
     },
     getInitialState:function() {
@@ -17,6 +42,7 @@ var ShelterSearchBox = React.createClass({
             results: []
         }
     },
+
     render: function() {
         return (
             <div>
@@ -31,7 +57,8 @@ var ShelterSearchBox = React.createClass({
                         </button>
                     </span>
                 </div>
-                <ShelterSearchResults results={this.state.results}/>
+                <ShelterSearchResults results={this.state.results} user={this.props.user}/>
+                <AddNewShelterButton user={this.props.user} searchText={this.state.searchText}/>
             </div>
         );
     }
