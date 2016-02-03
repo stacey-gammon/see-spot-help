@@ -30,13 +30,12 @@ p {
 
 .animalThumbnailText {
     font-size: 10px;
-    text-align: center;
+    text-align: left;
 }
 
 .animalThumbnailImg {
     width: 75px;
     height: 75px;
-    text-align: center;
 }
 
 .shelterResult {
