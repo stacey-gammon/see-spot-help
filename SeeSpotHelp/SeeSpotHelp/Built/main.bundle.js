@@ -111,7 +111,6 @@
 	    },
 	
 	    loadPageForVolunteer: function(volunteer) {
-	        console.log("loadPageForVolunteer v= " + volunteer);
 	        this.setState({user: volunteer, loggingIn: false});
 	        sessionStorage.setItem("volunteer", JSON.stringify(volunteer));
 	
@@ -126,8 +125,8 @@
 	        }
 	
 	        // TODO: What do we want to happen when a user logs in while on the search pane?
-	        // probably nothing, but here we will force them to pop over to the shelter home page.
-	        // Should probably be fixed.
+	        // Currently we will force them to pop over to the shelter home page. This fell
+	        // out naturally and was not specifically decided. Figure out what to do.
 	        if (volunteer && volunteer.GetDefaultVolunteerGroup()) {
 	            console.log("Default volunteer group found, loading shelter home page, volunteer is: ");
 	            console.log(volunteer);
@@ -25749,10 +25748,8 @@
 	        if (this.props.searchText) {
 	            return (
 	                React.createElement("div", null, 
-	                    React.createElement(LinkContainer, {to: "addNewShelter", disabled: disabled}, 
-	                    React.createElement("button", {className: "btn btn-warning shelterResult", 
-	                            user: this.props.user, disabled: disabled}, "Add New Group"
-	                    )
+	                    React.createElement(LinkContainer, {to: { pathname: "addNewShelter", state: { user: this.props.user }}, disabled: disabled}, 
+	                        React.createElement("button", {className: "btn btn-warning shelterResult"}, "Add New Group")
 	                    ), 
 	                    disabledDiv
 	                )
@@ -26285,19 +26282,26 @@
   \**********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */'use strict'
+	/** @jsx React.DOM */"use strict";
+	
 	var React = __webpack_require__(/*! react */ 2);
 	var ShelterSearchBox = __webpack_require__(/*! ./sheltersearchbox */ 222);
 	
 	var ShelterSearchPage = React.createClass({displayName: "ShelterSearchPage",
 	    render: function() {
+	        console.log("ShelterSearchPage:render");
+	        var user = this.props.user;
+	        if (!user && this.props.location.state && this.props.location.state.user) {
+	            console.log("User set in state, loading..");
+	            user = this.props.location.state.user;
+	        }
 	        return (
-	          React.createElement("div", null, 
-	            React.createElement(ShelterSearchBox, {user: this.props.user}), 
+	            React.createElement("div", null, 
+	            React.createElement(ShelterSearchBox, {user: user}), 
 	            this.props.children
-	          )
-	      );
-	}
+	            )
+	        );
+	    }
 	});
 	
 	module.exports = ShelterSearchPage;
@@ -26424,7 +26428,11 @@
 	
 	var AddNewShelter = React.createClass({displayName: "AddNewShelter",
 	    render: function () {
-	        if (this.props.user) {
+	        var user = this.props.user;
+	        if (!user && this.props.location.state && this.props.location.state.user) {
+	            user = this.props.location.state.user;
+	        }
+	        if (user) {
 	            return (
 	                React.createElement("div", null, 
 	                    React.createElement("h1", null, "Add New Group")
@@ -26467,12 +26475,12 @@
 	        return (
 	            React.createElement(Navbar, {className: "navbar navbar-light bg-faded"}, 
 	                React.createElement(Nav, {className: "nav navbar-nav navbar-custom"}, 
-	                    React.createElement(LinkContainer, {to: {pathname: "shelterHomePage", state: this.props.user}}, 
+	                    React.createElement(LinkContainer, {to: { pathname: "shelterHomePage", state: { user: this.props.user }}}, 
 	                        React.createElement(NavItem, null, 
 	                            React.createElement("span", {className: "glyphicon glyphicon-home"})
 	                        )
 	                    ), 
-	                    React.createElement(LinkContainer, {to: {pathname: "shelterSearchPage", state: this.props.user}}, 
+	                    React.createElement(LinkContainer, {to: {pathname: "shelterSearchPage", state: {user: this.props.user }}}, 
 	                    React.createElement(NavItem, null, 
 	                        React.createElement("span", {className: "glyphicon glyphicon-search"})
 	                    )

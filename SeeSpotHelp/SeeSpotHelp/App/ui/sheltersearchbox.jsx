@@ -16,10 +16,8 @@ var AddNewShelterButton = React.createClass({
         if (this.props.searchText) {
             return (
                 <div>
-                    <LinkContainer to="addNewShelter" disabled={disabled}>
-                    <button className="btn btn-warning shelterResult"
-                            user={this.props.user} disabled={disabled}>Add New Group
-                    </button>
+                    <LinkContainer to={{ pathname: "addNewShelter", state: { user: this.props.user } }} disabled={disabled}>
+                        <button className="btn btn-warning shelterResult">Add New Group</button>
                     </LinkContainer>
                     {disabledDiv}
                 </div>
