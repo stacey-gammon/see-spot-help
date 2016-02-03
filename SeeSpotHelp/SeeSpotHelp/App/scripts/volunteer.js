@@ -23,12 +23,41 @@ Volunteer.castObject = function (obj) {
 // database.  If no such volunteer exists, AddNewVolunteer
 // will be called with some basic defaults supplied by
 // facebook.
-Volunteer.prototype.LoadVolunteer = function () {
+Volunteer.LoadVolunteer = function(anID) {
     // TODO: Implement
+    //$.ajax({
+    //    url: "BHGtest.aspx",
+    //    dataType: "json",
+    //    success: function (data) {
+    //        alert(data);
+    //    },
+
+    //    error: function () { alert("Ajax Error"); }
+    //});
+
+    $.ajax({
+        type: "POST",
+        url: "WebServices/volunteerServices.asmx/getVolunteer",
+        data: '{anID: ' + anID + '}',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            var volLit = JSON.parse(data.d);
+            var newVol = new Volunteer();
+            for (var prop in volLit)
+                newVol[prop] = volLit[prop];
+            return newVol;
+        },
+
+        error: function (ts) { alert(ts.responseText); }
+    });
+
+
 }
 
 Volunteer.prototype.AddNewVolunteer = function() {
     // TODO: Implement
+
 }
 
 // Returns the default volunteer group this volunteer belongs to,
