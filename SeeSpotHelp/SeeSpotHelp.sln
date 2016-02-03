@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaceyAnimals", "StaceyAnim
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaceyData", "StaceyData\StaceyData.csproj", "{C86A8063-4217-442D-B82E-1A1DF384A20D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaceyVolunteers", "StaceyVolunteers\StaceyVolunteers.csproj", "{79E8787A-C9FA-4689-A213-1FBD13243719}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C86A8063-4217-442D-B82E-1A1DF384A20D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C86A8063-4217-442D-B82E-1A1DF384A20D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C86A8063-4217-442D-B82E-1A1DF384A20D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79E8787A-C9FA-4689-A213-1FBD13243719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79E8787A-C9FA-4689-A213-1FBD13243719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79E8787A-C9FA-4689-A213-1FBD13243719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79E8787A-C9FA-4689-A213-1FBD13243719}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
