@@ -12,7 +12,8 @@ namespace SeeSpotHelp
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            StaceyAnimals.Animals sa = new StaceyAnimals.Animals();
+
+            StaceyAnimals.Animals sa = new StaceyAnimals.Animals("Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11");
             
             string json = JsonConvert.SerializeObject(sa.getAnimals());
             label1.Text = json;
