@@ -9,19 +9,22 @@ namespace StaceyAnimals
     public class Animals : StaceyData.BaseObject
     {
 
- 
+
+        public Animals(string aconnectionstring)
+        {
+            ConnectionString = aconnectionstring;
+        }
+
         public List<StaceyAnimals.Animal> getAnimals()
         {
+
             List<StaceyAnimals.Animal> myanimals = new List<StaceyAnimals.Animal>();
             System.Data.DataTable dt;
-            dt = Helpers.DBHelper.ExecuteQuery("select * from animals");
-            Animal tempAnimal = new Animal();
+            dt = Helpers.DBHelper.ExecuteProcedure(ConnectionString ,"animals_get");
             foreach (System.Data.DataRow element in dt.Rows)
             {
-
-                tempAnimal.ID = (int)element["AnimalID"];
-                tempAnimal.Name = (string)element["AnimalName"];
-                tempAnimal.Description = (string)element["AnimalDescription"];
+                Animal tempAnimal = new Animal(ConnectionString);
+                tempAnimal.initFromDR(element);
                 myanimals.Add(tempAnimal);
             }
 
