@@ -19,6 +19,12 @@ var VolunteerGroup = function(name, shelter, address, id) {
     this.userPermissionsMap = {};
 };
 
+// Casts the given obj as a volunteer group.  Careful -
+// obj must have originally been a type of VolunteerGroup
+// for this to work as expected.  Helpful when passing around
+// objects via React state and props.  Can use this to restore the
+// original class, complete with functions, from an object with only
+// properties.
 VolunteerGroup.castObject = function(obj) {
     console.log("Loading volunteer group from object");
     var group = new VolunteerGroup();
