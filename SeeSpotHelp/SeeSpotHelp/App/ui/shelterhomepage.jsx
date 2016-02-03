@@ -16,7 +16,7 @@ var ShelterHomePage = React.createClass({
 
     render: function () {
         console.log("shelterhomepage::render");
-        var query = this.props.location.query;
+        var query = this.props.location ? this.props.location.query : null;
         var defaultGroup = null;
 
         // This is stupid but because I can't figure out how to pass
@@ -30,9 +30,9 @@ var ShelterHomePage = React.createClass({
         console.log("shelterhomepage::render: props.user after cast = ");
         console.log(user);
 
-        if (!user && this.props.location.state) {
+        if (!user && this.props.location && this.props.location.state) {
             console.log("shelterhomepage:render: Grabbing volunteer object from props.location.state");
-            user = this.props.location.state.user ?
+            user = this.props.location && this.props.location.state.user ?
                    Volunteer.castObject(this.props.location.state.user) : null;
         }
 
@@ -52,7 +52,7 @@ var ShelterHomePage = React.createClass({
             console.log("Default group found");
             var animals = FakeData.getFakeAnimalDataForGroup(defaultGroup.id);
             return (
-                <div>
+                <div className="shelterHomePage">
                     <ShelterInfoBox group={defaultGroup} user={user}/>
                     <ShelterActionsBox user={user} group={defaultGroup}/>
                     <hr/>
