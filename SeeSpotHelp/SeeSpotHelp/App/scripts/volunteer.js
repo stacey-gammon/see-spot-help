@@ -14,7 +14,7 @@ var Volunteer = function(name, email, id) {
 
 Volunteer.castObject = function (obj) {
     console.log("Loading volunteer from object");
-    var volunteer = {};
+    var volunteer = new Volunteer();
     for (var prop in obj) volunteer[prop] = obj[prop];
     return volunteer;
 };
@@ -35,44 +35,42 @@ Volunteer.LoadVolunteer = function(anID) {
     //    error: function () { alert("Ajax Error"); }
     //});
 
-    $.ajax({
-        type: "POST",
-        url: "WebServices/volunteerServices.asmx/getVolunteer",
-        data: '{anID: ' + anID + '}',
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function (data) {
-            var volLit = JSON.parse(data.d);
-            var newVol = new Volunteer();
-            for (var prop in volLit)
-                newVol[prop] = volLit[prop];
-            return newVol;
-        },
+    //$.ajax({
+    //    type: "POST",
+    //    url: "WebServices/volunteerServices.asmx/getVolunteer",
+    //    data: '{anID: ' + anID + '}',
+    //    contentType: "application/json; charset=utf-8",
+    //    dataType: "json",
+    //    success: function (data) {
+    //        var volLit = JSON.parse(data.d);
+    //        var newVol = new Volunteer();
+    //        for (var prop in volLit)
+    //            newVol[prop] = volLit[prop];
+    //        return newVol;
+    //    },
 
-        error: function (ts) { alert(ts.responseText); }
-    });
-
-
-}
+    //    error: function (ts) { alert(ts.responseText); }
+    //});
+};
 
 Volunteer.prototype.AddNewVolunteer = function() {
     // TODO: Implement
 
-}
+};
 
 // Returns the default volunteer group this volunteer belongs to,
 // if any. If the volunteer does not exist yet in the server db, they
 // will be inserted. Returns null if user is not attached to any
 // groups.
-Volunteer.prototype.getDefaultVolunteerGroup = function () {
+Volunteer.prototype.getDefaultVolunteerGroup = function() {
     // TODO: implement
     return VolunteerGroup.getFakeGroups()["123"];
-}
+};
 
 // Updates the default volunteer group associated with the current
 // volunteer.
-Volunteer.prototype.setDefaultVolunteerGroup = function (groupId) {
+Volunteer.prototype.setDefaultVolunteerGroup = function(groupId) {
     // TODO: implement
-}
+};
 
 module.exports = Volunteer;
