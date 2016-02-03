@@ -27,24 +27,59 @@ VolunteerGroup.PermissionsEnum = Object.freeze(
     }
 );
 
-VolunteerGroup.prototype.GetUserPermissions = function (userId) {
-    return this.PermissionsEnum.MEMBER;
+VolunteerGroup.getFakeGroups = function() {
+    return {
+        "123": new VolunteerGroup(
+            "Friends of Saratoga County Humane Society",
+            "Saratoga County Humane Society",
+            "Saratoga Springs, NY",
+            "123"),
+        "456": new VolunteerGroup(
+            "Friends of Newark AHS",
+            "Newark Humane Society",
+            "Newark, NJ",
+            "456"),
+        "789": new VolunteerGroup(
+            "Dog Walkers at Halfway Hounds",
+            "Halfway Hounds",
+            "Park Ridge, NJ",
+            "789")
+    };
+};
+
+VolunteerGroup.search = function (searchText) {
+    var results = [];
+    var fakeGroups = VolunteerGroup.getFakeGroups();
+    for (var key in fakeGroups) {
+        if (!fakeGroups.hasOwnProperty(key)) {
+            continue;
+        }
+        var fakeGroup = fakeGroups[key];
+        if (fakeGroup.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
+            results.push(fakeGroup);
+        }
+    }
+    return results;
+};
+
+VolunteerGroup.prototype.getUserPermissions = function(userId) {
+    return VolunteerGroup.PermissionsEnum.MEMBER;
 
     // TODO: Use once loadVolunteerGroup is working.
     var permissions = userPermissionsMap[userId];
     if (!permissions) return this.PermissionsEnum.NONMEMBER;
     return permissions;
-}
+};
 
-VolunteerGroup.prototype.SaveVolunteerGroup = function() {
+VolunteerGroup.prototype.saveVolunteerGroup = function() {
     // TODO: Implement and hook into database.
-}
+};
 
 // Returns a volunteer group object for the given id.  null if
 // no volunteer group with that id exists.
-VolunteerGroup.loadVolunteerGroup = function (groupId) {
+VolunteerGroup.loadVolunteerGroup = function(groupId) {
     // TODO: Implement and hook into database.
-    return FakeData.fakeVolunteerGroupData[groupId];
+    return VolunteerGroup.getFakeGroups()[groupId];
 };
 
 module.exports = VolunteerGroup;
