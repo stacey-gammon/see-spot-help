@@ -79,7 +79,7 @@ VolunteerGroup.prototype.saveVolunteerGroup = function() {
 // no volunteer group with that id exists.
 VolunteerGroup.loadVolunteerGroup = function(groupId) {
     // TODO: Implement and hook into database.
-    return FakeData.fakeVolunteerGroupData[groupId];
+    return VolunteerGroup.getFakeGroups()[groupId];
 };
 
 module.exports = VolunteerGroup;
