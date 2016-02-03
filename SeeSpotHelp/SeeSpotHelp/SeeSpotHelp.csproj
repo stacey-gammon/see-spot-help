@@ -184,7 +184,6 @@
     <Content Include="App\ui\shelteractionsbox.jsx" />
     <Content Include="App\ui\shelterhomepage.jsx" />
     <Content Include="App\ui\shelterinfobox.jsx" />
-    <Content Include="App\scripts\sheltersearch.js" />
     <Content Include="App\ui\sheltersearchbox.jsx" />
     <Content Include="App\ui\sheltersearchpage.jsx" />
     <Content Include="App\ui\sheltersearchresults.jsx" />
