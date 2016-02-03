@@ -172,6 +172,7 @@
     <Content Include="App\scripts\facebookuser.js" />
     <Content Include="App\scripts\volunteer.js" />
     <Content Include="App\scripts\volunteergroup.js" />
+    <Content Include="App\tests\shelteractionsbox-test.jsx" />
     <Content Include="App\ui\addnewshelter.jsx" />
     <Content Include="App\ui\animalactionsbox.jsx" />
     <Content Include="App\ui\animallist.jsx" />
@@ -534,6 +535,7 @@
     <Content Include="images\dogthumbnails-4.jpg" />
     <Content Include="images\dogthumbnails-5.jpg" />
     <Content Include="images\dogthumbnails.jpg" />
+    <Content Include="karma.conf.backup.js" />
     <Content Include="Resources\babel.js" />
     <Content Include="Resources\react.js" />
     <Content Include="scripts\ai.0.15.0-build58334.js" />
@@ -623,8 +625,12 @@
     <Content Include="Content\kendo\2016.1.112\fonts\DejaVu\DejaVuSans-BoldOblique.ttf" />
     <Content Include="Content\kendo\2016.1.112\fonts\DejaVu\DejaVuSans-Bold.ttf" />
     <Content Include="package.json" />
+    <Content Include="scripts\r.js" />
+    <Content Include="scripts\require.js" />
+    <Content Include="tests.webpack.js" />
     <Content Include="webpack.config.js" />
     <Content Include="App_Code\GlyphIcon.cshtml" />
+    <Content Include="karma.conf.js" />
     <None Include="scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />
