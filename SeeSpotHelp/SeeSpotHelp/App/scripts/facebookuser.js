@@ -26,6 +26,7 @@ FacebookUser.getVolunteer = function (callback) {
         if (response.status === "connected") {
             outer.loadVolunteer();
         } else {
+            console.log("No facebook login user found.");
             callback(null);
         }
     }

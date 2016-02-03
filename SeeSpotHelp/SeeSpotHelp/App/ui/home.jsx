@@ -35,9 +35,17 @@ var Home = React.createClass({
         this.loadFacebookUser();
     },
 
-    componentDidMount: function() {
+    subscribeToLoginEvents: function() {
+        console.log("Home::subscribeToLoginEvents");
         FB.Event.subscribe("auth.login", this.logInEvent);
         FB.Event.subscribe("auth.logout", this.logOutEvent);
+    },
+
+    componentDidMount: function() {
+        console.log("Home::componentDidMount");
+        // Temporary fix for the stupid bug of FB not loading by the time this
+        // is called.
+        setTimeout(this.subscribeToLoginEvents, 500);
 
         var defaultGroup = null;
         if (sessionStorage.getItem("defaultGroup")) {
@@ -45,9 +53,6 @@ var Home = React.createClass({
         }
 
         this.loadFacebookUser();
-        // Temporary fix for the stupid bug of FB not loading by the time this
-        // is called.
-       //  setTimeout(this.loadFacebookUser, 500);
 
         this.setState({
             defaultGroup: defaultGroup,
@@ -72,13 +77,13 @@ var Home = React.createClass({
         // server unless the volunteer is an actual group member.  Will have to work
         // this use case out more.
         if (!this.state.defaultGroup && volunteer) {
-            this.setState({ "defaultGroup": volunteer.GetDefaultVolunteerGroup() });
+            this.setState({ "defaultGroup": volunteer.getDefaultVolunteerGroup() });
         }
 
         // TODO: What do we want to happen when a user logs in while on the search pane?
         // Currently we will force them to pop over to the shelter home page. This fell
         // out naturally and was not specifically decided. Figure out what to do.
-        if (volunteer && volunteer.GetDefaultVolunteerGroup()) {
+        if (volunteer && volunteer.getDefaultVolunteerGroup()) {
             console.log("Default volunteer group found, loading shelter home page, volunteer is: ");
             console.log(volunteer);
             this.context.router.push(
@@ -110,6 +115,7 @@ var Home = React.createClass({
         return (
           <div>
             <MyNavBar user={this.state.user}/>
+            {this.props.children}
           </div>
       );
     }
