@@ -69,21 +69,45 @@
 	    contextTypes: {
 	        router: React.PropTypes.object.isRequired
 	    },
+	
 	    getInitialState: function() {
+	        return {};
+	    },
+	
+	    logInEvent: function() {
+	        console.log("logInEvent");
+	        this.loadFacebookUser();
+	    },
+	
+	    logOutEvent: function() {
+	        console.log("logOutEvent");
+	        this.loadFacebookUser();
+	    },
+	
+	    componentDidMount: function() {
+	        FB.Event.subscribe("auth.login", this.logInEvent);
+	        FB.Event.subscribe("auth.logout", this.logOutEvent);
+	
 	        var defaultGroup = null;
 	        if (sessionStorage.getItem("defaultGroup")) {
 	            defaultGroup = JSON.parse(sessionStorage.getItem("defaultGroup"));
 	        }
 	
+	        this.loadFacebookUser();
 	        // Temporary fix for the stupid bug of FB not loading by the time this
 	        // is called.
-	        setTimeout(this.loadFacebookUser, 500);
+	       //  setTimeout(this.loadFacebookUser, 500);
 	
-	        return {
+	        this.setState({
 	            defaultGroup: defaultGroup,
 	            volunteer: null,
 	            loggingIn: true
-	        }
+	        });
+	    },
+	
+	    reloadFacebookUser: function() {
+	        console.log("reloading facebook user");
+	        FacebookUser.getVolunteer(this.loadPageForVolunteer);
 	    },
 	
 	    loadPageForVolunteer: function(volunteer) {
@@ -97,17 +121,20 @@
 	        // continues to see their last selected group, but it will not be stored on the
 	        // server unless the volunteer is an actual group member.  Will have to work
 	        // this use case out more.
-	        if (!this.state.defaultGroup) {
+	        if (!this.state.defaultGroup && volunteer) {
 	            this.setState({ "defaultGroup": volunteer.GetDefaultVolunteerGroup() });
 	        }
 	
+	        // TODO: What do we want to happen when a user logs in while on the search pane?
+	        // probably nothing, but here we will force them to pop over to the shelter home page.
+	        // Should probably be fixed.
 	        if (volunteer && volunteer.GetDefaultVolunteerGroup()) {
 	            console.log("Default volunteer group found, loading shelter home page, volunteer is: ");
 	            console.log(volunteer);
 	            this.context.router.push(
-	                { pathname: "/shelterHomePage",
-	                  query: { test: "test" },
-	                  state: { user: volunteer }
+	                {
+	                    pathname: "/shelterHomePage",
+	                    state: { user: volunteer }
 	                }
 	            );
 	        }
@@ -124,7 +151,7 @@
 	            setTimeout(this.loadFacebookUser, 250);
 	            return;
 	        }
-	        FacebookUser.getVolunteer(this.loadPageForVolunteer);
+	        this.reloadFacebookUser();
 	    },
 	
 	    render: function() {
@@ -149,10 +176,19 @@
 	  )
 	);
 	
-	ReactDOM.render(
-	    React.createElement(Router, {routes: routes}),
-	    document.getElementById('content')
-	);
+	var render = function() {
+	    console.log("render");
+	    ReactDOM.render(
+	        React.createElement(Router, {routes: routes}),
+	        document.getElementById('content')
+	    );
+	}
+	
+	render();
+	//ReactDOM.render(
+	//    <Router routes={routes}/>,
+	//        document.getElementById('content')
+	//    );
 
 
 /***/ },
@@ -44189,14 +44225,14 @@
 	var React = __webpack_require__(/*! react */ 2);
 	
 	var FacebookLogin = React.createClass({displayName: "FacebookLogin",
-	    handleClick: function() {
-	        console.log("handling click");
+	    handleLoggedIn: function() {
+	        console.log("handling logging in");
 	    },
 	    render: function () {
 	        return (
-	            React.createElement("div", {className: "fb-login-button", onClick: this.handleClick, "data-max-rows": "1", "data-size": "large", "data-show-faces": "false", "data-auto-logout-link": "true"})
-	            );
-	        }
+	            React.createElement("div", {className: "fb-login-button", onLogin: this.handleLoggedIn, "data-max-rows": "1", "data-size": "large", "data-show-faces": "false", "data-auto-logout-link": "true"})
+	        );
+	    }
 	});
 	
 	module.exports = FacebookLogin;
