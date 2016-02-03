@@ -1,7 +1,7 @@
 ﻿// A volunteer that may or may not be part of a volunteer group. User sessions
 // managed by facebook login and authentication.
 
-var FakeData = require('./fakedata');
+var VolunteerGroup = require('./volunteergroup');
 
 var Volunteer = function (name, email, id) {
     this.name = name;
@@ -61,14 +61,14 @@ Volunteer.prototype.AddNewVolunteer = function() {
 // if any. If the volunteer does not exist yet in the server db, they
 // will be inserted. Returns null if user is not attached to any
 // groups.
-Volunteer.prototype.GetDefaultVolunteerGroup = function () {
+Volunteer.prototype.getDefaultVolunteerGroup = function () {
     // TODO: implement
-    return FakeData.fakeVolunteerGroupData["123"];
+    return VolunteerGroup.getFakeGroups()["123"];
 }
 
 // Updates the default volunteer group associated with the current
 // volunteer.
-Volunteer.prototype.SetDefaultVolunteerGroup = function (groupId) {
+Volunteer.prototype.setDefaultVolunteerGroup = function (groupId) {
     // TODO: implement
 }
 
