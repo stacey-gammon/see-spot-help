@@ -8,6 +8,7 @@ var ShelterActionsBox = require("./shelteractionsbox");
 var FakeData = require("../scripts/fakedata");
 var FacebookUser = require("../scripts/facebookuser");
 var Volunteer = require("../scripts/volunteer");
+var VolunteerGroup = require("../scripts/volunteergroup");
 
 var ShelterHomePage = React.createClass({
     getInitialState: function() { return {}
@@ -28,14 +29,14 @@ var ShelterHomePage = React.createClass({
         }
 
         if (query && query.groupId) {
-            defaultGroup = FakeData.fakeVolunteerGroupData[query.groupId];
+            defaultGroup = VolunteerGroup.getFakeGroups()[query.groupId];
             sessionStorage.setItem("defaultGroup", JSON.stringify(defaultGroup));
         }
 
         if (!defaultGroup && user) {
             console.log("no query group so get default group from user ");
             console.log(user);
-            defaultGroup = user.GetDefaultVolunteerGroup();
+            defaultGroup = user.getDefaultVolunteerGroup();
         }
         if (defaultGroup) {
             console.log("Default group found");
@@ -43,18 +44,15 @@ var ShelterHomePage = React.createClass({
             return (
                 <div>
                     <ShelterInfoBox group={defaultGroup} user={user}/>
-                    <ShelterActionsBox user={user}/>
+                    <ShelterActionsBox user={user} group={defaultGroup}/>
                     <hr/>
                     <AnimalList animals={animals} user={user}/>
-                    {this.props.children}
                 </div>
             );
         } else {
             console.log("No user logged in...");
             return (
-                <div>
-                    <ShelterSearchBox user={user}/>
-                </div>
+                <ShelterSearchBox user={user}/>
             );
         }
     }
