@@ -12,10 +12,7 @@ var ShelterSearchPage = React.createClass({
             user = this.props.location.state.user;
         }
         return (
-            <div>
             <ShelterSearchBox user={user}/>
-            {this.props.children}
-            </div>
         );
     }
 });

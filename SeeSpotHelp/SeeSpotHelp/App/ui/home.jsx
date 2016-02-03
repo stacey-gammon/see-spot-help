@@ -110,7 +110,6 @@ var Home = React.createClass({
         return (
           <div>
             <MyNavBar user={this.state.user}/>
-            {this.props.children}
           </div>
       );
     }
@@ -126,16 +125,7 @@ var routes = (
   </Router>
 );
 
-var render = function() {
-    console.log("render");
-    ReactDOM.render(
-        <Router routes={routes}/>,
-        document.getElementById('content')
-    );
-}
-
-render();
-//ReactDOM.render(
-//    <Router routes={routes}/>,
-//        document.getElementById('content')
-//    );
+ReactDOM.render(
+    <Router routes={routes}/>,
+    document.getElementById('content')
+);
