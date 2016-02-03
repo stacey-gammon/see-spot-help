@@ -7,17 +7,6 @@ var expect = require("expect"),
 
 var d3 = require("d3");
 
-var TestDiv = React.createClass({
-    render: function () {
-        console.log("TestDiv::render");
-        return (
-            <div>
-                <h1>Hi, I'm test A!</h1>
-            </div>
-        );
-    }
-});
-
 describe("ShelterActionsBox", function () {
     it("Contains leave button for members", function () {
         var volunteer = new Volunteer("Sally", "sally@sally.com", "115");
@@ -28,15 +17,8 @@ describe("ShelterActionsBox", function () {
             <ShelterActionsBox user={volunteer} group={group}/>
         );
 
-        var buttons = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            shelterActionsBox, "button");
-
-        var foundLeaveButton = false;
-        for (var i = 0; i < buttons.length; i++) {
-            if (buttons[i].id == "leaveShelterButton")
-                foundLeaveButton = true;
-        }
-        expect(foundLeaveButton).toEqual(true);
+        ReactTestUtils.findRenderedDOMComponentWithClass(
+            shelterActionsBox, "leaveShelterButton");
     });
 
     it("No leave button for nonmembers", function () {
@@ -47,14 +29,8 @@ describe("ShelterActionsBox", function () {
             <ShelterActionsBox user={volunteer} group={group}/>
         );
 
-        var buttons = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            shelterActionsBox, "button");
-
-        var foundLeaveButton = false;
-        for (var i = 0; i < buttons.length; i++) {
-            if (buttons[i].id == "leaveShelterButton")
-                foundLeaveButton = true;
-        }
-        expect(foundLeaveButton).toEqual(false);
-        });
+        var leaveButtons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
+            shelterActionsBox, "leaveShelterButton");
+        expect(leaveButtons.length).toEqual(0);
+    });
 });
