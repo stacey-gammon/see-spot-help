@@ -2,7 +2,7 @@
 
 var React = require("react");
 var LinkContainer = require("react-router-bootstrap").LinkContainer;
-var ShelterSearch = require("../scripts/sheltersearch");
+var VolunteerGroup = require("../scripts/volunteergroup");
 var ShelterSearchResults = require("./sheltersearchresults");
 
 var AddNewShelterButton = React.createClass({
@@ -29,7 +29,7 @@ var AddNewShelterButton = React.createClass({
 var ShelterSearchBox = React.createClass({
     shelterSearch: function () {
         var searchText = document.getElementById("shelterSearchText").value;
-        var results = ShelterSearch.getShelterSearchResults(searchText);
+        var results = VolunteerGroup.search(searchText);
         this.setState({
             results: results,
             searchText: searchText
