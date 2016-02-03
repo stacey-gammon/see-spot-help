@@ -9,11 +9,14 @@ var LeaveShelterButton = React.createClass({
         alert('Sorry, that functionality is not implemented yet!');
     },
     render: function () {
+        console.log("LeaveShelterButton:render, permissions = " + this.props.permissions);
         if (this.props.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER)
             return null;
         return (
             <div>
-                <button className="btn btn-warning" onClick={this.alertNotImplemented}>
+                <button className="btn btn-warning"
+                        id="leaveShelterButton"
+                        onClick={this.alertNotImplemented}>
                     Leave Group
                 </button>
             </div>
@@ -23,8 +26,9 @@ var LeaveShelterButton = React.createClass({
 
 var ShelterActionsBox = React.createClass({
     render: function () {
-        var volunteer = this.props.user ? new Volunteer(this.props.user) : null;
-        var group = this.props.group ? new VolunteerGroup(this.props.group) : null;
+        console.log("ShelterActionsBox:render:");
+        var volunteer = this.props.user ? Volunteer.castObject(this.props.user) : null;
+        var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
         var permissions = group.getUserPermissions(volunteer.id);
         return (
             <div>
