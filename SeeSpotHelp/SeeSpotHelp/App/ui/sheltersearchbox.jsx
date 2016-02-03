@@ -28,6 +28,7 @@ var AddNewShelterButton = React.createClass({
 
 var ShelterSearchBox = React.createClass({
     shelterSearch: function () {
+        console.log("ShelterSearchBox::render");
         var searchText = document.getElementById("shelterSearchText").value;
         var results = VolunteerGroup.search(searchText);
         this.setState({
@@ -41,9 +42,10 @@ var ShelterSearchBox = React.createClass({
         }
     },
 
-    render: function() {
+    render: function () {
+        console.log("ShelterSearchBox::render");
         return (
-            <div>
+            <div className="shelterSearchBox">
                 <div className="input-group">
                     <input type="text" className="form-control"
                             id="shelterSearchText"
