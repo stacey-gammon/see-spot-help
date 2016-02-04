@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "f45fa2472c9b6362a8e3"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c11137e1787fb976f61b"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -26631,34 +26631,25 @@
 	// database.  If no such volunteer exists, AddNewVolunteer
 	// will be called with some basic defaults supplied by
 	// facebook.
-	Volunteer.LoadVolunteer = function(anID) {
+	Volunteer.LoadVolunteer = function(anID, callback) {
 	    // TODO: Implement
-	    //$.ajax({
-	    //    url: "BHGtest.aspx",
-	    //    dataType: "json",
-	    //    success: function (data) {
-	    //        alert(data);
-	    //    },
 	
-	    //    error: function () { alert("Ajax Error"); }
-	    //});
+	    $.ajax({
+	        type: "POST",
+	        url: "WebServices/volunteerServices.asmx/getVolunteer",
+	        data: '{anID: ' + anID + '}',
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        success: function (data) {
+	            var volLit = JSON.parse(data.d);
+	            var newVol = new Volunteer();
+	            for (var prop in volLit)
+	                newVol[prop] = volLit[prop];
+	            callback(newVol);
+	        },
 	
-	    //$.ajax({
-	    //    type: "POST",
-	    //    url: "WebServices/volunteerServices.asmx/getVolunteer",
-	    //    data: '{anID: ' + anID + '}',
-	    //    contentType: "application/json; charset=utf-8",
-	    //    dataType: "json",
-	    //    success: function (data) {
-	    //        var volLit = JSON.parse(data.d);
-	    //        var newVol = new Volunteer();
-	    //        for (var prop in volLit)
-	    //            newVol[prop] = volLit[prop];
-	    //        return newVol;
-	    //    },
-	
-	    //    error: function (ts) { alert(ts.responseText); }
-	    //});
+	        error: function (ts) { alert(ts.responseText); }
+	    });
 	};
 	
 	Volunteer.prototype.AddNewVolunteer = function() {
@@ -26900,15 +26891,15 @@
 	        FB.api("/me", function (response) {
 	            console.log("Successful login for " + response.name +
 	                        " with id " + response.id);
-	            var volunteer = new Volunteer(
-	                response.name,
-	                response.email,
-	                response.id);
+	            //var volunteer = new Volunteer(
+	            //    response.name,
+	            //    response.email,
+	            //    response.id);
 	            // todo:fix this
-	            // volunteer.LoadVolunteer();
+	            Volunteer.LoadVolunteer(response.id, callback);
 	            console.log("Loaded volunteer: ");
 	            console.log(volunteer);
-	            callback(volunteer);
+	            //callback(volunteer);
 	        });
 	    };
 	
@@ -27101,8 +27092,6 @@
 	        var errorsFound = false;
 	        for (var i = 0; i < this.state.fields.length; i++) {
 	            var field = this.state.fields[i];
-	            console.log("Ref for id " + field + " is ");
-	            console.log(this.refs[field]);
 	            if (!this.refs[field].value) {
 	                this.setState({ errorMessage: "Please fill in all fields!" });
 	                errorsFound = true;
