@@ -102,13 +102,14 @@ VolunteerGroup.loadVolunteerGroup = function(groupId) {
 };
 
 // Attempts to insert the current instance into the database as
-// a new volunteer group.  If that group already exists, returns
-// false.
-// TODO: return more potential error information in a result
-// class.
-VolunteerGroup.prototype.addNewVolunteerGroup = function () {
+// a new volunteer group.
+// @param callback {Function(VolunteerGroup, ServerResponse) }
+//     callback is expected to take as a first argument the potentially
+//     inserted volunteer group (null on failure) and a server
+//     response to hold error and success information.
+VolunteerGroup.prototype.insert = function (callback) {
     // TODO: Implement and hook into database.
-    return true;
+    callback(this, new ServerResponse());
 };
 
 module.exports = VolunteerGroup;

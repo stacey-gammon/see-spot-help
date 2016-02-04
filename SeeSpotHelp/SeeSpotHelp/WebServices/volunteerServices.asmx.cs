@@ -30,7 +30,7 @@ namespace SeeSpotHelp.WebServices
         }
 
         [WebMethod]
-        public string getVolunteer(string anID, string name, string email)
+        public string getVolunteer(int anID)
         {
 
             StaceyVolunteers.Volunteer vt = new StaceyVolunteers.Volunteer("Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11", anID,name,email);
