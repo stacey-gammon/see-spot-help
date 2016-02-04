@@ -13,3 +13,5 @@ InputFieldValidation.validateNotEmpty = function(inputField) {
         inputField.validated = true;
     }
 };
+
+module.exports = InputFieldValidation;
