@@ -26,13 +26,13 @@ Volunteer.castObject = function (obj) {
 // database.  If no such volunteer exists, AddNewVolunteer
 // will be called with some basic defaults supplied by
 // facebook.
-Volunteer.LoadVolunteer = function(anID, callback) {
+Volunteer.LoadVolunteer = function(anID, name, email, callback) {
     // TODO: Implement
 
     $.ajax({
         type: "POST",
         url: "WebServices/volunteerServices.asmx/getVolunteer",
-        data: '{anID: ' + anID + '}',
+        data: '{anID: "' + anID + '", name: "' + name + '", email: "' + email + '"}',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (data) {
