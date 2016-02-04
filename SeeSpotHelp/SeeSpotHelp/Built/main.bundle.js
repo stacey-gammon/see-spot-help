@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "f45fa2472c9b6362a8e3"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "11306b5fde818edfade4"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -27101,8 +27101,6 @@
 	        var errorsFound = false;
 	        for (var i = 0; i < this.state.fields.length; i++) {
 	            var field = this.state.fields[i];
-	            console.log("Ref for id " + field + " is ");
-	            console.log(this.refs[field]);
 	            if (!this.refs[field].value) {
 	                this.setState({ errorMessage: "Please fill in all fields!" });
 	                errorsFound = true;
