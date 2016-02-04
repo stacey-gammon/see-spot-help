@@ -24,17 +24,18 @@ namespace StaceyVolunteers
         {
             ConnectionString = aconnectionstring;
             id = "";
-            name = "Default Name";
-            email = "default@email.com";
+            name = "";
+            email = "";
         }
 
         // Instance constructor that has three parameters.
-        public Volunteer(string aconnectionstring, string name, string email)
+        public Volunteer(string aconnectionstring, string ID, string name, string email)
         {
             ConnectionString = aconnectionstring;
-            //this.ID = GetNextID();
+            this.id = ID;
             this.name = name;
             this.email = email;
+            getVolunteer(ID);
         }
 
         // Instance constructor that has the Volunteer ID and is retrieved from Database.
@@ -56,6 +57,13 @@ namespace StaceyVolunteers
             if (dt.Rows.Count > 0)
             {
                 initFromDR(dt.Rows[0]);
+            }
+            else
+            {
+                object[] mysaveparams = { myID, "Volunteerid", this.name, "Volunteername", this.email, "Volunteeremail" };
+
+                Helpers.DBHelper.ExecuteProcedure(ConnectionString, "volunteer_save", mysaveparams);
+
             }
 
         }
