@@ -5,11 +5,11 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeeSpotHelp", "SeeSpotHelp\SeeSpotHelp.csproj", "{F357A420-19C8-4267-8884-5C3372F9F1AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaceyAnimals", "StaceyAnimals\StaceyAnimals.csproj", "{58A46F9D-D9FA-4847-B465-DDF20A14EE4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Animals", "StaceyAnimals\Animals.csproj", "{58A46F9D-D9FA-4847-B465-DDF20A14EE4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaceyData", "StaceyData\StaceyData.csproj", "{C86A8063-4217-442D-B82E-1A1DF384A20D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "StaceyData\Data.csproj", "{C86A8063-4217-442D-B82E-1A1DF384A20D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaceyVolunteers", "StaceyVolunteers\StaceyVolunteers.csproj", "{79E8787A-C9FA-4689-A213-1FBD13243719}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Volunteers", "StaceyVolunteers\Volunteers.csproj", "{79E8787A-C9FA-4689-A213-1FBD13243719}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
