@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "ab3cf3f23426b3d477f7"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c7b5e3339f537cdb63d5"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -846,7 +846,7 @@
 	
 	    render: function () {
 	        console.log("shelterhomepage::render");
-	        var query = this.props.location.query;
+	        var query = this.props.location ? this.props.location.query : null;
 	        var defaultGroup = null;
 	
 	        // This is stupid but because I can't figure out how to pass
@@ -860,9 +860,9 @@
 	        console.log("shelterhomepage::render: props.user after cast = ");
 	        console.log(user);
 	
-	        if (!user && this.props.location.state) {
+	        if (!user && this.props.location && this.props.location.state) {
 	            console.log("shelterhomepage:render: Grabbing volunteer object from props.location.state");
-	            user = this.props.location.state.user ?
+	            user = this.props.location && this.props.location.state.user ?
 	                   Volunteer.castObject(this.props.location.state.user) : null;
 	        }
 	
@@ -882,7 +882,7 @@
 	            console.log("Default group found");
 	            var animals = FakeData.getFakeAnimalDataForGroup(defaultGroup.id);
 	            return (
-	                React.createElement("div", null, 
+	                React.createElement("div", {className: "shelterHomePage"}, 
 	                    React.createElement(ShelterInfoBox, {group: defaultGroup, user: user}), 
 	                    React.createElement(ShelterActionsBox, {user: user, group: defaultGroup}), 
 	                    React.createElement("hr", null), 
@@ -26388,7 +26388,7 @@
 	            return (
 	                React.createElement("div", null, 
 	                    React.createElement(LinkContainer, {to: { pathname: "addNewShelter", state: { user: this.props.user }}, disabled: disabled}, 
-	                        React.createElement("button", {className: "btn btn-warning shelterResult"}, "Add New Group")
+	                        React.createElement("button", {className: "btn btn-warning shelterResult addNewShelterButton"}, "Add New Group")
 	                    ), 
 	                    disabledDiv
 	                )
@@ -26399,7 +26399,8 @@
 	
 	var ShelterSearchBox = React.createClass({displayName: "ShelterSearchBox",
 	    shelterSearch: function () {
-	        var searchText = document.getElementById("shelterSearchText").value;
+	        console.log("ShelterSearchBox::render");
+	        var searchText = this.shelterSearchInput.value;
 	        var results = VolunteerGroup.search(searchText);
 	        this.setState({
 	            results: results,
@@ -26412,15 +26413,16 @@
 	        }
 	    },
 	
-	    render: function() {
+	    render: function () {
+	        console.log("ShelterSearchBox::render");
 	        return (
-	            React.createElement("div", null, 
+	            React.createElement("div", {className: "shelterSearchBox"}, 
 	                React.createElement("div", {className: "input-group"}, 
-	                    React.createElement("input", {type: "text", className: "form-control", 
-	                            id: "shelterSearchText", 
-	                            placeholder: "Search for a shelter or volunteer group..."}), 
+	                    React.createElement("input", {type: "text", className: "form-control shelterSearchInput", 
+	                           ref: function(ref)  {return this.shelterSearchInput = ref;}.bind(this), 
+	                           placeholder: "Search for a shelter or volunteer group..."}), 
 	                    React.createElement("span", {className: "input-group-btn"}, 
-	                        React.createElement("button", {type: "button", className: "btn btn-primary", 
+	                        React.createElement("button", {type: "button", className: "btn btn-primary shelterSearchButton", 
 	                           onClick: this.shelterSearch}, 
 	                           React.createElement("span", {className: "glyphicon glyphicon-search"})
 	                        )
@@ -26603,7 +26605,7 @@
 	    render: function () {
 	        console.log("ShelterInfoBox:render");
 	        return (
-	            React.createElement("div", null, 
+	            React.createElement("div", {className: "shelterInfoBox"}, 
 	                React.createElement("h1", null, this.props.group.name), 
 	                React.createElement("h2", null, this.props.group.shelterName), 
 	                React.createElement("h2", null, this.props.group.address)
@@ -26637,7 +26639,7 @@
 	        if (this.props.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER)
 	            return null;
 	        return (
-	            React.createElement("div", null, 
+	            React.createElement("div", {className: "leaveShelterButton"}, 
 	                React.createElement("button", {className: "btn btn-warning", 
 	                        id: "leaveShelterButton", 
 	                        onClick: this.alertNotImplemented}, 
@@ -26992,7 +26994,10 @@
 	    render: function() {
 	        console.log("ShelterSearchPage:render");
 	        var user = this.props.user;
-	        if (!user && this.props.location.state && this.props.location.state.user) {
+	        if (!user &&
+	            this.props.location &&
+	            this.props.location.state &&
+	            this.props.location.state.user) {
 	            console.log("User set in state, loading..");
 	            user = this.props.location.state.user;
 	        }
