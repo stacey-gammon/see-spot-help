@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "65921d17eaa2250a57c6"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "f45fa2472c9b6362a8e3"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -598,7 +598,7 @@
 	        this.loadFacebookUser();
 	    },
 	
-	    subscribeToLoginEvents: function () {
+	    subscribeToLoginEvents: function() {
 	        console.log("Home::subscribeToLoginEvents");
 	        FB.Event.subscribe("auth.login", this.logInEvent);
 	        FB.Event.subscribe("auth.logout", this.logOutEvent);
@@ -633,6 +633,7 @@
 	
 	    componentDidMount: function() {
 	        console.log("Home::componentDidMount");
+	
 	        var defaultGroup = null;
 	        if (sessionStorage.getItem("defaultGroup")) {
 	            defaultGroup = JSON.parse(sessionStorage.getItem("defaultGroup"));
@@ -664,12 +665,12 @@
 	        // Currently we will force them to pop over to the shelter home page. This fell
 	        // out naturally and was not specifically decided. Figure out what to do.
 	        if (volunteer && volunteer.getDefaultVolunteerGroup()) {
+	            console.log("Default volunteer group found, loading shelter home page, volunteer is: ");
+	            console.log(volunteer);
 	            this.context.router.push(
 	                {
 	                    pathname: "/shelterHomePage",
-	                    state: {
-	                        user: volunteer
-	                    }
+	                    state: { user: volunteer }
 	                }
 	            );
 	        }
@@ -728,10 +729,7 @@
 	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
 	
 	var ShelterHomePage = React.createClass({displayName: "ShelterHomePage",
-	    getInitialState: function () {
-	        return {
-	            user: this.props.user
-	        };
+	    getInitialState: function() { return {}
 	    },
 	
 	    render: function () {
@@ -739,11 +737,10 @@
 	        var query = this.props.location ? this.props.location.query : null;
 	        var defaultGroup = null;
 	
-	        // User loaded up via the navigation menu has user stored at this.state.user,
-	        // but when loaded dynamically via this.context.router.push the user object
-	        // goes into this.props.location.state instead.  Not sure if there is a way to
-	        // resolve this.
-	        var user = this.state.user ? Volunteer.castObject(this.state.user) : null;
+	        // When the page is loaded up via nav bar, user is stored in this.props.user.
+	        // When the page is dynamically loaded via home when user logs in, the user
+	        // is passed in via props.location.state.
+	        var user = this.props.user ? Volunteer.castObject(this.props.user) : null;
 	        if (!user && this.props.location && this.props.location.state) {
 	            user = this.props.location && this.props.location.state.user ?
 	                   Volunteer.castObject(this.props.location.state.user) : null;
@@ -755,14 +752,9 @@
 	        }
 	
 	        if (!defaultGroup && user) {
-	            console.log("no query group so get default group from user ");
-	            console.log(user);
 	            defaultGroup = user.getDefaultVolunteerGroup();
-	            console.log("DefaultGroup = ");
-	            console.log(defaultGroup);
 	        }
 	        if (defaultGroup) {
-	            console.log("Default group found");
 	            var animals = FakeData.getFakeAnimalDataForGroup(defaultGroup.id);
 	            return (
 	                React.createElement("div", {className: "shelterHomePage"}, 
@@ -26430,6 +26422,16 @@
 	    return VolunteerGroup.getFakeGroups()[groupId];
 	};
 	
+	// Attempts to insert the current instance into the database as
+	// a new volunteer group.  If that group already exists, returns
+	// false.
+	// TODO: return more potential error information in a result
+	// class.
+	VolunteerGroup.prototype.addNewVolunteerGroup = function () {
+	    // TODO: Implement and hook into database.
+	    return true;
+	};
+	
 	module.exports = VolunteerGroup;
 
 
@@ -26578,31 +26580,10 @@
 	});
 	
 	var ShelterActionsBox = React.createClass({displayName: "ShelterActionsBox",
-	    getInitialState: function() {
-	        return {
-	            user: this.props.user,
-	            group: this.props.group
-	        };
-	    },
-	
-	    clearUser: function () {
-	        this.setState({
-	            user: null
-	        });
-	    },
-	
-	    componentDidMount: function () {
-	        console.log("ShelterActionsBox::componentDidMount");
-	        // FB when running tests is undefined so we need this here.
-	        if (typeof FB != "undefined") {
-	            FB.Event.subscribe("auth.logout", this.clearUser);
-	        }
-	    },
-	
 	    render: function () {
 	        console.log("ShelterActionsBox:render:");
-	        var user = this.state.user ? Volunteer.castObject(this.state.user) : null;
-	        var group = this.state.group ? VolunteerGroup.castObject(this.state.group) : null;
+	        var user = this.props.user ? Volunteer.castObject(this.props.user) : null;
+	        var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
 	        var permissions = user && group ? group.getUserPermissions(user.id) : null;
 	        return (
 	            React.createElement("div", null, 
@@ -26714,11 +26695,16 @@
 	var ConstStrings = {
 	    RequestToJoin: "Request to join",
 	    JoinRequestPending: "Request pending",
-	    LeaveGroup: "Leave group"
+	    LeaveGroup: "Leave group",
+	    groupName: "Group Name",
+	    shelterName: "Shelter",
+	    address: "Address",
+	    city: "City",
+	    state: "State",
+	    zipCode: "zipCode"
 	};
 	
 	module.exports = ConstStrings;
-	
 
 
 /***/ },
@@ -27092,17 +27078,69 @@
 	/** @jsx React.DOM */"use strict"
 	
 	var React = __webpack_require__(/*! react */ 3);
+	var ConstStrings = __webpack_require__(/*! ../scripts/conststrings */ 229);
+	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
+	
+	var STATES = [
+	    "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",
+	    "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS",
+	    "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR",
+	    "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
+	];
 	
 	var AddNewShelter = React.createClass({displayName: "AddNewShelter",
+	    getInitialState: function() {
+	        return {
+	            errorMessage: null,
+	            fields: ["groupName", "shelterName", "address", "city", "state", "zipCode"]
+	        };
+	    },
+	
+	    addNewVolunteerGroup: function() {
+	        var values = {};
+	        var errorsFound = false;
+	        for (var i = 0; i < this.state.fields.length; i++) {
+	            var field = this.state.fields[i];
+	            console.log("Ref for id " + field + " is ");
+	            console.log(this.refs[field]);
+	            if (!this.refs[field].value) {
+	                this.setState({ errorMessage: "Please fill in all fields!" });
+	                errorsFound = true;
+	            } else {
+	                values[field] = this.refs[field].value;
+	            }
+	        }
+	        if (!errorsFound) {
+	            this.setState({ errorMessage: null });
+	        }
+	        var group = new VolunteerGroup(values["groupName"],
+	                                       values["shelterName"],
+	                                       values["address"]);
+	        group.addNewVolunteerGroup();
+	    },
+	
+	    createInputField: function (name) {
+	        return (
+	            React.createElement("div", {className: "input-group"}, 
+	                React.createElement("span", {className: "input-group-addon"}, ConstStrings[name]), 
+	                React.createElement("input", {type: "text", ref: name, className: "form-control"})
+	            )
+	        );
+	    },
+	
 	    render: function () {
-	        var user = this.props.user;
-	        if (!user && this.props.location.state && this.props.location.state.user) {
-	            user = this.props.location.state.user;
+	        var user = this.props.location.state;
+	        var inputFields = [];
+	        for (var i = 0; i < this.state.fields.length; i++) {
+	            var field = this.state.fields[i];
+	            inputFields.push(this.createInputField(field));
 	        }
 	        if (user) {
 	            return (
 	                React.createElement("div", null, 
-	                    React.createElement("h1", null, "Add New Group")
+	                    this.state.errorMessage, 
+	                    inputFields, 
+	                    React.createElement("button", {className: "btn btn-primary", onClick: this.addNewVolunteerGroup}, "Add Group")
 	                )
 	            );
 	        } else {

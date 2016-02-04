@@ -101,4 +101,14 @@ VolunteerGroup.loadVolunteerGroup = function(groupId) {
     return VolunteerGroup.getFakeGroups()[groupId];
 };
 
+// Attempts to insert the current instance into the database as
+// a new volunteer group.  If that group already exists, returns
+// false.
+// TODO: return more potential error information in a result
+// class.
+VolunteerGroup.prototype.addNewVolunteerGroup = function () {
+    // TODO: Implement and hook into database.
+    return true;
+};
+
 module.exports = VolunteerGroup;
