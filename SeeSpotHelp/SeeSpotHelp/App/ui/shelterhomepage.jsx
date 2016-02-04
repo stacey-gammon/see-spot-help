@@ -34,14 +34,9 @@ var ShelterHomePage = React.createClass({
         }
 
         if (!defaultGroup && user) {
-            console.log("no query group so get default group from user ");
-            console.log(user);
             defaultGroup = user.getDefaultVolunteerGroup();
-            console.log("DefaultGroup = ");
-            console.log(defaultGroup);
         }
         if (defaultGroup) {
-            console.log("Default group found");
             var animals = FakeData.getFakeAnimalDataForGroup(defaultGroup.id);
             return (
                 <div className="shelterHomePage">
