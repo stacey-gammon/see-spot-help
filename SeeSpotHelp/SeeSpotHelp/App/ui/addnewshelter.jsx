@@ -38,34 +38,40 @@ var AddNewShelter = React.createClass({
         };
     },
 
-    validateFields: function() {
-        for (var field in this.state.fields) {
-            this.state.fields[field].validate();
+    validateFields: function () {
+        var errorFound = false;
+        for (var key in this.state.fields) {
+            var field = this.state.fields[key];
+            field.value = this.refs[field.ref].value;
+            field.validate();
+            if (field.hasError) {
+                errorFound = true;
+            }
         }
         // Forces a re-render based on the new validation states for each
         // field.
-        this.setState({ fields: this.state.fields });
+        if (errorFound) {
+            this.setState({ fields: this.state.fields });
+        }
+        return errorFound;
     },
 
-    addNewVolunteerGroup: function() {
-        var values = {};
-        var errorsFound = false;
-        for (var i = 0; i < this.state.fields.length; i++) {
-            var field = this.state.fields[i];
-            if (!this.refs[field].value) {
-                this.setState({ errorMessage: "Please fill in all fields!" });
-                errorsFound = true;
-            } else {
-                values[field] = this.refs[field].value;
-            }
+    insertGroupCallBack: function (group, serverResponse) {
+        if (serverResponse.hasError) {
+            // Show error message to user.
+            this.setState({ errorMessage: serverResponse.errorMessage });
+        } else {
+            // TODO: Navigate to newly inserted group home page.
+            this.setState({ errorMessage: "Success!" });
         }
-        if (!errorsFound) {
-            this.setState({ errorMessage: null });
+    },
+
+    addNewVolunteerGroup: function () {
+        var errorFound = this.validateFields();
+        if (!errorFound) {
+            var group = VolunteerGroup.createFromInputFields(this.state.fields);
+            group.insert(this.insertGroupCallback);
         }
-        var group = new VolunteerGroup(values["groupName"],
-                                       values["shelterName"],
-                                       values["address"]);
-        group.addNewVolunteerGroup();
     },
 
     createInputField: function (inputField) {
@@ -76,7 +82,10 @@ var AddNewShelter = React.createClass({
                 {inputField.getErrorLabel()}
                 <div className="input-group">
                     <span className="input-group-addon">{ConstStrings[inputField.ref]}</span>
-                    <input type="text" ref={inputField.ref} id={inputField.ref} className={inputFieldClassName} />
+                    <input type="text"
+                           ref={inputField.ref}
+                           id={inputField.ref}
+                           className={inputFieldClassName} />
                 </div>
                 {inputField.getValidationSpan()}
             </div>
@@ -100,7 +109,8 @@ var AddNewShelter = React.createClass({
                 <div>
                     {this.state.errorMessage}
                     {inputFields}
-                    <button className="btn btn-primary" onClick={this.addNewVolunteerGroup}>Add Group</button>
+                    <button className="btn btn-primary addNewGroupButton"
+                            onClick={this.addNewVolunteerGroup}>Add Group</button>
                 </div>
             );
         } else {

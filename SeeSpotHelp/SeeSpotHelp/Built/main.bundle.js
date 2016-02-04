@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "c6b0dfb46dc719a6e56a"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "7ab8dbd8da6cc5e9c9fe"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -26423,13 +26423,14 @@
 	};
 	
 	// Attempts to insert the current instance into the database as
-	// a new volunteer group.  If that group already exists, returns
-	// false.
-	// TODO: return more potential error information in a result
-	// class.
-	VolunteerGroup.prototype.addNewVolunteerGroup = function () {
+	// a new volunteer group.
+	// @param callback {Function(VolunteerGroup, ServerResponse) }
+	//     callback is expected to take as a first argument the potentially
+	//     inserted volunteer group (null on failure) and a server
+	//     response to hold error and success information.
+	VolunteerGroup.prototype.insert = function (callback) {
 	    // TODO: Implement and hook into database.
-	    return true;
+	    callback(this, new ServerResponse());
 	};
 	
 	module.exports = VolunteerGroup;
@@ -26692,7 +26693,7 @@
 	    address: "Address",
 	    city: "City",
 	    state: "State",
-	    zipCode: "zipCode"
+	    zipCode: "Zip Code"
 	};
 	
 	module.exports = ConstStrings;
@@ -27104,45 +27105,54 @@
 	        };
 	    },
 	
-	    validateFields: function() {
-	        for (var field in this.state.fields) {
-	            this.state.fields[field].validate();
+	    validateFields: function () {
+	        var errorFound = false;
+	        for (var key in this.state.fields) {
+	            var field = this.state.fields[key];
+	            field.value = this.refs[field.ref].value;
+	            field.validate();
+	            if (field.hasError) {
+	                errorFound = true;
+	            }
 	        }
 	        // Forces a re-render based on the new validation states for each
 	        // field.
-	        this.setState({ fields: this.state.fields });
+	        if (errorFound) {
+	            this.setState({ fields: this.state.fields });
+	        }
+	        return errorFound;
 	    },
 	
-	    addNewVolunteerGroup: function() {
-	        var values = {};
-	        var errorsFound = false;
-	        for (var i = 0; i < this.state.fields.length; i++) {
-	            var field = this.state.fields[i];
-	            if (!this.refs[field].value) {
-	                this.setState({ errorMessage: "Please fill in all fields!" });
-	                errorsFound = true;
-	            } else {
-	                values[field] = this.refs[field].value;
-	            }
+	    insertGroupCallBack: function (group, serverResponse) {
+	        if (serverResponse.hasError) {
+	            // Show error message to user.
+	            this.setState({ errorMessage: serverResponse.errorMessage });
+	        } else {
+	            // TODO: Navigate to newly inserted group home page.
+	            this.setState({ errorMessage: "Success!" });
 	        }
-	        if (!errorsFound) {
-	            this.setState({ errorMessage: null });
+	    },
+	
+	    addNewVolunteerGroup: function () {
+	        var errorFound = this.validateFields();
+	        if (!errorFound) {
+	            var group = VolunteerGroup.createFromInputFields(this.state.fields);
+	            group.insert(this.insertGroupCallback);
 	        }
-	        var group = new VolunteerGroup(values["groupName"],
-	                                       values["shelterName"],
-	                                       values["address"]);
-	        group.addNewVolunteerGroup();
 	    },
 	
 	    createInputField: function (inputField) {
 	        console.log("AdNewShelter::createInputField");
 	        var inputFieldClassName = "form-control " + inputField.ref;
 	        return (
-	            React.createElement("div", null, 
+	            React.createElement("div", {className: inputField.getFormGroupClassName()}, 
 	                inputField.getErrorLabel(), 
 	                React.createElement("div", {className: "input-group"}, 
 	                    React.createElement("span", {className: "input-group-addon"}, ConstStrings[inputField.ref]), 
-	                    React.createElement("input", {type: "text", ref: inputField.ref, id: inputField.ref, className: inputFieldClassName})
+	                    React.createElement("input", {type: "text", 
+	                           ref: inputField.ref, 
+	                           id: inputField.ref, 
+	                           className: inputFieldClassName})
 	                ), 
 	                inputField.getValidationSpan()
 	            )
@@ -27166,7 +27176,8 @@
 	                React.createElement("div", null, 
 	                    this.state.errorMessage, 
 	                    inputFields, 
-	                    React.createElement("button", {className: "btn btn-primary", onClick: this.addNewVolunteerGroup}, "Add Group")
+	                    React.createElement("button", {className: "btn btn-primary addNewGroupButton", 
+	                            onClick: this.addNewVolunteerGroup}, "Add Group")
 	                )
 	            );
 	        } else {
@@ -27187,12 +27198,16 @@
 /*!*******************************!*\
   !*** ./scripts/inputfield.js ***!
   \*******************************/
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
+	var React = __webpack_require__(/*! react */ 3);
+	
 	// Represents an input form field.
 	// @param validations {inputfieldvalidations[]} an array list of input field validations
 	// that this field should run during the validate call.
 	var InputField = function (validations) {
+	    console.log("InputField, validations = ");
+	    console.log(validations);
 	    this.hasError = false;
 	    this.validated = false;
 	    this.errorMessage = "";
@@ -27203,9 +27218,9 @@
 	
 	// Loops through all validations this form field has. The current
 	// object will be updated depending on success or failure.
-	InputField.prototype.validate = function() {
-	    for (var i = 0; i < validations.length; i++) {
-	        validations[i].validate(this);
+	InputField.prototype.validate = function () {
+	    for (var i = 0; i < this.validations.length; i++) {
+	        this.validations[i](this);
 	        // Stop after the first error is encountered.
 	        if (this.hasError) return;
 	    }
@@ -27219,10 +27234,10 @@
 	InputField.prototype.getValidationSpan = function() {
 	    if (this.hasError) {
 	        return React.createElement(
-	            span, { class: "glyphicon glyphicon-remove form-control-feedback" });
+	            "span", { className: "glyphicon glyphicon-remove form-control-feedback" });
 	    } else if (this.validated) {
 	        return React.createElement(
-	            span, { class: "glyphicon glyphicon-ok form-control-feedback" });
+	            "span", { className: "glyphicon glyphicon-ok form-control-feedback" });
 	    } else {
 	        return null;
 	    }
@@ -27232,7 +27247,8 @@
 	// null.
 	InputField.prototype.getErrorLabel = function() {
 	    if (this.hasError) {
-	        return React.createElement(label, { class: "control-label", for: this.ref }, this.errorMessage);
+	        return React.createElement(
+	            "label", { className: "control-label", htmlFor: this.ref }, this.errorMessage);
 	    } else {
 	        return null;
 	    }
@@ -27241,9 +27257,9 @@
 	// Returns the classname that should be used on the form-group div that is
 	// housing this input field.
 	InputField.prototype.getFormGroupClassName = function() {
-	    if (this.hasError) return "form-group has-error";
-	    if (this.validated) return "form-group has-success";
-	    return "form-group";
+	    if (this.hasError) return "form-group has-error has-feedback";
+	    if (this.validated) return "form-group has-success has-feedback";
+	    return "";
 	};
 	
 	module.exports = InputField;
@@ -27271,6 +27287,8 @@
 	        inputField.validated = true;
 	    }
 	};
+	
+	module.exports = InputFieldValidation;
 
 
 /***/ },
