@@ -9,7 +9,7 @@ namespace StaceyVolunteers
     public class Volunteer : StaceyData.BaseObject
     {
         //Properties.
-        public int id { get; set; }
+        public string id { get; set; }
         public string name { get; set; }
         public string email { get; set; }
 
@@ -23,7 +23,7 @@ namespace StaceyVolunteers
         public Volunteer(string aconnectionstring)
         {
             ConnectionString = aconnectionstring;
-            id = 0;
+            id = "";
             name = "Default Name";
             email = "default@email.com";
         }
@@ -38,7 +38,7 @@ namespace StaceyVolunteers
         }
 
         // Instance constructor that has the Volunteer ID and is retrieved from Database.
-        public Volunteer(string aconnectionstring, int ID)
+        public Volunteer(string aconnectionstring, string ID)
         {
             ConnectionString = aconnectionstring;
             getVolunteer(ID);
@@ -46,10 +46,10 @@ namespace StaceyVolunteers
 
         #endregion
 
-        public void getVolunteer(int myID)
+        public void getVolunteer(string myID)
         {
             System.Data.DataTable dt;
-            object[] myparams = { myID.ToString(), "Volunteerid" };
+            object[] myparams = { myID, "Volunteerid" };
 
             dt = Helpers.DBHelper.ExecuteProcedure(ConnectionString, "Volunteer_get", myparams);
 
@@ -62,7 +62,7 @@ namespace StaceyVolunteers
 
         public void initFromDR(System.Data.DataRow dr)
         {
-            this.id = (int)dr["VolunteerID"];
+            this.id = (string)dr["VolunteerID"];
             this.name = (string)dr["VolunteerName"];
             this.email = (string)dr["VolunteerEmail"];
 
