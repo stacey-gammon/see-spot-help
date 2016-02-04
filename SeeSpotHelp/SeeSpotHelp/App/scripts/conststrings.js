@@ -8,7 +8,7 @@ var ConstStrings = {
     address: "Address",
     city: "City",
     state: "State",
-    zipCode: "zipCode"
+    zipCode: "Zip Code"
 };
 
 module.exports = ConstStrings;
