@@ -1273,17 +1273,17 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StaceyAnimals\StaceyAnimals.csproj">
+    <ProjectReference Include="..\StaceyAnimals\Animals.csproj">
       <Project>{58a46f9d-d9fa-4847-b465-ddf20a14ee4b}</Project>
-      <Name>StaceyAnimals</Name>
+      <Name>Animals</Name>
     </ProjectReference>
-    <ProjectReference Include="..\StaceyData\StaceyData.csproj">
+    <ProjectReference Include="..\StaceyData\Data.csproj">
       <Project>{c86a8063-4217-442d-b82e-1a1df384a20d}</Project>
-      <Name>StaceyData</Name>
+      <Name>Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\StaceyVolunteers\StaceyVolunteers.csproj">
+    <ProjectReference Include="..\StaceyVolunteers\Volunteers.csproj">
       <Project>{79e8787a-c9fa-4689-a213-1fbd13243719}</Project>
-      <Name>StaceyVolunteers</Name>
+      <Name>Volunteers</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
