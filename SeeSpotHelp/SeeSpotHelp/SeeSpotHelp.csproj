@@ -173,6 +173,7 @@
     <Content Include="App\scripts\facebookuser.js" />
     <Content Include="App\scripts\inputfield.js" />
     <Content Include="App\scripts\inputfieldvalidation.js" />
+    <Content Include="App\scripts\serverresponse.js" />
     <Content Include="App\scripts\volunteer.js" />
     <Content Include="App\scripts\volunteergroup.js" />
     <Content Include="App\tests\addnewshelterpage-test.jsx" />

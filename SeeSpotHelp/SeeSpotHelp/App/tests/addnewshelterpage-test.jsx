@@ -26,4 +26,18 @@ describe("AddNewShelter", function () {
         ReactTestUtils.findRenderedDOMComponentWithClass(
             addNewShelter, "zipCode");
     });
+
+    it("AddNewShelterWarnsOnNoInput", function () {
+        var user = new Volunteer("john", "doe", "123");
+        var addNewShelter = ReactTestUtils.renderIntoDocument(
+            <AddNewShelter user={user}/>
+        );
+        var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
+            addNewShelter, "addNewGroupButton");
+        ReactTestUtils.Simulate.click(addButton);
+
+        var errorIcons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
+            addNewShelter, "glyphicon-remove");
+        expect(errorIcons.length > 0).toEqual(true);
+    });
 });
