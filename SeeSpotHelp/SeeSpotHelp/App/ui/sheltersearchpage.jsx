@@ -7,7 +7,10 @@ var ShelterSearchPage = React.createClass({
     render: function() {
         console.log("ShelterSearchPage:render");
         var user = this.props.user;
-        if (!user && this.props.location.state && this.props.location.state.user) {
+        if (!user &&
+            this.props.location &&
+            this.props.location.state &&
+            this.props.location.state.user) {
             console.log("User set in state, loading..");
             user = this.props.location.state.user;
         }

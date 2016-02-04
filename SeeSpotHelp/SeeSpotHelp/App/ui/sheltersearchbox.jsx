@@ -17,7 +17,7 @@ var AddNewShelterButton = React.createClass({
             return (
                 <div>
                     <LinkContainer to={{ pathname: "addNewShelter", state: { user: this.props.user } }} disabled={disabled}>
-                        <button className="btn btn-warning shelterResult">Add New Group</button>
+                        <button className="btn btn-warning shelterResult addNewShelterButton">Add New Group</button>
                     </LinkContainer>
                     {disabledDiv}
                 </div>
@@ -29,7 +29,7 @@ var AddNewShelterButton = React.createClass({
 var ShelterSearchBox = React.createClass({
     shelterSearch: function () {
         console.log("ShelterSearchBox::render");
-        var searchText = document.getElementById("shelterSearchText").value;
+        var searchText = this.shelterSearchInput.value;
         var results = VolunteerGroup.search(searchText);
         this.setState({
             results: results,
@@ -47,11 +47,11 @@ var ShelterSearchBox = React.createClass({
         return (
             <div className="shelterSearchBox">
                 <div className="input-group">
-                    <input type="text" className="form-control"
-                            id="shelterSearchText"
-                            placeholder="Search for a shelter or volunteer group..."/>
+                    <input type="text" className="form-control shelterSearchInput"
+                           ref={(ref) => this.shelterSearchInput = ref}
+                           placeholder="Search for a shelter or volunteer group..."/>
                     <span className="input-group-btn">
-                        <button type="button" className="btn btn-primary"
+                        <button type="button" className="btn btn-primary shelterSearchButton"
                            onClick={this.shelterSearch}>
                            <span className="glyphicon glyphicon-search"></span>
                         </button>
