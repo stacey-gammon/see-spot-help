@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "f45fa2472c9b6362a8e3"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "b958caa2c1cb67fb8458"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -26631,13 +26631,13 @@
 	// database.  If no such volunteer exists, AddNewVolunteer
 	// will be called with some basic defaults supplied by
 	// facebook.
-	Volunteer.LoadVolunteer = function(anID, callback) {
+	Volunteer.LoadVolunteer = function(anID, name, email, callback) {
 	    // TODO: Implement
 	
 	    $.ajax({
 	        type: "POST",
 	        url: "WebServices/volunteerServices.asmx/getVolunteer",
-	        data: '{anID: ' + anID + '}',
+	        data: '{anID: "' + anID + '", name: "' + name + '", email: "' + email + '"}',
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function (data) {
@@ -26896,7 +26896,7 @@
 	            //    response.email,
 	            //    response.id);
 	            // todo:fix this
-	            Volunteer.LoadVolunteer(response.id, callback);
+	            Volunteer.LoadVolunteer(response.id, response.name, response.email, callback);
 	            console.log("Loaded volunteer: ");
 	            console.log(volunteer);
 	            //callback(volunteer);
