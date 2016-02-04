@@ -5,7 +5,6 @@ var webpack = require('webpack');
 module.exports = {
     context: path.join(__dirname, 'App'),
     entry: [
-        'webpack/hot/only-dev-server',
         './ui/home.jsx'
         ],
     output: {
