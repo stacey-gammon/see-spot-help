@@ -26,7 +26,6 @@ var VolunteerGroup = function(name, shelter, address, id) {
 // original class, complete with functions, from an object with only
 // properties.
 VolunteerGroup.castObject = function(obj) {
-    console.log("Loading volunteer group from object");
     var group = new VolunteerGroup();
     for (var prop in obj) group[prop] = obj[prop];
     return group;
@@ -36,7 +35,8 @@ VolunteerGroup.PermissionsEnum = Object.freeze(
     {
         MEMBER: 0,
         ADMIN: 1,
-        NONMEMBER: 2
+        PENDINGMEMBERSHIP: 2,
+        NONMEMBER: 3
     }
 );
 
@@ -84,6 +84,12 @@ VolunteerGroup.prototype.getUserPermissions = function (userId) {
     }
 };
 
+VolunteerGroup.prototype.requestToJoin = function(user) {
+    // TODO: Implement and hook into server-side.
+}
+
+// Inserts a new volunteer group if one does not exist in the database,
+// otherwise updates the existing one with the current values.
 VolunteerGroup.prototype.saveVolunteerGroup = function() {
     // TODO: Implement and hook into database.
 };
