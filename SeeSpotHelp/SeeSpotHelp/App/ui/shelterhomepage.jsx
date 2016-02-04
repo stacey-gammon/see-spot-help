@@ -19,19 +19,11 @@ var ShelterHomePage = React.createClass({
         var query = this.props.location ? this.props.location.query : null;
         var defaultGroup = null;
 
-        // This is stupid but because I can't figure out how to pass
-        // properties via LinkContainer and am passing state instead,
-        // where user is stored varies depending on how the user got
-        // here.
-        console.log("shelterhomepage::render: props.user = ");
-        console.log(this.props.user);
+        // When the page is loaded up via nav bar, user is stored in this.props.user.
+        // When the page is dynamically loaded via home when user logs in, the user
+        // is passed in via props.location.state.
         var user = this.props.user ? Volunteer.castObject(this.props.user) : null;
-
-        console.log("shelterhomepage::render: props.user after cast = ");
-        console.log(user);
-
         if (!user && this.props.location && this.props.location.state) {
-            console.log("shelterhomepage:render: Grabbing volunteer object from props.location.state");
             user = this.props.location && this.props.location.state.user ?
                    Volunteer.castObject(this.props.location.state.user) : null;
         }

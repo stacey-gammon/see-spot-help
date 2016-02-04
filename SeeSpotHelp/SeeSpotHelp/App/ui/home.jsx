@@ -70,9 +70,6 @@ var Home = React.createClass({
 
     componentDidMount: function() {
         console.log("Home::componentDidMount");
-        // Temporary fix for the stupid bug of FB not loading by the time this
-        // is called.
-        // setTimeout(this.subscribeToLoginEvents, 500);
 
         var defaultGroup = null;
         if (sessionStorage.getItem("defaultGroup")) {
