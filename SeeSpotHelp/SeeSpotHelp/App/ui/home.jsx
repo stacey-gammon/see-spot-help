@@ -41,18 +41,43 @@ var Home = React.createClass({
         FB.Event.subscribe("auth.logout", this.logOutEvent);
     },
 
+    facebookInitialized: function () {
+        console.log("Home::facebookInitialized");
+        this.subscribeToLoginEvents();
+        this.loadFacebookUser();
+    },
+
+    componentWillMount: function () {
+        var home = this;
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '1021154377958416',
+                xfbml: true,
+                version: 'v2.5'
+            });
+            home.facebookInitialized();
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=1021154377958416";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    },
+
     componentDidMount: function() {
         console.log("Home::componentDidMount");
         // Temporary fix for the stupid bug of FB not loading by the time this
         // is called.
-        setTimeout(this.subscribeToLoginEvents, 500);
+        // setTimeout(this.subscribeToLoginEvents, 500);
 
         var defaultGroup = null;
         if (sessionStorage.getItem("defaultGroup")) {
             defaultGroup = JSON.parse(sessionStorage.getItem("defaultGroup"));
         }
-
-        this.loadFacebookUser();
 
         this.setState({
             defaultGroup: defaultGroup,
@@ -61,12 +86,8 @@ var Home = React.createClass({
         });
     },
 
-    reloadFacebookUser: function() {
-        console.log("reloading facebook user");
-        FacebookUser.getVolunteer(this.loadPageForVolunteer);
-    },
-
-    loadPageForVolunteer: function(volunteer) {
+    loadPageForVolunteer: function (volunteer) {
+        console.log("Home::LoadPageForVolunteer");
         this.setState({user: volunteer, loggingIn: false});
         sessionStorage.setItem("volunteer", JSON.stringify(volunteer));
 
@@ -97,16 +118,7 @@ var Home = React.createClass({
 
     loadFacebookUser: function() {
         console.log("loadFacebookUser");
-        // The FB sdk id loaded async, we need to make sure it's available.
-        // Note this still fails sporadically and the check doesn't fix the
-        // issue.  Needs to be looked into.  We can include the fb
-        // script syncronously to avoid this issue.
-        if (typeof FB === "undefined") {
-            console.log("FB null, trying again");
-            setTimeout(this.loadFacebookUser, 250);
-            return;
-        }
-        this.reloadFacebookUser();
+        FacebookUser.getVolunteer(this.loadPageForVolunteer);
     },
 
     render: function() {
