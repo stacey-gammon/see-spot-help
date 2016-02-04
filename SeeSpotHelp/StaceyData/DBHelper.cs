@@ -43,8 +43,8 @@ namespace Helpers
                 bool first = true;
                 for (int i = 0; i < parameters.Length; i += 2)
                 {
-                    filters.Add(new SqlParameter(parameters[i] as string, parameters[i + 1]));
-                    query += (first ? " " : ", ") + ((string)parameters[i]);
+                    //filters.Add(new SqlParameter(parameters[i] as string, parameters[i + 1]));
+                    query += (first ? " '" : ", '") + ((string)parameters[i]) + "'";
                     first = false;
                 }
 
