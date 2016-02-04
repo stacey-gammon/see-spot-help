@@ -171,8 +171,11 @@
     <Content Include="App\scripts\animal.js" />
     <Content Include="App\scripts\conststrings.js" />
     <Content Include="App\scripts\facebookuser.js" />
+    <Content Include="App\scripts\inputfield.js" />
+    <Content Include="App\scripts\inputfieldvalidation.js" />
     <Content Include="App\scripts\volunteer.js" />
     <Content Include="App\scripts\volunteergroup.js" />
+    <Content Include="App\tests\addnewshelterpage-test.jsx" />
     <Content Include="App\tests\shelteractionsbox-test.jsx" />
     <Content Include="App\tests\shelterhomepage-test.jsx" />
     <Content Include="App\tests\sheltersearchpage-test.jsx" />

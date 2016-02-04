@@ -3,6 +3,8 @@
 var React = require("react");
 var ConstStrings = require("../scripts/conststrings");
 var VolunteerGroup = require("../scripts/volunteergroup");
+var InputField = require("../scripts/inputfield");
+var InputFieldValidation = require("../scripts/inputfieldvalidation");
 
 var STATES = [
     "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",
@@ -12,11 +14,37 @@ var STATES = [
 ];
 
 var AddNewShelter = React.createClass({
-    getInitialState: function() {
+    getInitialState: function () {
+        console.log("AddNewShelter::getInitialState");
+        // for short hand.
+        var IFV = InputFieldValidation;
+        var inputFields = {
+            "groupName": new InputField([IFV.validateNotEmpty]),
+            "shelterName": new InputField([IFV.validateNotEmpty]),
+            "address": new InputField([IFV.validateNotEmpty]),
+            "city": new InputField([IFV.validateNotEmpty]),
+            "state": new InputField([IFV.validateNotEmpty]),
+            "zipCode": new InputField([IFV.validateNotEmpty])
+        };
+        // Store the ref name on the input field without manually
+        // writing it out twice.
+        for (var field in inputFields) {
+            inputFields[field].ref = field;
+        }
+
         return {
             errorMessage: null,
-            fields: ["groupName", "shelterName", "address", "city", "state", "zipCode"]
+            fields: inputFields
         };
+    },
+
+    validateFields: function() {
+        for (var field in this.state.fields) {
+            this.state.fields[field].validate();
+        }
+        // Forces a re-render based on the new validation states for each
+        // field.
+        this.setState({ fields: this.state.fields });
     },
 
     addNewVolunteerGroup: function() {
@@ -40,20 +68,31 @@ var AddNewShelter = React.createClass({
         group.addNewVolunteerGroup();
     },
 
-    createInputField: function (name) {
+    createInputField: function (inputField) {
+        console.log("AdNewShelter::createInputField");
+        var inputFieldClassName = "form-control " + inputField.ref;
         return (
-            <div className="input-group">
-                <span className="input-group-addon">{ConstStrings[name]}</span>
-                <input type="text" ref={name} className="form-control"/>
+            <div className={inputField.getFormGroupClassName()}>
+                {inputField.getErrorLabel()}
+                <div className="input-group">
+                    <span className="input-group-addon">{ConstStrings[inputField.ref]}</span>
+                    <input type="text" ref={inputField.ref} id={inputField.ref} className={inputFieldClassName} />
+                </div>
+                {inputField.getValidationSpan()}
             </div>
         );
     },
 
     render: function () {
-        var user = this.props.location.state;
+        console.log("AddNewShelter: render");
+        var user = this.props.user ? this.props.user : this.state.user ? this.state.user :
+                   this.props.location ? this.props.location.state : null;
+        if (user == null) {
+            throw "Non logged in user is attempting to add a new shelter";
+        }
         var inputFields = [];
-        for (var i = 0; i < this.state.fields.length; i++) {
-            var field = this.state.fields[i];
+        for (var key in this.state.fields) {
+            var field = this.state.fields[key];
             inputFields.push(this.createInputField(field));
         }
         if (user) {
