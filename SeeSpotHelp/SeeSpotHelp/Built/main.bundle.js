@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "f45fa2472c9b6362a8e3"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "76e9e043e425aee29848"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -26632,13 +26632,13 @@
 	// database.  If no such volunteer exists, AddNewVolunteer
 	// will be called with some basic defaults supplied by
 	// facebook.
-	Volunteer.LoadVolunteer = function(anID, callback) {
+	Volunteer.LoadVolunteer = function(anID, name, email, callback) {
 	    // TODO: Implement
 	
 	    $.ajax({
 	        type: "POST",
 	        url: "WebServices/volunteerServices.asmx/getVolunteer",
-	        data: '{anID: ' + anID + '}',
+	        data: '{anID: "' + anID + '", name: "' + name + '", email: "' + email + '"}',
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function (data) {
@@ -26649,8 +26649,8 @@
 	            callback(newVol);
 	        },
 	
-	    //    error: function (ts) { alert(ts.responseText); }
-	    //});
+	        error: function (ts) { alert(ts.responseText); }
+	    });
 	};
 	
 	Volunteer.prototype.AddNewVolunteer = function() {
@@ -26892,12 +26892,12 @@
 	        FB.api("/me", function (response) {
 	            console.log("Successful login for " + response.name +
 	                        " with id " + response.id);
-	            var volunteer = new Volunteer(
-	                response.name,
-	                response.email,
-	                response.id);
+	            //var volunteer = new Volunteer(
+	            //    response.name,
+	            //    response.email,
+	            //    response.id);
 	            // todo:fix this
-	            Volunteer.LoadVolunteer(response.id, callback);
+	            Volunteer.LoadVolunteer(response.id, response.name, response.email, callback);
 	            console.log("Loaded volunteer: ");
 	            console.log(volunteer);
 	            //callback(volunteer);
@@ -27149,7 +27149,7 @@
 	        return (
 	            React.createElement("div", {className: inputField.getFormGroupClassName()}, 
 	                inputField.getErrorLabel(), 
-	            React.createElement("div", {className: "input-group"}, 
+	                React.createElement("div", {className: "input-group"}, 
 	                    React.createElement("span", {className: "input-group-addon"}, ConstStrings[inputField.ref]), 
 	                    React.createElement("input", {type: "text", 
 	                           ref: inputField.ref, 
