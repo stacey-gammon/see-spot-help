@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "b833fbb0512fa778963e"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "65921d17eaa2250a57c6"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -598,7 +598,7 @@
 	        this.loadFacebookUser();
 	    },
 	
-	    subscribeToLoginEvents: function() {
+	    subscribeToLoginEvents: function () {
 	        console.log("Home::subscribeToLoginEvents");
 	        FB.Event.subscribe("auth.login", this.logInEvent);
 	        FB.Event.subscribe("auth.logout", this.logOutEvent);
@@ -633,10 +633,6 @@
 	
 	    componentDidMount: function() {
 	        console.log("Home::componentDidMount");
-	        // Temporary fix for the stupid bug of FB not loading by the time this
-	        // is called.
-	        // setTimeout(this.subscribeToLoginEvents, 500);
-	
 	        var defaultGroup = null;
 	        if (sessionStorage.getItem("defaultGroup")) {
 	            defaultGroup = JSON.parse(sessionStorage.getItem("defaultGroup"));
@@ -668,12 +664,12 @@
 	        // Currently we will force them to pop over to the shelter home page. This fell
 	        // out naturally and was not specifically decided. Figure out what to do.
 	        if (volunteer && volunteer.getDefaultVolunteerGroup()) {
-	            console.log("Default volunteer group found, loading shelter home page, volunteer is: ");
-	            console.log(volunteer);
 	            this.context.router.push(
 	                {
 	                    pathname: "/shelterHomePage",
-	                    state: { user: volunteer }
+	                    state: {
+	                        user: volunteer
+	                    }
 	                }
 	            );
 	        }
@@ -732,7 +728,10 @@
 	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
 	
 	var ShelterHomePage = React.createClass({displayName: "ShelterHomePage",
-	    getInitialState: function() { return {}
+	    getInitialState: function () {
+	        return {
+	            user: this.props.user
+	        };
 	    },
 	
 	    render: function () {
@@ -740,19 +739,12 @@
 	        var query = this.props.location ? this.props.location.query : null;
 	        var defaultGroup = null;
 	
-	        // This is stupid but because I can't figure out how to pass
-	        // properties via LinkContainer and am passing state instead,
-	        // where user is stored varies depending on how the user got
-	        // here.
-	        console.log("shelterhomepage::render: props.user = ");
-	        console.log(this.props.user);
-	        var user = this.props.user ? Volunteer.castObject(this.props.user) : null;
-	
-	        console.log("shelterhomepage::render: props.user after cast = ");
-	        console.log(user);
-	
+	        // User loaded up via the navigation menu has user stored at this.state.user,
+	        // but when loaded dynamically via this.context.router.push the user object
+	        // goes into this.props.location.state instead.  Not sure if there is a way to
+	        // resolve this.
+	        var user = this.state.user ? Volunteer.castObject(this.state.user) : null;
 	        if (!user && this.props.location && this.props.location.state) {
-	            console.log("shelterhomepage:render: Grabbing volunteer object from props.location.state");
 	            user = this.props.location && this.props.location.state.user ?
 	                   Volunteer.castObject(this.props.location.state.user) : null;
 	        }
@@ -26586,10 +26578,31 @@
 	});
 	
 	var ShelterActionsBox = React.createClass({displayName: "ShelterActionsBox",
+	    getInitialState: function() {
+	        return {
+	            user: this.props.user,
+	            group: this.props.group
+	        };
+	    },
+	
+	    clearUser: function () {
+	        this.setState({
+	            user: null
+	        });
+	    },
+	
+	    componentDidMount: function () {
+	        console.log("ShelterActionsBox::componentDidMount");
+	        // FB when running tests is undefined so we need this here.
+	        if (typeof FB != "undefined") {
+	            FB.Event.subscribe("auth.logout", this.clearUser);
+	        }
+	    },
+	
 	    render: function () {
 	        console.log("ShelterActionsBox:render:");
-	        var user = this.props.user ? Volunteer.castObject(this.props.user) : null;
-	        var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
+	        var user = this.state.user ? Volunteer.castObject(this.state.user) : null;
+	        var group = this.state.group ? VolunteerGroup.castObject(this.state.group) : null;
 	        var permissions = user && group ? group.getUserPermissions(user.id) : null;
 	        return (
 	            React.createElement("div", null, 
