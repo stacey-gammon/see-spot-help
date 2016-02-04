@@ -4,7 +4,6 @@
 var VolunteerGroup = require('./volunteergroup');
 
 var Volunteer = function(name, email, id) {
-    console.log("Loading volunteer with id " + id);
     this.name = name;
     this.email = email;
 
@@ -18,7 +17,6 @@ var Volunteer = function(name, email, id) {
 // Can use this to restore the original class, complete with functions,
 // from an object with only properties.
 Volunteer.castObject = function (obj) {
-    console.log("Loading volunteer from object");
     var volunteer = new Volunteer();
     for (var prop in obj) volunteer[prop] = obj[prop];
     return volunteer;
