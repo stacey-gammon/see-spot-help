@@ -34,7 +34,7 @@ namespace SeeSpotHelp.WebServices
         {
 
             StaceyVolunteers.Volunteer vt = new StaceyVolunteers.Volunteer("Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11");
-            vt.getVolunteer(anID);
+           // vt.getVolunteer(anID);
             string json = JsonConvert.SerializeObject(vt);
 
             return json;
