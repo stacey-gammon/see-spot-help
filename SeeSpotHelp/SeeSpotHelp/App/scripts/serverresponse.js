@@ -9,3 +9,5 @@ var ServerResponse = function () {
     this.hasError = false;
     this.errorMessage = "";
 };
+
+module.exports = ServerResponse;
