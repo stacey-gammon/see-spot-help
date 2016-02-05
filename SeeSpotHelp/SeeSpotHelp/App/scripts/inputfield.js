@@ -4,7 +4,6 @@
 // @param validations {inputfieldvalidations[]} an array list of input field validations
 // that this field should run during the validate call.
 var InputField = function (validations) {
-    console.log("InputField, validations = ");
     console.log(validations);
     this.hasError = false;
     this.validated = false;
@@ -29,13 +28,19 @@ InputField.prototype.validate = function () {
 // a success mark.  Otherwise returns null.  Note the dom element
 // creation is different from the jsx files because this is a plain
 // old js file.
-InputField.prototype.getValidationSpan = function() {
+InputField.prototype.getValidationSpan = function () {
     if (this.hasError) {
         return React.createElement(
-            "span", { className: "glyphicon glyphicon-remove form-control-feedback" });
+            "span", {
+                className: "glyphicon glyphicon-remove form-control-feedback " +
+                    this.ref + "ErrorValidationSpan"
+            });
     } else if (this.validated) {
         return React.createElement(
-            "span", { className: "glyphicon glyphicon-ok form-control-feedback" });
+            "span", {
+                className: "glyphicon glyphicon-ok form-control-feedback " +
+                    this.ref + "SuccessValidationSpan"
+            });
     } else {
         return null;
     }
@@ -54,10 +59,15 @@ InputField.prototype.getErrorLabel = function() {
 
 // Returns the classname that should be used on the form-group div that is
 // housing this input field.
-InputField.prototype.getFormGroupClassName = function() {
-    if (this.hasError) return "form-group has-error has-feedback";
-    if (this.validated) return "form-group has-success has-feedback";
-    return "";
+InputField.prototype.getFormGroupClassName = function () {
+    var formName = "";
+    if (this.hasError) {
+        formName = "form-group has-error has-feedback";
+    } else if (this.validated) {
+        formName = "form-group has-success has-feedback";
+    }
+    formName += " " + this.ref + "FormGroup";
+    return formName;
 };
 
 module.exports = InputField;
