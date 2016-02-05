@@ -1,4 +1,6 @@
-﻿// A volunteer group represents a group of volunteers at a given
+﻿var ServerResponse = require("./serverresponse");
+
+// A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
 // shelter to volunteer group, though it is possible for there to
 // be multiple groups linked to a single shelter. An example of this
@@ -39,6 +41,21 @@ VolunteerGroup.PermissionsEnum = Object.freeze(
         NONMEMBER: 3
     }
 );
+
+// Creates and returns a new volunteer group based on the fields supplied
+// by the user during an input form.
+// @param inputFields { { fieldName : InputField} } - A object where the keys
+// are the field name (e.g. "groupName", "shelterName") and the values are
+// InputFields which hold the values given by the user.
+VolunteerGroup.createFromInputFields = function(inputFields, adminId) {
+    var volunteerGroup = new VolunteerGroup();
+    volunteerGroup.name = inputFields["groupName"].value;
+    volunteerGroup.shelter = inputFields["shelterName"].value;
+    volunteerGroup.address = inputFields["address"].value;
+    volunteerGroup.userPermissionsMap[adminId] = VolunteerGroup.PermissionsEnum.ADMIN;
+
+    return volunteerGroup;
+};
 
 VolunteerGroup.getFakeGroups = function() {
     return {
