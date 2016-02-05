@@ -110,6 +110,13 @@ var Home = React.createClass({
                     state: { user: volunteer }
                 }
             );
+        } else {
+            this.context.router.push(
+                {
+                    pathname: "/shelterSearchPage",
+                    state: { user: volunteer }
+                }
+            );
         }
     },
 
@@ -136,7 +143,6 @@ var routes = (
     <Route path="shelterHomePage" component={ShelterHomePage}/>
     <Route path="animalHomePage" component={AnimalHomePage} />
     <Route path="addNewShelter" component={AddNewShelter} />
-    <IndexRoute component={ShelterHomePage} />
   </Router>
 );
 
