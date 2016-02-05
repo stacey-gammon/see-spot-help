@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "39be7031115f3b3873c1"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "3207f5c80909cfbe3412"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -612,6 +612,12 @@
 	
 	    componentWillMount: function () {
 	        var home = this;
+	        $(document).ajaxStart(function () {
+	            $(document.body).css({ 'cursor': 'wait' })
+	        });
+	        $(document).ajaxComplete(function () {
+	            $(document.body).css({ 'cursor': 'default' })
+	        });
 	        window.fbAsyncInit = function () {
 	            FB.init({
 	                appId: '1021154377958416',
@@ -673,6 +679,13 @@
 	                    state: { user: volunteer }
 	                }
 	            );
+	        } else {
+	            this.context.router.push(
+	                {
+	                    pathname: "/shelterSearchPage",
+	                    state: { user: volunteer }
+	                }
+	            );
 	        }
 	    },
 	
@@ -698,8 +711,7 @@
 	    React.createElement(Route, {path: "shelterSearchPage", component: ShelterSearchPage}), 
 	    React.createElement(Route, {path: "shelterHomePage", component: ShelterHomePage}), 
 	    React.createElement(Route, {path: "animalHomePage", component: AnimalHomePage}), 
-	    React.createElement(Route, {path: "addNewShelter", component: AddNewShelter}), 
-	    React.createElement(IndexRoute, {component: ShelterHomePage})
+	    React.createElement(Route, {path: "addNewShelter", component: AddNewShelter})
 	  )
 	);
 	
