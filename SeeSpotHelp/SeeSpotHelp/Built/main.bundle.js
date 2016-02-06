@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "4933075bf50414cd2e84"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "76e9e043e425aee29848"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -569,7 +569,7 @@
 	var AddNewShelter = __webpack_require__(/*! ./addnewshelter */ 237);
 	var MyNavBar = __webpack_require__(/*! ./navbar */ 240);
 	
-	var FacebookUser = __webpack_require__(/*! ../scripts/facebookuser */ 233);
+	var FacebookUser = __webpack_require__(/*! ../scripts/facebookuser */ 232);
 	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 228);
 	
 	var React = __webpack_require__(/*! react */ 3);
@@ -612,6 +612,12 @@
 	
 	    componentWillMount: function () {
 	        var home = this;
+	        $(document).ajaxStart(function () {
+	            $(document.body).css({ 'cursor': 'wait' })
+	        });
+	        $(document).ajaxComplete(function () {
+	            $(document.body).css({ 'cursor': 'default' })
+	        });
 	        window.fbAsyncInit = function () {
 	            FB.init({
 	                appId: '1021154377958416',
@@ -673,6 +679,13 @@
 	                    state: { user: volunteer }
 	                }
 	            );
+	        } else {
+	            this.context.router.push(
+	                {
+	                    pathname: "/shelterSearchPage",
+	                    state: { user: volunteer }
+	        }
+	            );
 	        }
 	    },
 	
@@ -698,8 +711,7 @@
 	    React.createElement(Route, {path: "shelterSearchPage", component: ShelterSearchPage}), 
 	    React.createElement(Route, {path: "shelterHomePage", component: ShelterHomePage}), 
 	    React.createElement(Route, {path: "animalHomePage", component: AnimalHomePage}), 
-	    React.createElement(Route, {path: "addNewShelter", component: AddNewShelter}), 
-	    React.createElement(IndexRoute, {component: ShelterHomePage})
+	    React.createElement(Route, {path: "addNewShelter", component: AddNewShelter})
 	  )
 	);
 	
@@ -723,8 +735,8 @@
 	var ShelterSearchBox = __webpack_require__(/*! ./sheltersearchbox */ 223);
 	var ShelterInfoBox = __webpack_require__(/*! ./shelterinfobox */ 226);
 	var ShelterActionsBox = __webpack_require__(/*! ./shelteractionsbox */ 227);
-	var FakeData = __webpack_require__(/*! ../scripts/fakedata */ 231);
-	var FacebookUser = __webpack_require__(/*! ../scripts/facebookuser */ 233);
+	var FakeData = __webpack_require__(/*! ../scripts/fakedata */ 230);
+	var FacebookUser = __webpack_require__(/*! ../scripts/facebookuser */ 232);
 	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 228);
 	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
 	
@@ -26249,7 +26261,7 @@
 	var React = __webpack_require__(/*! react */ 3);
 	var LinkContainer = __webpack_require__(/*! react-router-bootstrap */ 162).LinkContainer;
 	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
-	var ShelterSearchResults = __webpack_require__(/*! ./sheltersearchresults */ 225);
+	var ShelterSearchResults = __webpack_require__(/*! ./sheltersearchresults */ 226);
 	
 	var AddNewShelterButton = React.createClass({displayName: "AddNewShelterButton",
 	    render: function() {
@@ -26317,8 +26329,10 @@
 /*!***********************************!*\
   !*** ./scripts/volunteergroup.js ***!
   \***********************************/
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
+	var ServerResponse = __webpack_require__(/*! ./serverresponse */ 225);
+	
 	// A volunteer group represents a group of volunteers at a given
 	// shelter.  The most common scenario will be a one to mapping of
 	// shelter to volunteer group, though it is possible for there to
@@ -26360,6 +26374,21 @@
 	        NONMEMBER: 3
 	    }
 	);
+	
+	// Creates and returns a new volunteer group based on the fields supplied
+	// by the user during an input form.
+	// @param inputFields { { fieldName : InputField} } - A object where the keys
+	// are the field name (e.g. "groupName", "shelterName") and the values are
+	// InputFields which hold the values given by the user.
+	VolunteerGroup.createFromInputFields = function(inputFields, adminId) {
+	    var volunteerGroup = new VolunteerGroup();
+	    volunteerGroup.name = inputFields["groupName"].value;
+	    volunteerGroup.shelter = inputFields["shelterName"].value;
+	    volunteerGroup.address = inputFields["address"].value;
+	    volunteerGroup.userPermissionsMap[adminId] = VolunteerGroup.PermissionsEnum.ADMIN;
+	
+	    return volunteerGroup;
+	};
 	
 	VolunteerGroup.getFakeGroups = function() {
 	    return {
@@ -26438,6 +26467,28 @@
 
 /***/ },
 /* 225 */
+/*!***********************************!*\
+  !*** ./scripts/serverresponse.js ***!
+  \***********************************/
+/***/ function(module, exports) {
+
+	// A place to store a response from the server.
+	
+	// TODO: Should we store returned js objects (e.g. an inserted
+	// VolunteerGroup) inside the ServerResponse, or pass it separately
+	// as an additional parameter to callback functions?  For now,
+	// goind with the latter.
+	
+	var ServerResponse = function () {
+	    this.hasError = false;
+	    this.errorMessage = "";
+	};
+	
+	module.exports = ServerResponse;
+
+
+/***/ },
+/* 226 */
 /*!*************************************!*\
   !*** ./ui/sheltersearchresults.jsx ***!
   \*************************************/
@@ -26483,7 +26534,7 @@
 	module.exports = ShelterSearchResults;
 
 /***/ },
-/* 226 */
+/* 227 */
 /*!*******************************!*\
   !*** ./ui/shelterinfobox.jsx ***!
   \*******************************/
@@ -26510,7 +26561,7 @@
 
 
 /***/ },
-/* 227 */
+/* 228 */
 /*!**********************************!*\
   !*** ./ui/shelteractionsbox.jsx ***!
   \**********************************/
@@ -26521,7 +26572,7 @@
 	var React = __webpack_require__(/*! react */ 3);
 	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
 	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 228);
-	var ConstStrings = __webpack_require__(/*! ../scripts/conststrings */ 230);
+	var ConstStrings = __webpack_require__(/*! ../scripts/conststrings */ 229);
 	
 	var LeaveShelterButton = React.createClass({displayName: "LeaveShelterButton",
 	    alertNotImplemented: function () {
@@ -26598,7 +26649,7 @@
 	module.exports = ShelterActionsBox;
 
 /***/ },
-/* 228 */
+/* 229 */
 /*!******************************!*\
   !*** ./scripts/volunteer.js ***!
   \******************************/
@@ -26720,7 +26771,7 @@
 
 
 /***/ },
-/* 229 */
+/* 230 */
 /*!*********************************!*\
   !*** ./scripts/AJAXServices.js ***!
   \*********************************/
@@ -26955,7 +27006,7 @@
   \*********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 228);
+	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 229);
 	
 	var FacebookUser = function () {}
 	
@@ -26966,16 +27017,9 @@
 	        console.log("FacebookUser::login : loadVolunteer");
 	        FB.api("/me", function (response) {
 	            console.log("Successful login for " + response.name +
-	                        " with id " + response.id);
-	            //var volunteer = new Volunteer(
-	            //    response.name,
-	            //    response.email,
-	            //    response.id);
-	            // todo:fix this
+	                        " with id " + response.id +
+	                        " and email " + response.email);
 	            Volunteer.LoadVolunteer(response.id, response.name, response.email, callback);
-	            console.log("Loaded volunteer: ");
-	            console.log(volunteer);
-	            //callback(volunteer);
 	        });
 	    };
 	
@@ -27176,31 +27220,39 @@
 	            inputFields[field].ref = field;
 	        }
 	
+	        var user = this.props.user ? this.props.user :
+	            this.props.location ? this.props.location.state.user : null;
+	
 	        return {
 	            errorMessage: null,
-	            fields: inputFields
+	            fields: inputFields,
+	            user : user
 	        };
 	    },
 	
 	    validateFields: function () {
+	        console.log("AddNewShelter::validateFields");
 	        var errorFound = false;
 	        for (var key in this.state.fields) {
 	            var field = this.state.fields[key];
 	            field.value = this.refs[field.ref].value;
 	            field.validate();
 	            if (field.hasError) {
+	                console.log("Error found with field " + field.ref);
 	                errorFound = true;
 	            }
 	        }
 	        // Forces a re-render based on the new validation states for each
 	        // field.
 	        if (errorFound) {
+	            console.log("Error found!");
 	            this.setState({ fields: this.state.fields });
 	        }
 	        return errorFound;
 	    },
 	
-	    insertGroupCallBack: function (group, serverResponse) {
+	    insertGroupCallback: function (group, serverResponse) {
+	        console.log("AddNewShelter::insertGroupCallback");
 	        if (serverResponse.hasError) {
 	            // Show error message to user.
 	            this.setState({ errorMessage: serverResponse.errorMessage });
@@ -27211,15 +27263,17 @@
 	    },
 	
 	    addNewVolunteerGroup: function () {
+	        console.log("AddNewShelter:addNewVolunteerGroup");
 	        var errorFound = this.validateFields();
 	        if (!errorFound) {
-	            var group = VolunteerGroup.createFromInputFields(this.state.fields);
+	            var group = VolunteerGroup.createFromInputFields(
+	                this.state.fields,
+	                this.state.user.id);
 	            group.insert(this.insertGroupCallback);
 	        }
 	    },
 	
 	    createInputField: function (inputField) {
-	        console.log("AdNewShelter::createInputField");
 	        var inputFieldClassName = "form-control " + inputField.ref;
 	        return (
 	            React.createElement("div", {className: inputField.getFormGroupClassName()}, 
@@ -27238,9 +27292,7 @@
 	
 	    render: function () {
 	        console.log("AddNewShelter: render");
-	        var user = this.props.user ? this.props.user : this.state.user ? this.state.user :
-	                   this.props.location ? this.props.location.state : null;
-	        if (user == null) {
+	        if (this.state.user == null) {
 	            throw "Non logged in user is attempting to add a new shelter";
 	        }
 	        var inputFields = [];
@@ -27248,7 +27300,6 @@
 	            var field = this.state.fields[key];
 	            inputFields.push(this.createInputField(field));
 	        }
-	        if (user) {
 	            return (
 	                React.createElement("div", null, 
 	                    this.state.errorMessage, 
@@ -27257,14 +27308,7 @@
 	                            onClick: this.addNewVolunteerGroup}, "Add Group")
 	                )
 	            );
-	        } else {
-	            return (
-	                React.createElement("div", null, 
-	                    React.createElement("h1", null, "You need to log in to be able to add a new group.")
-	                )
-	            );
 	        }
-	    }
 	});
 	
 	module.exports = AddNewShelter;
@@ -27283,7 +27327,6 @@
 	// @param validations {inputfieldvalidations[]} an array list of input field validations
 	// that this field should run during the validate call.
 	var InputField = function (validations) {
-	    console.log("InputField, validations = ");
 	    console.log(validations);
 	    this.hasError = false;
 	    this.validated = false;
@@ -27308,13 +27351,19 @@
 	// a success mark.  Otherwise returns null.  Note the dom element
 	// creation is different from the jsx files because this is a plain
 	// old js file.
-	InputField.prototype.getValidationSpan = function() {
+	InputField.prototype.getValidationSpan = function () {
 	    if (this.hasError) {
 	        return React.createElement(
-	            "span", { className: "glyphicon glyphicon-remove form-control-feedback" });
+	            "span", {
+	                className: "glyphicon glyphicon-remove form-control-feedback " +
+	                    this.ref + "ErrorValidationSpan"
+	            });
 	    } else if (this.validated) {
 	        return React.createElement(
-	            "span", { className: "glyphicon glyphicon-ok form-control-feedback" });
+	            "span", {
+	                className: "glyphicon glyphicon-ok form-control-feedback " +
+	                    this.ref + "SuccessValidationSpan"
+	            });
 	    } else {
 	        return null;
 	    }
@@ -27333,10 +27382,15 @@
 	
 	// Returns the classname that should be used on the form-group div that is
 	// housing this input field.
-	InputField.prototype.getFormGroupClassName = function() {
-	    if (this.hasError) return "form-group has-error has-feedback";
-	    if (this.validated) return "form-group has-success has-feedback";
-	    return "";
+	InputField.prototype.getFormGroupClassName = function () {
+	    var formName = "";
+	    if (this.hasError) {
+	        formName = "form-group has-error has-feedback";
+	    } else if (this.validated) {
+	        formName = "form-group has-success has-feedback";
+	    }
+	    formName += " " + this.ref + "FormGroup";
+	    return formName;
 	};
 	
 	module.exports = InputField;
@@ -27356,12 +27410,14 @@
 	// Makes sure the given input field is does not contain an empty value.
 	// Updates inputField based on success or failure.
 	// @param inputField {InputField} - the field to validate.
-	InputFieldValidation.validateNotEmpty = function(inputField) {
+	InputFieldValidation.validateNotEmpty = function (inputField) {
 	    if (inputField.value == null || inputField.value.trim() == "") {
 	        inputField.hasError = true;
 	        inputField.errorMessage = "Field must not be empty.";
 	    } else {
 	        inputField.validated = true;
+	        inputField.hasError = false;
+	        inputField.errorMessage = "";
 	    }
 	};
 	
