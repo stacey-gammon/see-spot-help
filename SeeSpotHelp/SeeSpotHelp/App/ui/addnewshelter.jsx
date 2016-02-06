@@ -32,31 +32,39 @@ var AddNewShelter = React.createClass({
             inputFields[field].ref = field;
         }
 
+        var user = this.props.user ? this.props.user :
+            this.props.location ? this.props.location.state.user : null;
+
         return {
             errorMessage: null,
-            fields: inputFields
+            fields: inputFields,
+            user : user
         };
     },
 
     validateFields: function () {
+        console.log("AddNewShelter::validateFields");
         var errorFound = false;
         for (var key in this.state.fields) {
             var field = this.state.fields[key];
             field.value = this.refs[field.ref].value;
             field.validate();
             if (field.hasError) {
+                console.log("Error found with field " + field.ref);
                 errorFound = true;
             }
         }
         // Forces a re-render based on the new validation states for each
         // field.
         if (errorFound) {
+            console.log("Error found!");
             this.setState({ fields: this.state.fields });
         }
         return errorFound;
     },
 
-    insertGroupCallBack: function (group, serverResponse) {
+    insertGroupCallback: function (group, serverResponse) {
+        console.log("AddNewShelter::insertGroupCallback");
         if (serverResponse.hasError) {
             // Show error message to user.
             this.setState({ errorMessage: serverResponse.errorMessage });
@@ -67,15 +75,17 @@ var AddNewShelter = React.createClass({
     },
 
     addNewVolunteerGroup: function () {
+        console.log("AddNewShelter:addNewVolunteerGroup");
         var errorFound = this.validateFields();
         if (!errorFound) {
-            var group = VolunteerGroup.createFromInputFields(this.state.fields);
+            var group = VolunteerGroup.createFromInputFields(
+                this.state.fields,
+                this.state.user.id);
             group.insert(this.insertGroupCallback);
         }
     },
 
     createInputField: function (inputField) {
-        console.log("AdNewShelter::createInputField");
         var inputFieldClassName = "form-control " + inputField.ref;
         return (
             <div className={inputField.getFormGroupClassName()}>
@@ -94,9 +104,7 @@ var AddNewShelter = React.createClass({
 
     render: function () {
         console.log("AddNewShelter: render");
-        var user = this.props.user ? this.props.user : this.state.user ? this.state.user :
-                   this.props.location ? this.props.location.state : null;
-        if (user == null) {
+        if (this.state.user == null) {
             throw "Non logged in user is attempting to add a new shelter";
         }
         var inputFields = [];
@@ -104,22 +112,14 @@ var AddNewShelter = React.createClass({
             var field = this.state.fields[key];
             inputFields.push(this.createInputField(field));
         }
-        if (user) {
-            return (
-                <div>
-                    {this.state.errorMessage}
-                    {inputFields}
-                    <button className="btn btn-primary addNewGroupButton"
-                            onClick={this.addNewVolunteerGroup}>Add Group</button>
-                </div>
-            );
-        } else {
-            return (
-                <div>
-                    <h1>You need to log in to be able to add a new group.</h1>
-                </div>
-            );
-        }
+        return (
+            <div>
+                {this.state.errorMessage}
+                {inputFields}
+                <button className="btn btn-primary addNewGroupButton"
+                        onClick={this.addNewVolunteerGroup}>Add Group</button>
+            </div>
+        );
     }
 });
 
