@@ -30,14 +30,54 @@ namespace SeeSpotHelp.WebServices
         }
 
         [WebMethod]
-        public string getVolunteer(string anID, string name, string email)
+        public SeeSpotHelp.WebServices.Result getVolunteer(string anID, string name, string email)
         {
 
             StaceyVolunteers.Volunteer vt = new StaceyVolunteers.Volunteer("Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11", anID,name,email);
             //vt.getVolunteer(anID);
             string json = JsonConvert.SerializeObject(vt);
+            SeeSpotHelp.WebServices.Result result = new SeeSpotHelp.WebServices.Result();
+            result.result = true;
+            result.messages = new string[1];
+            result.messages[0] = json;
 
-            return json;
+            return result;
         }
     }
+
+public partial class Result
+    {
+
+        //Private messageField As String
+
+
+        private string[] messagesField;
+
+        private System.Nullable<bool> resultField;
+
+        private bool resultFieldSpecified;
+        ///<remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
+        public string[] messages
+        {
+            get { return this.messagesField; }
+            set { this.messagesField = value; }
+        }
+        ///<remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
+        public System.Nullable<bool> result
+        {
+            get { return this.resultField; }
+            set { this.resultField = value; }
+        }
+
+        ///<remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool resultSpecified
+        {
+            get { return this.resultFieldSpecified; }
+            set { this.resultFieldSpecified = value; }
+        }
+    }
+
 }
