@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "9cd76b46feb6e73de781"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "1c06c199901095343424"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -26684,16 +26684,14 @@
 	    if (jQuery.isEmptyObject(name)) { name = ""; }
 	    if (jQuery.isEmptyObject(email)) { email = ""; }
 	
-	    var outer = this;
-	    var LoadVolunteerWithData = function (response) {
+	    var LoadedVolunteerWithData = function (response) {
 	        console.log("Volunteer::LoadVolunteerWithData");
 	        if (response.d.result) {
 	            var loadedVolunteer = Volunteer.castObject(JSON.parse(response.d.messages[0]));
 	            console.log("Calling callback function now:");
-	            console.log(outer.callback);
-	            outer.callback(loadedVolunteer);
+	            callback(loadedVolunteer);
 	            // TODO: Change so all callbacks look something like this:
-	            // outer.callback(loadedVolunteer, new ServerResponse(Success));
+	            // callback(loadedVolunteer, new ServerResponse(Success));
 	        } else {
 	            console.log("Volunteer::LoadVolunteerWithData: Error occurred");
 	            ShowErrorMessage(response.d);
@@ -26717,12 +26715,12 @@
 	        alert(errorString);
 	    };
 	
-	    AjaxServices.CallJSONService(
+	    var ajax = new AjaxServices(LoadedVolunteerWithData,
+	                                FailedCallback);
+	    ajax.CallJSONService(
 	        "WebServices/volunteerServices.asmx",
 	        "getVolunteer",
-	        { anID: anID, name: name, email: email },
-	        this.LoadedVolunteerWithData,
-	        this.FailedCallback);
+	        { anID: anID, name: name, email: email });
 	};
 	
 	function ShowErrorMessage(serverResponse) {
@@ -26769,22 +26767,22 @@
   \*********************************/
 /***/ function(module, exports) {
 
-	// A helpful class filled with static functions for validating various
+	// A helpful class filled with functions for validating various
 	// input fields.
-	var AJAXServices = function () { };
+	var AJAXServices = function (successCallback, failureCallback) {
+	    this.successCallback = successCallback;
+	    this.failureCallback = failureCallback;
+	};
 	
 	//Used to send a JSON based Web Service Request to the server
 	///*
 	//*  A JSON web service MUST have the <ScriptService> attribute, and any methods called must have a <ScriptMethod> attribute.
 	//*/
 	//Note: The __type property must be the first JSON property of an object to ensure proper serialization/deserialization
-	AJAXServices.CallJSONService = function (callbackURI,
-	                                         methodName,
-	                                         params,
-	                                         ReceivedServerData,
-	                                         ProcessError) {
+	AJAXServices.prototype.CallJSONService = function (callbackURI,
+	                                                   methodName,
+	                                                   params) {
 	    console.log("AJAXServices::CallJSONService");
-	    var services = this;
 	    $.ajax({
 	        type: 'POST',
 	        contentType: 'application/json',
@@ -26793,8 +26791,22 @@
 	        processData: false,
 	        data: JSON.stringify($(params)[0]) // params need to be in a single json object.  Arrays are right out.
 	    }).
-	        done(ReceivedServerData).
-	        fail(ProcessError);   // response data contains the javascript object parsed from the JSON data.
+	        done(function (response) {
+	            this.onSuccess(response);
+	        }.bind(this)).
+	        fail(function (response) {
+	            this.onFailure(response);
+	        }.bind(this));   // response data contains the javascript object parsed from the JSON data.
+	};
+	
+	AJAXServices.prototype.onSuccess = function (response) {
+	    console.log("AJAXServices::OnSuccess");
+	    this.successCallback(response);
+	};
+	
+	AJAXServices.prototype.onFailure = function (response) {
+	    console.log("AJAXServices::OnFailure");
+	    this.failureCallback(response);
 	};
 	
 	module.exports = AJAXServices;
@@ -27017,7 +27029,8 @@
 	            console.log("Successful login for " + response.name +
 	                        " with id " + response.id +
 	                        " and email " + response.email);
-	            Volunteer.LoadVolunteer(response.id, response.name, response.email, callback);
+	            Volunteer.
+	                LoadVolunteer(response.id, response.name, response.email, callback);
 	        });
 	    };
 	
