@@ -33,16 +33,14 @@ Volunteer.LoadVolunteer = function (anID, name, email, callback) {
     if (jQuery.isEmptyObject(name)) { name = ""; }
     if (jQuery.isEmptyObject(email)) { email = ""; }
 
-    var outer = this;
-    var LoadVolunteerWithData = function (response) {
+    var LoadedVolunteerWithData = function (response) {
         console.log("Volunteer::LoadVolunteerWithData");
         if (response.d.result) {
             var loadedVolunteer = Volunteer.castObject(JSON.parse(response.d.messages[0]));
             console.log("Calling callback function now:");
-            console.log(outer.callback);
-            outer.callback(loadedVolunteer);
+            callback(loadedVolunteer);
             // TODO: Change so all callbacks look something like this:
-            // outer.callback(loadedVolunteer, new ServerResponse(Success));
+            // callback(loadedVolunteer, new ServerResponse(Success));
         } else {
             console.log("Volunteer::LoadVolunteerWithData: Error occurred");
             ShowErrorMessage(response.d);
@@ -66,12 +64,12 @@ Volunteer.LoadVolunteer = function (anID, name, email, callback) {
         alert(errorString);
     };
 
-    AjaxServices.CallJSONService(
+    var ajax = new AjaxServices(LoadedVolunteerWithData,
+                                FailedCallback);
+    ajax.CallJSONService(
         "WebServices/volunteerServices.asmx",
         "getVolunteer",
-        { anID: anID, name: name, email: email },
-        this.LoadedVolunteerWithData,
-        this.FailedCallback);
+        { anID: anID, name: name, email: email });
 };
 
 function ShowErrorMessage(serverResponse) {
