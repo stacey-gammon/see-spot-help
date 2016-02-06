@@ -11,7 +11,8 @@ FacebookUser.getVolunteer = function (callback) {
             console.log("Successful login for " + response.name +
                         " with id " + response.id +
                         " and email " + response.email);
-            Volunteer.LoadVolunteer(response.id, response.name, response.email, callback);
+            Volunteer.
+                LoadVolunteer(response.id, response.name, response.email, callback);
         });
     };
 
