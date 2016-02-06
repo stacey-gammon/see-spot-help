@@ -28,53 +28,51 @@ Volunteer.castObject = function (obj) {
 // database.  If no such volunteer exists, AddNewVolunteer
 // will be called with some basic defaults supplied by
 // facebook.
-Volunteer.LoadVolunteer = function(anID, name, email, callback) {
-    // TODO: Implement
-
-    this.volunteerCallback = callback;
+Volunteer.LoadVolunteer = function (anID, name, email, callback) {
+    console.log("Volunteer::LoadVolunteer");
     if (jQuery.isEmptyObject(name)) { name = ""; }
     if (jQuery.isEmptyObject(email)) { email = ""; }
-    AjaxServices.CallJSONService('WebServices/volunteerServices.asmx', 'getVolunteer', { anID: anID, name: name, email: email }, LoadVolunteerWithData, FailedCallback);
 
-    //$.ajax({
-    //    type: "POST",
-    //    url: "WebServices/volunteerServices.asmx/getVolunteer",
-    //    data: '{anID: "' + anID + '", name: "' + name + '", email: "' + email + '"}',
-    //    contentType: "application/json; charset=utf-8",
-    //    dataType: "json",
-    //    success: function (data) {
-    //        var loadedVolunteer = Volunteer.castObject(JSON.parse(data.d));
-    //        callback(loadedVolunteer);
-    //    },
-    //    error: function (ts) { alert(ts.responseText); }
-    //});
+    var outer = this;
+    var LoadVolunteerWithData = function (response) {
+        console.log("Volunteer::LoadVolunteerWithData");
+        if (response.d.result) {
+            var loadedVolunteer = Volunteer.castObject(JSON.parse(response.d.messages[0]));
+            console.log("Calling callback function now:");
+            console.log(outer.callback);
+            outer.callback(loadedVolunteer);
+            // TODO: Change so all callbacks look something like this:
+            // outer.callback(loadedVolunteer, new ServerResponse(Success));
+        } else {
+            console.log("Volunteer::LoadVolunteerWithData: Error occurred");
+            ShowErrorMessage(response.d);
+        }
+        //hideThrobber();
+    };
+
+    //Invoked when the server has an error (just an example)
+    var FailedCallback = function (error) {
+        console.log("Volunteer::FailedCallback");
+        var errorString = '';
+        errorString += 'Message:==>' + error.responseText + '\n\n';
+        errorString += 'StackTrace:==>' + error.StackTrace + '\n\n';
+        errorString += 'ExceptionType:==>' + error.ExceptionType;
+
+        // just in case...
+        //hideThrobber();
+
+        // TODO: Change so callbacks look something like this:
+        // outer.callback(null, new ServerResponse(Failed));
+        alert(errorString);
+    };
+
+    AjaxServices.CallJSONService(
+        "WebServices/volunteerServices.asmx",
+        "getVolunteer",
+        { anID: anID, name: name, email: email },
+        this.LoadedVolunteerWithData,
+        this.FailedCallback);
 };
-
-var LoadVolunteerWithData = function (response) {
-
-    if (response.d.result) {
-                var loadedVolunteer = Volunteer.castObject(JSON.parse(response.d.messages[0]));
-                this.volunteerCallback(loadedVolunteer);
-    }
-    else {
-        ShowErrorMessage(response.d);
-    }
-    //hideThrobber();
-}
-
-//Invoked when the server has an error (just an example)
-function FailedCallback(error) {
-    var errorString = '';
-
-    errorString += 'Message:==>' + error.responseText + '\n\n';
-    errorString += 'StackTrace:==>' + error.StackTrace + '\n\n';
-    errorString += 'ExceptionType:==>' + error.ExceptionType;
-
-    // just in case...
-    //hideThrobber();
-
-    alert(errorString);
-}
 
 function ShowErrorMessage(serverResponse) {
 
