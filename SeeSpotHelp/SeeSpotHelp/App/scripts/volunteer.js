@@ -2,6 +2,8 @@
 // managed by facebook login and authentication.
 
 var VolunteerGroup = require('./volunteergroup');
+var AjaxServices = require('../scripts/AJAXServices');
+var volunteerCallback;
 
 var Volunteer = function(name, email, id) {
     this.name = name;
@@ -29,23 +31,64 @@ Volunteer.castObject = function (obj) {
 Volunteer.LoadVolunteer = function(anID, name, email, callback) {
     // TODO: Implement
 
-    $.ajax({
-        type: "POST",
-        url: "WebServices/volunteerServices.asmx/getVolunteer",
-        data: '{anID: "' + anID + '", name: "' + name + '", email: "' + email + '"}',
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function (data) {
-            var volLit = JSON.parse(data.d);
-            var newVol = new Volunteer();
-            for (var prop in volLit)
-                newVol[prop] = volLit[prop];
-            callback(newVol);
-        },
+    this.volunteerCallback = callback;
+    if (jQuery.isEmptyObject(name)) { name = ""; }
+    if (jQuery.isEmptyObject(email)) { email = ""; }
+    AjaxServices.CallJSONService('WebServices/volunteerServices.asmx', 'getVolunteer', { anID: anID, name: name, email: email }, LoadVolunteerWithData, FailedCallback);
 
-        error: function (ts) { alert(ts.responseText); }
-    });
+    //$.ajax({
+    //    type: "POST",
+    //    url: "WebServices/volunteerServices.asmx/getVolunteer",
+    //    data: '{anID: "' + anID + '", name: "' + name + '", email: "' + email + '"}',
+    //    contentType: "application/json; charset=utf-8",
+    //    dataType: "json",
+    //    success: function (data) {
+    //        var loadedVolunteer = Volunteer.castObject(JSON.parse(data.d));
+    //        callback(loadedVolunteer);
+    //    },
+    //    error: function (ts) { alert(ts.responseText); }
+    //});
 };
+
+var LoadVolunteerWithData = function (response) {
+
+    if (response.d.result) {
+                var loadedVolunteer = Volunteer.castObject(JSON.parse(response.d.messages[0]));
+                this.volunteerCallback(loadedVolunteer);
+    }
+    else {
+        ShowErrorMessage(response.d);
+    }
+    //hideThrobber();
+}
+
+//Invoked when the server has an error (just an example)
+function FailedCallback(error) {
+    var errorString = '';
+
+    errorString += 'Message:==>' + error.responseText + '\n\n';
+    errorString += 'StackTrace:==>' + error.StackTrace + '\n\n';
+    errorString += 'ExceptionType:==>' + error.ExceptionType;
+
+    // just in case...
+    //hideThrobber();
+
+    alert(errorString);
+}
+
+function ShowErrorMessage(serverResponse) {
+
+    var msg = '';
+
+    for (i = 0; i < serverResponse.messages.length; i++) {
+        if (serverResponse.messages[i] != null) {
+            msg += serverResponse.messages[i] + '\n\r';
+        }
+    }
+    //hideThrobber();
+
+    alert(msg);
+}
 
 Volunteer.prototype.AddNewVolunteer = function() {
     // TODO: Implement
