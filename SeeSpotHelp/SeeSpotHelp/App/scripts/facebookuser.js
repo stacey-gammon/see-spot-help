@@ -9,16 +9,9 @@ FacebookUser.getVolunteer = function (callback) {
         console.log("FacebookUser::login : loadVolunteer");
         FB.api("/me", function (response) {
             console.log("Successful login for " + response.name +
-                        " with id " + response.id);
-            //var volunteer = new Volunteer(
-            //    response.name,
-            //    response.email,
-            //    response.id);
-            // todo:fix this
+                        " with id " + response.id +
+                        " and email " + response.email);
             Volunteer.LoadVolunteer(response.id, response.name, response.email, callback);
-            console.log("Loaded volunteer: ");
-            console.log(volunteer);
-            //callback(volunteer);
         });
     };
 
