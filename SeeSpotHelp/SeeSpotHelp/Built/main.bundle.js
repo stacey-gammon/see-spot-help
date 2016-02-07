@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "6a56b0e1e86997bf4ad6"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "2feba5308504c5143604"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -26587,8 +26587,8 @@
 	        return (
 	            React.createElement("div", {className: "shelterInfoBox"}, 
 	                React.createElement("h1", null, this.props.group.name), 
-	                React.createElement("h2", null, this.props.group.shelterName), 
-	                React.createElement("h2", null, this.props.group.address)
+	                React.createElement("h2", null, this.props.group.shelter), 
+	                React.createElement("h2", null, this.props.group.address, " ", this.props.group.state, ", ", this.props.group.city, ", ", this.props.group.zipCode)
 	            )
 	        );
 	    }
@@ -26614,125 +26614,108 @@
 	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 229);
 	var ConstStrings = __webpack_require__(/*! ../scripts/conststrings */ 231);
 	
-	var LeaveShelterButton = React.createClass({displayName: "LeaveShelterButton",
+	var ShelterActionsBox = React.createClass({displayName: "ShelterActionsBox",
+	    getInitialState: function() {
+	        var user = this.props.user ? Volunteer.castObject(this.props.user) : null;
+	        var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
+	        var permissions = user && group ? group.getUserPermissions(user.id) : null;
+	
+	        return {
+	            user: user,
+	            group: group,
+	            permissions: permissions
+	        };
+	    },
+	
 	    alertNotImplemented: function () {
 	        alert('Sorry, that functionality is not implemented yet!');
 	    },
-	    render: function () {
-	        console.log("LeaveShelterButton:render, permissions = " + this.props.permissions);
-	        if (!this.props.user ||
-	            this.props.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER) {
+	
+	    getLeaveGroupButton: function () {
+	        if (!this.state.user ||
+	            this.state.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER) {
 	            return null;
 	        }
 	        return (
-	            React.createElement("div", {className: "col-xs-4 groupActionButtonDiv"}, 
-	                React.createElement("button", {className: "btn btn-warning leaveShelterButton", 
-	                        onClick: this.alertNotImplemented}, 
-	                    ConstStrings.LeaveGroup
-	                )
+	            React.createElement("button", {className: "btn btn-warning leaveShelterButton buttonPadding", 
+	                    onClick: this.alertNotImplemented}, 
+	                ConstStrings.LeaveGroup
 	            )
 	        );
-	    }
-	});
-	
-	var AddAdoptableButton = React.createClass({displayName: "AddAdoptableButton",
-	    alertNotImplemented: function () {
-	        alert('Sorry, that functionality is not implemented yet!');
 	    },
-	    render: function () {
-	        console.log("LeaveShelterButton:render, permissions = " + this.props.permissions);
-	        if (!this.props.user ||
-	            this.props.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER) {
+	
+	    getAddAdoptableButton: function () {
+	        if (!this.state.user ||
+	            this.state.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER) {
 	            return null;
 	        }
 	        return (
-	            React.createElement("div", {className: "col-xs-4 groupActionButtonDiv"}, 
-	                React.createElement(LinkContainer, {
-	                    to: { pathname: "addAdoptablePage",
-	                          state: { user: this.props.user, group: this.props.group }}}, 
-	                    React.createElement("button", {className: "btn btn-info addAdoptableButton"}, 
-	                        React.createElement("span", {className: "glyphicon glyphicon-plus"}), 
-	                        " Adoptable"
-	                    )
+	            React.createElement(LinkContainer, {
+	                to: { pathname: "addAdoptablePage",
+	                    state: { user: this.state.user, group: this.state.group }}}, 
+	                React.createElement("button", {className: "btn btn-info addAdoptableButton buttonPadding"}, 
+	                    React.createElement("span", {className: "glyphicon glyphicon-plus"}), 
+	                    " Adoptable"
 	                )
 	            )
 	        );
-	    }
-	});
-	
-	var EditGroupButton = React.createClass({displayName: "EditGroupButton",
-	    editShelter: function () {
-	        alert('Sorry, that functionality is not implemented yet!');
 	    },
-	    render: function () {
-	        console.log("EditShelterButton:render, permissions = " + this.props.permissions);
-	        if (this.props.permissions != VolunteerGroup.PermissionsEnum.ADMIN) {
+	
+	    getEditGroupButton: function () {
+	        if (this.state.permissions != VolunteerGroup.PermissionsEnum.ADMIN) {
 	            return null;
 	        }
 	        return (
-	            React.createElement("div", {className: "col-xs-4 editGroupButtonDiv groupActionButtonDiv"}, 
-	                React.createElement(LinkContainer, {
-	                    to: { pathname: "addNewShelter",
-	                          state: { user: this.props.user, editMode: true, group: this.props.group }}}, 
-	                    React.createElement("button", {className: "btn btn-info editShelterButton"}, 
-	                        ConstStrings.Edit
-	                    )
+	            React.createElement(LinkContainer, {
+	                to: { pathname: "addNewShelter",
+	                    state: { user: this.state.user, editMode: true, group: this.state.group }}}, 
+	                React.createElement("button", {className: "btn btn-info editShelterButton buttonPadding"}, 
+	                    ConstStrings.Edit
 	                )
 	            )
 	        );
-	    }
-	});
+	    },
 	
-	var RequestToJoinButton = React.createClass({displayName: "RequestToJoinButton",
 	    requestToJoin: function () {
 	        if (!this.props.group || !this.props.user) {
 	            throw "Attempting to join group when user or group is undefined or null";
 	        }
-	        var group = VolunteerGroup.castObject(this.props.group);
-	        var user = Volunteer.castObject(this.props.user);
+	        var group = VolunteerGroup.castObject(this.state.group);
+	        var user = Volunteer.castObject(this.state.user);
 	        group.requestToJoin(user);
 	        this.refs.requestToJoinButton.disabled = true;
 	        this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
 	    },
 	
-	    render: function () {
-	        console.log("RequestToJoinButton:render, permissions = " + this.props.permissions);
-	        if (!this.props.user) return null;
+	    getRequestToJoinButton: function () {
+	        console.log("RequestToJoinButton:render, permissions = " + this.state.permissions);
+	        if (!this.state.user) return null;
 	
-	        var pending = this.props.permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
+	        var pending = this.state.permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
 	
-	        if (this.props.permissions != VolunteerGroup.PermissionsEnum.NONMEMBER &&
+	        if (this.state.permissions != VolunteerGroup.PermissionsEnum.NONMEMBER &&
 	            !pending) {
 	            return null;
 	        }
 	        var text = pending ? ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
 	        return (
-	            React.createElement("div", {className: "col-xs-12"}, 
-	                React.createElement("button", {className: "btn btn-warning requestToJoinButton", 
-	                        ref: "requestToJoinButton", 
-	                        disabled: pending, 
-	                        onClick: this.requestToJoin}, 
-	                    text
-	                )
+	            React.createElement("button", {className: "btn btn-warning requestToJoinButto buttonPaddingn", 
+	                    ref: "requestToJoinButton", 
+	                    disabled: pending, 
+	                    onClick: this.requestToJoin}, 
+	                text
 	            )
 	        );
-	    }
-	});
+	    },
 	
-	var ShelterActionsBox = React.createClass({displayName: "ShelterActionsBox",
 	    render: function () {
 	        console.log("ShelterActionsBox:render:");
-	        var user = this.props.user ? Volunteer.castObject(this.props.user) : null;
-	        var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-	        var permissions = user && group ? group.getUserPermissions(user.id) : null;
 	        return (
-	            React.createElement("div", {className: "container shelterActionsBox"}, 
-	                React.createElement("div", {className: "row pull-left"}, 
-	                    React.createElement(EditGroupButton, {permissions: permissions, user: user, group: group}), 
-	                    React.createElement(AddAdoptableButton, {permissions: permissions, user: user, group: group}), 
-	                    React.createElement(LeaveShelterButton, {permissions: permissions, user: user}), 
-	                    React.createElement(RequestToJoinButton, {permissions: permissions, user: user, group: group})
-	                )
+	            React.createElement("div", {className: "shelterActionsBox"}, 
+	                this.getEditGroupButton(), 
+	                this.getAddAdoptableButton(), 
+	                this.getLeaveGroupButton(), 
+	                this.getRequestToJoinButton()
 	            )
 	        );
 	    }
@@ -26921,7 +26904,7 @@
 	var ConstStrings = {
 	    RequestToJoin: "Request to join",
 	    JoinRequestPending: "Request pending",
-	    LeaveGroup: "Leave group",
+	    LeaveGroup: "Leave",
 	    GroupName: "Group Name",
 	    Shelter: "Shelter",
 	    Address: "Address",

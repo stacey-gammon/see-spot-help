@@ -18,15 +18,12 @@ p {
     letter-spacing: 2px;
 }
 
-.groupActionButtonDiv {
-    margin: 1px;
-    display: inline-block;
-    float: left;
+.shelterActionsBox {
+    margin: 10px;
 }
 
-.editGroupButtonDiv {
-   width: 51px;
-   margin-right: 1px;
+.buttonPadding {
+    margin: 1px
 }
 
 .animalImg {
