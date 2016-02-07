@@ -2,29 +2,20 @@
 
 var React = require("react");
 var ConstStrings = require("../scripts/conststrings");
-var VolunteerGroup = require("../scripts/volunteergroup");
+var Animal = require("../scripts/animal");
 var InputField = require("../scripts/inputfield");
 var InputFieldValidation = require("../scripts/inputfieldvalidation");
 
-var STATES = [
-    "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",
-    "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS",
-    "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR",
-    "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
-];
-
-var AddNewShelter = React.createClass({
+var AddAdoptablePage = React.createClass({
     getInitialState: function () {
-        console.log("AddNewShelter::getInitialState");
+        console.log("AddAdoptablePage::getInitialState");
         // for short hand.
         var IFV = InputFieldValidation;
         var inputFields = {
             "name": new InputField([IFV.validateNotEmpty]),
-            "shelter": new InputField([IFV.validateNotEmpty]),
-            "address": new InputField([IFV.validateNotEmpty]),
-            "city": new InputField([IFV.validateNotEmpty]),
-            "state": new InputField([IFV.validateNotEmpty]),
-            "zipCode": new InputField([IFV.validateNotEmpty])
+            "type": new InputField([IFV.validateNotEmpty]),
+            "breed": new InputField(),
+            "age": new InputField()
         };
         // Store the ref name on the input field without manually
         // writing it out twice.
@@ -38,11 +29,13 @@ var AddNewShelter = React.createClass({
             this.props.location ? this.props.location.state.user : null;
         var group = this.props.group ? this.props.group :
             this.props.location ? this.props.location.state.group : null;
+        var animal = this.props.animal ? this.props.animal :
+            this.props.location ? this.props.location.state.group : null;
 
         // If in edit mode, fill in field values.
         if (editMode) {
             for (var field in inputFields) {
-                inputFields[field].value = group[field];
+                inputFields[field].value = animal[field];
             }
         }
 
@@ -51,12 +44,13 @@ var AddNewShelter = React.createClass({
             fields: inputFields,
             user : user,
             group: group,
-            editMode: editMode
+            editMode: editMode,
+            animal: animal
         };
     },
 
     validateFields: function () {
-        console.log("AddNewShelter::validateFields");
+        console.log("AddAdoptablePage::validateFields");
         var errorFound = false;
         for (var key in this.state.fields) {
             var field = this.state.fields[key];
@@ -77,7 +71,7 @@ var AddNewShelter = React.createClass({
     },
 
     insertGroupCallback: function (group, serverResponse) {
-        console.log("AddNewShelter::insertGroupCallback");
+        console.log("AddAdoptablePage::insertGroupCallback");
         if (serverResponse.hasError) {
             // Show error message to user.
             this.setState({ errorMessage: serverResponse.errorMessage });
@@ -87,18 +81,16 @@ var AddNewShelter = React.createClass({
         }
     },
 
-    addNewVolunteerGroup: function () {
-        console.log("AddNewShelter:addNewVolunteerGroup");
+    addNewAnimal: function () {
+        console.log("AddAdoptablePage:addNewAnimal");
         var errorFound = this.validateFields();
         if (!errorFound) {
             if (this.state.editMode) {
-                this.state.group.updateFromInputFields(this.state.fields);
-                this.state.group.update(this.insertGroupCallback);
+                this.state.animal.copyFieldsFrom(this.state.fields);
+                this.state.animal.update(this.insertGroupCallback);
             } else {
-                var group = VolunteerGroup.createFromInputFields(
-                    this.state.fields,
-                    this.state.user.id);
-                group.insert(this.insertGroupCallback);
+                var animal = Animal.castObj(this.state.fields);
+                animal.insert(this.insertGroupCallback);
             }
         }
     },
@@ -122,9 +114,9 @@ var AddNewShelter = React.createClass({
     },
 
     render: function () {
-        console.log("AddNewShelter: render");
+        console.log("AddAdoptablePage: render");
         if (this.state.user == null) {
-            throw "Non logged in user is attempting to add a new shelter";
+            throw "Non logged in user is attempting to add a new adoptable";
         }
         var inputFields = [];
         for (var key in this.state.fields) {
@@ -136,11 +128,11 @@ var AddNewShelter = React.createClass({
             <div>
                 {this.state.errorMessage}
                 {inputFields}
-                <button className="btn btn-primary addNewGroupButton"
-                onClick={this.addNewVolunteerGroup}>{buttonText}</button>
+                <button className="btn btn-primary addAdoptableButton"
+                onClick={this.addAdoptable}>{buttonText}</button>
             </div>
         );
     }
 });
 
-module.exports = AddNewShelter;
+module.exports = AddAdoptablePage;
