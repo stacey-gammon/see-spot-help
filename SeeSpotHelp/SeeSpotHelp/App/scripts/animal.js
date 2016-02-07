@@ -25,4 +25,37 @@ Animal.StatusEnum = Object.freeze(
     }
 );
 
+Animal.castObject = function (obj) {
+    var animal = new Animal();
+    animal.copyFieldsFrom(obj);
+    return animal;
+};
+
+Animal.prototype.copyFieldsFrom = function (other) {
+    for (var prop in other) {
+        this[prop] = other[prop];
+    }
+}
+
+// Attempts to insert the current instance into the database as
+// a animal
+// @param callback {Function(Animal, ServerResponse) }
+//     callback is expected to take as a first argument the potentially
+//     inserted animal (null on failure) and a server
+//     response to hold error and success information.
+Animal.prototype.insert = function (callback) {
+    // TODO: Implement and hook into database.
+    callback(this, new ServerResponse());
+};
+
+// Attempts to update the current animal into the database.
+// @param callback {Function(Animal, ServerResponse) }
+//     callback is expected to take as a first argument the potentially
+//     updated animal (null on failure) and a server
+//     response to hold error and success information.
+Animal.prototype.update = function (callback) {
+    // TODO: Implement and hook into database.
+    callback(this, new ServerResponse());
+};
+
 module.exports = Animal;
