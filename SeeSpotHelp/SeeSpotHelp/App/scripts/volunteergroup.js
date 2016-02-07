@@ -10,10 +10,21 @@
 // stops using the app.  It will just sit there unused and the real
 // volunteers will have to create a separate group.
 
-var VolunteerGroup = function(name, shelter, address, id) {
+// Creates a new volunteer group with the given fields.
+// @param name {string} The group name.
+// @param shelter {string} The shelter name.
+// @param address {string} The street address of the shelter.
+// @param city {string} The city of the sheleter.
+// @param state {string} The state the shelter belongs in.
+// @param zipCode {string} The zip code the shelter resides in.
+// @param id {string} the id of the group.
+var VolunteerGroup = function(name, shelter, address, city, state, zipCode, id) {
     this.name = name;
     this.shelter = shelter;
     this.address = address;
+    this.city = city;
+    this.state = state;
+    this.zipCode = zipCode;
     this.id = id;
 
     // Mapping of user id to permission enum, one entry per
@@ -49,32 +60,46 @@ VolunteerGroup.PermissionsEnum = Object.freeze(
 // InputFields which hold the values given by the user.
 VolunteerGroup.createFromInputFields = function(inputFields, adminId) {
     var volunteerGroup = new VolunteerGroup();
-    volunteerGroup.name = inputFields["groupName"].value;
-    volunteerGroup.shelter = inputFields["shelterName"].value;
-    volunteerGroup.address = inputFields["address"].value;
+    volunteerGroup.updateFromInputFields(inputFields);
     volunteerGroup.userPermissionsMap[adminId] = VolunteerGroup.PermissionsEnum.ADMIN;
-
     return volunteerGroup;
 };
 
+// Creates and returns a new volunteer group based on the fields supplied
+// by the user during an input form.
+// @param inputFields { { fieldName : InputField} } - A object where the keys
+// are the field name (e.g. "groupName", "shelterName") and the values are
+// InputFields which hold the values given by the user.
+VolunteerGroup.prototype.updateFromInputFields = function (inputFields) {
+    this.name = inputFields["name"].value;
+    this.shelter = inputFields["shelter"].value;
+    this.address = inputFields["address"].value;
+    this.city = inputFields["city"].value;
+    this.state = inputFields["state"].value;
+    this.zipCode = inputFields["zipCode"].value;
+};
+
 VolunteerGroup.getFakeGroups = function() {
-    return {
+    var fakeGroups = {
         "123": new VolunteerGroup(
             "Friends of Saratoga County Humane Society",
             "Saratoga County Humane Society",
-            "Saratoga Springs, NY",
+            "96 Broadway", "Saratoga Springs", "NY", "12866",
             "123"),
         "456": new VolunteerGroup(
             "Friends of Newark AHS",
             "Newark Humane Society",
-            "Newark, NJ",
+            "96 Street lane", "Newark", "NJ", "12345",
             "456"),
         "789": new VolunteerGroup(
             "Dog Walkers at Halfway Hounds",
             "Halfway Hounds",
-            "Park Ridge, NJ",
+            "96 Street lane", "Park Ridge", "NJ", "12345",
             "789")
     };
+    fakeGroups["123"].userPermissionsMap["10102012745568702"] =
+        VolunteerGroup.PermissionsEnum.ADMIN;
+    return fakeGroups;
 };
 
 VolunteerGroup.search = function (searchText) {
@@ -93,7 +118,7 @@ VolunteerGroup.search = function (searchText) {
 };
 
 VolunteerGroup.prototype.getUserPermissions = function (userId) {
-    console.log("VolunteerGroup.prototype.getUserPermissions");
+    console.log("VolunteerGroup.prototype.getUserPermissions for " + userId);
     if (this.userPermissionsMap.hasOwnProperty(userId)) {
         return this.userPermissionsMap[userId];
     } else {
@@ -125,6 +150,16 @@ VolunteerGroup.loadVolunteerGroup = function(groupId) {
 //     inserted volunteer group (null on failure) and a server
 //     response to hold error and success information.
 VolunteerGroup.prototype.insert = function (callback) {
+    // TODO: Implement and hook into database.
+    callback(this, new ServerResponse());
+};
+
+// Attempts to update the current volunteer group into the database.
+// @param callback {Function(VolunteerGroup, ServerResponse) }
+//     callback is expected to take as a first argument the potentially
+//     updated volunteer group (null on failure) and a server
+//     response to hold error and success information.
+VolunteerGroup.prototype.update = function (callback) {
     // TODO: Implement and hook into database.
     callback(this, new ServerResponse());
 };
