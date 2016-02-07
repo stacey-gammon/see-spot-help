@@ -3,19 +3,27 @@
     text-align: center;
     font-weight: bold;
     margin: 2px;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
 h2 {
     font-size: 12px;
     text-align: center;
     margin: 2px;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
 p {
     font-size: 12px;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+}
+
+.shelterActionsBox {
+    margin: 10px;
+}
+
+.buttonPadding {
+    margin: 2px
 }
 
 .animalImg {
