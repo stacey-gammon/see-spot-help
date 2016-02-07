@@ -1,6 +1,9 @@
 ﻿"use strict"
 
 var React = require("react");
+var ReactRouterBootstrap = require('react-router-bootstrap');
+var LinkContainer = ReactRouterBootstrap.LinkContainer;
+
 var VolunteerGroup = require("../scripts/volunteergroup");
 var Volunteer = require("../scripts/volunteer");
 var ConstStrings = require("../scripts/conststrings");
@@ -16,11 +19,35 @@ var LeaveShelterButton = React.createClass({
             return null;
         }
         return (
-            <div>
+            <div className="col-xs-6">
                 <button className="btn btn-warning leaveShelterButton"
                         onClick={this.alertNotImplemented}>
                     {ConstStrings.LeaveGroup}
                 </button>
+            </div>
+        );
+    }
+});
+
+
+var EditGroupButton = React.createClass({
+    editShelter: function () {
+        alert('Sorry, that functionality is not implemented yet!');
+    },
+    render: function () {
+        console.log("EditShelterButton:render, permissions = " + this.props.permissions);
+        if (this.props.permissions != VolunteerGroup.PermissionsEnum.ADMIN) {
+            return null;
+        }
+        return (
+            <div className="col-xs-6">
+                <LinkContainer
+                    to={{ pathname: "addNewShelter",
+                          state: { user: this.props.user, editMode: true, group: this.props.group } }}>
+                    <button className="btn btn-info editShelterButton">
+                        {ConstStrings.Edit}
+                    </button>
+                </LinkContainer>
             </div>
         );
     }
@@ -50,7 +77,7 @@ var RequestToJoinButton = React.createClass({
         }
         var text = pending ? ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
         return (
-            <div>
+            <div className="col-xs-12">
                 <button className="btn btn-warning requestToJoinButton"
                         ref="requestToJoinButton"
                         disabled={pending}
@@ -69,9 +96,12 @@ var ShelterActionsBox = React.createClass({
         var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
         var permissions = user && group ? group.getUserPermissions(user.id) : null;
         return (
-            <div>
-                <LeaveShelterButton permissions={permissions} user={user}/>
-                <RequestToJoinButton permissions={permissions} user={user} group={group} />
+            <div className="container shelterActionsBox">
+                <div className="row  pull-left">
+                    <LeaveShelterButton permissions={permissions} user={user}/>
+                    <RequestToJoinButton permissions={permissions} user={user} group={group} />
+                    <EditGroupButton permissions={permissions} user={user} group={group} />
+                </div>
             </div>
         );
     }

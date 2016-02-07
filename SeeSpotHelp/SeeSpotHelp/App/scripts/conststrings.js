@@ -4,11 +4,14 @@ var ConstStrings = {
     JoinRequestPending: "Request pending",
     LeaveGroup: "Leave group",
     groupName: "Group Name",
-    shelterName: "Shelter",
+    shelter: "Shelter",
     address: "Address",
     city: "City",
     state: "State",
-    zipCode: "Zip Code"
+    zipCode: "Zip Code",
+    Edit: "Edit",
+    Update: "Update",
+    Add: "Add"
 };
 
 module.exports = ConstStrings;
