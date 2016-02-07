@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "1c06c199901095343424"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "bc6c089365390ab28899"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -26337,10 +26337,21 @@
 	// stops using the app.  It will just sit there unused and the real
 	// volunteers will have to create a separate group.
 	
-	var VolunteerGroup = function(name, shelter, address, id) {
+	// Creates a new volunteer group with the given fields.
+	// @param name {string} The group name.
+	// @param shelter {string} The shelter name.
+	// @param address {string} The street address of the shelter.
+	// @param city {string} The city of the sheleter.
+	// @param state {string} The state the shelter belongs in.
+	// @param zipCode {string} The zip code the shelter resides in.
+	// @param id {string} the id of the group.
+	var VolunteerGroup = function(name, shelter, address, city, state, zipCode, id) {
 	    this.name = name;
 	    this.shelter = shelter;
 	    this.address = address;
+	    this.city = city;
+	    this.state = state;
+	    this.zipCode = zipCode;
 	    this.id = id;
 	
 	    // Mapping of user id to permission enum, one entry per
@@ -26376,32 +26387,46 @@
 	// InputFields which hold the values given by the user.
 	VolunteerGroup.createFromInputFields = function(inputFields, adminId) {
 	    var volunteerGroup = new VolunteerGroup();
-	    volunteerGroup.name = inputFields["groupName"].value;
-	    volunteerGroup.shelter = inputFields["shelterName"].value;
-	    volunteerGroup.address = inputFields["address"].value;
+	    volunteerGroup.updateFromInputFields(inputFields);
 	    volunteerGroup.userPermissionsMap[adminId] = VolunteerGroup.PermissionsEnum.ADMIN;
-	
 	    return volunteerGroup;
 	};
 	
+	// Creates and returns a new volunteer group based on the fields supplied
+	// by the user during an input form.
+	// @param inputFields { { fieldName : InputField} } - A object where the keys
+	// are the field name (e.g. "groupName", "shelterName") and the values are
+	// InputFields which hold the values given by the user.
+	VolunteerGroup.prototype.updateFromInputFields = function (inputFields) {
+	    this.name = inputFields["name"].value;
+	    this.shelter = inputFields["shelter"].value;
+	    this.address = inputFields["address"].value;
+	    this.city = inputFields["city"].value;
+	    this.state = inputFields["state"].value;
+	    this.zipCode = inputFields["zipCode"].value;
+	};
+	
 	VolunteerGroup.getFakeGroups = function() {
-	    return {
+	    var fakeGroups = {
 	        "123": new VolunteerGroup(
 	            "Friends of Saratoga County Humane Society",
 	            "Saratoga County Humane Society",
-	            "Saratoga Springs, NY",
+	            "96 Broadway", "Saratoga Springs", "NY", "12866",
 	            "123"),
 	        "456": new VolunteerGroup(
 	            "Friends of Newark AHS",
 	            "Newark Humane Society",
-	            "Newark, NJ",
+	            "96 Street lane", "Newark", "NJ", "12345",
 	            "456"),
 	        "789": new VolunteerGroup(
 	            "Dog Walkers at Halfway Hounds",
 	            "Halfway Hounds",
-	            "Park Ridge, NJ",
+	            "96 Street lane", "Park Ridge", "NJ", "12345",
 	            "789")
 	    };
+	    fakeGroups["123"].userPermissionsMap["10102012745568702"] =
+	        VolunteerGroup.PermissionsEnum.ADMIN;
+	    return fakeGroups;
 	};
 	
 	VolunteerGroup.search = function (searchText) {
@@ -26420,7 +26445,7 @@
 	};
 	
 	VolunteerGroup.prototype.getUserPermissions = function (userId) {
-	    console.log("VolunteerGroup.prototype.getUserPermissions");
+	    console.log("VolunteerGroup.prototype.getUserPermissions for " + userId);
 	    if (this.userPermissionsMap.hasOwnProperty(userId)) {
 	        return this.userPermissionsMap[userId];
 	    } else {
@@ -26452,6 +26477,16 @@
 	//     inserted volunteer group (null on failure) and a server
 	//     response to hold error and success information.
 	VolunteerGroup.prototype.insert = function (callback) {
+	    // TODO: Implement and hook into database.
+	    callback(this, new ServerResponse());
+	};
+	
+	// Attempts to update the current volunteer group into the database.
+	// @param callback {Function(VolunteerGroup, ServerResponse) }
+	//     callback is expected to take as a first argument the potentially
+	//     updated volunteer group (null on failure) and a server
+	//     response to hold error and success information.
+	VolunteerGroup.prototype.update = function (callback) {
 	    // TODO: Implement and hook into database.
 	    callback(this, new ServerResponse());
 	};
@@ -26564,6 +26599,9 @@
 	/** @jsx React.DOM */"use strict"
 	
 	var React = __webpack_require__(/*! react */ 3);
+	var ReactRouterBootstrap = __webpack_require__(/*! react-router-bootstrap */ 162);
+	var LinkContainer = ReactRouterBootstrap.LinkContainer;
+	
 	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
 	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 229);
 	var ConstStrings = __webpack_require__(/*! ../scripts/conststrings */ 231);
@@ -26579,10 +26617,34 @@
 	            return null;
 	        }
 	        return (
-	            React.createElement("div", null, 
+	            React.createElement("div", {className: "col-xs-6"}, 
 	                React.createElement("button", {className: "btn btn-warning leaveShelterButton", 
 	                        onClick: this.alertNotImplemented}, 
 	                    ConstStrings.LeaveGroup
+	                )
+	            )
+	        );
+	    }
+	});
+	
+	
+	var EditGroupButton = React.createClass({displayName: "EditGroupButton",
+	    editShelter: function () {
+	        alert('Sorry, that functionality is not implemented yet!');
+	    },
+	    render: function () {
+	        console.log("EditShelterButton:render, permissions = " + this.props.permissions);
+	        if (this.props.permissions != VolunteerGroup.PermissionsEnum.ADMIN) {
+	            return null;
+	        }
+	        return (
+	            React.createElement("div", {className: "col-xs-6"}, 
+	                React.createElement(LinkContainer, {
+	                    to: { pathname: "addNewShelter",
+	                          state: { user: this.props.user, editMode: true, group: this.props.group }}}, 
+	                    React.createElement("button", {className: "btn btn-info editShelterButton"}, 
+	                        ConstStrings.Edit
+	                    )
 	                )
 	            )
 	        );
@@ -26613,7 +26675,7 @@
 	        }
 	        var text = pending ? ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
 	        return (
-	            React.createElement("div", null, 
+	            React.createElement("div", {className: "col-xs-6"}, 
 	                React.createElement("button", {className: "btn btn-warning requestToJoinButton", 
 	                        ref: "requestToJoinButton", 
 	                        disabled: pending, 
@@ -26632,9 +26694,12 @@
 	        var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
 	        var permissions = user && group ? group.getUserPermissions(user.id) : null;
 	        return (
-	            React.createElement("div", null, 
-	                React.createElement(LeaveShelterButton, {permissions: permissions, user: user}), 
-	                React.createElement(RequestToJoinButton, {permissions: permissions, user: user, group: group})
+	            React.createElement("div", {className: "container shelterActionsBox"}, 
+	                React.createElement("div", {className: "row  pull-left"}, 
+	                    React.createElement(LeaveShelterButton, {permissions: permissions, user: user}), 
+	                    React.createElement(RequestToJoinButton, {permissions: permissions, user: user, group: group}), 
+	                    React.createElement(EditGroupButton, {permissions: permissions, user: user, group: group})
+	                )
 	            )
 	        );
 	    }
@@ -26825,11 +26890,14 @@
 	    JoinRequestPending: "Request pending",
 	    LeaveGroup: "Leave group",
 	    groupName: "Group Name",
-	    shelterName: "Shelter",
+	    shelter: "Shelter",
 	    address: "Address",
 	    city: "City",
 	    state: "State",
-	    zipCode: "Zip Code"
+	    zipCode: "Zip Code",
+	    Edit: "Edit",
+	    Update: "Update",
+	    Add: "Add"
 	};
 	
 	module.exports = ConstStrings;
@@ -27218,8 +27286,8 @@
 	        // for short hand.
 	        var IFV = InputFieldValidation;
 	        var inputFields = {
-	            "groupName": new InputField([IFV.validateNotEmpty]),
-	            "shelterName": new InputField([IFV.validateNotEmpty]),
+	            "name": new InputField([IFV.validateNotEmpty]),
+	            "shelter": new InputField([IFV.validateNotEmpty]),
 	            "address": new InputField([IFV.validateNotEmpty]),
 	            "city": new InputField([IFV.validateNotEmpty]),
 	            "state": new InputField([IFV.validateNotEmpty]),
@@ -27230,14 +27298,27 @@
 	        for (var field in inputFields) {
 	            inputFields[field].ref = field;
 	        }
-	
+	        
+	        var editMode = this.props.editMode ? this.props.editMode :
+	            this.props.location ? this.props.location.state.editMode : null;
 	        var user = this.props.user ? this.props.user :
 	            this.props.location ? this.props.location.state.user : null;
+	        var group = this.props.group ? this.props.group :
+	            this.props.location ? this.props.location.state.group : null;
+	
+	        // If in edit mode, fill in field values.
+	        if (editMode) {
+	            for (var field in inputFields) {
+	                inputFields[field].value = group[field];
+	            }
+	        }
 	
 	        return {
 	            errorMessage: null,
 	            fields: inputFields,
-	            user : user
+	            user : user,
+	            group: group,
+	            editMode: editMode
 	        };
 	    },
 	
@@ -27277,24 +27358,32 @@
 	        console.log("AddNewShelter:addNewVolunteerGroup");
 	        var errorFound = this.validateFields();
 	        if (!errorFound) {
-	            var group = VolunteerGroup.createFromInputFields(
-	                this.state.fields,
-	                this.state.user.id);
-	            group.insert(this.insertGroupCallback);
+	            if (this.state.editMode) {
+	                this.state.group.updateFromInputFields(this.state.fields);
+	                this.state.group.update(this.insertGroupCallback);
+	            } else {
+	                var group = VolunteerGroup.createFromInputFields(
+	                    this.state.fields,
+	                    this.state.user.id);
+	                group.insert(this.insertGroupCallback);
+	            }
 	        }
 	    },
 	
 	    createInputField: function (inputField) {
 	        var inputFieldClassName = "form-control " + inputField.ref;
+	        var name = ConstStrings[inputField.ref];
+	        if (inputField.ref == "name") name = ConstStrings.groupName;
 	        return (
 	            React.createElement("div", {className: inputField.getFormGroupClassName()}, 
 	                inputField.getErrorLabel(), 
 	                React.createElement("div", {className: "input-group"}, 
-	                    React.createElement("span", {className: "input-group-addon"}, ConstStrings[inputField.ref]), 
+	                    React.createElement("span", {className: "input-group-addon"}, name), 
 	                    React.createElement("input", {type: "text", 
 	                           ref: inputField.ref, 
 	                           id: inputField.ref, 
-	                           className: inputFieldClassName})
+	                           className: inputFieldClassName, 
+	                           defaultValue: inputField.value})
 	                ), 
 	                inputField.getValidationSpan()
 	            )
@@ -27311,12 +27400,13 @@
 	            var field = this.state.fields[key];
 	            inputFields.push(this.createInputField(field));
 	        }
+	        var buttonText = this.state.editMode ? ConstStrings.Update : ConstStrings.Add;
 	        return (
 	            React.createElement("div", null, 
 	                this.state.errorMessage, 
 	                inputFields, 
 	                React.createElement("button", {className: "btn btn-primary addNewGroupButton", 
-	                        onClick: this.addNewVolunteerGroup}, "Add Group")
+	                onClick: this.addNewVolunteerGroup}, buttonText)
 	            )
 	        );
 	    }
