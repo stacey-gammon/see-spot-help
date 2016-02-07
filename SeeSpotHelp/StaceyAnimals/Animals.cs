@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StaceyAnimals
+namespace AnimalsNS
 {
-    public class Animals : StaceyData.BaseObject
+    public class Animals : Data.BaseObject
     {
 
 
@@ -15,10 +15,10 @@ namespace StaceyAnimals
             ConnectionString = aconnectionstring;
         }
 
-        public List<StaceyAnimals.Animal> getAnimals()
+        public List<AnimalsNS.Animal> getAnimals()
         {
 
-            List<StaceyAnimals.Animal> myanimals = new List<StaceyAnimals.Animal>();
+            List<AnimalsNS.Animal> myanimals = new List<AnimalsNS.Animal>();
             System.Data.DataTable dt;
             dt = Helpers.DBHelper.ExecuteProcedure(ConnectionString ,"animals_get");
             foreach (System.Data.DataRow element in dt.Rows)
