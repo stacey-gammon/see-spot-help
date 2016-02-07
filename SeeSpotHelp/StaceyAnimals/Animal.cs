@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace StaceyAnimals
+namespace AnimalsNS
 {
-    public class Animal : StaceyData.BaseObject
+    public class Animal : Data.BaseObject
         
     {
  
