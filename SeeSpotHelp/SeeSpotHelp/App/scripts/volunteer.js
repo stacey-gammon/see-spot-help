@@ -36,7 +36,7 @@ Volunteer.LoadVolunteer = function (anID, name, email, callback) {
     var LoadedVolunteerWithData = function (response) {
         console.log("Volunteer::LoadVolunteerWithData");
         if (response.d.result) {
-            var loadedVolunteer = Volunteer.castObject(JSON.parse(response.d.messages[0]));
+            var loadedVolunteer = Volunteer.castObject(response.d.volunteerData);
             console.log("Calling callback function now:");
             callback(loadedVolunteer);
             // TODO: Change so all callbacks look something like this:
@@ -53,8 +53,6 @@ Volunteer.LoadVolunteer = function (anID, name, email, callback) {
         console.log("Volunteer::FailedCallback");
         var errorString = '';
         errorString += 'Message:==>' + error.responseText + '\n\n';
-        errorString += 'StackTrace:==>' + error.StackTrace + '\n\n';
-        errorString += 'ExceptionType:==>' + error.ExceptionType;
 
         // just in case...
         //hideThrobber();

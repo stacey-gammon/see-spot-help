@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StaceyVolunteers
+namespace VolunteersNS
 {
-    public class Volunteer : StaceyData.BaseObject
+    public class Volunteer : Data.BaseObject
     {
         //Properties.
         public string id { get; set; }
