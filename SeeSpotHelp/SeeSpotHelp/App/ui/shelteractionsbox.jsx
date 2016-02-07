@@ -19,7 +19,7 @@ var LeaveShelterButton = React.createClass({
             return null;
         }
         return (
-            <div className="col-xs-6">
+            <div className="col-xs-4 groupActionButtonDiv">
                 <button className="btn btn-warning leaveShelterButton"
                         onClick={this.alertNotImplemented}>
                     {ConstStrings.LeaveGroup}
@@ -29,6 +29,30 @@ var LeaveShelterButton = React.createClass({
     }
 });
 
+var AddAdoptableButton = React.createClass({
+    alertNotImplemented: function () {
+        alert('Sorry, that functionality is not implemented yet!');
+    },
+    render: function () {
+        console.log("LeaveShelterButton:render, permissions = " + this.props.permissions);
+        if (!this.props.user ||
+            this.props.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER) {
+            return null;
+        }
+        return (
+            <div className="col-xs-4 groupActionButtonDiv">
+                <LinkContainer
+                    to={{ pathname: "addAdoptablePage",
+                          state: { user: this.props.user, group: this.props.group } }}>
+                    <button className="btn btn-info addAdoptableButton">
+                        <span className="glyphicon glyphicon-plus"/>
+                        &nbsp;Adoptable
+                    </button>
+                </LinkContainer>
+            </div>
+        );
+    }
+});
 
 var EditGroupButton = React.createClass({
     editShelter: function () {
@@ -40,7 +64,7 @@ var EditGroupButton = React.createClass({
             return null;
         }
         return (
-            <div className="col-xs-6">
+            <div className="col-xs-4 editGroupButtonDiv groupActionButtonDiv">
                 <LinkContainer
                     to={{ pathname: "addNewShelter",
                           state: { user: this.props.user, editMode: true, group: this.props.group } }}>
@@ -97,10 +121,11 @@ var ShelterActionsBox = React.createClass({
         var permissions = user && group ? group.getUserPermissions(user.id) : null;
         return (
             <div className="container shelterActionsBox">
-                <div className="row  pull-left">
+                <div className="row pull-left">
+                    <EditGroupButton permissions={permissions} user={user} group={group} />
+                    <AddAdoptableButton permissions={permissions} user={user} group={group} />
                     <LeaveShelterButton permissions={permissions} user={user}/>
                     <RequestToJoinButton permissions={permissions} user={user} group={group} />
-                    <EditGroupButton permissions={permissions} user={user} group={group} />
                 </div>
             </div>
         );
