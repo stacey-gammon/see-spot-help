@@ -22,7 +22,7 @@ namespace SeeSpotHelp.WebServices
         public string getAnimal(int anID)
         {
 
-            StaceyAnimals.Animal sa = new StaceyAnimals.Animal("Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11");
+            AnimalsNS.Animal sa = new AnimalsNS.Animal("Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11");
             sa.getAnimal(anID);
             string json = JsonConvert.SerializeObject(sa);
             
@@ -30,18 +30,18 @@ namespace SeeSpotHelp.WebServices
         }
 
         [WebMethod]
-        public SeeSpotHelp.WebServices.Result getVolunteer(string anID, string name, string email)
+        public SeeSpotHelp.WebServices.volunteerResult getVolunteer(string anID, string name, string email)
         {
 
-            StaceyVolunteers.Volunteer vt = new StaceyVolunteers.Volunteer("Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11", anID,name,email);
+            VolunteersNS.Volunteer vt = new VolunteersNS.Volunteer("Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11", anID,name,email);
             vt.getVolunteer(anID);
             string json = JsonConvert.SerializeObject(vt);
-            SeeSpotHelp.WebServices.Result result = new SeeSpotHelp.WebServices.Result();
-            result.result = true;
-            result.messages = new string[1];
-            result.messages[0] = json;
-
-            return result;
+            SeeSpotHelp.WebServices.volunteerResult volunteerResult = new SeeSpotHelp.WebServices.volunteerResult();
+            volunteerResult.result = true;
+            volunteerResult.messages = new string[1];
+            volunteerResult.messages[0] = json;
+            volunteerResult.volunteerData = vt;
+            return volunteerResult;
         }
     }
 
@@ -80,4 +80,8 @@ public partial class Result
         }
     }
 
+    public partial class volunteerResult : Result
+    {
+        public VolunteersNS.Volunteer volunteerData;
+    }
 }
