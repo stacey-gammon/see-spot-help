@@ -15,9 +15,9 @@ describe("AddNewShelter", function () {
             <AddNewShelter user={user}/>
         );
         ReactTestUtils.findRenderedDOMComponentWithClass(
-            addNewShelter, "groupName");
+            addNewShelter, "name");
         ReactTestUtils.findRenderedDOMComponentWithClass(
-            addNewShelter, "shelterName");
+            addNewShelter, "shelter");
         ReactTestUtils.findRenderedDOMComponentWithClass(
             addNewShelter, "address");
         ReactTestUtils.findRenderedDOMComponentWithClass(
@@ -52,19 +52,19 @@ describe("AddNewShelter", function () {
         ReactTestUtils.Simulate.click(addButton);
 
         ReactTestUtils.findRenderedDOMComponentWithClass(
-            addNewShelter, "groupNameErrorValidationSpan");
+            addNewShelter, "nameErrorValidationSpan");
 
-        var groupNameInput = ReactDOM.findDOMNode(addNewShelter.refs.groupName);
+        var groupNameInput = ReactDOM.findDOMNode(addNewShelter.refs.name);
         groupNameInput.value = "value";
         ReactTestUtils.Simulate.change(groupNameInput);
         ReactTestUtils.Simulate.click(addButton);
 
         var errors = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-            addNewShelter, "groupNameErrorValidationSpan");
+            addNewShelter, "nameErrorValidationSpan");
         expect(errors.length).toEqual(0);
 
         ReactTestUtils.findRenderedDOMComponentWithClass(
-            addNewShelter, "groupNameSuccessValidationSpan");
+            addNewShelter, "nameSuccessValidationSpan");
     });
 
     it("AddNewShelterSuccess", function () {
@@ -76,11 +76,11 @@ describe("AddNewShelter", function () {
         var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
             addNewShelter, "addNewGroupButton");
 
-        var groupNameInput = ReactDOM.findDOMNode(addNewShelter.refs.groupName);
+        var groupNameInput = ReactDOM.findDOMNode(addNewShelter.refs.name);
         groupNameInput.value = "My Group";
         ReactTestUtils.Simulate.change(groupNameInput);
 
-        var shelterNameInput = ReactDOM.findDOMNode(addNewShelter.refs.shelterName);
+        var shelterNameInput = ReactDOM.findDOMNode(addNewShelter.refs.shelter);
         shelterNameInput.value = "My Shelter";
         ReactTestUtils.Simulate.change(shelterNameInput);
 
@@ -107,6 +107,34 @@ describe("AddNewShelter", function () {
         expect(errors.length).toEqual(0);
 
         ReactTestUtils.findRenderedDOMComponentWithClass(
-            addNewShelter, "groupNameSuccessValidationSpan");
+            addNewShelter, "nameSuccessValidationSpan");
+    });
+
+    it("EditGroupSuccess", function () {
+        console.log("EditGroupSuccess");
+        var user = new Volunteer("john", "doe", "123");
+        var group = new VolunteerGroup("My Group", "My Shelter", "123 Dog Lane", "Cat City", "NY", "12345", "5");
+        group.userPermissionsMap[123] = VolunteerGroup.PermissionsEnum.ADMIN;
+        var addNewShelter = ReactTestUtils.renderIntoDocument(
+            <AddNewShelter user={user} group={group} editMode="true" />
+        );
+
+        var groupNameInput = ReactDOM.findDOMNode(addNewShelter.refs.name);
+        expect(groupNameInput.value).toEqual("My Group");
+
+        var shelterNameInput = ReactDOM.findDOMNode(addNewShelter.refs.shelter);
+        expect(shelterNameInput.value).toEqual("My Shelter");
+
+        var addressInput = ReactDOM.findDOMNode(addNewShelter.refs.address);
+        expect(addressInput.value).toEqual("123 Dog Lane");
+
+        var cityInput = ReactDOM.findDOMNode(addNewShelter.refs.city);
+        expect(cityInput.value).toEqual("Cat City");
+
+        var stateInput = ReactDOM.findDOMNode(addNewShelter.refs.state);
+        expect(stateInput.value).toEqual("NY");
+
+        var zipInput = ReactDOM.findDOMNode(addNewShelter.refs.zipCode);
+        expect(zipInput.value).toEqual("12345");
     });
 });
