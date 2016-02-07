@@ -34,16 +34,16 @@ var AnimalActionsBox = React.createClass({
         var walkText = this.state.walking ? "End walk" : "Walk";
         return (
             <div>
-                <button className="btn btn-info" id="walkButton" onClick={walkFunction}>
+                <button className="btn btn-info buttonPadding" id="walkButton" onClick={walkFunction}>
                     {walkText}
                 </button>
-                <button className="btn btn-info">
+                <button className="btn btn-info buttonPadding">
                     Add Note
                 </button>
-                <button className="btn btn-info" onClick={this.alertNotImplemented}>
+                <button className="btn btn-info buttonPadding" onClick={this.alertNotImplemented}>
                     Edit
                 </button>
-                <button className="btn btn-warning" onClick={this.alertNotImplemented}>
+                <button className="btn btn-warning buttonPadding" onClick={this.alertNotImplemented}>
                     <span className="glyphicon glyphicon-trash"></span>
                 </button>
             </div>
