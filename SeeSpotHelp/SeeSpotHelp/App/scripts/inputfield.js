@@ -1,5 +1,7 @@
 ﻿var React = require("react");
 
+var ConstStrings = require("./conststrings");
+
 // Represents an input form field.
 // @param validations {inputfieldvalidations[]} an array list of input field validations
 // that this field should run during the validate call.
@@ -11,6 +13,10 @@ var InputField = function (validations) {
     this.value = "";
     this.validations = validations;
     this.ref = "";
+};
+
+InputField.prototype.getUserString = function () {
+    return ConstStrings[this.ref.charAt(0).toUpperCase() + this.ref.slice(1)];
 };
 
 // Loops through all validations this form field has. The current

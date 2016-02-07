@@ -40,9 +40,15 @@ var VolunteerGroup = function(name, shelter, address, city, state, zipCode, id) 
 // properties.
 VolunteerGroup.castObject = function(obj) {
     var group = new VolunteerGroup();
-    for (var prop in obj) group[prop] = obj[prop];
+    group.copyFieldsFrom(obj);
     return group;
 };
+
+VolunteerGroup.prototype.copyFieldsFrom = function (other) {
+    for (var prop in other) {
+        this[prop] = other[prop];
+    }
+}
 
 VolunteerGroup.PermissionsEnum = Object.freeze(
     {
