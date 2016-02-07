@@ -19,8 +19,8 @@ var AddNewShelter = React.createClass({
         // for short hand.
         var IFV = InputFieldValidation;
         var inputFields = {
-            "groupName": new InputField([IFV.validateNotEmpty]),
-            "shelterName": new InputField([IFV.validateNotEmpty]),
+            "name": new InputField([IFV.validateNotEmpty]),
+            "shelter": new InputField([IFV.validateNotEmpty]),
             "address": new InputField([IFV.validateNotEmpty]),
             "city": new InputField([IFV.validateNotEmpty]),
             "state": new InputField([IFV.validateNotEmpty]),
@@ -31,14 +31,27 @@ var AddNewShelter = React.createClass({
         for (var field in inputFields) {
             inputFields[field].ref = field;
         }
-
+        
+        var editMode = this.props.editMode ? this.props.editMode :
+            this.props.location ? this.props.location.state.editMode : null;
         var user = this.props.user ? this.props.user :
             this.props.location ? this.props.location.state.user : null;
+        var group = this.props.group ? this.props.group :
+            this.props.location ? this.props.location.state.group : null;
+
+        // If in edit mode, fill in field values.
+        if (editMode) {
+            for (var field in inputFields) {
+                inputFields[field].value = group[field];
+            }
+        }
 
         return {
             errorMessage: null,
             fields: inputFields,
-            user : user
+            user : user,
+            group: group,
+            editMode: editMode
         };
     },
 
@@ -78,24 +91,32 @@ var AddNewShelter = React.createClass({
         console.log("AddNewShelter:addNewVolunteerGroup");
         var errorFound = this.validateFields();
         if (!errorFound) {
-            var group = VolunteerGroup.createFromInputFields(
-                this.state.fields,
-                this.state.user.id);
-            group.insert(this.insertGroupCallback);
+            if (this.state.editMode) {
+                this.state.group.updateFromInputFields(this.state.fields);
+                this.state.group.update(this.insertGroupCallback);
+            } else {
+                var group = VolunteerGroup.createFromInputFields(
+                    this.state.fields,
+                    this.state.user.id);
+                group.insert(this.insertGroupCallback);
+            }
         }
     },
 
     createInputField: function (inputField) {
         var inputFieldClassName = "form-control " + inputField.ref;
+        var name = ConstStrings[inputField.ref];
+        if (inputField.ref == "name") name = ConstStrings.groupName;
         return (
             <div className={inputField.getFormGroupClassName()}>
                 {inputField.getErrorLabel()}
                 <div className="input-group">
-                    <span className="input-group-addon">{ConstStrings[inputField.ref]}</span>
+                    <span className="input-group-addon">{name}</span>
                     <input type="text"
                            ref={inputField.ref}
                            id={inputField.ref}
-                           className={inputFieldClassName} />
+                           className={inputFieldClassName}
+                           defaultValue={inputField.value}/>
                 </div>
                 {inputField.getValidationSpan()}
             </div>
@@ -112,12 +133,13 @@ var AddNewShelter = React.createClass({
             var field = this.state.fields[key];
             inputFields.push(this.createInputField(field));
         }
+        var buttonText = this.state.editMode ? ConstStrings.Update : ConstStrings.Add;
         return (
             <div>
                 {this.state.errorMessage}
                 {inputFields}
                 <button className="btn btn-primary addNewGroupButton"
-                        onClick={this.addNewVolunteerGroup}>Add Group</button>
+                onClick={this.addNewVolunteerGroup}>{buttonText}</button>
             </div>
         );
     }
