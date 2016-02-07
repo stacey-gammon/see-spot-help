@@ -4,6 +4,7 @@ var ShelterHomePage = require("./shelterhomepage");
 var ShelterSearchPage = require("./sheltersearchpage");
 var AnimalHomePage = require("./animalHomePage");
 var AddNewShelter = require("./addnewshelter");
+var AddAdoptablePage = require("./addadoptablepage");
 var MyNavBar = require("./navbar");
 
 var FacebookUser = require("../scripts/facebookuser");
@@ -143,6 +144,7 @@ var routes = (
     <Route path="shelterHomePage" component={ShelterHomePage}/>
     <Route path="animalHomePage" component={AnimalHomePage} />
     <Route path="addNewShelter" component={AddNewShelter} />
+    <Route path="addAdoptablepage" component={AddAdoptablePage} />
   </Router>
 );
 
