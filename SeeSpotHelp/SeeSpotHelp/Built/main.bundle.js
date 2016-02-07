@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "2feba5308504c5143604"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "8464f76e220bb4fe3346"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -26699,7 +26699,7 @@
 	        }
 	        var text = pending ? ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
 	        return (
-	            React.createElement("button", {className: "btn btn-warning requestToJoinButto buttonPaddingn", 
+	            React.createElement("button", {className: "btn btn-warning requestToJoinButton buttonPadding", 
 	                    ref: "requestToJoinButton", 
 	                    disabled: pending, 
 	                    onClick: this.requestToJoin}, 
@@ -27292,16 +27292,16 @@
 	        var walkText = this.state.walking ? "End walk" : "Walk";
 	        return (
 	            React.createElement("div", null, 
-	                React.createElement("button", {className: "btn btn-info", id: "walkButton", onClick: walkFunction}, 
+	                React.createElement("button", {className: "btn btn-info buttonPadding", id: "walkButton", onClick: walkFunction}, 
 	                    walkText
 	                ), 
-	                React.createElement("button", {className: "btn btn-info"}, 
+	                React.createElement("button", {className: "btn btn-info buttonPadding"}, 
 	                    "Add Note"
 	                ), 
-	                React.createElement("button", {className: "btn btn-info", onClick: this.alertNotImplemented}, 
+	                React.createElement("button", {className: "btn btn-info buttonPadding", onClick: this.alertNotImplemented}, 
 	                    "Edit"
 	                ), 
-	                React.createElement("button", {className: "btn btn-warning", onClick: this.alertNotImplemented}, 
+	                React.createElement("button", {className: "btn btn-warning buttonPadding", onClick: this.alertNotImplemented}, 
 	                    React.createElement("span", {className: "glyphicon glyphicon-trash"})
 	                )
 	            )
