@@ -5,6 +5,7 @@ var ConstStrings = require("../scripts/conststrings");
 var Animal = require("../scripts/animal");
 var InputField = require("../scripts/inputfield");
 var InputFieldValidation = require("../scripts/inputfieldvalidation");
+var TakePhotoButton = require("./takephotobutton");
 
 var AddAdoptablePage = React.createClass({
     getInitialState: function () {
@@ -128,8 +129,9 @@ var AddAdoptablePage = React.createClass({
             <div>
                 {this.state.errorMessage}
                 {inputFields}
+                <TakePhotoButton user={this.state.user} group={this.state.group} animal={this.state.animal}/>
                 <button className="btn btn-primary addAdoptableButton"
-                onClick={this.addAdoptable}>{buttonText}</button>
+                        onClick={this.addAdoptable}>{buttonText}</button>
             </div>
         );
     }
