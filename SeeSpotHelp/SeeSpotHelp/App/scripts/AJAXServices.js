@@ -30,13 +30,38 @@ AJAXServices.prototype.CallJSONService = function (callbackURI,
         }.bind(this));   // response data contains the javascript object parsed from the JSON data.
 };
 
+AJAXServices.prototype.callFileUploadService = function (callbackURI,
+                                                         methodName,
+                                                         file) {
+    var fd = new FormData();
+    // console.log("AJAXServices:callFileUploadService: with file");
+   // console.log(file);
+    fd.append('file', file);
+
+    console.log("AJAXServices::CallFileUploadService");
+    $.ajax({
+        type: 'POST',
+        contentType: false,
+        processData: false,
+        data: fd,
+        url: callbackURI + '/' + methodName
+    }).
+        done(function (response) {
+            this.onSuccess(response);
+        }.bind(this)).
+        fail(function (response) {
+            this.onFailure(response);
+        }.bind(this));   // response data contains the javascript object parsed from the JSON data.
+};
+
 AJAXServices.prototype.onSuccess = function (response) {
     console.log("AJAXServices::OnSuccess");
     this.successCallback(response);
 };
 
 AJAXServices.prototype.onFailure = function (response) {
-    console.log("AJAXServices::OnFailure");
+    console.log("AJAXServices::OnFailure, response:");
+    console.log(response);
     this.failureCallback(response);
 };
 

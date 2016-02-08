@@ -1,6 +1,7 @@
-﻿'use strict'
+﻿"use strict"
 
-var React = require('react');
+var React = require("react");
+var AjaxServices = require("../scripts/AJAXServices");
 
 // Actions to display on the animal home page, such as Add Activity,
 // Edit and Delete.
@@ -29,7 +30,38 @@ var AnimalActionsBox = React.createClass({
         walkButton.onClick = this.endWalk;
     },
 
+    uploadSucceeded: function() {
+        alert("yay!");
+    },
+    uploadFailed: function() {
+        alert("boo!");
+    },
+
+     uploadFile: function (file) {
+         console.log("AnimalActionsBox::uploadFile");
+         var ajax = new AjaxServices(this.uploadSucceeded,
+                                     this.uploadFailed);
+         console.log("file = ");
+         console.log(file);
+         ajax.callFileUploadService(
+             "../../WebServices/imageServices.asmx",
+             "saveImageFile",
+             file);
+    },
+
+     loadPhoto: function() {
+         console.log("AnimalActionsBox::LoadPhoto");
+        var file = this.refs.addPhotoFileInput.files[0];
+        this.uploadFile(file);
+    },
+
+    addPhoto: function() {
+         console.log("AnimalActionsBox::addPhoto");
+        this.refs.addPhotoFileInput.click();
+    },
+
     render: function () {
+         console.log("AnimalActionsBox::render");
         var walkFunction = this.state.walking ? this.endWalk : this.startWalk;
         var walkText = this.state.walking ? "End walk" : "Walk";
         return (
@@ -43,9 +75,12 @@ var AnimalActionsBox = React.createClass({
                 <button className="btn btn-info buttonPadding" onClick={this.alertNotImplemented}>
                     Edit
                 </button>
-                <button className="btn btn-warning buttonPadding" onClick={this.alertNotImplemented}>
-                    <span className="glyphicon glyphicon-trash"></span>
+                <button className="btn btn-info buttonPadding" onClick={this.addPhoto}>
+                    <span className="glyphicon glyphicon-camera"></span>
                 </button>
+                <input type="file" accept="image/*"
+                       onChange={this.loadPhoto}
+                       className="addPhotoFileInput" ref="addPhotoFileInput"/>
             </div>
         );
     }
