@@ -65,7 +65,7 @@ Volunteer.LoadVolunteer = function (anID, name, email, callback) {
     var ajax = new AjaxServices(LoadedVolunteerWithData,
                                 FailedCallback);
     ajax.CallJSONService(
-        "WebServices/volunteerServices.asmx",
+        "../../WebServices/volunteerServices.asmx",
         "getVolunteer",
         { anID: anID, name: name, email: email });
 };
