@@ -20,6 +20,13 @@ namespace VolunteersNS
         {
         }
 
+        public Volunteer()
+        {
+            id = "";
+            name = "";
+            email = "";
+        }
+
         public Volunteer(string aconnectionstring)
         {
             ConnectionString = aconnectionstring;
