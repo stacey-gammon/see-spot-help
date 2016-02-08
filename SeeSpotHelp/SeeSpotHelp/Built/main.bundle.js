@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "8464f76e220bb4fe3346"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "291002f5c8b9619786f9"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -26768,7 +26768,7 @@
 	    var LoadedVolunteerWithData = function (response) {
 	        console.log("Volunteer::LoadVolunteerWithData");
 	        if (response.d.result) {
-	            var loadedVolunteer = Volunteer.castObject(JSON.parse(response.d.messages[0]));
+	            var loadedVolunteer = Volunteer.castObject(response.d.volunteerData);
 	            console.log("Calling callback function now:");
 	            callback(loadedVolunteer);
 	            // TODO: Change so all callbacks look something like this:
@@ -26785,8 +26785,6 @@
 	        console.log("Volunteer::FailedCallback");
 	        var errorString = '';
 	        errorString += 'Message:==>' + error.responseText + '\n\n';
-	        errorString += 'StackTrace:==>' + error.StackTrace + '\n\n';
-	        errorString += 'ExceptionType:==>' + error.ExceptionType;
 	
 	        // just in case...
 	        //hideThrobber();
@@ -26799,7 +26797,7 @@
 	    var ajax = new AjaxServices(LoadedVolunteerWithData,
 	                                FailedCallback);
 	    ajax.CallJSONService(
-	        "WebServices/volunteerServices.asmx",
+	        "../../WebServices/volunteerServices.asmx",
 	        "getVolunteer",
 	        { anID: anID, name: name, email: email });
 	};
@@ -26880,13 +26878,38 @@
 	        }.bind(this));   // response data contains the javascript object parsed from the JSON data.
 	};
 	
+	AJAXServices.prototype.callFileUploadService = function (callbackURI,
+	                                                         methodName,
+	                                                         file) {
+	    var fd = new FormData();
+	    // console.log("AJAXServices:callFileUploadService: with file");
+	   // console.log(file);
+	    fd.append('file', file);
+	
+	    console.log("AJAXServices::CallFileUploadService");
+	    $.ajax({
+	        type: 'POST',
+	        contentType: false,
+	        processData: false,
+	        data: fd,
+	        url: callbackURI + '/' + methodName
+	    }).
+	        done(function (response) {
+	            this.onSuccess(response);
+	        }.bind(this)).
+	        fail(function (response) {
+	            this.onFailure(response);
+	        }.bind(this));   // response data contains the javascript object parsed from the JSON data.
+	};
+	
 	AJAXServices.prototype.onSuccess = function (response) {
 	    console.log("AJAXServices::OnSuccess");
 	    this.successCallback(response);
 	};
 	
 	AJAXServices.prototype.onFailure = function (response) {
-	    console.log("AJAXServices::OnFailure");
+	    console.log("AJAXServices::OnFailure, response:");
+	    console.log(response);
 	    this.failureCallback(response);
 	};
 	
@@ -27256,9 +27279,10 @@
   \*********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */'use strict'
+	/** @jsx React.DOM */"use strict"
 	
 	var React = __webpack_require__(/*! react */ 3);
+	var AjaxServices = __webpack_require__(/*! ../scripts/AJAXServices */ 230);
 	
 	// Actions to display on the animal home page, such as Add Activity,
 	// Edit and Delete.
@@ -27287,7 +27311,38 @@
 	        walkButton.onClick = this.endWalk;
 	    },
 	
+	    uploadSucceeded: function() {
+	        alert("yay!");
+	    },
+	    uploadFailed: function() {
+	        alert("boo!");
+	    },
+	
+	     uploadFile: function (file) {
+	         console.log("AnimalActionsBox::uploadFile");
+	         var ajax = new AjaxServices(this.uploadSucceeded,
+	                                     this.uploadFailed);
+	         console.log("file = ");
+	         console.log(file);
+	         ajax.callFileUploadService(
+	             "../../WebServices/imageServices.asmx",
+	             "saveImageFile",
+	             file);
+	    },
+	
+	     loadPhoto: function() {
+	         console.log("AnimalActionsBox::LoadPhoto");
+	        var file = this.refs.addPhotoFileInput.files[0];
+	        this.uploadFile(file);
+	    },
+	
+	    addPhoto: function() {
+	         console.log("AnimalActionsBox::addPhoto");
+	        this.refs.addPhotoFileInput.click();
+	    },
+	
 	    render: function () {
+	         console.log("AnimalActionsBox::render");
 	        var walkFunction = this.state.walking ? this.endWalk : this.startWalk;
 	        var walkText = this.state.walking ? "End walk" : "Walk";
 	        return (
@@ -27301,9 +27356,12 @@
 	                React.createElement("button", {className: "btn btn-info buttonPadding", onClick: this.alertNotImplemented}, 
 	                    "Edit"
 	                ), 
-	                React.createElement("button", {className: "btn btn-warning buttonPadding", onClick: this.alertNotImplemented}, 
-	                    React.createElement("span", {className: "glyphicon glyphicon-trash"})
-	                )
+	                React.createElement("button", {className: "btn btn-info buttonPadding", onClick: this.addPhoto}, 
+	                    React.createElement("span", {className: "glyphicon glyphicon-camera"})
+	                ), 
+	                React.createElement("input", {type: "file", accept: "image/*", 
+	                       onChange: this.loadPhoto, 
+	                       className: "addPhotoFileInput", ref: "addPhotoFileInput"})
 	            )
 	        );
 	    }
