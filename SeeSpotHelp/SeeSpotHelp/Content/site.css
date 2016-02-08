@@ -18,6 +18,11 @@ p {
     letter-spacing: 1px;
 }
 
+.addPhotoFileInput {
+    display: none;
+    visibility: hidden;
+}
+
 .shelterActionsBox {
     margin: 10px;
 }
