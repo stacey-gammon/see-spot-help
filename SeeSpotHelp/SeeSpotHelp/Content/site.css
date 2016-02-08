@@ -18,6 +18,10 @@ p {
     letter-spacing: 1px;
 }
 
+.takePhotoButton {
+    display: inline;
+}
+
 .addPhotoFileInput {
     display: none;
     visibility: hidden;

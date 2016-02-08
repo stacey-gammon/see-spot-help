@@ -1,8 +1,6 @@
 ﻿using System.Web.Services;
 using Newtonsoft.Json;
 using System.Web;
-using System.IO;
-using System;
 
 namespace SeeSpotHelp.WebServices
 {
