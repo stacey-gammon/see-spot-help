@@ -22,7 +22,8 @@ namespace SeeSpotHelp.WebServices
         public string getAnimal(int anID)
         {
 
-            AnimalsNS.Animal sa = new AnimalsNS.Animal("Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11");
+            AnimalsNS.Animal sa = new AnimalsNS.Animal(
+                "connection string here");
             sa.getAnimal(anID);
             string json = JsonConvert.SerializeObject(sa);
             
@@ -33,7 +34,8 @@ namespace SeeSpotHelp.WebServices
         public SeeSpotHelp.WebServices.volunteerResult getVolunteer(string anID, string name, string email)
         {
 
-            VolunteersNS.Volunteer vt = new VolunteersNS.Volunteer("Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11", anID,name,email);
+            VolunteersNS.Volunteer vt = new VolunteersNS.Volunteer(
+                "connection string here", anID,name,email);
             vt.getVolunteer(anID);
             string json = JsonConvert.SerializeObject(vt);
             SeeSpotHelp.WebServices.volunteerResult volunteerResult = new SeeSpotHelp.WebServices.volunteerResult();
