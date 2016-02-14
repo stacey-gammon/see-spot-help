@@ -642,6 +642,14 @@
     <Content Include="package.json" />
     <Content Include="scripts\r.js" />
     <Content Include="scripts\require.js" />
+    <Content Include="SQL_Scripts\animalget.sql" />
+    <Content Include="SQL_Scripts\animalsget.sql" />
+    <Content Include="SQL_Scripts\createanimalstable.sql" />
+    <Content Include="SQL_Scripts\CreateDatabase.sql" />
+    <Content Include="SQL_Scripts\createvolunteerstable.sql" />
+    <Content Include="SQL_Scripts\volunteerget.sql" />
+    <Content Include="SQL_Scripts\volunteersave.sql" />
+    <Content Include="SQL_Scripts\volunteersget.sql" />
     <Content Include="tests.webpack.js" />
     <Content Include="webpack.config.js" />
     <Content Include="App_Code\GlyphIcon.cshtml" />
