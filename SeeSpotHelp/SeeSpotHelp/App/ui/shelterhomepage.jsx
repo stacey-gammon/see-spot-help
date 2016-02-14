@@ -5,10 +5,10 @@ var AnimalList = require("./animallist");
 var ShelterSearchBox = require("./sheltersearchbox");
 var ShelterInfoBox = require("./shelterinfobox");
 var ShelterActionsBox = require("./shelteractionsbox");
-var FakeData = require("../scripts/fakedata");
-var FacebookUser = require("../scripts/facebookuser");
-var Volunteer = require("../scripts/volunteer");
-var VolunteerGroup = require("../scripts/volunteergroup");
+var FakeData = require("../core/fakedata");
+var FacebookUser = require("../core/facebookuser");
+var Volunteer = require("../core/volunteer");
+var VolunteerGroup = require("../core/volunteergroup");
 var LoginStore = require("../stores/loginstore");
 
 var ShelterHomePage = React.createClass({

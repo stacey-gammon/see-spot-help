@@ -2,7 +2,7 @@
 
 var React = require("react");
 var LinkContainer = require("react-router-bootstrap").LinkContainer;
-var VolunteerGroup = require("../scripts/volunteergroup");
+var VolunteerGroup = require("../core/volunteergroup");
 var ShelterSearchResults = require("./sheltersearchresults");
 var LoginStore = require("../stores/loginstore");
 
