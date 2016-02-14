@@ -13,6 +13,11 @@ var Volunteer = function(name, email, id) {
     this.id = id;
 };
 
+Volunteer.prototype.getGroups = function () {
+    // TODO: Hook into server side.
+    return [];//VolunteerGroup.getFakeGroups()["123"]];
+};
+
 // Casts the given obj as a Volunteer.  Careful - obj must have
 // originally been a type of Volunteer for this to work as expected.
 // Helpful when passing around objects via React state and props.
