@@ -7,8 +7,8 @@ var TakePhotoButton = React.createClass({
     uploadSucceeded: function() {
         alert("yay!");
     },
-    uploadFailed: function() {
-        alert("boo!");
+    uploadFailed: function(error) {
+        alert("boo!" + error.responseText);
     },
 
     uploadFile: function (file) {
