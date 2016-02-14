@@ -11,6 +11,21 @@ var TakePhotoButton = React.createClass({
         }
     },
 
+    componentDidMount: function () {
+        LoginStore.addChangeListener(this.onChange);
+    },
+
+    componentWillUnmount: function () {
+        LoginStore.removeChangeListener(this.onChange);
+    },
+
+    onChange: function () {
+        this.setState(
+            {
+                user: LoginStore.user
+            });
+    },
+
     uploadSucceeded: function() {
         alert("yay!");
     },
@@ -42,12 +57,17 @@ var TakePhotoButton = React.createClass({
         this.refs.addPhotoFileInput.click();
     },
 
+    isMemberOf: function() {
+        return this.state.user &&
+               this.state.user.isMemberOf(this.props.group.id);
+    },
+
     render: function () {
         console.log("TakePhotoButton::render");
         return (
             <div className="takePhotoButton" >
                 <button className="btn btn-info buttonPadding"
-                        disabled={!this.state.user}
+                        disabled={!this.isMemberOf()}
                         onClick={this.addPhoto}>
                     <span className="glyphicon glyphicon-camera"></span>
                 </button>
