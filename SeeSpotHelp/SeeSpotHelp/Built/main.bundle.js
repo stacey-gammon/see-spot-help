@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "7031affab993a13febaa"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "446f97d54dfbad191f19"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -27599,8 +27599,8 @@
 	};
 	
 	Volunteer.prototype.isMemberOf = function (groupId) {
-	    for (var i = 0; i < groups.length; i++) {
-	        if (groups[i].id == groupId) return true;
+	    for (var i = 0; i < this.groups.length; i++) {
+	        if (this.groups[i].id == groupId) return true;
 	    }
 	    return false;
 	}
@@ -28206,8 +28206,7 @@
 	    getInitialState: function() {
 	        return {
 	            walking: false,
-	            user: LoginStore.user,
-	            animal: null
+	            user: LoginStore.user
 	        }
 	    },
 	
@@ -28246,28 +28245,35 @@
 	        walkButton.onClick = this.endWalk;
 	    },
 	
+	    isMemberOfGroup: function () {
+	        return this.state.user &&
+	               this.props.group &&
+	               this.state.user.isMemberOf(this.props.group.id);
+	    },
+	
 	    render: function () {
 	         console.log("AnimalActionsBox::render");
 	        var walkFunction = this.state.walking ? this.endWalk : this.startWalk;
 	        var walkText = this.state.walking ? "End walk" : "Walk";
 	        return (
 	            React.createElement("div", null, 
-	                React.createElement("button", {className: "btn btn-info buttonPadding", 
+	                React.createElement("button", {className: "btn btn-info buttonPadding walkAnimalButton", 
 	                        id: "walkButton", 
-	                        disabled: !this.state.user, 
+	                        disabled: !this.isMemberOfGroup(), 
 	                        onClick: walkFunction}, 
 	                    walkText
 	                ), 
-	                React.createElement("button", {className: "btn btn-info buttonPadding", disabled: !this.state.user}, 
+	                React.createElement("button", {className: "btn btn-info buttonPadding addAnimalNoteButton", 
+	                        disabled: !this.isMemberOfGroup()}, 
 	                    "Add Note"
 	                ), 
-	                React.createElement("button", {className: "btn btn-info buttonPadding", 
+	                React.createElement("button", {className: "btn btn-info buttonPadding editAnimalButton", 
 	                        onClick: this.alertNotImplemented, 
-	                        disabled: !this.state.user}, 
+	                        disabled: !this.isMemberOfGroup()}, 
 	                    "Edit"
 	                ), 
-	                React.createElement(TakePhotoButton, {user: this.state.user, 
-	                                 group: this.state.group, 
+	                React.createElement(TakePhotoButton, {className: "takePhotoButton", 
+	                                 group: this.props.group, 
 	                                 animal: this.state.animal})
 	            )
 	        );
@@ -28294,6 +28300,21 @@
 	        return {
 	            user: LoginStore.user
 	        }
+	    },
+	
+	    componentDidMount: function () {
+	        LoginStore.addChangeListener(this.onChange);
+	    },
+	
+	    componentWillUnmount: function () {
+	        LoginStore.removeChangeListener(this.onChange);
+	    },
+	
+	    onChange: function () {
+	        this.setState(
+	            {
+	                user: LoginStore.user
+	            });
 	    },
 	
 	    uploadSucceeded: function() {
@@ -28327,12 +28348,17 @@
 	        this.refs.addPhotoFileInput.click();
 	    },
 	
+	    isMemberOf: function() {
+	        return this.state.user &&
+	               this.state.user.isMemberOf(this.props.group.id);
+	    },
+	
 	    render: function () {
 	        console.log("TakePhotoButton::render");
 	        return (
 	            React.createElement("div", {className: "takePhotoButton"}, 
 	                React.createElement("button", {className: "btn btn-info buttonPadding", 
-	                        disabled: !this.state.user, 
+	                        disabled: !this.isMemberOf(), 
 	                        onClick: this.addPhoto}, 
 	                    React.createElement("span", {className: "glyphicon glyphicon-camera"})
 	                ), 

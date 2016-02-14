@@ -215,3 +215,4 @@ ModelManifest.xml
 # Main bundle that gets rebuilt every time by webpack
 main.bundle.js
 main.bundle.js.map
+PrivateDbConnectionStrings.cs

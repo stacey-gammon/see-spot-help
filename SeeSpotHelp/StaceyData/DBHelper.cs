@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-//using System.Web;
 using System.Data;
 using System.Data.SqlClient;
-using System.Collections.Specialized;
 
 namespace Helpers
 {
     public static class DBHelper
     {
 #if DEBUG
-        private static string defaultConnectionString =  // Don't show the world our db connection string. :) TODO: Find a way to put it make it an environment variable.
+        private static string defaultConnectionString = ""; // Don't show the world our db connection string. :) TODO: Find a way to put it make it an environment variable.
 #else
         private static string defaultConnectionString = "";
 #endif
@@ -25,6 +23,12 @@ namespace Helpers
             {
                 defaultConnectionString = value;
             }
+        }
+
+        public static string BuildConnectionString(string initialCatalog)
+        {
+            return "Data Source=" + PrivateDbConnectionStrings.dataSource + ";Initial Catalog=" + initialCatalog +
+                    ";User Id=" + PrivateDbConnectionStrings.userId + ";password=" + PrivateDbConnectionStrings.password;
         }
 
         public static DataTable ExecuteProcedure(string connectionqString, string PROC_NAME, params object[] parameters)
