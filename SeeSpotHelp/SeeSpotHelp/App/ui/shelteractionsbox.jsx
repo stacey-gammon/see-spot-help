@@ -7,10 +7,11 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 var VolunteerGroup = require("../scripts/volunteergroup");
 var Volunteer = require("../scripts/volunteer");
 var ConstStrings = require("../scripts/conststrings");
+var LoginStore = require("../stores/loginstore");
 
 var ShelterActionsBox = React.createClass({
     getInitialState: function() {
-        var user = this.props.user ? Volunteer.castObject(this.props.user) : null;
+        var user = LoginStore.user;
         var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
         var permissions = user && group ? group.getUserPermissions(user.id) : null;
 
@@ -19,6 +20,21 @@ var ShelterActionsBox = React.createClass({
             group: group,
             permissions: permissions
         };
+    },
+
+    componentDidMount: function () {
+        LoginStore.addChangeListener(this.onChange);
+    },
+
+    componentWillUnmount: function () {
+        LoginStore.removeChangeListener(this.onChange);
+    },
+
+    onChange: function () {
+        this.setState(
+            {
+                user: LoginStore.user
+            });
     },
 
     alertNotImplemented: function () {
@@ -49,7 +65,7 @@ var ShelterActionsBox = React.createClass({
                     state: { user: this.state.user, group: this.state.group } }}>
                 <button className="btn btn-info addAdoptableButton buttonPadding">
                     <span className="glyphicon glyphicon-plus"/>
-                    &nbsp;Adoptable
+                    &nbsp;Animal
                 </button>
             </LinkContainer>
         );
@@ -71,7 +87,7 @@ var ShelterActionsBox = React.createClass({
     },
 
     requestToJoin: function () {
-        if (!this.props.group || !this.props.user) {
+        if (!this.props.group || !this.state.user) {
             throw "Attempting to join group when user or group is undefined or null";
         }
         var group = VolunteerGroup.castObject(this.state.group);
