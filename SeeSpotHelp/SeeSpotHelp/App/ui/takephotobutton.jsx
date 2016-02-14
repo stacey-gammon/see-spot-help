@@ -2,11 +2,19 @@
 
 var React = require("react");
 var AjaxServices = require("../core/AJAXServices");
+var LoginStore = require("../stores/loginstore");
 
 var TakePhotoButton = React.createClass({
+    getInitialState: function() {
+        return {
+            user: LoginStore.user
+        }
+    },
+
     uploadSucceeded: function() {
         alert("yay!");
     },
+
     uploadFailed: function(error) {
         alert("boo!" + error.responseText);
     },
@@ -38,7 +46,9 @@ var TakePhotoButton = React.createClass({
         console.log("TakePhotoButton::render");
         return (
             <div className="takePhotoButton" >
-                <button className="btn btn-info buttonPadding" onClick={this.addPhoto}>
+                <button className="btn btn-info buttonPadding"
+                        disabled={!this.state.user}
+                        onClick={this.addPhoto}>
                     <span className="glyphicon glyphicon-camera"></span>
                 </button>
                 <input type="file" accept="image/*"
