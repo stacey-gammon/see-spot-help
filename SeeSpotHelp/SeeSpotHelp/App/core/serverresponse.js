@@ -7,9 +7,9 @@
 // as an additional parameter to callback functions?  For now,
 // goind with the latter.
 
-var ServerResponse = function () {
-    this.hasError = false;
-    this.errorMessage = "";
+var ServerResponse = function (errorMessage) {
+    this.hasError = !!errorMessage;
+    this.errorMessage = errorMessage;
 };
 
 module.exports = ServerResponse;
