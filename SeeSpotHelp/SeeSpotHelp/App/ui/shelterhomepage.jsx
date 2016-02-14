@@ -9,9 +9,28 @@ var FakeData = require("../scripts/fakedata");
 var FacebookUser = require("../scripts/facebookuser");
 var Volunteer = require("../scripts/volunteer");
 var VolunteerGroup = require("../scripts/volunteergroup");
+var LoginStore = require("../stores/loginstore");
 
 var ShelterHomePage = React.createClass({
-    getInitialState: function() { return {}
+    getInitialState: function () {
+        return {
+            user: LoginStore.user
+        }
+    },
+
+    componentDidMount: function () {
+        LoginStore.addChangeListener(this.onChange);
+    },
+
+    componentWillUnmount: function () {
+        LoginStore.removeChangeListener(this.onChange);
+    },
+
+    onChange: function () {
+        this.setState(
+            {
+                user: LoginStore.user
+            });
     },
 
     render: function () {
@@ -19,15 +38,10 @@ var ShelterHomePage = React.createClass({
         var query = this.props.location ? this.props.location.query : null;
         var defaultGroup = null;
 
-        // When the page is loaded up via nav bar, user is stored in this.props.user.
+        // When the page is loaded up via nav bar, user is stored in this.state.user.
         // When the page is dynamically loaded via home when user logs in, the user
         // is passed in via props.location.state.
-        var user = this.props.user ? Volunteer.castObject(this.props.user) : null;
-        if (!user && this.props.location && this.props.location.state) {
-            user = this.props.location && this.props.location.state.user ?
-                   Volunteer.castObject(this.props.location.state.user) : null;
-        }
-
+        var user = this.state.user;
         if (query && query.groupId) {
             defaultGroup = VolunteerGroup.getFakeGroups()[query.groupId];
             sessionStorage.setItem("defaultGroup", JSON.stringify(defaultGroup));

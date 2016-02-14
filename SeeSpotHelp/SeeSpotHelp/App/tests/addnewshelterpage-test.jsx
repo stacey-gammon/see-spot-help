@@ -5,14 +5,16 @@ var expect = require("expect"),
     Volunteer = require("../scripts/volunteer"),
     VolunteerGroup = require("../scripts/volunteergroup"),
     AddNewShelter = require("../ui/addnewshelter.jsx");
+var LoginStore = require("../stores/loginstore");
 
 var d3 = require("d3");
 
 describe("AddNewShelter", function () {
     it("AddNewShelterLoadsInputFields", function () {
         var user = new Volunteer("john", "doe", "123");
+        LoginStore.user = user;
         var addNewShelter = ReactTestUtils.renderIntoDocument(
-            <AddNewShelter user={user}/>
+            <AddNewShelter/>
         );
         ReactTestUtils.findRenderedDOMComponentWithClass(
             addNewShelter, "name");
@@ -30,8 +32,9 @@ describe("AddNewShelter", function () {
 
     it("AddNewShelterWarnsOnNoInput", function() {
         var user = new Volunteer("john", "doe", "123");
+        LoginStore.user = user;
         var addNewShelter = ReactTestUtils.renderIntoDocument(
-            <AddNewShelter user={user}/>
+            <AddNewShelter/>
         );
         var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
             addNewShelter, "addNewGroupButton");
@@ -44,8 +47,9 @@ describe("AddNewShelter", function () {
 
     it("AddNewShelterWarnGoesAwayAfterInput", function () {
         var user = new Volunteer("john", "doe", "123");
+        LoginStore.user = user;
         var addNewShelter = ReactTestUtils.renderIntoDocument(
-            <AddNewShelter user={user} />
+            <AddNewShelter />
         );
         var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
             addNewShelter, "addNewGroupButton");
@@ -70,8 +74,9 @@ describe("AddNewShelter", function () {
     it("AddNewShelterSuccess", function () {
         console.log("AddNewShelterSuccess");
         var user = new Volunteer("john", "doe", "123");
+        LoginStore.user = user;
         var addNewShelter = ReactTestUtils.renderIntoDocument(
-            <AddNewShelter user={user} />
+            <AddNewShelter />
         );
         var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
             addNewShelter, "addNewGroupButton");
@@ -113,10 +118,11 @@ describe("AddNewShelter", function () {
     it("EditGroupSuccess", function () {
         console.log("EditGroupSuccess");
         var user = new Volunteer("john", "doe", "123");
+        LoginStore.user = user;
         var group = new VolunteerGroup("My Group", "My Shelter", "123 Dog Lane", "Cat City", "NY", "12345", "5");
         group.userPermissionsMap[123] = VolunteerGroup.PermissionsEnum.ADMIN;
         var addNewShelter = ReactTestUtils.renderIntoDocument(
-            <AddNewShelter user={user} group={group} editMode="true" />
+            <AddNewShelter group={group} editMode="true" />
         );
 
         var groupNameInput = ReactDOM.findDOMNode(addNewShelter.refs.name);

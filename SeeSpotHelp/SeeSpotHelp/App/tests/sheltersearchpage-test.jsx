@@ -3,6 +3,7 @@ var ReactTestUtils = require("react-addons-test-utils");
 var expect = require("expect"),
     Volunteer = require("../scripts/volunteer"),
     VolunteerGroup = require("../scripts/volunteergroup"),
+    LoginStore = require("../stores/loginstore"),
     ShelterSearchPage = require("../ui/sheltersearchpage.jsx");
 
 var d3 = require("d3");
@@ -10,6 +11,7 @@ var d3 = require("d3");
 describe("ShelterSearchPage", function () {
     it("ShowEnabledAddButtonAfterSearchForLoggedInUser", function () {
         var user = new Volunteer("sally", "sallyemail", "123");
+        LoginStore.user = user;
         var shelterSearchPage = ReactTestUtils.renderIntoDocument(
             <ShelterSearchPage user={user}/>
         );
@@ -33,6 +35,7 @@ describe("ShelterSearchPage", function () {
     });
 
     it("ShowDisabledAddButtonAfterSearchForNoUser", function () {
+        LoginStore.user = null;
         var shelterSearchPage = ReactTestUtils.renderIntoDocument(
             <ShelterSearchPage />
         );
