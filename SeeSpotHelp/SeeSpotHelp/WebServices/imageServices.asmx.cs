@@ -21,7 +21,14 @@ namespace SeeSpotHelp.WebServices
             System.Console.WriteLine("Saving file " + postedFile.FileName);
 
             // TODO: Save file to a folder on the server. Figure out what to return.
+            string filename = postedFile.FileName;
+            int lastSlash = filename.LastIndexOf("\\");
+            string trailingPath = filename.Substring(lastSlash + 1);
+            string fullPath = Server.MapPath("..\\") + "\\images\\" + trailingPath;
+            postedFile.SaveAs(fullPath);
             return "";
+            //{ "Access to the path 'C:\\Users\\bgaddis\\Source\\Repos\\NewRepo\\SeeSpotHelp\\SeeSpotHelp\\WebServices\\cover.png' is denied."}
+            //Could not find a part of the path 'C:\Users\bgaddis\Source\Repos\NewRepo\SeeSpotHelp\SeeSpotHelp\WebServices\images\cover.png'.
         }
     }
 }
