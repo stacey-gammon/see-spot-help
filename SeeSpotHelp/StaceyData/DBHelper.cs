@@ -11,8 +11,7 @@ namespace Helpers
     public static class DBHelper
     {
 #if DEBUG
-        private static string defaultConnectionString = "Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;User Id=sa;password=kath1y11";
-        //private static string defaultConnectionString = "Data Source=BGADDIS-HP\\BRIANSQL;Initial Catalog=AnimalShelter;Integrated Security=True";
+        private static string defaultConnectionString =  // Don't show the world our db connection string. :) TODO: Find a way to put it make it an environment variable.
 #else
         private static string defaultConnectionString = "";
 #endif
