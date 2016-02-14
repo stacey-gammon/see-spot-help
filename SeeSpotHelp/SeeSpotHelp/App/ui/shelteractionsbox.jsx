@@ -4,9 +4,9 @@ var React = require("react");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-var VolunteerGroup = require("../scripts/volunteergroup");
-var Volunteer = require("../scripts/volunteer");
-var ConstStrings = require("../scripts/conststrings");
+var VolunteerGroup = require("../core/volunteergroup");
+var Volunteer = require("../core/volunteer");
+var ConstStrings = require("../core/conststrings");
 var LoginStore = require("../stores/loginstore");
 
 var ShelterActionsBox = React.createClass({

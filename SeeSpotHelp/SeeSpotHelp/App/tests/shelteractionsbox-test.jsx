@@ -1,9 +1,9 @@
 ﻿var React = require("react");
 var ReactTestUtils = require("react-addons-test-utils");
 var expect = require("expect"),
-    Volunteer = require("../scripts/volunteer"),
-    VolunteerGroup = require("../scripts/volunteergroup"),
-    ConstStrings = require("../scripts/conststrings"),
+    Volunteer = require("../core/volunteer"),
+    VolunteerGroup = require("../core/volunteergroup"),
+    ConstStrings = require("../core/conststrings"),
     LoginStore = require("../stores/loginstore"),
     ShelterActionsBox = require("../ui/shelteractionsbox.jsx");
 

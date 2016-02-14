@@ -1,7 +1,7 @@
 ﻿'use strict'
 
 var React = require('react');
-var FakeData = require('../scripts/fakedata');
+var FakeData = require('../core/fakedata');
 var AnimalActionsBox = require('./animalactionsbox');
 
 // Animal home page displays animal information, photos and activies and notes made
