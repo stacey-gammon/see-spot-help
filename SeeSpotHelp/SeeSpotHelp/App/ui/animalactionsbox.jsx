@@ -1,7 +1,7 @@
 ﻿"use strict"
 
 var React = require("react");
-var AjaxServices = require("../scripts/AJAXServices");
+var AjaxServices = require("../core/AJAXServices");
 var TakePhotoButton = require("./takephotobutton")
 
 // Actions to display on the animal home page, such as Add Activity,

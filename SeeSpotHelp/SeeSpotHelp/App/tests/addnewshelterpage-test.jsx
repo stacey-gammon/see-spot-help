@@ -2,8 +2,8 @@
 var ReactDOM = require("react-dom");
 var ReactTestUtils = require("react-addons-test-utils");
 var expect = require("expect"),
-    Volunteer = require("../scripts/volunteer"),
-    VolunteerGroup = require("../scripts/volunteergroup"),
+    Volunteer = require("../core/volunteer"),
+    VolunteerGroup = require("../core/volunteergroup"),
     AddNewShelter = require("../ui/addnewshelter.jsx");
 var LoginStore = require("../stores/loginstore");
 
