@@ -3,12 +3,14 @@ var ReactTestUtils = require("react-addons-test-utils");
 var expect = require("expect"),
     Volunteer = require("../scripts/volunteer"),
     VolunteerGroup = require("../scripts/volunteergroup"),
+    LoginStore = require("../stores/loginstore"),
     ShelterHomePage = require("../ui/shelterhomepage.jsx");
 
 var d3 = require("d3");
 
 describe("ShelterHomePage", function () {
     it("ShowSearchBarNoUser", function () {
+        LoginStore.user = null;
         var shelterHomePage = ReactTestUtils.renderIntoDocument(
             <ShelterHomePage />
         );
@@ -17,8 +19,9 @@ describe("ShelterHomePage", function () {
     });
 
     it("ShowSearchBarNullUser", function () {
+        LoginStore.user = null;
         var shelterHomePage = ReactTestUtils.renderIntoDocument(
-            <ShelterHomePage user={null}/>
+            <ShelterHomePage/>
         );
         ReactTestUtils.findRenderedDOMComponentWithClass(
             shelterHomePage, "shelterSearchBox");
@@ -29,8 +32,9 @@ describe("ShelterHomePage", function () {
         // fake data, but that won't always be the case.  Depending on how
         // we modify that functionality, this will have to be updated.
         var volunteer = new Volunteer("Sally", "sally@sally.com", "115");
+        LoginStore.user = volunteer;
         var shelterHomePage = ReactTestUtils.renderIntoDocument(
-            <ShelterHomePage user={volunteer}/>
+            <ShelterHomePage/>
         );
 
         var inputFields = ReactTestUtils.scryRenderedDOMComponentsWithTag(
