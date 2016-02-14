@@ -1,7 +1,6 @@
 ﻿"use strict"
 
 var React = require("react");
-var LinkContainer = require("react-router-bootstrap").LinkContainer;
 var Link = require("react-router").Link;
 var FakeData = require("../core/fakedata");
 var FacebookUser = require("../core/facebookuser");
@@ -40,24 +39,6 @@ var ProfilePage = React.createClass({
                 user: LoginStore.user
             });
     },
-    goToSearchPage: function() {
-        this.context.router.push(
-            {
-                pathname: "/shelterSearchPage",
-                state: { user: this.state.user }
-            }
-        );
-    },
-
-    goToAddGroupPage: function() {
-        console.log("ProfilePagE::goToAddGroupPage");
-        this.context.router.push(
-            {
-                pathname: "/addNewShelter",
-                state: { user: this.state.user }
-            }
-        );
-    },
 
     getGroupElement: function(group) {
         console.log("ProfilePage:GetGroupElement");
@@ -72,9 +53,9 @@ var ProfilePage = React.createClass({
             return (
                 <div>
                     <h1>You are not part of any volunteer groups.  To get started&nbsp;
-                    <a href="" onClick={this.goToSearchPage}>search</a> 
+                    <Link to="shelterSearchPage">search</Link>
                     &nbsp;for a group to join, or&nbsp;
-                    <a href="" onClick={this.goToAddGroupPage}>add</a> a new one.
+                    <Link to="addNewShelter">add</Link> a new one.
                     </h1>
                 </div>
             );
