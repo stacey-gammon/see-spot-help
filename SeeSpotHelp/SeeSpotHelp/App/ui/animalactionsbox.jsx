@@ -2,13 +2,33 @@
 
 var React = require("react");
 var AjaxServices = require("../core/AJAXServices");
-var TakePhotoButton = require("./takephotobutton")
+var TakePhotoButton = require("./takephotobutton");
+var LoginStore = require("../stores/loginstore");
 
 // Actions to display on the animal home page, such as Add Activity,
 // Edit and Delete.
 var AnimalActionsBox = React.createClass({
-    getInitialState() {
-        return {walking: false}
+    getInitialState: function() {
+        return {
+            walking: false,
+            user: LoginStore.user,
+            animal: null
+        }
+    },
+
+    componentDidMount: function () {
+        LoginStore.addChangeListener(this.onChange);
+    },
+
+    componentWillUnmount: function () {
+        LoginStore.removeChangeListener(this.onChange);
+    },
+
+    onChange: function () {
+        this.setState(
+            {
+                user: LoginStore.user
+            });
     },
 
     alertNotImplemented: function () {
@@ -37,16 +57,23 @@ var AnimalActionsBox = React.createClass({
         var walkText = this.state.walking ? "End walk" : "Walk";
         return (
             <div>
-                <button className="btn btn-info buttonPadding" id="walkButton" onClick={walkFunction}>
+                <button className="btn btn-info buttonPadding"
+                        id="walkButton"
+                        disabled={!this.state.user}
+                        onClick={walkFunction}>
                     {walkText}
                 </button>
-                <button className="btn btn-info buttonPadding">
+                <button className="btn btn-info buttonPadding" disabled={!this.state.user}>
                     Add Note
                 </button>
-                <button className="btn btn-info buttonPadding" onClick={this.alertNotImplemented}>
+                <button className="btn btn-info buttonPadding"
+                        onClick={this.alertNotImplemented}
+                        disabled={!this.state.user}>
                     Edit
                 </button>
-                <TakePhotoButton user={this.state.user} group={this.state.group} animal={this.state.animal}/>
+                <TakePhotoButton user={this.state.user}
+                                 group={this.state.group}
+                                 animal={this.state.animal}/>
             </div>
         );
     }
