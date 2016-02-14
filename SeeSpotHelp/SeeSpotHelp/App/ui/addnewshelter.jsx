@@ -5,6 +5,7 @@ var ConstStrings = require("../scripts/conststrings");
 var VolunteerGroup = require("../scripts/volunteergroup");
 var InputField = require("../scripts/inputfield");
 var InputFieldValidation = require("../scripts/inputfieldvalidation");
+var LoginStore = require("../stores/loginstore");
 
 var STATES = [
     "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",
@@ -33,11 +34,11 @@ var AddNewShelter = React.createClass({
         }
         
         var editMode = this.props.editMode ? this.props.editMode :
-            this.props.location ? this.props.location.state.editMode : null;
-        var user = this.props.user ? this.props.user :
-            this.props.location ? this.props.location.state.user : null;
+            this.props.location  && this.props.location.state ?
+            this.props.location.state.editMode : null;
         var group = this.props.group ? this.props.group :
-            this.props.location ? this.props.location.state.group : null;
+            this.props.location && this.props.location.state ?
+            this.props.location.state.group : null;
 
         // If in edit mode, fill in field values.
         if (editMode) {
@@ -49,7 +50,7 @@ var AddNewShelter = React.createClass({
         return {
             errorMessage: null,
             fields: inputFields,
-            user : user,
+            user : LoginStore.user,
             group: group,
             editMode: editMode
         };

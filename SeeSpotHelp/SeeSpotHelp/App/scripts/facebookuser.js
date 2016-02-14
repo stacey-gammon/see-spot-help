@@ -1,8 +1,9 @@
-﻿var Volunteer = require('../scripts/volunteer');
+﻿var Volunteer = require("../scripts/volunteer");
+var LoginActions = require("../actions/loginactions");
 
 var FacebookUser = function () {}
 
-FacebookUser.getVolunteer = function (callback) {
+FacebookUser.getVolunteer = function () {
     console.log("FacebookUser.getVolunteer");
     var outer = this;
     this.loadVolunteer = function () {
@@ -11,8 +12,8 @@ FacebookUser.getVolunteer = function (callback) {
             console.log("Successful login for " + response.name +
                         " with id " + response.id +
                         " and email " + response.email);
-            Volunteer.
-                LoadVolunteer(response.id, response.name, response.email, callback);
+            Volunteer.LoadVolunteer(
+                response.id, response.name, response.email, LoginActions.userLoggedIn);
         });
     };
 
@@ -22,7 +23,7 @@ FacebookUser.getVolunteer = function (callback) {
             outer.loadVolunteer();
         } else {
             console.log("No facebook login user found.");
-            callback(null);
+            LoginActions.userLogInFailed(new Error("No facebook user found"));
         }
     }
 
