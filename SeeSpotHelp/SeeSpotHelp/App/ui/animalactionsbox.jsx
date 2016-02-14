@@ -11,8 +11,7 @@ var AnimalActionsBox = React.createClass({
     getInitialState: function() {
         return {
             walking: false,
-            user: LoginStore.user,
-            animal: null
+            user: LoginStore.user
         }
     },
 
@@ -51,28 +50,35 @@ var AnimalActionsBox = React.createClass({
         walkButton.onClick = this.endWalk;
     },
 
+    isMemberOfGroup: function () {
+        return this.state.user &&
+               this.props.group &&
+               this.state.user.isMemberOf(this.props.group.id);
+    },
+
     render: function () {
          console.log("AnimalActionsBox::render");
         var walkFunction = this.state.walking ? this.endWalk : this.startWalk;
         var walkText = this.state.walking ? "End walk" : "Walk";
         return (
             <div>
-                <button className="btn btn-info buttonPadding"
+                <button className="btn btn-info buttonPadding walkAnimalButton"
                         id="walkButton"
-                        disabled={!this.state.user}
+                        disabled={!this.isMemberOfGroup()}
                         onClick={walkFunction}>
                     {walkText}
                 </button>
-                <button className="btn btn-info buttonPadding" disabled={!this.state.user}>
+                <button className="btn btn-info buttonPadding addAnimalNoteButton"
+                        disabled={!this.isMemberOfGroup()}>
                     Add Note
                 </button>
-                <button className="btn btn-info buttonPadding"
+                <button className="btn btn-info buttonPadding editAnimalButton"
                         onClick={this.alertNotImplemented}
-                        disabled={!this.state.user}>
+                        disabled={!this.isMemberOfGroup()}>
                     Edit
                 </button>
-                <TakePhotoButton user={this.state.user}
-                                 group={this.state.group}
+                <TakePhotoButton className="takePhotoButton"
+                                 group={this.props.group}
                                  animal={this.state.animal}/>
             </div>
         );
