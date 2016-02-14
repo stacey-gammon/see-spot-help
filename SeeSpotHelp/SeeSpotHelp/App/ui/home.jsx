@@ -29,34 +29,17 @@ var Home = React.createClass({
     },
 
     getInitialState: function () {
-        return {
-            user: LoginStore.user
-        };
-    },
-
-    logInEvent: function() {
-        console.log("logInEvent");
-        this.loadFacebookUser();
-    },
-
-    logOutEvent: function() {
-        console.log("logOutEvent");
-        Dispatcher.register(function (test) {
-            console.log("Will this run (3)?");
-        });
-        LoginActions.userLoggedOut();
+        return {};
     },
 
     subscribeToLoginEvents: function() {
-        console.log("Home::subscribeToLoginEvents");
-        FB.Event.subscribe("auth.login", this.logInEvent);
-        FB.Event.subscribe("auth.logout", this.logOutEvent);
+        FB.Event.subscribe("auth.login", FacebookUser.login);
+        FB.Event.subscribe("auth.logout", LoginActions.userLoggedOut);
     },
 
     facebookInitialized: function () {
-        console.log("Home::facebookInitialized");
         this.subscribeToLoginEvents();
-        this.loadFacebookUser();
+        FacebookUser.login();
     },
 
     componentWillMount: function () {
@@ -89,9 +72,7 @@ var Home = React.createClass({
         }
 
         this.setState({
-            defaultGroup: defaultGroup,
-            volunteer: null,
-            loggingIn: true
+            defaultGroup: defaultGroup
         });
         LoginStore.addChangeListener(this.onChange);
     },
@@ -103,10 +84,6 @@ var Home = React.createClass({
 
     onChange: function () {
         console.log("Home:onChange");
-        this.setState(
-            {
-                user: LoginStore.user
-            });
         if (LoginStore.user) {
             this.loadPageForVolunteer(LoginStore.user);
         }
@@ -114,11 +91,6 @@ var Home = React.createClass({
 
     loadPageForVolunteer: function (volunteer) {
         console.log("Home::LoadPageForVolunteer");
-        this.setState({
-            user: volunteer,
-            loggingIn: false
-        });
-        sessionStorage.setItem("volunteer", JSON.stringify(volunteer));
 
         // If there isn't yet a default group choosen for this session, seed it from
         // server side data, whatever group the volunteer is a part of.  Searching and
@@ -134,32 +106,16 @@ var Home = React.createClass({
         // Currently we will force them to pop over to the shelter home page. This fell
         // out naturally and was not specifically decided. Figure out what to do.
         if (volunteer && volunteer.getDefaultVolunteerGroup()) {
-            console.log("Default volunteer group found, loading shelter home page, volunteer is: ");
-            console.log(volunteer);
-            this.context.router.push(
-                {
-                    pathname: "/shelterHomePage"
-                }
-            );
+            this.context.router.push("/shelterHomePage");
         } else {
-            this.context.router.push(
-                {
-                    pathname: "/shelterSearchPage"
-                }
-            );
+            this.context.router.push("/shelterSearchPage");
         }
     },
 
-    loadFacebookUser: function() {
-        FacebookUser.getVolunteer();
-    },
-
     render: function () {
-        console.log("Home::render: volunteer: ");
-        console.log(this.state.user);
         return (
           <div>
-            <MyNavBar user={this.state.user}/>
+            <MyNavBar/>
             {this.props.children}
           </div>
       );
