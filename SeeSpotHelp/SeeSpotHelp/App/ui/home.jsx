@@ -8,8 +8,8 @@ var AddAdoptablePage = require("./addadoptablepage");
 var ProfilePage = require("./profilepage");
 var MyNavBar = require("./navbar");
 
-var FacebookUser = require("../scripts/facebookuser");
-var Volunteer = require("../scripts/volunteer");
+var FacebookUser = require("../core/facebookuser");
+var Volunteer = require("../core/volunteer");
 
 var LoginStore = require("../stores/loginstore");
 var LoginActions = require("../actions/loginactions");
