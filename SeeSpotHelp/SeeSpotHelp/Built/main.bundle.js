@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "7fedd123f120eda03bdb"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "7031affab993a13febaa"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -26320,8 +26320,8 @@
 	        console.log("ShelterSearchBox::render");
 	        return (
 	            React.createElement("div", {className: "shelterSearchBox"}, 
+	                React.createElement("h1", null, "Search for a shelter, rescue or volunteer group to join"), 
 	                React.createElement("div", {className: "input-group"}, 
-	                    React.createElement("h1", null, "Search for a shelter, rescue or volunteer group to join"), 
 	                    React.createElement("input", {type: "text", className: "form-control shelterSearchInput", 
 	                           ref: "shelterSearchInput", 
 	                           placeholder: "Search..."}), 
@@ -26541,9 +26541,9 @@
 	// as an additional parameter to callback functions?  For now,
 	// goind with the latter.
 	
-	var ServerResponse = function () {
-	    this.hasError = false;
-	    this.errorMessage = "";
+	var ServerResponse = function (errorMessage) {
+	    this.hasError = !!errorMessage;
+	    this.errorMessage = errorMessage;
 	};
 	
 	module.exports = ServerResponse;
@@ -27595,12 +27595,15 @@
 	
 	    // The id is the user id given by facebook.
 	    this.id = id;
+	    this.groups = [];
 	};
 	
-	Volunteer.prototype.getGroups = function () {
-	    // TODO: Hook into server side.
-	    return [];//VolunteerGroup.getFakeGroups()["123"]];
-	};
+	Volunteer.prototype.isMemberOf = function (groupId) {
+	    for (var i = 0; i < groups.length; i++) {
+	        if (groups[i].id == groupId) return true;
+	    }
+	    return false;
+	}
 	
 	// Casts the given obj as a Volunteer.  Careful - obj must have
 	// originally been a type of Volunteer for this to work as expected.
@@ -28194,13 +28197,33 @@
 	
 	var React = __webpack_require__(/*! react */ 3);
 	var AjaxServices = __webpack_require__(/*! ../core/AJAXServices */ 238);
-	var TakePhotoButton = __webpack_require__(/*! ./takephotobutton */ 247)
+	var TakePhotoButton = __webpack_require__(/*! ./takephotobutton */ 247);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
 	
 	// Actions to display on the animal home page, such as Add Activity,
 	// Edit and Delete.
 	var AnimalActionsBox = React.createClass({displayName: "AnimalActionsBox",
-	    getInitialState:function() {
-	        return {walking: false}
+	    getInitialState: function() {
+	        return {
+	            walking: false,
+	            user: LoginStore.user,
+	            animal: null
+	        }
+	    },
+	
+	    componentDidMount: function () {
+	        LoginStore.addChangeListener(this.onChange);
+	    },
+	
+	    componentWillUnmount: function () {
+	        LoginStore.removeChangeListener(this.onChange);
+	    },
+	
+	    onChange: function () {
+	        this.setState(
+	            {
+	                user: LoginStore.user
+	            });
 	    },
 	
 	    alertNotImplemented: function () {
@@ -28229,16 +28252,23 @@
 	        var walkText = this.state.walking ? "End walk" : "Walk";
 	        return (
 	            React.createElement("div", null, 
-	                React.createElement("button", {className: "btn btn-info buttonPadding", id: "walkButton", onClick: walkFunction}, 
+	                React.createElement("button", {className: "btn btn-info buttonPadding", 
+	                        id: "walkButton", 
+	                        disabled: !this.state.user, 
+	                        onClick: walkFunction}, 
 	                    walkText
 	                ), 
-	                React.createElement("button", {className: "btn btn-info buttonPadding"}, 
+	                React.createElement("button", {className: "btn btn-info buttonPadding", disabled: !this.state.user}, 
 	                    "Add Note"
 	                ), 
-	                React.createElement("button", {className: "btn btn-info buttonPadding", onClick: this.alertNotImplemented}, 
+	                React.createElement("button", {className: "btn btn-info buttonPadding", 
+	                        onClick: this.alertNotImplemented, 
+	                        disabled: !this.state.user}, 
 	                    "Edit"
 	                ), 
-	                React.createElement(TakePhotoButton, {user: this.state.user, group: this.state.group, animal: this.state.animal})
+	                React.createElement(TakePhotoButton, {user: this.state.user, 
+	                                 group: this.state.group, 
+	                                 animal: this.state.animal})
 	            )
 	        );
 	    }
@@ -28257,11 +28287,19 @@
 	
 	var React = __webpack_require__(/*! react */ 3);
 	var AjaxServices = __webpack_require__(/*! ../core/AJAXServices */ 238);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
 	
 	var TakePhotoButton = React.createClass({displayName: "TakePhotoButton",
+	    getInitialState: function() {
+	        return {
+	            user: LoginStore.user
+	        }
+	    },
+	
 	    uploadSucceeded: function() {
 	        alert("yay!");
 	    },
+	
 	    uploadFailed: function(error) {
 	        alert("boo!" + error.responseText);
 	    },
@@ -28293,7 +28331,9 @@
 	        console.log("TakePhotoButton::render");
 	        return (
 	            React.createElement("div", {className: "takePhotoButton"}, 
-	                React.createElement("button", {className: "btn btn-info buttonPadding", onClick: this.addPhoto}, 
+	                React.createElement("button", {className: "btn btn-info buttonPadding", 
+	                        disabled: !this.state.user, 
+	                        onClick: this.addPhoto}, 
 	                    React.createElement("span", {className: "glyphicon glyphicon-camera"})
 	                ), 
 	                React.createElement("input", {type: "file", accept: "image/*", 
@@ -28738,7 +28778,6 @@
 	/** @jsx React.DOM */"use strict"
 	
 	var React = __webpack_require__(/*! react */ 3);
-	var LinkContainer = __webpack_require__(/*! react-router-bootstrap */ 162).LinkContainer;
 	var Link = __webpack_require__(/*! react-router */ 165).Link;
 	var FakeData = __webpack_require__(/*! ../core/fakedata */ 240);
 	var FacebookUser = __webpack_require__(/*! ../core/facebookuser */ 242);
@@ -28777,24 +28816,6 @@
 	                user: LoginStore.user
 	            });
 	    },
-	    goToSearchPage: function() {
-	        this.context.router.push(
-	            {
-	                pathname: "/shelterSearchPage",
-	                state: { user: this.state.user }
-	            }
-	        );
-	    },
-	
-	    goToAddGroupPage: function() {
-	        console.log("ProfilePagE::goToAddGroupPage");
-	        this.context.router.push(
-	            {
-	                pathname: "/addNewShelter",
-	                state: { user: this.state.user }
-	            }
-	        );
-	    },
 	
 	    getGroupElement: function(group) {
 	        console.log("ProfilePage:GetGroupElement");
@@ -28809,9 +28830,9 @@
 	            return (
 	                React.createElement("div", null, 
 	                    React.createElement("h1", null, "You are not part of any volunteer groups.  To get started ", 
-	                    React.createElement("a", {href: "", onClick: this.goToSearchPage}, "search"), 
+	                    React.createElement(Link, {to: "shelterSearchPage"}, "search"), 
 	                    " for a group to join, or ", 
-	                    React.createElement("a", {href: "", onClick: this.goToAddGroupPage}, "add"), " a new one."
+	                    React.createElement(Link, {to: "addNewShelter"}, "add"), " a new one."
 	                    )
 	                )
 	            );
