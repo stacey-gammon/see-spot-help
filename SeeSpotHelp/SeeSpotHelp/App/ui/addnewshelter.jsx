@@ -1,10 +1,10 @@
 ﻿"use strict"
 
 var React = require("react");
-var ConstStrings = require("../scripts/conststrings");
-var VolunteerGroup = require("../scripts/volunteergroup");
-var InputField = require("../scripts/inputfield");
-var InputFieldValidation = require("../scripts/inputfieldvalidation");
+var ConstStrings = require("../core/conststrings");
+var VolunteerGroup = require("../core/volunteergroup");
+var InputField = require("../core/inputfield");
+var InputFieldValidation = require("../core/inputfieldvalidation");
 var LoginStore = require("../stores/loginstore");
 
 var STATES = [
