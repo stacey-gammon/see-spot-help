@@ -6,6 +6,7 @@ var Animal = require("../scripts/animal");
 var InputField = require("../scripts/inputfield");
 var InputFieldValidation = require("../scripts/inputfieldvalidation");
 var TakePhotoButton = require("./takephotobutton");
+var LoginStore = require("../stores/loginstore");
 
 var AddAdoptablePage = React.createClass({
     getInitialState: function () {
@@ -26,8 +27,6 @@ var AddAdoptablePage = React.createClass({
         
         var editMode = this.props.editMode ? this.props.editMode :
             this.props.location ? this.props.location.state.editMode : null;
-        var user = this.props.user ? this.props.user :
-            this.props.location ? this.props.location.state.user : null;
         var group = this.props.group ? this.props.group :
             this.props.location ? this.props.location.state.group : null;
         var animal = this.props.animal ? this.props.animal :
@@ -43,7 +42,7 @@ var AddAdoptablePage = React.createClass({
         return {
             errorMessage: null,
             fields: inputFields,
-            user : user,
+            user : LoginStore.user,
             group: group,
             editMode: editMode,
             animal: animal
@@ -127,6 +126,7 @@ var AddAdoptablePage = React.createClass({
         var buttonText = this.state.editMode ? ConstStrings.Update : ConstStrings.Add;
         return (
             <div>
+                <h1>Add Animal</h1>
                 {this.state.errorMessage}
                 {inputFields}
                 <TakePhotoButton user={this.state.user} group={this.state.group} animal={this.state.animal}/>
