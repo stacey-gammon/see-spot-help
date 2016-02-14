@@ -23,7 +23,7 @@ namespace SeeSpotHelp.WebServices
         {
 
             AnimalsNS.Animal sa = new AnimalsNS.Animal(
-                "connection string here");
+                "connection string her e");
             sa.getAnimal(anID);
             string json = JsonConvert.SerializeObject(sa);
             
