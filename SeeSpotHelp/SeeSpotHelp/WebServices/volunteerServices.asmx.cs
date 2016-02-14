@@ -23,7 +23,7 @@ namespace SeeSpotHelp.WebServices
         {
 
             AnimalsNS.Animal sa = new AnimalsNS.Animal(
-                "connection string her e");
+                Helpers.DBHelper.BuildConnectionString("AnimalShelter"));
             sa.getAnimal(anID);
             string json = JsonConvert.SerializeObject(sa);
             
@@ -35,7 +35,7 @@ namespace SeeSpotHelp.WebServices
         {
 
             VolunteersNS.Volunteer vt = new VolunteersNS.Volunteer(
-                "connection string here", anID,name,email);
+                Helpers.DBHelper.BuildConnectionString("AnimalShelter"), anID,name,email);
             vt.getVolunteer(anID);
             string json = JsonConvert.SerializeObject(vt);
             SeeSpotHelp.WebServices.volunteerResult volunteerResult = new SeeSpotHelp.WebServices.volunteerResult();
