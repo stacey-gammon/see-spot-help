@@ -11,12 +11,15 @@ var Volunteer = function(name, email, id) {
 
     // The id is the user id given by facebook.
     this.id = id;
+    this.groups = [];
 };
 
-Volunteer.prototype.getGroups = function () {
-    // TODO: Hook into server side.
-    return [];//VolunteerGroup.getFakeGroups()["123"]];
-};
+Volunteer.prototype.isMemberOf = function (groupId) {
+    for (var i = 0; i < groups.length; i++) {
+        if (groups[i].id == groupId) return true;
+    }
+    return false;
+}
 
 // Casts the given obj as a Volunteer.  Careful - obj must have
 // originally been a type of Volunteer for this to work as expected.
