@@ -15,8 +15,8 @@ var Volunteer = function(name, email, id) {
 };
 
 Volunteer.prototype.isMemberOf = function (groupId) {
-    for (var i = 0; i < groups.length; i++) {
-        if (groups[i].id == groupId) return true;
+    for (var i = 0; i < this.groups.length; i++) {
+        if (this.groups[i].id == groupId) return true;
     }
     return false;
 }
