@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "1a4cdea5ba99c6fb5d88"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "7fedd123f120eda03bdb"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -571,8 +571,8 @@
 	var ProfilePage = __webpack_require__(/*! ./profilepage */ 252);
 	var MyNavBar = __webpack_require__(/*! ./navbar */ 254);
 	
-	var FacebookUser = __webpack_require__(/*! ../scripts/facebookuser */ 242);
-	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 237);
+	var FacebookUser = __webpack_require__(/*! ../core/facebookuser */ 242);
+	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 237);
 	
 	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
 	var LoginActions = __webpack_require__(/*! ../actions/loginactions */ 243);
@@ -592,34 +592,17 @@
 	    },
 	
 	    getInitialState: function () {
-	        return {
-	            user: LoginStore.user
-	        };
-	    },
-	
-	    logInEvent: function() {
-	        console.log("logInEvent");
-	        this.loadFacebookUser();
-	    },
-	
-	    logOutEvent: function() {
-	        console.log("logOutEvent");
-	        Dispatcher.register(function (test) {
-	            console.log("Will this run (3)?");
-	        });
-	        LoginActions.userLoggedOut();
+	        return {};
 	    },
 	
 	    subscribeToLoginEvents: function() {
-	        console.log("Home::subscribeToLoginEvents");
-	        FB.Event.subscribe("auth.login", this.logInEvent);
-	        FB.Event.subscribe("auth.logout", this.logOutEvent);
+	        FB.Event.subscribe("auth.login", FacebookUser.login);
+	        FB.Event.subscribe("auth.logout", LoginActions.userLoggedOut);
 	    },
 	
 	    facebookInitialized: function () {
-	        console.log("Home::facebookInitialized");
 	        this.subscribeToLoginEvents();
-	        this.loadFacebookUser();
+	        FacebookUser.login();
 	    },
 	
 	    componentWillMount: function () {
@@ -652,9 +635,7 @@
 	        }
 	
 	        this.setState({
-	            defaultGroup: defaultGroup,
-	            volunteer: null,
-	            loggingIn: true
+	            defaultGroup: defaultGroup
 	        });
 	        LoginStore.addChangeListener(this.onChange);
 	    },
@@ -666,10 +647,6 @@
 	
 	    onChange: function () {
 	        console.log("Home:onChange");
-	        this.setState(
-	            {
-	                user: LoginStore.user
-	            });
 	        if (LoginStore.user) {
 	            this.loadPageForVolunteer(LoginStore.user);
 	        }
@@ -677,11 +654,6 @@
 	
 	    loadPageForVolunteer: function (volunteer) {
 	        console.log("Home::LoadPageForVolunteer");
-	        this.setState({
-	            user: volunteer,
-	            loggingIn: false
-	        });
-	        sessionStorage.setItem("volunteer", JSON.stringify(volunteer));
 	
 	        // If there isn't yet a default group choosen for this session, seed it from
 	        // server side data, whatever group the volunteer is a part of.  Searching and
@@ -697,32 +669,16 @@
 	        // Currently we will force them to pop over to the shelter home page. This fell
 	        // out naturally and was not specifically decided. Figure out what to do.
 	        if (volunteer && volunteer.getDefaultVolunteerGroup()) {
-	            console.log("Default volunteer group found, loading shelter home page, volunteer is: ");
-	            console.log(volunteer);
-	            this.context.router.push(
-	                {
-	                    pathname: "/shelterHomePage"
-	                }
-	            );
+	            this.context.router.push("/shelterHomePage");
 	        } else {
-	            this.context.router.push(
-	                {
-	                    pathname: "/shelterSearchPage"
-	                }
-	            );
+	            this.context.router.push("/shelterSearchPage");
 	        }
 	    },
 	
-	    loadFacebookUser: function() {
-	        FacebookUser.getVolunteer();
-	    },
-	
 	    render: function () {
-	        console.log("Home::render: volunteer: ");
-	        console.log(this.state.user);
 	        return (
 	          React.createElement("div", null, 
-	            React.createElement(MyNavBar, {user: this.state.user}), 
+	            React.createElement(MyNavBar, null), 
 	            this.props.children
 	          )
 	      );
@@ -760,10 +716,10 @@
 	var ShelterSearchBox = __webpack_require__(/*! ./sheltersearchbox */ 223);
 	var ShelterInfoBox = __webpack_require__(/*! ./shelterinfobox */ 235);
 	var ShelterActionsBox = __webpack_require__(/*! ./shelteractionsbox */ 236);
-	var FakeData = __webpack_require__(/*! ../scripts/fakedata */ 240);
-	var FacebookUser = __webpack_require__(/*! ../scripts/facebookuser */ 242);
-	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 237);
-	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
+	var FakeData = __webpack_require__(/*! ../core/fakedata */ 240);
+	var FacebookUser = __webpack_require__(/*! ../core/facebookuser */ 242);
+	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 237);
+	var VolunteerGroup = __webpack_require__(/*! ../core/volunteergroup */ 224);
 	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
 	
 	var ShelterHomePage = React.createClass({displayName: "ShelterHomePage",
@@ -26299,7 +26255,7 @@
 	
 	var React = __webpack_require__(/*! react */ 3);
 	var LinkContainer = __webpack_require__(/*! react-router-bootstrap */ 162).LinkContainer;
-	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
+	var VolunteerGroup = __webpack_require__(/*! ../core/volunteergroup */ 224);
 	var ShelterSearchResults = __webpack_require__(/*! ./sheltersearchresults */ 226);
 	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
 	
@@ -26387,9 +26343,9 @@
 
 /***/ },
 /* 224 */
-/*!***********************************!*\
-  !*** ./scripts/volunteergroup.js ***!
-  \***********************************/
+/*!********************************!*\
+  !*** ./core/volunteergroup.js ***!
+  \********************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict"
@@ -26571,9 +26527,9 @@
 
 /***/ },
 /* 225 */
-/*!***********************************!*\
-  !*** ./scripts/serverresponse.js ***!
-  \***********************************/
+/*!********************************!*\
+  !*** ./core/serverresponse.js ***!
+  \********************************/
 /***/ function(module, exports) {
 
 	"use strict"
@@ -26679,14 +26635,14 @@
 	class LoginStore extends EventEmitter {
 	    constructor() {
 	        super();
-	        EventEmitter.call(this);
-	        console.log("LoginStore:constructor");
 	        var outer = this;
 	        this.dispatchToken = Dispatcher.register(function (action) {
 	            console.log("LoginStore:Dispatcher:register");
 	            outer.handleAction(action);
 	        });
+	        this.user = JSON.parse(sessionStorage.getItem("user"));
 	    }
+	
 	    addChangeListener(callback) {
 	        console.log("LoginStore:addChangeListener");
 	        this.on(CHANGE_EVENT, callback);
@@ -26711,7 +26667,7 @@
 	        switch (action.type) {
 	            case ActionConstants.LOGIN_USER_SUCCESS:
 	                this.user = action.user;
-	                localStorage.setItem("user", this.user);
+	                sessionStorage.setItem("user", JSON.stringify(this.user));
 	                this.error = null;
 	                this.emitChange();
 	                break;
@@ -27490,9 +27446,9 @@
 	var ReactRouterBootstrap = __webpack_require__(/*! react-router-bootstrap */ 162);
 	var LinkContainer = ReactRouterBootstrap.LinkContainer;
 	
-	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
-	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 237);
-	var ConstStrings = __webpack_require__(/*! ../scripts/conststrings */ 239);
+	var VolunteerGroup = __webpack_require__(/*! ../core/volunteergroup */ 224);
+	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 237);
+	var ConstStrings = __webpack_require__(/*! ../core/conststrings */ 239);
 	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
 	
 	var ShelterActionsBox = React.createClass({displayName: "ShelterActionsBox",
@@ -27621,16 +27577,16 @@
 
 /***/ },
 /* 237 */
-/*!******************************!*\
-  !*** ./scripts/volunteer.js ***!
-  \******************************/
+/*!***************************!*\
+  !*** ./core/volunteer.js ***!
+  \***************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	// A volunteer that may or may not be part of a volunteer group. User sessions
 	// managed by facebook login and authentication.
 	
 	var VolunteerGroup = __webpack_require__(/*! ./volunteergroup */ 224);
-	var AjaxServices = __webpack_require__(/*! ../scripts/AJAXServices */ 238);
+	var AjaxServices = __webpack_require__(/*! ./AJAXServices */ 238);
 	var volunteerCallback;
 	
 	var Volunteer = function(name, email, id) {
@@ -27742,9 +27698,9 @@
 
 /***/ },
 /* 238 */
-/*!*********************************!*\
-  !*** ./scripts/AJAXServices.js ***!
-  \*********************************/
+/*!******************************!*\
+  !*** ./core/AJAXServices.js ***!
+  \******************************/
 /***/ function(module, exports) {
 
 	// A helpful class filled with functions for validating various
@@ -27819,9 +27775,9 @@
 
 /***/ },
 /* 239 */
-/*!*********************************!*\
-  !*** ./scripts/conststrings.js ***!
-  \*********************************/
+/*!******************************!*\
+  !*** ./core/conststrings.js ***!
+  \******************************/
 /***/ function(module, exports) {
 
 	
@@ -27849,9 +27805,9 @@
 
 /***/ },
 /* 240 */
-/*!*****************************!*\
-  !*** ./scripts/fakedata.js ***!
-  \*****************************/
+/*!**************************!*\
+  !*** ./core/fakedata.js ***!
+  \**************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -27986,9 +27942,9 @@
 
 /***/ },
 /* 241 */
-/*!***************************!*\
-  !*** ./scripts/animal.js ***!
-  \***************************/
+/*!************************!*\
+  !*** ./core/animal.js ***!
+  \************************/
 /***/ function(module, exports) {
 
 	// An animal that is currently being managed by a volunteer group.
@@ -28056,18 +28012,18 @@
 
 /***/ },
 /* 242 */
-/*!*********************************!*\
-  !*** ./scripts/facebookuser.js ***!
-  \*********************************/
+/*!******************************!*\
+  !*** ./core/facebookuser.js ***!
+  \******************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 237);
+	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 237);
 	var LoginActions = __webpack_require__(/*! ../actions/loginactions */ 243);
 	
 	var FacebookUser = function () {}
 	
-	FacebookUser.getVolunteer = function () {
-	    console.log("FacebookUser.getVolunteer");
+	FacebookUser.login = function () {
+	    console.log("FacebookUser.login");
 	    var outer = this;
 	    this.loadVolunteer = function () {
 	        console.log("FacebookUser::login : loadVolunteer");
@@ -28192,7 +28148,7 @@
 	/** @jsx React.DOM */'use strict'
 	
 	var React = __webpack_require__(/*! react */ 3);
-	var FakeData = __webpack_require__(/*! ../scripts/fakedata */ 240);
+	var FakeData = __webpack_require__(/*! ../core/fakedata */ 240);
 	var AnimalActionsBox = __webpack_require__(/*! ./animalactionsbox */ 246);
 	
 	// Animal home page displays animal information, photos and activies and notes made
@@ -28237,7 +28193,7 @@
 	/** @jsx React.DOM */"use strict"
 	
 	var React = __webpack_require__(/*! react */ 3);
-	var AjaxServices = __webpack_require__(/*! ../scripts/AJAXServices */ 238);
+	var AjaxServices = __webpack_require__(/*! ../core/AJAXServices */ 238);
 	var TakePhotoButton = __webpack_require__(/*! ./takephotobutton */ 247)
 	
 	// Actions to display on the animal home page, such as Add Activity,
@@ -28300,7 +28256,7 @@
 	/** @jsx React.DOM */"use strict"
 	
 	var React = __webpack_require__(/*! react */ 3);
-	var AjaxServices = __webpack_require__(/*! ../scripts/AJAXServices */ 238);
+	var AjaxServices = __webpack_require__(/*! ../core/AJAXServices */ 238);
 	
 	var TakePhotoButton = React.createClass({displayName: "TakePhotoButton",
 	    uploadSucceeded: function() {
@@ -28361,10 +28317,10 @@
 	/** @jsx React.DOM */"use strict"
 	
 	var React = __webpack_require__(/*! react */ 3);
-	var ConstStrings = __webpack_require__(/*! ../scripts/conststrings */ 239);
-	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
-	var InputField = __webpack_require__(/*! ../scripts/inputfield */ 249);
-	var InputFieldValidation = __webpack_require__(/*! ../scripts/inputfieldvalidation */ 250);
+	var ConstStrings = __webpack_require__(/*! ../core/conststrings */ 239);
+	var VolunteerGroup = __webpack_require__(/*! ../core/volunteergroup */ 224);
+	var InputField = __webpack_require__(/*! ../core/inputfield */ 249);
+	var InputFieldValidation = __webpack_require__(/*! ../core/inputfieldvalidation */ 250);
 	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
 	
 	var STATES = [
@@ -28509,9 +28465,9 @@
 
 /***/ },
 /* 249 */
-/*!*******************************!*\
-  !*** ./scripts/inputfield.js ***!
-  \*******************************/
+/*!****************************!*\
+  !*** ./core/inputfield.js ***!
+  \****************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(/*! react */ 3);
@@ -28597,9 +28553,9 @@
 
 /***/ },
 /* 250 */
-/*!*****************************************!*\
-  !*** ./scripts/inputfieldvalidation.js ***!
-  \*****************************************/
+/*!**************************************!*\
+  !*** ./core/inputfieldvalidation.js ***!
+  \**************************************/
 /***/ function(module, exports) {
 
 	// A helpful class filled with static functions for validating various
@@ -28633,10 +28589,10 @@
 	/** @jsx React.DOM */"use strict"
 	
 	var React = __webpack_require__(/*! react */ 3);
-	var ConstStrings = __webpack_require__(/*! ../scripts/conststrings */ 239);
-	var Animal = __webpack_require__(/*! ../scripts/animal */ 241);
-	var InputField = __webpack_require__(/*! ../scripts/inputfield */ 249);
-	var InputFieldValidation = __webpack_require__(/*! ../scripts/inputfieldvalidation */ 250);
+	var ConstStrings = __webpack_require__(/*! ../core/conststrings */ 239);
+	var Animal = __webpack_require__(/*! ../core/animal */ 241);
+	var InputField = __webpack_require__(/*! ../core/inputfield */ 249);
+	var InputFieldValidation = __webpack_require__(/*! ../core/inputfieldvalidation */ 250);
 	var TakePhotoButton = __webpack_require__(/*! ./takephotobutton */ 247);
 	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
 	
@@ -28784,10 +28740,10 @@
 	var React = __webpack_require__(/*! react */ 3);
 	var LinkContainer = __webpack_require__(/*! react-router-bootstrap */ 162).LinkContainer;
 	var Link = __webpack_require__(/*! react-router */ 165).Link;
-	var FakeData = __webpack_require__(/*! ../scripts/fakedata */ 240);
-	var FacebookUser = __webpack_require__(/*! ../scripts/facebookuser */ 242);
-	var Volunteer = __webpack_require__(/*! ../scripts/volunteer */ 237);
-	var VolunteerGroup = __webpack_require__(/*! ../scripts/volunteergroup */ 224);
+	var FakeData = __webpack_require__(/*! ../core/fakedata */ 240);
+	var FacebookUser = __webpack_require__(/*! ../core/facebookuser */ 242);
+	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 237);
+	var VolunteerGroup = __webpack_require__(/*! ../core/volunteergroup */ 224);
 	var FacebookLogin = __webpack_require__(/*! ./facebooklogin */ 253);
 	var ShelterInfoBox = __webpack_require__(/*! ./shelterinfobox */ 235);
 	var AddNewShelter = __webpack_require__(/*! ./addnewshelter */ 248);
