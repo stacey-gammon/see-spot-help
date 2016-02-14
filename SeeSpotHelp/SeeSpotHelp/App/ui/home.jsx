@@ -5,10 +5,16 @@ var ShelterSearchPage = require("./sheltersearchpage");
 var AnimalHomePage = require("./animalHomePage");
 var AddNewShelter = require("./addnewshelter");
 var AddAdoptablePage = require("./addadoptablepage");
+var ProfilePage = require("./profilepage");
 var MyNavBar = require("./navbar");
 
 var FacebookUser = require("../scripts/facebookuser");
 var Volunteer = require("../scripts/volunteer");
+
+var LoginStore = require("../stores/loginstore");
+var LoginActions = require("../actions/loginactions");
+
+var Dispatcher = require("../dispatcher/dispatcher");
 
 var React = require("react");
 var ReactDOM = require("react-dom");
@@ -22,8 +28,10 @@ var Home = React.createClass({
         router: React.PropTypes.object.isRequired
     },
 
-    getInitialState: function() {
-        return {};
+    getInitialState: function () {
+        return {
+            user: LoginStore.user
+        };
     },
 
     logInEvent: function() {
@@ -33,7 +41,10 @@ var Home = React.createClass({
 
     logOutEvent: function() {
         console.log("logOutEvent");
-        this.loadFacebookUser();
+        Dispatcher.register(function (test) {
+            console.log("Will this run (3)?");
+        });
+        LoginActions.userLoggedOut();
     },
 
     subscribeToLoginEvents: function() {
@@ -82,11 +93,31 @@ var Home = React.createClass({
             volunteer: null,
             loggingIn: true
         });
+        LoginStore.addChangeListener(this.onChange);
+    },
+
+    componentWillUnmount: function () {
+        console.log("Home:componentWillUnmount");
+        LoginStore.removeChangeListener(this.onChange);
+    },
+
+    onChange: function () {
+        console.log("Home:onChange");
+        this.setState(
+            {
+                user: LoginStore.user
+            });
+        if (LoginStore.user) {
+            this.loadPageForVolunteer(LoginStore.user);
+        }
     },
 
     loadPageForVolunteer: function (volunteer) {
         console.log("Home::LoadPageForVolunteer");
-        this.setState({user: volunteer, loggingIn: false});
+        this.setState({
+            user: volunteer,
+            loggingIn: false
+        });
         sessionStorage.setItem("volunteer", JSON.stringify(volunteer));
 
         // If there isn't yet a default group choosen for this session, seed it from
@@ -107,26 +138,23 @@ var Home = React.createClass({
             console.log(volunteer);
             this.context.router.push(
                 {
-                    pathname: "/shelterHomePage",
-                    state: { user: volunteer }
+                    pathname: "/shelterHomePage"
                 }
             );
         } else {
             this.context.router.push(
                 {
-                    pathname: "/shelterSearchPage",
-                    state: { user: volunteer }
+                    pathname: "/shelterSearchPage"
                 }
             );
         }
     },
 
     loadFacebookUser: function() {
-        console.log("loadFacebookUser");
-        FacebookUser.getVolunteer(this.loadPageForVolunteer);
+        FacebookUser.getVolunteer();
     },
 
-    render: function() {
+    render: function () {
         console.log("Home::render: volunteer: ");
         console.log(this.state.user);
         return (
@@ -145,6 +173,7 @@ var routes = (
     <Route path="animalHomePage" component={AnimalHomePage} />
     <Route path="addNewShelter" component={AddNewShelter} />
     <Route path="addAdoptablepage" component={AddAdoptablePage} />
+    <Route path="profilePage" component={ProfilePage} />
   </Router>
 );
 
