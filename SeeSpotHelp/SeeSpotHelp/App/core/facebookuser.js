@@ -3,8 +3,8 @@ var LoginActions = require("../actions/loginactions");
 
 var FacebookUser = function () {}
 
-FacebookUser.getVolunteer = function () {
-    console.log("FacebookUser.getVolunteer");
+FacebookUser.login = function () {
+    console.log("FacebookUser.login");
     var outer = this;
     this.loadVolunteer = function () {
         console.log("FacebookUser::login : loadVolunteer");
