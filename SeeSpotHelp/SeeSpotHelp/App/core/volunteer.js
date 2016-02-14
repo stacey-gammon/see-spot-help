@@ -2,7 +2,7 @@
 // managed by facebook login and authentication.
 
 var VolunteerGroup = require('./volunteergroup');
-var AjaxServices = require('../scripts/AJAXServices');
+var AjaxServices = require('./AJAXServices');
 var volunteerCallback;
 
 var Volunteer = function(name, email, id) {

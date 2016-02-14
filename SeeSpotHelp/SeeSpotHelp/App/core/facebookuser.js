@@ -1,4 +1,4 @@
-﻿var Volunteer = require("../scripts/volunteer");
+﻿var Volunteer = require("../core/volunteer");
 var LoginActions = require("../actions/loginactions");
 
 var FacebookUser = function () {}
