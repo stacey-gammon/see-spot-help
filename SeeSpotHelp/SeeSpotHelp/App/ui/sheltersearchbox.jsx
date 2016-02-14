@@ -4,11 +4,32 @@ var React = require("react");
 var LinkContainer = require("react-router-bootstrap").LinkContainer;
 var VolunteerGroup = require("../scripts/volunteergroup");
 var ShelterSearchResults = require("./sheltersearchresults");
+var LoginStore = require("../stores/loginstore");
 
 var AddNewShelterButton = React.createClass({
+    getInitialState: function () {
+        return {
+            user: LoginStore.user
+        }
+    },
+    componentDidMount: function () {
+        LoginStore.addChangeListener(this.onChange);
+    },
+
+    componentWillUnmount: function () {
+        LoginStore.removeChangeListener(this.onChange);
+    },
+
+    onChange: function () {
+        this.setState(
+            {
+                user: LoginStore.user
+            });
+    },
+
     render: function() {
-        console.log("AddNewShelterButton:render: User = " + this.props.user);
-        var disabled = !this.props.user;
+        console.log("AddNewShelterButton:render: User = " + this.state.user);
+        var disabled = !this.state.user;
         var disabledDiv = "";
         if (disabled) {
             disabledDiv = (<div>*You must be logged in to add a new group</div>);
@@ -16,7 +37,7 @@ var AddNewShelterButton = React.createClass({
         if (this.props.searchText) {
             return (
                 <div>
-                    <LinkContainer to={{ pathname: "addNewShelter", state: { user: this.props.user } }} disabled={disabled}>
+                    <LinkContainer to={{ pathname: "addNewShelter", state: { user: this.state.user } }} disabled={disabled}>
                         <button className="btn btn-warning shelterResult addNewShelterButton">Add New Group</button>
                     </LinkContainer>
                     {disabledDiv}
@@ -47,9 +68,10 @@ var ShelterSearchBox = React.createClass({
         return (
             <div className="shelterSearchBox">
                 <div className="input-group">
+                    <h1>Search for a shelter, rescue or volunteer group to join</h1>
                     <input type="text" className="form-control shelterSearchInput"
                            ref="shelterSearchInput"
-                           placeholder="Search for a shelter or volunteer group..."/>
+                           placeholder="Search..."/>
                     <span className="input-group-btn">
                         <button type="button" className="btn btn-primary shelterSearchButton"
                            onClick={this.shelterSearch}>
@@ -57,8 +79,8 @@ var ShelterSearchBox = React.createClass({
                         </button>
                     </span>
                 </div>
-                <ShelterSearchResults results={this.state.results} user={this.props.user}/>
-                <AddNewShelterButton user={this.props.user} searchText={this.state.searchText}/>
+                <ShelterSearchResults results={this.state.results} user={this.state.user}/>
+                <AddNewShelterButton user={this.state.user} searchText={this.state.searchText}/>
             </div>
         );
     }

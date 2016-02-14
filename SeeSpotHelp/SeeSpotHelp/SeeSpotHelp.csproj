@@ -168,15 +168,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\actions\loginactions.js" />
+    <Content Include="App\constants\actionconstants.js" />
+    <Content Include="App\dispatcher\dispatcher.js" />
     <Content Include="App\scripts\AJAXServices.js" />
     <Content Include="App\scripts\animal.js" />
     <Content Include="App\scripts\conststrings.js" />
+    <Content Include="App\scripts\error.js" />
     <Content Include="App\scripts\facebookuser.js" />
     <Content Include="App\scripts\inputfield.js" />
     <Content Include="App\scripts\inputfieldvalidation.js" />
     <Content Include="App\scripts\serverresponse.js" />
     <Content Include="App\scripts\volunteer.js" />
     <Content Include="App\scripts\volunteergroup.js" />
+    <Content Include="App\stores\loginstore.js" />
     <Content Include="App\tests\addnewshelterpage-test.jsx" />
     <Content Include="App\tests\shelteractionsbox-test.jsx" />
     <Content Include="App\tests\shelterhomepage-test.jsx" />
@@ -191,6 +196,7 @@
     <Content Include="App\ui\facebooklogin.jsx" />
     <Content Include="App\ui\home.jsx" />
     <Content Include="App\ui\navbar.jsx" />
+    <Content Include="App\ui\profilepage.jsx" />
     <Content Include="App\ui\shelteractionsbox.jsx" />
     <Content Include="App\ui\shelterhomepage.jsx" />
     <Content Include="App\ui\shelterinfobox.jsx" />
@@ -1283,6 +1289,7 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StaceyAnimals\Animals.csproj">

@@ -1,4 +1,6 @@
-﻿var ServerResponse = require("./serverresponse");
+﻿"use strict"
+
+var ServerResponse = require("./serverresponse");
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
