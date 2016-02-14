@@ -67,8 +67,8 @@ var ShelterSearchBox = React.createClass({
         console.log("ShelterSearchBox::render");
         return (
             <div className="shelterSearchBox">
+                <h1>Search for a shelter, rescue or volunteer group to join</h1>
                 <div className="input-group">
-                    <h1>Search for a shelter, rescue or volunteer group to join</h1>
                     <input type="text" className="form-control shelterSearchInput"
                            ref="shelterSearchInput"
                            placeholder="Search..."/>
