@@ -651,6 +651,8 @@
     <Content Include="SQL_Scripts\createvolunteergrouptable.sql" />
     <Content Include="SQL_Scripts\createvolunteerstable.sql" />
     <Content Include="SQL_Scripts\volunteerget.sql" />
+    <Content Include="SQL_Scripts\volunteergroupinsert.sql" />
+    <Content Include="SQL_Scripts\volunteergrouppairinsert.sql" />
     <Content Include="SQL_Scripts\volunteersave.sql" />
     <Content Include="SQL_Scripts\volunteersget.sql" />
     <Content Include="tests.webpack.js" />
@@ -658,6 +660,7 @@
     <Content Include="App_Code\GlyphIcon.cshtml" />
     <Content Include="karma.conf.js" />
     <Content Include="WebServices\imageServices.asmx" />
+    <Content Include="WebServices\volunteerGroupServices.asmx" />
     <Content Include="WebServices\volunteerServices.asmx" />
     <None Include="scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
@@ -1272,6 +1275,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebServices\imageServices.asmx.cs">
       <DependentUpon>imageServices.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WebServices\volunteerGroupServices.asmx.cs">
+      <DependentUpon>volunteerGroupServices.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="WebServices\volunteerServices.asmx.cs">

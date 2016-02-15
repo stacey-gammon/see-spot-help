@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "262d444dc44d6efe6197"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "20733e9f20823796e785"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -572,12 +572,12 @@
 	var MyNavBar = __webpack_require__(/*! ./navbar */ 254);
 	
 	var FacebookUser = __webpack_require__(/*! ../core/facebookuser */ 242);
-	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 237);
+	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 238);
 	
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	var LoginActions = __webpack_require__(/*! ../actions/loginactions */ 243);
 	
-	var Dispatcher = __webpack_require__(/*! ../dispatcher/dispatcher */ 228);
+	var Dispatcher = __webpack_require__(/*! ../dispatcher/dispatcher */ 229);
 	
 	var React = __webpack_require__(/*! react */ 3);
 	var ReactDOM = __webpack_require__(/*! react-dom */ 317);
@@ -714,13 +714,13 @@
 	var React = __webpack_require__(/*! react */ 3);
 	var AnimalList = __webpack_require__(/*! ./animallist */ 160);
 	var ShelterSearchBox = __webpack_require__(/*! ./sheltersearchbox */ 162);
-	var ShelterInfoBox = __webpack_require__(/*! ./shelterinfobox */ 235);
-	var ShelterActionsBox = __webpack_require__(/*! ./shelteractionsbox */ 236);
+	var ShelterInfoBox = __webpack_require__(/*! ./shelterinfobox */ 236);
+	var ShelterActionsBox = __webpack_require__(/*! ./shelteractionsbox */ 237);
 	var FakeData = __webpack_require__(/*! ../core/fakedata */ 240);
 	var FacebookUser = __webpack_require__(/*! ../core/facebookuser */ 242);
-	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 237);
+	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 238);
 	var VolunteerGroup = __webpack_require__(/*! ../core/volunteergroup */ 224);
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	var ShelterHomePage = React.createClass({displayName: "ShelterHomePage",
 	    getInitialState: function () {
@@ -20941,8 +20941,8 @@
 	var React = __webpack_require__(/*! react */ 3);
 	var LinkContainer = __webpack_require__(/*! react-router-bootstrap */ 163).LinkContainer;
 	var VolunteerGroup = __webpack_require__(/*! ../core/volunteergroup */ 224);
-	var ShelterSearchResults = __webpack_require__(/*! ./sheltersearchresults */ 226);
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var ShelterSearchResults = __webpack_require__(/*! ./sheltersearchresults */ 227);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	var AddNewShelterButton = React.createClass({displayName: "AddNewShelterButton",
 	    getInitialState: function () {
@@ -26358,6 +26358,7 @@
 	"use strict"
 	
 	var ServerResponse = __webpack_require__(/*! ./serverresponse */ 225);
+	var AjaxServices = __webpack_require__(/*! ./AJAXServices */ 226);
 	
 	// A volunteer group represents a group of volunteers at a given
 	// shelter.  The most common scenario will be a one to mapping of
@@ -26493,12 +26494,6 @@
 	    // TODO: Implement and hook into server-side.
 	}
 	
-	// Inserts a new volunteer group if one does not exist in the database,
-	// otherwise updates the existing one with the current values.
-	VolunteerGroup.prototype.saveVolunteerGroup = function() {
-	    // TODO: Implement and hook into database.
-	};
-	
 	// Returns a volunteer group object for the given id.  null if
 	// no volunteer group with that id exists.
 	VolunteerGroup.loadVolunteerGroup = function(groupId) {
@@ -26512,9 +26507,41 @@
 	//     callback is expected to take as a first argument the potentially
 	//     inserted volunteer group (null on failure) and a server
 	//     response to hold error and success information.
-	VolunteerGroup.prototype.insert = function (callback) {
-	    // TODO: Implement and hook into database.
-	    callback(this, new ServerResponse());
+	VolunteerGroup.prototype.insert = function (adminId, callback) {
+	    console.log("Volunteer::LoadVolunteer");
+	
+	    var LoadedGroupWithData = function (response) {
+	        console.log("Volunteer::LoadVolunteerWithData");
+	        if (response.d.result) {
+	            var loadedGroup = VolunteerGroup.castObject(response.d.volunteerGroup);
+	            console.log("Calling callback function now:");
+	            callback(loadedGroup, new ServerResponse());
+	        } else {
+	            console.log("Volunteer::LoadVolunteerWithData: Error occurred");
+	            callback(null, new ServerResponse(response.d));
+	        }
+	    };
+	
+	    //Invoked when the server has an error (just an example)
+	    var FailedCallback = function (error) {
+	        console.log("VolunteerGroup:Insert:FailedCallback");
+	        var errorString = 'Message:==>' + error.responseText + '\n\n';
+	        callback(null, new ServerResponse(errorString));
+	    };
+	
+	    var ajax = new AjaxServices(LoadedGroupWithData,
+	                                FailedCallback);
+	    ajax.CallJSONService(
+	        "../../WebServices/volunteerGroupServices.asmx",
+	        "insert",
+	        {
+	            adminId: adminId,
+	            name: this.name,
+	            shelterName: this.shelter,
+	            shelterAddress: this.address,
+	            shelterCity: this.city,
+	            shelterZip: this.zipCode
+	        });
 	};
 	
 	// Attempts to update the current volunteer group into the database.
@@ -26556,6 +26583,83 @@
 
 /***/ },
 /* 226 */
+/*!******************************!*\
+  !*** ./core/AJAXServices.js ***!
+  \******************************/
+/***/ function(module, exports) {
+
+	// A helpful class filled with functions for validating various
+	// input fields.
+	var AJAXServices = function (successCallback, failureCallback) {
+	    this.successCallback = successCallback;
+	    this.failureCallback = failureCallback;
+	};
+	
+	//Used to send a JSON based Web Service Request to the server
+	///*
+	//*  A JSON web service MUST have the <ScriptService> attribute, and any methods called must have a <ScriptMethod> attribute.
+	//*/
+	//Note: The __type property must be the first JSON property of an object to ensure proper serialization/deserialization
+	AJAXServices.prototype.CallJSONService = function (callbackURI,
+	                                                   methodName,
+	                                                   params) {
+	    console.log("AJAXServices::CallJSONService");
+	    $.ajax({
+	        type: 'POST',
+	        contentType: 'application/json',
+	        dataType: 'json',
+	        url: callbackURI + '/' + methodName,
+	        processData: false,
+	        data: JSON.stringify($(params)[0]) // params need to be in a single json object.  Arrays are right out.
+	    }).
+	        done(function (response) {
+	            this.onSuccess(response);
+	        }.bind(this)).
+	        fail(function (response) {
+	            this.onFailure(response);
+	        }.bind(this));   // response data contains the javascript object parsed from the JSON data.
+	};
+	
+	AJAXServices.prototype.callFileUploadService = function (callbackURI,
+	                                                         methodName,
+	                                                         file) {
+	    var fd = new FormData();
+	    // console.log("AJAXServices:callFileUploadService: with file");
+	   // console.log(file);
+	    fd.append('file', file);
+	
+	    console.log("AJAXServices::CallFileUploadService");
+	    $.ajax({
+	        type: 'POST',
+	        contentType: false,
+	        processData: false,
+	        data: fd,
+	        url: callbackURI + '/' + methodName
+	    }).
+	        done(function (response) {
+	            this.onSuccess(response);
+	        }.bind(this)).
+	        fail(function (response) {
+	            this.onFailure(response);
+	        }.bind(this));   // response data contains the javascript object parsed from the JSON data.
+	};
+	
+	AJAXServices.prototype.onSuccess = function (response) {
+	    console.log("AJAXServices::OnSuccess");
+	    this.successCallback(response);
+	};
+	
+	AJAXServices.prototype.onFailure = function (response) {
+	    console.log("AJAXServices::OnFailure, response:");
+	    console.log(response);
+	    this.failureCallback(response);
+	};
+	
+	module.exports = AJAXServices;
+
+
+/***/ },
+/* 227 */
 /*!*************************************!*\
   !*** ./ui/sheltersearchresults.jsx ***!
   \*************************************/
@@ -26564,7 +26668,7 @@
 	/** @jsx React.DOM */var React = __webpack_require__(/*! react */ 3);
 	var Router = __webpack_require__(/*! react-router */ 166);
 	var LinkContainer = __webpack_require__(/*! react-router-bootstrap */ 163).LinkContainer;
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	var ShelterSearchResults = React.createClass({displayName: "ShelterSearchResults",
 	    getInitialState: function () {
@@ -26621,7 +26725,7 @@
 	module.exports = ShelterSearchResults;
 
 /***/ },
-/* 227 */
+/* 228 */
 /*!******************************!*\
   !*** ./stores/loginstore.js ***!
   \******************************/
@@ -26629,11 +26733,11 @@
 
 	"use strict";
 	
-	var Dispatcher = __webpack_require__(/*! ../dispatcher/dispatcher */ 228);
-	var ActionConstants = __webpack_require__(/*! ../constants/actionconstants */ 232);
+	var Dispatcher = __webpack_require__(/*! ../dispatcher/dispatcher */ 229);
+	var ActionConstants = __webpack_require__(/*! ../constants/actionconstants */ 233);
 	
-	var EventEmitter = __webpack_require__(/*! events */ 233).EventEmitter;
-	var assign = __webpack_require__(/*! object-assign */ 234);
+	var EventEmitter = __webpack_require__(/*! events */ 234).EventEmitter;
+	var assign = __webpack_require__(/*! object-assign */ 235);
 	
 	var CHANGE_EVENT = "change";
 	
@@ -26699,7 +26803,7 @@
 
 
 /***/ },
-/* 228 */
+/* 229 */
 /*!**********************************!*\
   !*** ./dispatcher/dispatcher.js ***!
   \**********************************/
@@ -26707,7 +26811,7 @@
 
 	"use strict"
 	
-	var Dispatcher = __webpack_require__(/*! flux */ 229).Dispatcher;
+	var Dispatcher = __webpack_require__(/*! flux */ 230).Dispatcher;
 	
 	class AppDispatcher extends Dispatcher {
 	    constructor() {
@@ -26720,7 +26824,7 @@
 
 
 /***/ },
-/* 229 */
+/* 230 */
 /*!**************************!*\
   !*** ../~/flux/index.js ***!
   \**************************/
@@ -26735,11 +26839,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 	
-	module.exports.Dispatcher = __webpack_require__(/*! ./lib/Dispatcher */ 230);
+	module.exports.Dispatcher = __webpack_require__(/*! ./lib/Dispatcher */ 231);
 
 
 /***/ },
-/* 230 */
+/* 231 */
 /*!***********************************!*\
   !*** ../~/flux/lib/Dispatcher.js ***!
   \***********************************/
@@ -26764,7 +26868,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var invariant = __webpack_require__(/*! fbjs/lib/invariant */ 231);
+	var invariant = __webpack_require__(/*! fbjs/lib/invariant */ 232);
 	
 	var _prefix = 'ID_';
 	
@@ -26979,7 +27083,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ../~/webpack/~/node-libs-browser/~/process/browser.js */ 6)))
 
 /***/ },
-/* 231 */
+/* 232 */
 /*!*****************************************!*\
   !*** ../~/flux/~/fbjs/lib/invariant.js ***!
   \*****************************************/
@@ -27037,7 +27141,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ../~/webpack/~/node-libs-browser/~/process/browser.js */ 6)))
 
 /***/ },
-/* 232 */
+/* 233 */
 /*!**************************************!*\
   !*** ./constants/actionconstants.js ***!
   \**************************************/
@@ -27057,7 +27161,7 @@
 
 
 /***/ },
-/* 233 */
+/* 234 */
 /*!***********************************************************!*\
   !*** ../~/webpack/~/node-libs-browser/~/events/events.js ***!
   \***********************************************************/
@@ -27364,7 +27468,7 @@
 
 
 /***/ },
-/* 234 */
+/* 235 */
 /*!***********************************!*\
   !*** ../~/object-assign/index.js ***!
   \***********************************/
@@ -27412,7 +27516,7 @@
 
 
 /***/ },
-/* 235 */
+/* 236 */
 /*!*******************************!*\
   !*** ./ui/shelterinfobox.jsx ***!
   \*******************************/
@@ -27439,7 +27543,7 @@
 
 
 /***/ },
-/* 236 */
+/* 237 */
 /*!**********************************!*\
   !*** ./ui/shelteractionsbox.jsx ***!
   \**********************************/
@@ -27452,9 +27556,9 @@
 	var LinkContainer = ReactRouterBootstrap.LinkContainer;
 	
 	var VolunteerGroup = __webpack_require__(/*! ../core/volunteergroup */ 224);
-	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 237);
+	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 238);
 	var ConstStrings = __webpack_require__(/*! ../core/conststrings */ 239);
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	var ShelterActionsBox = React.createClass({displayName: "ShelterActionsBox",
 	    getInitialState: function() {
@@ -27581,7 +27685,7 @@
 	module.exports = ShelterActionsBox;
 
 /***/ },
-/* 237 */
+/* 238 */
 /*!***************************!*\
   !*** ./core/volunteer.js ***!
   \***************************/
@@ -27591,7 +27695,7 @@
 	// managed by facebook login and authentication.
 	
 	var VolunteerGroup = __webpack_require__(/*! ./volunteergroup */ 224);
-	var AjaxServices = __webpack_require__(/*! ./AJAXServices */ 238);
+	var AjaxServices = __webpack_require__(/*! ./AJAXServices */ 226);
 	var volunteerCallback;
 	
 	var Volunteer = function(name, email, id) {
@@ -27698,83 +27802,6 @@
 	};
 	
 	module.exports = Volunteer;
-
-
-/***/ },
-/* 238 */
-/*!******************************!*\
-  !*** ./core/AJAXServices.js ***!
-  \******************************/
-/***/ function(module, exports) {
-
-	// A helpful class filled with functions for validating various
-	// input fields.
-	var AJAXServices = function (successCallback, failureCallback) {
-	    this.successCallback = successCallback;
-	    this.failureCallback = failureCallback;
-	};
-	
-	//Used to send a JSON based Web Service Request to the server
-	///*
-	//*  A JSON web service MUST have the <ScriptService> attribute, and any methods called must have a <ScriptMethod> attribute.
-	//*/
-	//Note: The __type property must be the first JSON property of an object to ensure proper serialization/deserialization
-	AJAXServices.prototype.CallJSONService = function (callbackURI,
-	                                                   methodName,
-	                                                   params) {
-	    console.log("AJAXServices::CallJSONService");
-	    $.ajax({
-	        type: 'POST',
-	        contentType: 'application/json',
-	        dataType: 'json',
-	        url: callbackURI + '/' + methodName,
-	        processData: false,
-	        data: JSON.stringify($(params)[0]) // params need to be in a single json object.  Arrays are right out.
-	    }).
-	        done(function (response) {
-	            this.onSuccess(response);
-	        }.bind(this)).
-	        fail(function (response) {
-	            this.onFailure(response);
-	        }.bind(this));   // response data contains the javascript object parsed from the JSON data.
-	};
-	
-	AJAXServices.prototype.callFileUploadService = function (callbackURI,
-	                                                         methodName,
-	                                                         file) {
-	    var fd = new FormData();
-	    // console.log("AJAXServices:callFileUploadService: with file");
-	   // console.log(file);
-	    fd.append('file', file);
-	
-	    console.log("AJAXServices::CallFileUploadService");
-	    $.ajax({
-	        type: 'POST',
-	        contentType: false,
-	        processData: false,
-	        data: fd,
-	        url: callbackURI + '/' + methodName
-	    }).
-	        done(function (response) {
-	            this.onSuccess(response);
-	        }.bind(this)).
-	        fail(function (response) {
-	            this.onFailure(response);
-	        }.bind(this));   // response data contains the javascript object parsed from the JSON data.
-	};
-	
-	AJAXServices.prototype.onSuccess = function (response) {
-	    console.log("AJAXServices::OnSuccess");
-	    this.successCallback(response);
-	};
-	
-	AJAXServices.prototype.onFailure = function (response) {
-	    console.log("AJAXServices::OnFailure, response:");
-	    console.log(response);
-	    this.failureCallback(response);
-	};
-	
-	module.exports = AJAXServices;
 
 
 /***/ },
@@ -28021,7 +28048,7 @@
   \******************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 237);
+	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 238);
 	var LoginActions = __webpack_require__(/*! ../actions/loginactions */ 243);
 	
 	var FacebookUser = function () {}
@@ -28066,9 +28093,9 @@
 
 	"use strict"
 	
-	var Dispatcher = __webpack_require__(/*! ../dispatcher/dispatcher */ 228);
-	var ActionConstants = __webpack_require__(/*! ../constants/actionconstants */ 232);
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var Dispatcher = __webpack_require__(/*! ../dispatcher/dispatcher */ 229);
+	var ActionConstants = __webpack_require__(/*! ../constants/actionconstants */ 233);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	var LoginActions = {
 	    userLoggedIn: function (user) {
@@ -28108,7 +28135,7 @@
 	
 	var React = __webpack_require__(/*! react */ 3);
 	var ShelterSearchBox = __webpack_require__(/*! ./sheltersearchbox */ 162);
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	var ShelterSearchPage = React.createClass({displayName: "ShelterSearchPage",
 	    getInitialState: function () {
@@ -28210,9 +28237,9 @@
 	/** @jsx React.DOM */"use strict"
 	
 	var React = __webpack_require__(/*! react */ 3);
-	var AjaxServices = __webpack_require__(/*! ../core/AJAXServices */ 238);
+	var AjaxServices = __webpack_require__(/*! ../core/AJAXServices */ 226);
 	var TakePhotoButton = __webpack_require__(/*! ./takephotobutton */ 247);
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	// Actions to display on the animal home page, such as Add Activity,
 	// Edit and Delete.
@@ -28306,8 +28333,8 @@
 	/** @jsx React.DOM */"use strict"
 	
 	var React = __webpack_require__(/*! react */ 3);
-	var AjaxServices = __webpack_require__(/*! ../core/AJAXServices */ 238);
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var AjaxServices = __webpack_require__(/*! ../core/AJAXServices */ 226);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	var TakePhotoButton = React.createClass({displayName: "TakePhotoButton",
 	    getInitialState: function() {
@@ -28401,7 +28428,7 @@
 	var VolunteerGroup = __webpack_require__(/*! ../core/volunteergroup */ 224);
 	var InputField = __webpack_require__(/*! ../core/inputfield */ 249);
 	var InputFieldValidation = __webpack_require__(/*! ../core/inputfieldvalidation */ 250);
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	var STATES = [
 	    "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",
@@ -28473,14 +28500,23 @@
 	        return errorFound;
 	    },
 	
+	    contextTypes: {
+	        router: React.PropTypes.object.isRequired
+	    },
+	
 	    insertGroupCallback: function (group, serverResponse) {
 	        console.log("AddNewShelter::insertGroupCallback");
 	        if (serverResponse.hasError) {
 	            // Show error message to user.
 	            this.setState({ errorMessage: serverResponse.errorMessage });
 	        } else {
-	            // TODO: Navigate to newly inserted group home page.
-	            this.setState({ errorMessage: "Success!" });
+	            this.context.router.push(
+	                {
+	                    pathname: "shelterHomePage",
+	                    state: {
+	                        group:  group
+	                    }
+	                });
 	        }
 	    },
 	
@@ -28495,7 +28531,7 @@
 	                var group = VolunteerGroup.createFromInputFields(
 	                    this.state.fields,
 	                    this.state.user.id);
-	                group.insert(this.insertGroupCallback);
+	                group.insert(this.state.user.id, this.insertGroupCallback);
 	            }
 	        }
 	    },
@@ -28674,7 +28710,7 @@
 	var InputField = __webpack_require__(/*! ../core/inputfield */ 249);
 	var InputFieldValidation = __webpack_require__(/*! ../core/inputfieldvalidation */ 250);
 	var TakePhotoButton = __webpack_require__(/*! ./takephotobutton */ 247);
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	var AddAdoptablePage = React.createClass({displayName: "AddAdoptablePage",
 	    getInitialState: function () {
@@ -28821,13 +28857,13 @@
 	var Link = __webpack_require__(/*! react-router */ 166).Link;
 	var FakeData = __webpack_require__(/*! ../core/fakedata */ 240);
 	var FacebookUser = __webpack_require__(/*! ../core/facebookuser */ 242);
-	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 237);
+	var Volunteer = __webpack_require__(/*! ../core/volunteer */ 238);
 	var VolunteerGroup = __webpack_require__(/*! ../core/volunteergroup */ 224);
 	var FacebookLogin = __webpack_require__(/*! ./facebooklogin */ 253);
-	var ShelterInfoBox = __webpack_require__(/*! ./shelterinfobox */ 235);
+	var ShelterInfoBox = __webpack_require__(/*! ./shelterinfobox */ 236);
 	var AddNewShelter = __webpack_require__(/*! ./addnewshelter */ 248);
 	var ShelterSearchPage = __webpack_require__(/*! ./sheltersearchpage */ 244);
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	var ProfilePage = React.createClass({displayName: "ProfilePage",
 	    contextTypes: {
@@ -28948,7 +28984,7 @@
 	var ReactRouterBootstrap = __webpack_require__(/*! react-router-bootstrap */ 163);
 	var ReactBootstrap = __webpack_require__(/*! react-bootstrap */ 255);
 	var FacebookLogin = __webpack_require__(/*! ./facebooklogin */ 253);
-	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 227);
+	var LoginStore = __webpack_require__(/*! ../stores/loginstore */ 228);
 	
 	var Navbar = ReactBootstrap.Navbar;
 	var Nav = ReactBootstrap.Nav;

@@ -31,6 +31,12 @@ namespace Helpers
                     ";User Id=" + PrivateDbConnectionStrings.userId + ";password=" + PrivateDbConnectionStrings.password;
         }
 
+        public static string BuildConnectionString()
+        {
+            return "Data Source=" + PrivateDbConnectionStrings.dataSource + ";Initial Catalog=AnimalShelter" +
+                    ";User Id=" + PrivateDbConnectionStrings.userId + ";password=" + PrivateDbConnectionStrings.password;
+        }
+    
         public static DataTable ExecuteProcedure(string connectionqString, string PROC_NAME, params object[] parameters)
         {
             try
@@ -46,7 +52,6 @@ namespace Helpers
                 bool first = true;
                 for (int i = 0; i < parameters.Length; i += 2)
                 {
-                    //filters.Add(new SqlParameter(parameters[i] as string, parameters[i + 1]));
                     query += (first ? " '" : ", '") + ((string)parameters[i]) + "'";
                     first = false;
                 }

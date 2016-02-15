@@ -77,14 +77,23 @@ var AddNewShelter = React.createClass({
         return errorFound;
     },
 
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
+
     insertGroupCallback: function (group, serverResponse) {
         console.log("AddNewShelter::insertGroupCallback");
         if (serverResponse.hasError) {
             // Show error message to user.
             this.setState({ errorMessage: serverResponse.errorMessage });
         } else {
-            // TODO: Navigate to newly inserted group home page.
-            this.setState({ errorMessage: "Success!" });
+            this.context.router.push(
+                {
+                    pathname: "shelterHomePage",
+                    state: {
+                        group:  group
+                    }
+                });
         }
     },
 
@@ -99,7 +108,7 @@ var AddNewShelter = React.createClass({
                 var group = VolunteerGroup.createFromInputFields(
                     this.state.fields,
                     this.state.user.id);
-                group.insert(this.insertGroupCallback);
+                group.insert(this.state.user.id, this.insertGroupCallback);
             }
         }
     },
