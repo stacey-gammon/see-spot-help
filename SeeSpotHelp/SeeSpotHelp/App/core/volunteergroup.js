@@ -1,6 +1,7 @@
 ﻿"use strict"
 
 var ServerResponse = require("./serverresponse");
+var AjaxServices = require('./AJAXServices');
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
@@ -136,12 +137,6 @@ VolunteerGroup.prototype.requestToJoin = function(user) {
     // TODO: Implement and hook into server-side.
 }
 
-// Inserts a new volunteer group if one does not exist in the database,
-// otherwise updates the existing one with the current values.
-VolunteerGroup.prototype.saveVolunteerGroup = function() {
-    // TODO: Implement and hook into database.
-};
-
 // Returns a volunteer group object for the given id.  null if
 // no volunteer group with that id exists.
 VolunteerGroup.loadVolunteerGroup = function(groupId) {
@@ -155,9 +150,41 @@ VolunteerGroup.loadVolunteerGroup = function(groupId) {
 //     callback is expected to take as a first argument the potentially
 //     inserted volunteer group (null on failure) and a server
 //     response to hold error and success information.
-VolunteerGroup.prototype.insert = function (callback) {
-    // TODO: Implement and hook into database.
-    callback(this, new ServerResponse());
+VolunteerGroup.prototype.insert = function (adminId, callback) {
+    console.log("Volunteer::LoadVolunteer");
+
+    var LoadedGroupWithData = function (response) {
+        console.log("Volunteer::LoadVolunteerWithData");
+        if (response.d.result) {
+            var loadedGroup = VolunteerGroup.castObject(response.d.volunteerGroup);
+            console.log("Calling callback function now:");
+            callback(loadedGroup, new ServerResponse());
+        } else {
+            console.log("Volunteer::LoadVolunteerWithData: Error occurred");
+            callback(null, new ServerResponse(response.d));
+        }
+    };
+
+    //Invoked when the server has an error (just an example)
+    var FailedCallback = function (error) {
+        console.log("VolunteerGroup:Insert:FailedCallback");
+        var errorString = 'Message:==>' + error.responseText + '\n\n';
+        callback(null, new ServerResponse(errorString));
+    };
+
+    var ajax = new AjaxServices(LoadedGroupWithData,
+                                FailedCallback);
+    ajax.CallJSONService(
+        "../../WebServices/volunteerGroupServices.asmx",
+        "insert",
+        {
+            adminId: adminId,
+            name: this.name,
+            shelterName: this.shelter,
+            shelterAddress: this.address,
+            shelterCity: this.city,
+            shelterZip: this.zipCode
+        });
 };
 
 // Attempts to update the current volunteer group into the database.
