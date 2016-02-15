@@ -36,7 +36,16 @@ namespace Helpers
             return "Data Source=" + PrivateDbConnectionStrings.dataSource + ";Initial Catalog=AnimalShelter" +
                     ";User Id=" + PrivateDbConnectionStrings.userId + ";password=" + PrivateDbConnectionStrings.password;
         }
-    
+
+        public static string GetParameterForQuery(object parameter)
+        {
+            if (parameter is string) {
+                return "'" + parameter + "'";
+            } else {
+                return "" + (int)parameter;
+            }
+        }
+
         public static DataTable ExecuteProcedure(string connectionqString, string PROC_NAME, params object[] parameters)
         {
             try
@@ -52,7 +61,7 @@ namespace Helpers
                 bool first = true;
                 for (int i = 0; i < parameters.Length; i += 2)
                 {
-                    query += (first ? " '" : ", '") + ((string)parameters[i]) + "'";
+                    query += (first ? " " : ", ") + GetParameterForQuery(parameters[i]);
                     first = false;
                 }
 

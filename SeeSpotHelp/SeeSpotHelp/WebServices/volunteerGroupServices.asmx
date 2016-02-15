@@ -1,1 +1,1 @@
-﻿<%@ WebService Language="C#" CodeBehind="volunteerGroupServices.asmx.cs" Class="SeeSpotHelp.WebServices.volunteerServices" %>
+﻿<%@ WebService Language="C#" CodeBehind="VolunteerGroupServices.asmx.cs" Class="SeeSpotHelp.WebServices.VolunteerGroupServices" %>

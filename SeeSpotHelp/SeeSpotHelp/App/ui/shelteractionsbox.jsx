@@ -79,7 +79,8 @@ var ShelterActionsBox = React.createClass({
             <LinkContainer
                 to={{ pathname: "addNewShelter",
                     state: { user: this.state.user, editMode: true, group: this.state.group } }}>
-                <button className="btn btn-info editShelterButton buttonPadding">
+                <button className="btn btn-info editShelterButton buttonPadding"
+                        ref="editShelterButton">
                     {ConstStrings.Edit}
                 </button>
             </LinkContainer>

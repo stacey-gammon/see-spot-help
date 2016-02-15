@@ -56,9 +56,10 @@ VolunteerGroup.prototype.copyFieldsFrom = function (other) {
 VolunteerGroup.PermissionsEnum = Object.freeze(
     {
         MEMBER: 0,
-        ADMIN: 1,
-        PENDINGMEMBERSHIP: 2,
-        NONMEMBER: 3
+        NONMEMBER: 1,
+        ADMIN: 2,
+        PENDINGMEMBERSHIP: 3,
+        MEMBERSHIPDENIED: 4
     }
 );
 
@@ -175,13 +176,14 @@ VolunteerGroup.prototype.insert = function (adminId, callback) {
     var ajax = new AjaxServices(LoadedGroupWithData,
                                 FailedCallback);
     ajax.CallJSONService(
-        "../../WebServices/volunteerGroupServices.asmx",
+        "../../WebServices/VolunteerGroupServices.asmx",
         "insert",
         {
             adminId: adminId,
             name: this.name,
             shelterName: this.shelter,
             shelterAddress: this.address,
+            shelterState: this.state,
             shelterCity: this.city,
             shelterZip: this.zipCode
         });

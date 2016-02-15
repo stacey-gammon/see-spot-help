@@ -216,3 +216,4 @@ ModelManifest.xml
 main.bundle.js
 main.bundle.js.map
 PrivateDbConnectionStrings.cs
+Web.config

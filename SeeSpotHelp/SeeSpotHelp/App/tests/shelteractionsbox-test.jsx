@@ -1,4 +1,5 @@
 ﻿var React = require("react");
+var ReactDOM = require("react-dom");
 var ReactTestUtils = require("react-addons-test-utils");
 var expect = require("expect"),
     Volunteer = require("../core/volunteer"),
@@ -92,5 +93,23 @@ describe("ShelterActionsBox", function () {
             shelterActionsBox, "requestToJoinButton");
         expect(requestToJoinButton.innerHTML).toEqual(ConstStrings.JoinRequestPending);
         expect(requestToJoinButton.disabled).toEqual(true);
+    });
+
+    it("CheckButtonsForAdmin", function () {
+        var user = new Volunteer("Sally", "sally@sally.com", "115");
+        LoginStore.user = user;
+        var group = new VolunteerGroup("Group name", "shelter name", "address", "25");
+        group.userPermissionsMap["115"] = VolunteerGroup.PermissionsEnum.ADMIN;
+
+        var shelterActionsBox = ReactTestUtils.renderIntoDocument(
+            <ShelterActionsBox group={group}/>
+        );
+
+        var requestToJoinButton = ReactDOM.findDOMNode(
+            shelterActionsBox.refs.requestToJoinButton);
+        expect(requestToJoinButton).toEqual(null);
+        var editButton = ReactDOM.findDOMNode(
+            shelterActionsBox.refs.editShelterButton);
+        expect(editButton.disabled).toEqual(false);
     });
 });

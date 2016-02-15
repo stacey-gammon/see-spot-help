@@ -56,6 +56,10 @@ var AddNewShelter = React.createClass({
         };
     },
 
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
+
     validateFields: function () {
         console.log("AddNewShelter::validateFields");
         var errorFound = false;
@@ -75,10 +79,6 @@ var AddNewShelter = React.createClass({
             this.setState({ fields: this.state.fields });
         }
         return errorFound;
-    },
-
-    contextTypes: {
-        router: React.PropTypes.object.isRequired
     },
 
     insertGroupCallback: function (group, serverResponse) {

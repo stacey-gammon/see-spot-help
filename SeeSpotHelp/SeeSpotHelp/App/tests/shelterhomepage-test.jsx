@@ -28,10 +28,8 @@ describe("ShelterHomePage", function () {
     });
 
     it("ShowDefaultGroupLoggedIn", function () {
-        // TODO: Currently every user has a default group because of
-        // fake data, but that won't always be the case.  Depending on how
-        // we modify that functionality, this will have to be updated.
         var volunteer = new Volunteer("Sally", "sally@sally.com", "115");
+        volunteer.groups = [VolunteerGroup.getFakeGroups()["123"]];
         LoginStore.user = volunteer;
         var shelterHomePage = ReactTestUtils.renderIntoDocument(
             <ShelterHomePage/>

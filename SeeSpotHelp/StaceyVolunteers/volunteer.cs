@@ -9,9 +9,10 @@ namespace VolunteersNS
         public string id { get; set; }
         public string name { get; set; }
         public string email { get; set; }
+        public List<VolunteerGroup> groups { get; set; }
 
-        private List<VolunteerGroup> groups = new List<VolunteerGroup>();
-        List<VolunteerGroup> getGroups() { return groups; }
+       // private List<VolunteerGroup> groups = new List<VolunteerGroup>();
+        // List<VolunteerGroup> getGroups() { return groups; }
 
         #region "Constructors"
 
@@ -25,6 +26,7 @@ namespace VolunteersNS
             id = "";
             name = "";
             email = "";
+            groups = new List<VolunteerGroup>();
         }
 
         public Volunteer(string aconnectionstring)
@@ -33,6 +35,7 @@ namespace VolunteersNS
             id = "";
             name = "";
             email = "";
+            groups = new List<VolunteerGroup>();
         }
 
         // Instance constructor that has three parameters.
@@ -42,6 +45,7 @@ namespace VolunteersNS
             this.id = ID;
             this.name = name;
             this.email = email;
+            groups = new List<VolunteerGroup>();
             GetVolunteer(ID);
         }
 
@@ -50,6 +54,7 @@ namespace VolunteersNS
         {
             ConnectionString = aconnectionstring;
             GetVolunteer(ID);
+            groups = new List<VolunteerGroup>();
         }
 
         #endregion
@@ -70,7 +75,7 @@ namespace VolunteersNS
                     myparams);
                 for (var i = 0; i < groupData.Rows.Count; i++)
                 {
-                    groups.Add(VolunteerGroup.LoadFromDatabaseRow(groupData.Rows[i]));
+                    groups.Add(new VolunteerGroup(groupData.Rows[i]));
                 }
             } else {
                 // If volunteer does not yet exist in the database, insert them automatically.

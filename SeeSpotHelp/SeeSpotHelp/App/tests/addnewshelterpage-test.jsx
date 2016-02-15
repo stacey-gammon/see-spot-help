@@ -4,6 +4,7 @@ var ReactTestUtils = require("react-addons-test-utils");
 var expect = require("expect"),
     Volunteer = require("../core/volunteer"),
     VolunteerGroup = require("../core/volunteergroup"),
+    ServerResponse = require("../core/serverresponse"),
     AddNewShelter = require("../ui/addnewshelter.jsx");
 var LoginStore = require("../stores/loginstore");
 
@@ -105,14 +106,19 @@ describe("AddNewShelter", function () {
         zipInput.value = "12345";
         ReactTestUtils.Simulate.change(zipInput);
 
+        // Mock out actual server call.
+        VolunteerGroup.prototype.insert = function (adminId, callback) {
+            var group = VolunteerGroup.getFakeGroups()["123"];
+            callback(group, new ServerResponse());
+        };
+        // Otherwise we'll get issues when trying to switch pages.
+        addNewShelter.context.router = [];
+
         ReactTestUtils.Simulate.click(addButton);
 
         var errors = ReactTestUtils.scryRenderedDOMComponentsWithClass(
             addNewShelter, "has-error");
         expect(errors.length).toEqual(0);
-
-        ReactTestUtils.findRenderedDOMComponentWithClass(
-            addNewShelter, "nameSuccessValidationSpan");
     });
 
     it("EditGroupSuccess", function () {

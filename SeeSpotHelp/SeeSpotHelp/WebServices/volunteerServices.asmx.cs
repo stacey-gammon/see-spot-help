@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Services;
 using Newtonsoft.Json;
+using System.Web.Script.Serialization;
 
 namespace SeeSpotHelp.WebServices
 {
@@ -31,9 +32,11 @@ namespace SeeSpotHelp.WebServices
         {
             VolunteersNS.Volunteer volunteer = new VolunteersNS.Volunteer(
                 Helpers.DBHelper.BuildConnectionString("AnimalShelter"), anID,name,email);
-            volunteer.GetVolunteer(anID);
-            string json = JsonConvert.SerializeObject(volunteer);
+            var jsonSerialiser = new JavaScriptSerializer();
+            var json = jsonSerialiser.Serialize(volunteer);
+            //   string json = JsonConvert.SerializeObject(volunteer);
             VolunteerResult volunteerResult = new VolunteerResult();
+
             volunteerResult.result = true;
             volunteerResult.messages = new string[1];
             volunteerResult.messages[0] = json;

@@ -45,6 +45,8 @@ Volunteer.LoadVolunteer = function (anID, name, email, callback) {
         console.log("Volunteer::LoadVolunteerWithData");
         if (response.d.result) {
             var loadedVolunteer = Volunteer.castObject(response.d.volunteerData);
+            console.log("Volunteer data:");
+            console.log(response.d.volunteerData);
             console.log("Calling callback function now:");
             callback(loadedVolunteer);
             // TODO: Change so all callbacks look something like this:

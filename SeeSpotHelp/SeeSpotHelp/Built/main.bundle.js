@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "20733e9f20823796e785"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "3babe0acfaff6e0e0913"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -26413,9 +26413,10 @@
 	VolunteerGroup.PermissionsEnum = Object.freeze(
 	    {
 	        MEMBER: 0,
-	        ADMIN: 1,
-	        PENDINGMEMBERSHIP: 2,
-	        NONMEMBER: 3
+	        NONMEMBER: 1,
+	        ADMIN: 2,
+	        PENDINGMEMBERSHIP: 3,
+	        MEMBERSHIPDENIED: 4
 	    }
 	);
 	
@@ -26532,13 +26533,14 @@
 	    var ajax = new AjaxServices(LoadedGroupWithData,
 	                                FailedCallback);
 	    ajax.CallJSONService(
-	        "../../WebServices/volunteerGroupServices.asmx",
+	        "../../WebServices/VolunteerGroupServices.asmx",
 	        "insert",
 	        {
 	            adminId: adminId,
 	            name: this.name,
 	            shelterName: this.shelter,
 	            shelterAddress: this.address,
+	            shelterState: this.state,
 	            shelterCity: this.city,
 	            shelterZip: this.zipCode
 	        });
@@ -27630,7 +27632,8 @@
 	            React.createElement(LinkContainer, {
 	                to: { pathname: "addNewShelter",
 	                    state: { user: this.state.user, editMode: true, group: this.state.group }}}, 
-	                React.createElement("button", {className: "btn btn-info editShelterButton buttonPadding"}, 
+	                React.createElement("button", {className: "btn btn-info editShelterButton buttonPadding", 
+	                        ref: "editShelterButton"}, 
 	                    ConstStrings.Edit
 	                )
 	            )
@@ -27738,6 +27741,8 @@
 	        console.log("Volunteer::LoadVolunteerWithData");
 	        if (response.d.result) {
 	            var loadedVolunteer = Volunteer.castObject(response.d.volunteerData);
+	            console.log("Volunteer data:");
+	            console.log(response.d.volunteerData);
 	            console.log("Calling callback function now:");
 	            callback(loadedVolunteer);
 	            // TODO: Change so all callbacks look something like this:
@@ -28479,6 +28484,10 @@
 	        };
 	    },
 	
+	    contextTypes: {
+	        router: React.PropTypes.object.isRequired
+	    },
+	
 	    validateFields: function () {
 	        console.log("AddNewShelter::validateFields");
 	        var errorFound = false;
@@ -28498,10 +28507,6 @@
 	            this.setState({ fields: this.state.fields });
 	        }
 	        return errorFound;
-	    },
-	
-	    contextTypes: {
-	        router: React.PropTypes.object.isRequired
 	    },
 	
 	    insertGroupCallback: function (group, serverResponse) {
