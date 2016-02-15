@@ -102,14 +102,10 @@ Volunteer.prototype.AddNewVolunteer = function() {
 // will be inserted. Returns null if user is not attached to any
 // groups.
 Volunteer.prototype.getDefaultVolunteerGroup = function() {
-    // TODO: implement
-    return VolunteerGroup.getFakeGroups()["123"];
-};
-
-// Updates the default volunteer group associated with the current
-// volunteer.
-Volunteer.prototype.setDefaultVolunteerGroup = function(groupId) {
-    // TODO: implement
+    // Note: If there is more than one group this user belongs to, should
+    // we let them specify the "default" one?  Probably not a common
+    // scenario to have more than one.
+    return this.groups.length > 0 ? this.groups[0] : null;
 };
 
 module.exports = Volunteer;

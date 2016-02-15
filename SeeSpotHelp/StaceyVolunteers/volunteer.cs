@@ -1,8 +1,5 @@
-﻿using System;
+﻿using VolunteerGroupsNS;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VolunteersNS
 {
@@ -12,6 +9,9 @@ namespace VolunteersNS
         public string id { get; set; }
         public string name { get; set; }
         public string email { get; set; }
+
+        private List<VolunteerGroup> groups = new List<VolunteerGroup>();
+        List<VolunteerGroup> getGroups() { return groups; }
 
         #region "Constructors"
 
@@ -42,45 +42,50 @@ namespace VolunteersNS
             this.id = ID;
             this.name = name;
             this.email = email;
-            getVolunteer(ID);
+            GetVolunteer(ID);
         }
 
         // Instance constructor that has the Volunteer ID and is retrieved from Database.
         public Volunteer(string aconnectionstring, string ID)
         {
             ConnectionString = aconnectionstring;
-            getVolunteer(ID);
+            GetVolunteer(ID);
         }
 
         #endregion
 
-        public void getVolunteer(string myID)
+        public void GetVolunteer(string myID)
         {
-            System.Data.DataTable dt;
             object[] myparams = { myID, "Volunteerid" };
 
-            dt = Helpers.DBHelper.ExecuteProcedure(ConnectionString, "Volunteer_get", myparams);
+           var volunteerData = Helpers.DBHelper.ExecuteProcedure(
+               ConnectionString, "Volunteer_get", myparams);
 
-            if (dt.Rows.Count > 0)
+            if (volunteerData.Rows.Count > 0)
             {
-                initFromDR(dt.Rows[0]);
-            }
-            else
-            {
-                object[] mysaveparams = { myID, "Volunteerid", this.name, "Volunteername", this.email, "Volunteeremail" };
-
+                InitFromVolunteerData(volunteerData.Rows[0]);
+                var groupData = Helpers.DBHelper.ExecuteProcedure(
+                    ConnectionString,
+                    "Volunteer_Get_Groups",
+                    myparams);
+                for (var i = 0; i < groupData.Rows.Count; i++)
+                {
+                    groups.Add(VolunteerGroup.LoadFromDatabaseRow(groupData.Rows[i]));
+                }
+            } else {
+                // If volunteer does not yet exist in the database, insert them automatically.
+                object[] mysaveparams = { myID, "Volunteerid",
+                                          this.name, "Volunteername",
+                                          this.email, "Volunteeremail" };
                 Helpers.DBHelper.ExecuteProcedure(ConnectionString, "volunteer_save", mysaveparams);
-
             }
-
         }
 
-        public void initFromDR(System.Data.DataRow dr)
+        public void InitFromVolunteerData(System.Data.DataRow dr)
         {
             this.id = (string)dr["VolunteerID"];
             this.name = (string)dr["VolunteerName"];
             this.email = (string)dr["VolunteerEmail"];
-
         }
     }
 }

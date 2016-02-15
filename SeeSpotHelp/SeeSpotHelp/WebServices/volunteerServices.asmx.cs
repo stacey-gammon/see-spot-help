@@ -7,13 +7,9 @@ using Newtonsoft.Json;
 
 namespace SeeSpotHelp.WebServices
 {
-    /// <summary>
-    /// Summary description for volunteerServices
-    /// </summary>
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
-    // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
     [System.Web.Script.Services.ScriptService]
     public class volunteerServices : System.Web.Services.WebService
     {
@@ -31,41 +27,35 @@ namespace SeeSpotHelp.WebServices
         }
 
         [WebMethod]
-        public SeeSpotHelp.WebServices.volunteerResult getVolunteer(string anID, string name, string email)
+        public VolunteerResult getVolunteer(string anID, string name, string email)
         {
-
-            VolunteersNS.Volunteer vt = new VolunteersNS.Volunteer(
+            VolunteersNS.Volunteer volunteer = new VolunteersNS.Volunteer(
                 Helpers.DBHelper.BuildConnectionString("AnimalShelter"), anID,name,email);
-            vt.getVolunteer(anID);
-            string json = JsonConvert.SerializeObject(vt);
-            SeeSpotHelp.WebServices.volunteerResult volunteerResult = new SeeSpotHelp.WebServices.volunteerResult();
+            volunteer.GetVolunteer(anID);
+            string json = JsonConvert.SerializeObject(volunteer);
+            VolunteerResult volunteerResult = new VolunteerResult();
             volunteerResult.result = true;
             volunteerResult.messages = new string[1];
             volunteerResult.messages[0] = json;
-            volunteerResult.volunteerData = vt;
+            volunteerResult.volunteerData = volunteer;
             return volunteerResult;
         }
     }
 
-public partial class Result
+    public partial class Result
     {
-
-        //Private messageField As String
-
-
         private string[] messagesField;
 
         private System.Nullable<bool> resultField;
 
         private bool resultFieldSpecified;
-        ///<remarks/>
         [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
         public string[] messages
         {
             get { return this.messagesField; }
             set { this.messagesField = value; }
         }
-        ///<remarks/>
+
         [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
         public System.Nullable<bool> result
         {
@@ -73,7 +63,6 @@ public partial class Result
             set { this.resultField = value; }
         }
 
-        ///<remarks/>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         public bool resultSpecified
         {
@@ -82,7 +71,7 @@ public partial class Result
         }
     }
 
-    public partial class volunteerResult : Result
+    public partial class VolunteerResult : Result
     {
         public VolunteersNS.Volunteer volunteerData;
     }

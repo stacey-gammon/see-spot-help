@@ -49,6 +49,16 @@ namespace VolunteerGroupsNS
             getVolunteerGroup(ID);
         }
 
+        public static VolunteerGroup LoadFromDatabaseRow(System.Data.DataRow row)
+        {
+            return new VolunteerGroup(
+                Helpers.DBHelper.BuildConnectionString("AnimalShelter"),
+                (string)row["Id"],
+                (string)row["name"],
+                (string)row["sheltername"],
+                (string)row["shelteraddress"]);
+        }
+
         #endregion
 
         public void getVolunteerGroup(string myID)
