@@ -1,4 +1,4 @@
-﻿'use strict'
+﻿"use strict"
 
 var React = require('react');
 var FakeData = require('../core/fakedata');
@@ -8,28 +8,41 @@ var AnimalActionsBox = require('./animalactionsbox');
 // by volunteers, as well as ability to edit, delete and add a new activity or note
 // about the specific animal.
 var AnimalHomePage = React.createClass({
+    getInitialState: function() {
+        var animal = this.props.location &&
+                     this.props.location.state &&
+                     this.props.location.state.animal;
+        var group = this.props.location &&
+                    this.props.location.state &&
+                    this.props.location.state.group;
+        return {
+            animal: animal,
+            group: group
+        };
+    },
+
     render: function () {
-        var query = this.props.location.query;
-        var animal = null;
-        if (query && query.animalId) {
-            animal = FakeData.getFakeAnimalDataForGroup(query.groupId)[query.animalId];
-        }
+        console.log("AnimalHomePage:render: ");
+        console.log(this.state.animal);
+        var animal = this.state.animal;
         if (animal) {
             return (
-                    <div className="container-fluid">
-                        <div className="row">
-                            <div className="col-xs-6">
-                                <img className="img-rounded img-responsive animalImg" src={animal.photo} />
-                            </div>
-                            <div className="col-xs-6">
-                                <h1 className="animalInfo">{animal.name}</h1>
-                                <h2 className="animalInfo">{animal.age} years old</h2>
-                                <h2 className="animalInfo">{animal.breed}</h2>
-                            </div>
+                <div className="container-fluid">
+                    <div className="row">
+                        <div className="col-xs-6">
+                            <img className="img-rounded img-responsive animalImg" src={animal.photo} />
                         </div>
-                        <AnimalActionsBox/>
+                        <div className="col-xs-6">
+                            <h1 className="animalInfo">{animal.name}</h1>
+                            <h2 className="animalInfo">{animal.age} years old</h2>
+                            <h2 className="animalInfo">{animal.breed}</h2>
+                        </div>
+                    </div>
+                    <AnimalActionsBox group={this.state.group} animal={animal}/>
                 </div>
             );
+        } else {
+            return (<div/>);
         }
     }
 });
