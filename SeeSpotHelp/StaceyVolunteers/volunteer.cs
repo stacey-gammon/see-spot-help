@@ -58,8 +58,8 @@ namespace VolunteersNS
         {
             object[] myparams = { myID, "Volunteerid" };
 
-           var volunteerData = Helpers.DBHelper.ExecuteProcedure(
-               ConnectionString, "Volunteer_get", myparams);
+            var volunteerData = Helpers.DBHelper.ExecuteProcedure(
+                ConnectionString, "Volunteer_get", myparams);
 
             if (volunteerData.Rows.Count > 0)
             {

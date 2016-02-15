@@ -1,5 +1,5 @@
 ﻿CREATE TABLE dbo.VolunteerGroup
-   (Id varchar(25) NOT NULL,
+   (Id int IDENTITY(1,1) NOT NULL,
     Name varchar(100) NOT NULL,
     ShelterName varchar(100) NOT NULL,
     ShelterAddress varchar(100),

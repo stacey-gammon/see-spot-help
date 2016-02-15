@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 
 namespace VolunteerGroupsNS
 {
-    class VolunteerGroup : Data.BaseObject
+    public class VolunteerGroup : Data.BaseObject
     {
+        public enum Permissions
+        {
+            MEMBER,
+            NONMEMBER,
+            ADMIN,
+            MEMBERSHIP_PENDING,
+            MEMBERSHIP_DENIED
+        };
 
         //Properties.
         public string id { get; set; }
@@ -59,6 +67,41 @@ namespace VolunteerGroupsNS
                 (string)row["shelteraddress"]);
         }
 
+        public static VolunteerGroup InsertVolunteerGroup(string adminId,
+                                                          string name,
+                                                          string shelterName,
+                                                          string shelterAddress,
+                                                          string city,
+                                                          string state,
+                                                          string zipCode)
+        {
+            object[] myParams = { name, "name",
+                                  shelterName, "shelterName",
+                                  shelterAddress, "shelterAddress",
+                                  city, "shelterCity",
+                                  state, "shelterState",
+                                  zipCode, "shelterZip" };
+            var volunteerGroupData = Helpers.DBHelper.ExecuteProcedure(
+                Helpers.DBHelper.BuildConnectionString(), "VolunteerGroup_Insert", myParams);
+            if (volunteerGroupData.Rows.Count > 0)
+            {
+                VolunteerGroup group = VolunteerGroup.LoadFromDatabaseRow(volunteerGroupData.Rows[0]);
+
+                // Now need to hook the user up as an admin. This should all be in a transaction so if any
+                // errors occur, it's an all or nothing operation and we aren't stuck with a shelter without
+                // an admin.
+                // TODO: Make sure adminId is a valid user id.
+                object[] groupPairParams = { adminId, "volunteerId",
+                                             group.id, "volunteerGroupId",
+                                             Permissions.ADMIN, "permission"};
+                Helpers.DBHelper.ExecuteProcedure(
+                    Helpers.DBHelper.BuildConnectionString(), "VolunteerGroupPair_Insert", groupPairParams);
+                return group;
+            } else {
+                return null;
+            }
+        }
+
         #endregion
 
         public void getVolunteerGroup(string myID)
@@ -84,11 +127,10 @@ namespace VolunteerGroupsNS
 
         public void initFromDR(System.Data.DataRow dr)
         {
-            this.id = (string)dr["VolunteerGroupID"];
-            this.name = (string)dr["VolunteerGroupName"];
-            this.shelter = (string)dr["VolunteerGroupShelter"];
-            this.address = (string)dr["VolunteerGroupAddress"];
-
+            this.id = (string)dr["id"];
+            this.name = (string)dr["name"];
+            this.shelter = (string)dr["shelterName"];
+            this.address = (string)dr["shelterAddress"];
         }
     }
 }
