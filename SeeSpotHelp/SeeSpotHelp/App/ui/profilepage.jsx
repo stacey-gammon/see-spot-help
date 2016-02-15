@@ -21,7 +21,7 @@ var ProfilePage = React.createClass({
         var user = LoginStore.user;
         return {
             user: user,
-            groups: user.getGroups()
+            groups: user.groups
         }
     },
 

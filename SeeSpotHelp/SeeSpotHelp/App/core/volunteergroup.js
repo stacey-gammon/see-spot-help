@@ -105,8 +105,6 @@ VolunteerGroup.getFakeGroups = function() {
             "96 Street lane", "Park Ridge", "NJ", "12345",
             "789")
     };
-    fakeGroups["123"].userPermissionsMap["10102012745568702"] =
-        VolunteerGroup.PermissionsEnum.ADMIN;
     return fakeGroups;
 };
 

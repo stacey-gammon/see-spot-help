@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "e21c76b3f01ef49881fa"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "262d444dc44d6efe6197"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -585,7 +585,6 @@
 	var Router = ReactRouter.Router;
 	var Route = ReactRouter.Route;
 	var IndexRoute = ReactRouter.IndexRoute;
-	var BrowserHistory = ReactRouter.BrowserHistory;
 	
 	var Home = React.createClass({displayName: "Home",
 	    contextTypes: {
@@ -687,7 +686,7 @@
 	});
 	
 	var routes = (
-	  React.createElement(Router, {history: BrowserHistory, path: "/", component: Home}, 
+	  React.createElement(Router, {path: "/", component: Home}, 
 	    React.createElement(Route, {path: "shelterSearchPage", component: ShelterSearchPage}), 
 	    React.createElement(Route, {path: "shelterHomePage", component: ShelterHomePage}), 
 	    React.createElement(Route, {path: "animalHomePage", component: AnimalHomePage}), 
@@ -26463,8 +26462,6 @@
 	            "96 Street lane", "Park Ridge", "NJ", "12345",
 	            "789")
 	    };
-	    fakeGroups["123"].userPermissionsMap["10102012745568702"] =
-	        VolunteerGroup.PermissionsEnum.ADMIN;
 	    return fakeGroups;
 	};
 	
@@ -27694,14 +27691,10 @@
 	// will be inserted. Returns null if user is not attached to any
 	// groups.
 	Volunteer.prototype.getDefaultVolunteerGroup = function() {
-	    // TODO: implement
-	    return VolunteerGroup.getFakeGroups()["123"];
-	};
-	
-	// Updates the default volunteer group associated with the current
-	// volunteer.
-	Volunteer.prototype.setDefaultVolunteerGroup = function(groupId) {
-	    // TODO: implement
+	    // Note: If there is more than one group this user belongs to, should
+	    // we let them specify the "default" one?  Probably not a common
+	    // scenario to have more than one.
+	    return this.groups.length > 0 ? this.groups[0] : null;
 	};
 	
 	module.exports = Volunteer;
@@ -28845,7 +28838,7 @@
 	        var user = LoginStore.user;
 	        return {
 	            user: user,
-	            groups: user.getGroups()
+	            groups: user.groups
 	        }
 	    },
 	
