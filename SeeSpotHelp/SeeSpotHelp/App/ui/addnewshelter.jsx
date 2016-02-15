@@ -44,6 +44,7 @@ var AddNewShelter = React.createClass({
         if (editMode) {
             for (var field in inputFields) {
                 inputFields[field].value = group[field];
+                console.log("Setting " + field + " to " + group[field]);
             }
         }
 
@@ -82,7 +83,9 @@ var AddNewShelter = React.createClass({
     },
 
     insertGroupCallback: function (group, serverResponse) {
-        console.log("AddNewShelter::insertGroupCallback");
+        console.log("AddNewShelter::insertGroupCallback, group=");
+        console.log(group);
+
         if (serverResponse.hasError) {
             // Show error message to user.
             this.setState({ errorMessage: serverResponse.errorMessage });
@@ -103,6 +106,9 @@ var AddNewShelter = React.createClass({
         if (!errorFound) {
             if (this.state.editMode) {
                 this.state.group.updateFromInputFields(this.state.fields);
+                console.log("Updated group:");
+                console.log(this.state.group);
+
                 this.state.group.update(this.insertGroupCallback);
             } else {
                 var group = VolunteerGroup.createFromInputFields(

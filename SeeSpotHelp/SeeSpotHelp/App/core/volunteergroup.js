@@ -2,6 +2,7 @@
 
 var ServerResponse = require("./serverresponse");
 var AjaxServices = require('./AJAXServices');
+var LoginStore = require("../stores/loginstore");
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
@@ -152,13 +153,15 @@ VolunteerGroup.loadVolunteerGroup = function(groupId) {
 //     inserted volunteer group (null on failure) and a server
 //     response to hold error and success information.
 VolunteerGroup.prototype.insert = function (adminId, callback) {
-    console.log("Volunteer::LoadVolunteer");
+    console.log("VolunteerGroup::insert");
 
     var LoadedGroupWithData = function (response) {
-        console.log("Volunteer::LoadVolunteerWithData");
+        console.log("VolunteerGroup::LoadedGroupWithData");
         if (response.d.result) {
             var loadedGroup = VolunteerGroup.castObject(response.d.volunteerGroup);
             console.log("Calling callback function now:");
+
+            LoginStore.user.groups.push(updatedGroup);
             callback(loadedGroup, new ServerResponse());
         } else {
             console.log("Volunteer::LoadVolunteerWithData: Error occurred");
@@ -195,8 +198,50 @@ VolunteerGroup.prototype.insert = function (adminId, callback) {
 //     updated volunteer group (null on failure) and a server
 //     response to hold error and success information.
 VolunteerGroup.prototype.update = function (callback) {
-    // TODO: Implement and hook into database.
-    callback(this, new ServerResponse());
+    console.log("VolunteerGroup::update");
+
+    var UpdatedGroup = function (response) {
+        console.log("VolunteerGroup::UpdatedGroup");
+        if (response.d.result) {
+            var updatedGroup = VolunteerGroup.castObject(response.d.volunteerGroup);
+            console.log("Calling callback function now:");
+
+            // Totally NOT how stores are supposed to be used, but for the time being...
+            var groups = LoginStore.user.groups;
+            for (var i = 0; i < groups.length; i++) {
+                if (groups[i].id == updatedGroup.id) {
+                    groups[i] = updatedGroup;
+                }
+            }
+
+            callback(updatedGroup, new ServerResponse());
+        } else {
+            console.log("Volunteer::LoadVolunteerWithData: Error occurred");
+            callback(null, new ServerResponse(response.d));
+        }
+    };
+
+    //Invoked when the server has an error (just an example)
+    var FailedCallback = function (error) {
+        console.log("VolunteerGroup:Insert:FailedCallback");
+        var errorString = 'Message:==>' + error.responseText + '\n\n';
+        callback(null, new ServerResponse(errorString));
+    };
+
+    var ajax = new AjaxServices(UpdatedGroup,
+                                FailedCallback);
+    ajax.CallJSONService(
+        "../../WebServices/VolunteerGroupServices.asmx",
+        "update",
+        {
+            groupId: this.id,
+            name: this.name,
+            shelterName: this.shelter,
+            shelterAddress: this.address,
+            shelterState: this.state,
+            shelterCity: this.city,
+            shelterZip: this.zipCode
+        });
 };
 
 module.exports = VolunteerGroup;

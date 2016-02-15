@@ -9,7 +9,8 @@ var ShelterInfoBox = React.createClass({
             <div className="shelterInfoBox">
                 <h1>{this.props.group.name}</h1>
                 <h2>{this.props.group.shelter}</h2>
-                <h2>{this.props.group.address} {this.props.group.state}, {this.props.group.city}, {this.props.group.zipCode}</h2>
+                <h2>{this.props.group.address}</h2>
+                <h2>{this.props.group.city}, {this.props.group.state} {this.props.group.zipCode}</h2>
             </div>
         );
     }

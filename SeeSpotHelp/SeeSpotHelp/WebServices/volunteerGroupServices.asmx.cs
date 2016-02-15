@@ -30,6 +30,25 @@ namespace SeeSpotHelp.WebServices
             volunteerResult.volunteerGroup = group;
             return volunteerResult;
         }
+
+        [WebMethod]
+        public VolunteerGroupResult update(string groupId,
+                                           string name,
+                                           string shelterName,
+                                           string shelterAddress,
+                                           string shelterCity,
+                                           string shelterState,
+                                           string shelterZip)
+        {
+            VolunteerGroup group = VolunteerGroup.UpdateVolunteerGroup(
+                groupId, name, shelterName, shelterAddress, shelterCity, shelterState, shelterZip);
+            VolunteerGroupResult volunteerResult = new VolunteerGroupResult();
+            volunteerResult.result = true;
+            volunteerResult.messages = new string[1];
+            volunteerResult.messages[0] = JsonConvert.SerializeObject(group);
+            volunteerResult.volunteerGroup = group;
+            return volunteerResult;
+        }
     }
 
     public partial class VolunteerGroupResult : Result

@@ -11,9 +11,6 @@ namespace VolunteersNS
         public string email { get; set; }
         public List<VolunteerGroup> groups { get; set; }
 
-       // private List<VolunteerGroup> groups = new List<VolunteerGroup>();
-        // List<VolunteerGroup> getGroups() { return groups; }
-
         #region "Constructors"
 
         // Static constructor to initialize the static member
