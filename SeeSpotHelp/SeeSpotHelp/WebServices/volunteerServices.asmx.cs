@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Services;
+﻿using System.Web.Services;
 using Newtonsoft.Json;
-using System.Web.Script.Serialization;
 
 namespace SeeSpotHelp.WebServices
 {
@@ -14,27 +9,12 @@ namespace SeeSpotHelp.WebServices
     [System.Web.Script.Services.ScriptService]
     public class volunteerServices : System.Web.Services.WebService
     {
-
-        [WebMethod]
-        public string getAnimal(int anID)
-        {
-
-            AnimalsNS.Animal sa = new AnimalsNS.Animal(
-                Helpers.DBHelper.BuildConnectionString("AnimalShelter"));
-            sa.getAnimal(anID);
-            string json = JsonConvert.SerializeObject(sa);
-            
-            return json;
-        }
-
         [WebMethod]
         public VolunteerResult getVolunteer(string anID, string name, string email)
         {
             VolunteersNS.Volunteer volunteer = new VolunteersNS.Volunteer(
                 Helpers.DBHelper.BuildConnectionString("AnimalShelter"), anID,name,email);
-            var jsonSerialiser = new JavaScriptSerializer();
-            var json = jsonSerialiser.Serialize(volunteer);
-            //   string json = JsonConvert.SerializeObject(volunteer);
+            var json = JsonConvert.SerializeObject(volunteer);
             VolunteerResult volunteerResult = new VolunteerResult();
 
             volunteerResult.result = true;

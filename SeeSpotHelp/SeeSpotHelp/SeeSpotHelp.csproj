@@ -535,6 +535,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="gulpfile.js" />
+    <Content Include="images\cat.jpg" />
+    <Content Include="images\dog.jpg" />
     <Content Include="images\dogthumbnails-10.jpg" />
     <Content Include="images\dogthumbnails-11.jpg" />
     <Content Include="images\dogthumbnails-12.jpg" />
@@ -645,6 +647,7 @@
     <Content Include="scripts\require.js" />
     <Content Include="SQL_Scripts\animalget.sql" />
     <Content Include="SQL_Scripts\animalsget.sql" />
+    <Content Include="SQL_Scripts\animalupdate.sql" />
     <Content Include="SQL_Scripts\createanimalstable.sql" />
     <Content Include="SQL_Scripts\CreateDatabase.sql" />
     <Content Include="SQL_Scripts\createvolunteergrouppairtable.sql" />
@@ -660,6 +663,7 @@
     <Content Include="webpack.config.js" />
     <Content Include="App_Code\GlyphIcon.cshtml" />
     <Content Include="karma.conf.js" />
+    <Content Include="WebServices\AnimalServices.asmx" />
     <Content Include="WebServices\imageServices.asmx" />
     <Content Include="WebServices\VolunteerGroupServices.asmx" />
     <Content Include="WebServices\volunteerServices.asmx" />
@@ -1274,6 +1278,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebServices\AnimalServices.asmx.cs">
+      <DependentUpon>AnimalServices.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WebServices\imageServices.asmx.cs">
       <DependentUpon>imageServices.asmx</DependentUpon>
       <SubType>Component</SubType>

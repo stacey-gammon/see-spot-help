@@ -89,7 +89,7 @@ var AddAdoptablePage = React.createClass({
                 this.state.animal.copyFieldsFrom(this.state.fields);
                 this.state.animal.update(this.insertGroupCallback);
             } else {
-                var animal = Animal.castObj(this.state.fields);
+                var animal = Animal.castObject(this.state.fields);
                 animal.insert(this.insertGroupCallback);
             }
         }
@@ -131,7 +131,7 @@ var AddAdoptablePage = React.createClass({
                 {inputFields}
                 <TakePhotoButton user={this.state.user} group={this.state.group} animal={this.state.animal}/>
                 <button className="btn btn-primary addAdoptableButton"
-                        onClick={this.addAdoptable}>{buttonText}</button>
+                        onClick={this.addNewAnimal}>{buttonText}</button>
             </div>
         );
     }

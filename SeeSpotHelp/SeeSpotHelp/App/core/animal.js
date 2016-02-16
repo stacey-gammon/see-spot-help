@@ -1,6 +1,10 @@
-﻿// An animal that is currently being managed by a volunteer group.
+﻿var LoginStore = require("../stores/loginstore");
+var AjaxServices = require('./AJAXServices');
+var ServerResponse = require('./serverresponse');
 
-var Animal = function(name, type, breed, age, volunteerGroup, status, photo, id) {
+// An animal that is currently being managed by a volunteer group.
+
+var Animal = function(name, type, breed, age, volunteerGroup, status, photo, id, groupId) {
     this.name = name;
     this.type = type;
     this.breed = breed;
@@ -9,6 +13,7 @@ var Animal = function(name, type, breed, age, volunteerGroup, status, photo, id)
     this.status = status;
     this.photo = photo;
     this.id = id;
+    this.groupId = volunteerGroup ? volunteerGroup.id : "";
 }
 
 Animal.StatusEnum = Object.freeze(
@@ -44,8 +49,38 @@ Animal.prototype.copyFieldsFrom = function (other) {
 //     inserted animal (null on failure) and a server
 //     response to hold error and success information.
 Animal.prototype.insert = function (callback) {
-    // TODO: Implement and hook into database.
-    callback(this, new ServerResponse());
+    console.log("Animal::insert");
+
+    var SuccessCallback = function (response) {
+        console.log("Animal::SuccessCallback");
+        if (response.d.result) {
+            var animal = Animal.castObject(response.d.animal);
+            callback(animal, new ServerResponse());
+        } else {
+            console.log("Animal::SuccessCallback: Error occurred");
+            callback(null, new ServerResponse(response.d));
+        }
+    };
+
+    var FailureCallback = function (error) {
+        console.log("Animal:Insert:FailureCallback");
+        var errorString = 'Message:==>' + error.responseText + '\n\n';
+        callback(null, new ServerResponse(errorString));
+    };
+
+    var ajax = new AjaxServices(SuccessCallback, FailureCallback);
+    ajax.CallJSONService(
+        "../../WebServices/AnimalServices.asmx",
+        "insert",
+        {
+            addedById: LoginStore.user.id,
+            name: this.name,
+            type: this.type,
+            breed: this.breed,
+            age: this.age,
+            status: this.status,
+            groupId: this.groupId
+        });
 };
 
 // Attempts to update the current animal into the database.
@@ -54,8 +89,38 @@ Animal.prototype.insert = function (callback) {
 //     updated animal (null on failure) and a server
 //     response to hold error and success information.
 Animal.prototype.update = function (callback) {
-    // TODO: Implement and hook into database.
-    callback(this, new ServerResponse());
+    console.log("Animal::update");
+
+    var SuccessCallback = function (response) {
+        console.log("Animal::SuccessCallback");
+        if (response.d.result) {
+            var animal = Animal.castObject(response.d.animal);
+            callback(animal, new ServerResponse());
+        } else {
+            console.log("Animal::SuccessCallback: Error occurred");
+            callback(null, new ServerResponse(response.d));
+        }
+    };
+
+    var FailureCallback = function (error) {
+        console.log("Animal:Insert:FailureCallback");
+        var errorString = 'Message:==>' + error.responseText + '\n\n';
+        callback(null, new ServerResponse(errorString));
+    };
+
+    var ajax = new AjaxServices(SuccessCallback, FailureCallback);
+    ajax.CallJSONService(
+        "../../WebServices/AnimalServices.asmx",
+        "insert",
+        {
+            addedById: LoginStore.user.id,
+            name: this.name,
+            type: this.type,
+            breed: this.breed,
+            age: this.age,
+            status: this.status,
+            groupId: this.groupId
+        });
 };
 
 module.exports = Animal;

@@ -24,7 +24,7 @@ namespace AnimalsNS
             foreach (System.Data.DataRow element in dt.Rows)
             {
                 Animal tempAnimal = new Animal(ConnectionString);
-                tempAnimal.initFromDR(element);
+              //  tempAnimal.initFromDR(element);
                 myanimals.Add(tempAnimal);
             }
 

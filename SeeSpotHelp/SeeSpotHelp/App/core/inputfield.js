@@ -11,7 +11,7 @@ var InputField = function (validations) {
     this.validated = false;
     this.errorMessage = "";
     this.value = "";
-    this.validations = validations;
+    this.validations = validations ? validations : [];
     this.ref = "";
 };
 

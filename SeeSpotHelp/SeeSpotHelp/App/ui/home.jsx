@@ -102,13 +102,13 @@ var Home = React.createClass({
             this.setState({ "defaultGroup": volunteer.getDefaultVolunteerGroup() });
         }
 
-        // TODO: What do we want to happen when a user logs in while on the search pane?
-        // Currently we will force them to pop over to the shelter home page. This fell
-        // out naturally and was not specifically decided. Figure out what to do.
+        // If the user is signed in and belongs to a volunteer group, show them that
+        // page first.  If they don't, show them their profile page where there will be
+        // instructions for how to search or add for a new volunteer group.
         if (volunteer && volunteer.getDefaultVolunteerGroup()) {
             this.context.router.push("/shelterHomePage");
         } else {
-            this.context.router.push("/shelterSearchPage");
+            this.context.router.push("/profilePage");
         }
     },
 
