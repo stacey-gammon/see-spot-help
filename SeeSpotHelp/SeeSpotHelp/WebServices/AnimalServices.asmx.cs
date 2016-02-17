@@ -14,10 +14,11 @@ namespace SeeSpotHelp.WebServices
         public AnimalResult insert(string name,
                                    string type,
                                    string breed,
-                                   string age,
+                                   int age,
                                    int status,
-                                   string groupId)
+                                   int groupId)
         {
+            System.Console.WriteLine("AnimalServices::Insert");
             Animal animal = Animal.InsertAnimal(
                 name, type, breed, age, status, groupId);
             AnimalResult animalResult = new AnimalResult();

@@ -10,7 +10,7 @@ var Animal = function(name, type, breed, age, volunteerGroup, status, photo, id,
     this.breed = breed;
     this.age = age;
     this.volunteerGroup = volunteerGroup;
-    this.status = status;
+    this.status = status ? status : Animal.StatusEnum.ADOPTABLE;
     this.photo = photo;
     this.id = id;
     this.groupId = volunteerGroup ? volunteerGroup.id : "";
@@ -49,7 +49,8 @@ Animal.prototype.copyFieldsFrom = function (other) {
 //     inserted animal (null on failure) and a server
 //     response to hold error and success information.
 Animal.prototype.insert = function (callback) {
-    console.log("Animal::insert");
+    console.log("Animal::insert animal:");
+    console.log(this);
 
     var SuccessCallback = function (response) {
         console.log("Animal::SuccessCallback");
@@ -73,13 +74,12 @@ Animal.prototype.insert = function (callback) {
         "../../WebServices/AnimalServices.asmx",
         "insert",
         {
-            addedById: LoginStore.user.id,
             name: this.name,
             type: this.type,
             breed: this.breed,
             age: this.age,
             status: this.status,
-            groupId: this.groupId
+            groupId: Number(this.groupId)
         });
 };
 
@@ -111,9 +111,9 @@ Animal.prototype.update = function (callback) {
     var ajax = new AjaxServices(SuccessCallback, FailureCallback);
     ajax.CallJSONService(
         "../../WebServices/AnimalServices.asmx",
-        "insert",
+        "update",
         {
-            addedById: LoginStore.user.id,
+            id: this.id,
             name: this.name,
             type: this.type,
             breed: this.breed,

@@ -20,7 +20,7 @@ namespace AnimalsNS
         public string photo { get; set; }
         public string description { get; set; }
 
-        public enum StatusEnum 
+        public enum StatusEnum
         {
             ADOPTABLE = 0,  // Animal is currently up for adoption.
             RESCUEONLY = 1,  // Animal can be adopted to rescue groups only.
@@ -67,14 +67,16 @@ namespace AnimalsNS
         public static Animal InsertAnimal(string name,
                                           string type,
                                           string breed,
-                                          string age,
+                                          int age,
                                           int status,
-                                          string groupId)
+                                          int groupId)
         {
+            System.Console.WriteLine("Animal::InsertAnimal");
+            var birthyear = DateTime.Today.Year - age;
             object[] myParams = { name, "name",
                                   type, "type",
                                   breed, "breed",
-                                  age, "age",
+                                  birthyear, "birthyear",
                                   status, "status",
                                   groupId, "groupId" };
             try

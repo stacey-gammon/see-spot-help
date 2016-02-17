@@ -7,6 +7,7 @@ var InputField = require("../core/inputfield");
 var InputFieldValidation = require("../core/inputfieldvalidation");
 var TakePhotoButton = require("./takephotobutton");
 var LoginStore = require("../stores/loginstore");
+var Utils = require("../core/utils");
 
 var AddAdoptablePage = React.createClass({
     getInitialState: function () {
@@ -17,7 +18,7 @@ var AddAdoptablePage = React.createClass({
             "name": new InputField([IFV.validateNotEmpty]),
             "type": new InputField([IFV.validateNotEmpty]),
             "breed": new InputField(),
-            "age": new InputField()
+            "age": new InputField([IFV.validateNumber])
         };
         // Store the ref name on the input field without manually
         // writing it out twice.
@@ -86,10 +87,12 @@ var AddAdoptablePage = React.createClass({
         var errorFound = this.validateFields();
         if (!errorFound) {
             if (this.state.editMode) {
-                this.state.animal.copyFieldsFrom(this.state.fields);
+                Utils.CopyInputFieldsIntoObject(this.state.fields, this.state.animal);
                 this.state.animal.update(this.insertGroupCallback);
             } else {
-                var animal = Animal.castObject(this.state.fields);
+                var animal = new Animal();
+                animal.groupId = this.state.group.id;
+                Utils.CopyInputFieldsIntoObject(this.state.fields, animal);
                 animal.insert(this.insertGroupCallback);
             }
         }

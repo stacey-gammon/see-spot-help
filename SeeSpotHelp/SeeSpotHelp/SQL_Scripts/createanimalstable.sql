@@ -1,5 +1,5 @@
 CREATE TABLE dbo.Animal
-   (Id int PRIMARY KEY NOT NULL,
+   (Id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
     Name varchar(64) NOT NULL,
     BirthYear int,
     Type varchar(64),

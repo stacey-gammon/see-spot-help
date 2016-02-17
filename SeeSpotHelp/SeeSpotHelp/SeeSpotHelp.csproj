@@ -170,6 +170,7 @@
   <ItemGroup>
     <Content Include="App\actions\loginactions.js" />
     <Content Include="App\constants\actionconstants.js" />
+    <Content Include="App\core\utils.js" />
     <Content Include="App\dispatcher\dispatcher.js" />
     <Content Include="App\core\AJAXServices.js" />
     <Content Include="App\core\animal.js" />
