@@ -1,10 +1,27 @@
 ﻿var Volunteer = require("../core/volunteer");
 var LoginActions = require("../actions/loginactions");
 
-var FacebookUser = function () {}
+var LoginService = function () {}
 
-FacebookUser.login = function () {
-    console.log("FacebookUser.login");
+LoginService.useFirebase = true;
+
+LoginService.loginWithFirebaseFacebook = function() {
+    var ref = new Firebase("https://shining-torch-1432.firebaseio.com");
+    ref.authWithOAuthPopup("facebook", function (error, authData) {
+        if (error) {
+            console.log("Login Failed!", error);
+            LoginActions.userLogInFailed(new Error("No facebook user found"));
+        } else {
+            console.log("Authenticated successfully with payload:", authData);
+
+            Volunteer.LoadVolunteer(
+                authData.facebook.id, authData.facebook.name, null, LoginActions.userLoggedIn);
+        }
+    });
+};
+
+LoginService.loginWithFacebookAPI = function () {
+    console.log("LoginService.loginWithFacebookAPI");
     var outer = this;
     this.loadVolunteer = function () {
         console.log("FacebookUser::login : loadVolunteer");
@@ -29,6 +46,14 @@ FacebookUser.login = function () {
 
     console.log("Getting fb login status");
     FB.getLoginStatus(this.loginCallback.bind(this));
+};
+
+LoginService.loginWithFacebook = function () {
+    if (LoginService.useFirebase) {
+        LoginService.loginWithFirebaseFacebook();
+    } else {
+        LoginService.loginWithFacebookAPI();
+    }
 }
 
-module.exports = FacebookUser;
+module.exports = LoginService

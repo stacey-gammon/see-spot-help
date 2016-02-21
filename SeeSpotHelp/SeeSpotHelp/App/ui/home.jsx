@@ -8,7 +8,7 @@ var AddAdoptablePage = require("./addadoptablepage");
 var ProfilePage = require("./profilepage");
 var MyNavBar = require("./navbar");
 
-var FacebookUser = require("../core/facebookuser");
+var LoginService = require("../core/loginservice");
 var Volunteer = require("../core/volunteer");
 
 var LoginStore = require("../stores/loginstore");
@@ -33,13 +33,13 @@ var Home = React.createClass({
     },
 
     subscribeToLoginEvents: function() {
-        FB.Event.subscribe("auth.login", FacebookUser.login);
+        FB.Event.subscribe("auth.login", LoginService.loginWithFacebook);
         FB.Event.subscribe("auth.logout", LoginActions.userLoggedOut);
     },
 
     facebookInitialized: function () {
         this.subscribeToLoginEvents();
-        FacebookUser.login();
+        LoginService.loginWithFacebook();
     },
 
     componentWillMount: function () {

@@ -3,7 +3,6 @@
 var React = require("react");
 var Link = require("react-router").Link;
 var FakeData = require("../core/fakedata");
-var FacebookUser = require("../core/facebookuser");
 var Volunteer = require("../core/volunteer");
 var VolunteerGroup = require("../core/volunteergroup");
 var FacebookLogin = require("./facebooklogin");

@@ -6,7 +6,6 @@ var ShelterSearchBox = require("./sheltersearchbox");
 var ShelterInfoBox = require("./shelterinfobox");
 var ShelterActionsBox = require("./shelteractionsbox");
 var FakeData = require("../core/fakedata");
-var FacebookUser = require("../core/facebookuser");
 var Volunteer = require("../core/volunteer");
 var VolunteerGroup = require("../core/volunteergroup");
 var LoginStore = require("../stores/loginstore");

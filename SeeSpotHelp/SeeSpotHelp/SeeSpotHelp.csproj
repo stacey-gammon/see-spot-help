@@ -176,7 +176,7 @@
     <Content Include="App\core\animal.js" />
     <Content Include="App\core\conststrings.js" />
     <Content Include="App\core\error.js" />
-    <Content Include="App\core\facebookuser.js" />
+    <Content Include="App\core\loginservice.js" />
     <Content Include="App\core\inputfield.js" />
     <Content Include="App\core\inputfieldvalidation.js" />
     <Content Include="App\core\serverresponse.js" />
