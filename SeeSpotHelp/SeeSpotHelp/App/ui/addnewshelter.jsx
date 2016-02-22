@@ -6,6 +6,7 @@ var VolunteerGroup = require("../core/volunteergroup");
 var InputField = require("../core/inputfield");
 var InputFieldValidation = require("../core/inputfieldvalidation");
 var LoginStore = require("../stores/loginstore");
+var GroupActions = require("../actions/groupactions");
 
 var STATES = [
     "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",
@@ -90,6 +91,7 @@ var AddNewShelter = React.createClass({
             // Show error message to user.
             this.setState({ errorMessage: serverResponse.errorMessage });
         } else {
+            GroupActions.newGroupAdded(group);
             this.context.router.push(
                 {
                     pathname: "shelterHomePage",
@@ -114,7 +116,7 @@ var AddNewShelter = React.createClass({
                 var group = VolunteerGroup.createFromInputFields(
                     this.state.fields,
                     this.state.user.id);
-                group.insert(this.state.user.id, this.insertGroupCallback);
+                group.insert(this.state.user, this.insertGroupCallback);
             }
         }
     },

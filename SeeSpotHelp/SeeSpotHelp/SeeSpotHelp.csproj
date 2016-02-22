@@ -168,6 +168,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\actions\groupactions.js" />
     <Content Include="App\actions\loginactions.js" />
     <Content Include="App\constants\actionconstants.js" />
     <Content Include="App\core\utils.js" />
@@ -182,7 +183,9 @@
     <Content Include="App\core\serverresponse.js" />
     <Content Include="App\core\volunteer.js" />
     <Content Include="App\core\volunteergroup.js" />
+    <Content Include="App\stores\groupstore.js" />
     <Content Include="App\stores\loginstore.js" />
+    <Content Include="App\stores\permissionsstore.js" />
     <Content Include="App\tests\addnewshelterpage-test.jsx" />
     <Content Include="App\tests\animalactionsbox-test.jsx" />
     <Content Include="App\tests\shelteractionsbox-test.jsx" />
@@ -668,6 +671,8 @@
     <Content Include="WebServices\imageServices.asmx" />
     <Content Include="WebServices\VolunteerGroupServices.asmx" />
     <Content Include="WebServices\volunteerServices.asmx" />
+    <Content Include="App\ui\privatebetapage.jsx" />
+    <Content Include="App\ui\loginpage.jsx" />
     <None Include="scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />

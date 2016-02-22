@@ -1,15 +1,27 @@
 ﻿'use strict'
 
 var React = require('react');
+var LoginStore = require("../stores/loginstore");
+var LoginService = require("../core/loginservice");
 
 var FacebookLogin = React.createClass({
-    handleLoggedIn: function() {
-        console.log("handling logging in");
+    loginAction: function () {
+        if (LoginStore.user) {
+            LoginService.logout();
+        } else {
+            LoginService.loginWithFacebook();
+        }
     },
+
     render: function () {
+        var text = LoginStore.user ? "Log out" : "Log in";
         return (
-            <div className="fb-login-button" onLogin={this.handleLoggedIn} data-max-rows="1" data-size="large" data-show-faces="false" data-auto-logout-link="true"/>
-        );
+            <div>
+                <button className="btn" onClick={this.loginAction}>
+                    {text}
+                </button>
+            </div>
+            );
     }
 });
 

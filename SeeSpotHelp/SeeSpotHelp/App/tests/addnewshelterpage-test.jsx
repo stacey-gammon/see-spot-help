@@ -107,7 +107,7 @@ describe("AddNewShelter", function () {
         ReactTestUtils.Simulate.change(zipInput);
 
         // Mock out actual server call.
-        VolunteerGroup.prototype.insert = function (adminId, callback) {
+        VolunteerGroup.prototype.insert = function (user, callback) {
             var group = VolunteerGroup.getFakeGroups()["123"];
             callback(group, new ServerResponse());
         };

@@ -53,11 +53,6 @@ var MyNavBar = React.createClass({
                     </NavItem>
                     </LinkContainer>
                     </Nav>
-                <Nav className="nav navbar-nav navbar-right navbar-right-custom ">
-                    <NavItem>
-                        <FacebookLogin />
-                    </NavItem>
-                </Nav>
             </Navbar>
         );
     }

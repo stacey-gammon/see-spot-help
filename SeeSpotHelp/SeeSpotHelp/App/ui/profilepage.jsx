@@ -10,6 +10,7 @@ var ShelterInfoBox = require("./shelterinfobox");
 var AddNewShelter = require("./addnewshelter");
 var ShelterSearchPage = require("./sheltersearchpage");
 var LoginStore = require("../stores/loginstore");
+var LoginActions = require("../actions/loginactions");
 
 var ProfilePage = React.createClass({
     contextTypes: {
@@ -20,12 +21,14 @@ var ProfilePage = React.createClass({
         var user = LoginStore.user;
         return {
             user: user,
-            groups: user.groups
+            groups: user ? user.groups : []
         }
     },
 
     componentDidMount: function () {
         LoginStore.addChangeListener(this.onChange);
+        FB.Event.subscribe("auth.logout", LoginActions.userLoggedOut);
+        FB.XFBML.parse();
     },
 
     componentWillUnmount: function () {
@@ -78,6 +81,7 @@ var ProfilePage = React.createClass({
                     <h2>Email: {this.state.user.email}</h2>
                     <hr/>
                     {this.getGroups()}
+                    <FacebookLogin />
                 </div>
             );
         } else {

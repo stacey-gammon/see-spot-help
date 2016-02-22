@@ -3,6 +3,47 @@
 var AJAXServices = function (successCallback, failureCallback) {
     this.successCallback = successCallback;
     this.failureCallback = failureCallback;
+
+    this.firebaseURL = "https://shining-torch-1432.firebaseio.com/";
+};
+
+AJAXServices.useFirebase = true;
+AJAXServices.firebaseURL = "https://shining-torch-1432.firebaseio.com/";
+
+AJAXServices.prototype.GetFirebaseData = function(path) {
+    console.log("AJAXServices:GetFirebaseData for url " + path);
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    var outer = this;
+    ref.on("value", function (snapshot) {
+        console.log("AJAXServices.GetFirebaseData: Successfully called " + path);
+        console.log(snapshot.val());
+        outer.onSuccess(snapshot.val());
+    }, function (errorObject) {
+        console.log("The read failed: " + errorObject.code);
+        outer.onFailure(errorObject);
+    });
+};
+
+AJAXServices.SetFirebaseData = function(path, value) {
+    console.log("AJAXServices:SetFirebaseData");
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    ref.set(value);
+};
+
+AJAXServices.PushFirebaseData = function (path, value) {
+    console.log("AJAXServices:PushFirebaseData with value ");
+    console.log(value);
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    var newPath = ref.push(value);
+    value.id = newPath.key();
+    return value;
+};
+
+AJAXServices.UpdateFirebaseData = function (path, value) {
+    console.log("AJAXServices:UpdateFirebaseData");
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    var newPath = ref.update(value);
+    return value;
 };
 
 //Used to send a JSON based Web Service Request to the server

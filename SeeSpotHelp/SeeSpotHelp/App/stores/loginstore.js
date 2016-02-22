@@ -2,6 +2,7 @@
 
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
+var VolunteerGroup = require('../core/volunteergroup');
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");
@@ -43,7 +44,6 @@ class LoginStore extends EventEmitter {
         switch (action.type) {
             case ActionConstants.LOGIN_USER_SUCCESS:
                 this.user = action.user;
-                sessionStorage.setItem("user", JSON.stringify(this.user));
                 this.error = null;
                 this.emitChange();
                 break;
@@ -54,9 +54,16 @@ class LoginStore extends EventEmitter {
                 break;
 
             case ActionConstants.LOGOUT_USER:
+                console.log("LoginStore:handleAction:LOGOUT_USER");
                 this.user = null;
                 this.error = null;
-                localStorage.setItem("user", "");
+                this.emitChange();
+                break;
+
+            case ActionConstants.NEW_GROUP_ADDED:
+                this.user.defaultGroupId = action.group.id;
+                this.user.groupPermissions[action.group.id] =
+                    VolunteerGroup.PermissionsEnum.ADMIN;
                 this.emitChange();
                 break;
 

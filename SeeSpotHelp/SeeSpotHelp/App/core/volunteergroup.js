@@ -1,8 +1,7 @@
 ﻿"use strict"
 
 var ServerResponse = require("./serverresponse");
-var AjaxServices = require('./AJAXServices');
-var LoginStore = require("../stores/loginstore");
+var AJAXServices = require('./AJAXServices');
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
@@ -146,14 +145,47 @@ VolunteerGroup.loadVolunteerGroup = function(groupId) {
     return VolunteerGroup.getFakeGroups()[groupId];
 };
 
+VolunteerGroup.prototype.insertWithFirebase = function (user, callback) {
+    console.log("VolunteerGroup.insertWithFirebase");
+    var outer = this;
+    var onFailure = function (response) {
+        console.log("failed");
+        callback(null, new ServerResponse("failed"));
+    }
+    // TODO: Race condition here. Set rules for unique name in groupsByName.
+    var onSuccess = function (getResponse) {
+        console.log("VolunteerGroup.insertWithFirebase: onSuccess, response:");
+        console.log(getResponse);
+        if (getResponse != null) {
+            callback(null, new ServerResponse("Volunteer group with that name already exists"));
+        } else {
+            outer.id = null;
+            outer.id = AJAXServices.PushFirebaseData("groups", outer).id;
+            console.log("Pushing new group");
+            AJAXServices.UpdateFirebaseData(
+                "groupPermissions/" + user.id + "/" + outer.id,
+                { permission : VolunteerGroup.PermissionsEnum.ADMIN });
+            AJAXServices.SetFirebaseData("groupsByName/" + outer.name, outer);
+            AJAXServices.UpdateFirebaseData("users/" + user.id, { defaultGroupId : outer.id });
+            callback(outer, new ServerResponse());
+        }
+    }
+    var dataServices = new AJAXServices(onSuccess, onFailure);
+    dataServices.GetFirebaseData("groupsByName/" + this.name);
+};
+
 // Attempts to insert the current instance into the database as
 // a new volunteer group.
 // @param callback {Function(VolunteerGroup, ServerResponse) }
 //     callback is expected to take as a first argument the potentially
 //     inserted volunteer group (null on failure) and a server
 //     response to hold error and success information.
-VolunteerGroup.prototype.insert = function (adminId, callback) {
+VolunteerGroup.prototype.insert = function (user, callback) {
     console.log("VolunteerGroup::insert");
+
+    if (AJAXServices.useFirebase) {
+        return this.insertWithFirebase(user, callback);
+    }
 
     var LoadedGroupWithData = function (response) {
         console.log("VolunteerGroup::LoadedGroupWithData");
@@ -161,7 +193,7 @@ VolunteerGroup.prototype.insert = function (adminId, callback) {
             var loadedGroup = VolunteerGroup.castObject(response.d.volunteerGroup);
             console.log("Calling callback function now:");
 
-            LoginStore.user.groups.push(updatedGroup);
+            user.groups.push(updatedGroup);
             callback(loadedGroup, new ServerResponse());
         } else {
             console.log("Volunteer::LoadVolunteerWithData: Error occurred");
@@ -176,13 +208,13 @@ VolunteerGroup.prototype.insert = function (adminId, callback) {
         callback(null, new ServerResponse(errorString));
     };
 
-    var ajax = new AjaxServices(LoadedGroupWithData,
+    var ajax = new AJAXServices(LoadedGroupWithData,
                                 FailedCallback);
     ajax.CallJSONService(
         "../../WebServices/VolunteerGroupServices.asmx",
         "insert",
         {
-            adminId: adminId,
+            adminId: user.id,
             name: this.name,
             shelterName: this.shelter,
             shelterAddress: this.address,
@@ -200,21 +232,27 @@ VolunteerGroup.prototype.insert = function (adminId, callback) {
 VolunteerGroup.prototype.update = function (callback) {
     console.log("VolunteerGroup::update");
 
+    if (AJAXServices.useFirebase) {
+        var ref = new Firebase(AJAXServices.firebaseUrl + "/groups/" + this.id);
+        ref.once("value", function (data) {
+            console.log("Updating group data");
+            if (data.name != this.name) {
+                AJAXServices.SetFirebaseData("groupsByName/" + data.name, null);
+                AJAXServices.SetFirebaseData("groupsByName/" + this.name, this);
+            }
+            AJAXServices.UpdateFirebaseData("groups/" + this.id, this);
+        });
+        return;
+    }
+
+
     var UpdatedGroup = function (response) {
         console.log("VolunteerGroup::UpdatedGroup");
         if (response.d.result) {
             var updatedGroup = VolunteerGroup.castObject(response.d.volunteerGroup);
             console.log("Calling callback function now:");
 
-            // Totally NOT how stores are supposed to be used, but for the time being...
-            var groups = LoginStore.user.groups;
-            for (var i = 0; i < groups.length; i++) {
-                if (groups[i].id == updatedGroup.id) {
-                    groups[i] = updatedGroup;
-                }
-            }
-
-            callback(updatedGroup, new ServerResponse());
+            //callback(updatedGroup, new ServerResponse());
         } else {
             console.log("Volunteer::LoadVolunteerWithData: Error occurred");
             callback(null, new ServerResponse(response.d));
@@ -228,7 +266,7 @@ VolunteerGroup.prototype.update = function (callback) {
         callback(null, new ServerResponse(errorString));
     };
 
-    var ajax = new AjaxServices(UpdatedGroup,
+    var ajax = new AJAXServices(UpdatedGroup,
                                 FailedCallback);
     ajax.CallJSONService(
         "../../WebServices/VolunteerGroupServices.asmx",

@@ -5,6 +5,12 @@ var LoginService = function () {}
 
 LoginService.useFirebase = true;
 
+LoginService.logout = function () {
+    var ref = new Firebase("https://shining-torch-1432.firebaseio.com");
+    ref.unauth();
+    LoginActions.userLoggedOut();
+}
+
 LoginService.loginWithFirebaseFacebook = function() {
     var ref = new Firebase("https://shining-torch-1432.firebaseio.com");
     ref.authWithOAuthPopup("facebook", function (error, authData) {
@@ -15,7 +21,7 @@ LoginService.loginWithFirebaseFacebook = function() {
             console.log("Authenticated successfully with payload:", authData);
 
             Volunteer.LoadVolunteer(
-                authData.facebook.id, authData.facebook.name, null, LoginActions.userLoggedIn);
+                authData.facebook.id, authData.facebook.displayName, null, LoginActions.userLoggedIn);
         }
     });
 };

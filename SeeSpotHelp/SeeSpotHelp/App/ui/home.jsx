@@ -6,6 +6,8 @@ var AnimalHomePage = require("./animalHomePage");
 var AddNewShelter = require("./addnewshelter");
 var AddAdoptablePage = require("./addadoptablepage");
 var ProfilePage = require("./profilepage");
+var LoginPage = require("./loginpage");
+var PrivateBetaPage = require("./privatebetapage");
 var MyNavBar = require("./navbar");
 
 var LoginService = require("../core/loginservice");
@@ -84,8 +86,12 @@ var Home = React.createClass({
 
     onChange: function () {
         console.log("Home:onChange");
-        if (LoginStore.user) {
+        if (LoginStore.user && LoginStore.user.inBeta) {
             this.loadPageForVolunteer(LoginStore.user);
+        } else if (LoginStore.user && !LoginStore.user.inBeta) {
+            this.context.router.push("/privateBetaPage");
+        } else {
+            this.context.router.push("/loginPage");
         }
     },
 
@@ -99,7 +105,7 @@ var Home = React.createClass({
         // server unless the volunteer is an actual group member.  Will have to work
         // this use case out more.
         if (!this.state.defaultGroup && volunteer) {
-            this.setState({ "defaultGroup": volunteer.getDefaultVolunteerGroup() });
+            //this.setState({ "defaultGroup": volunteer.getDefaultVolunteerGroup() });
         }
 
         // If the user is signed in and belongs to a volunteer group, show them that
@@ -130,6 +136,8 @@ var routes = (
     <Route path="addNewShelter" component={AddNewShelter} />
     <Route path="addAdoptablepage" component={AddAdoptablePage} />
     <Route path="profilePage" component={ProfilePage} />
+    <Route path="privateBetaPage" component={PrivateBetaPage} />
+    <Route path="loginPage" component={LoginPage} />
   </Router>
 );
 

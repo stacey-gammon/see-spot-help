@@ -20,6 +20,14 @@ var LoginActions = {
         });
     },
 
+    loginStatusChanged: function (response) {
+        console.log("LoginActions:loginStatusChanged: ");
+        console.log(response);
+        if (response.state == "unknown") {
+            userLoggedOut();
+        }
+    },
+
     userLoggedOut: function () {
         console.log("LoginActions:userLoggedOut");
         Dispatcher.dispatch({
