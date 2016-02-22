@@ -2,21 +2,24 @@
 // managed by facebook login and authentication.
 
 var VolunteerGroup = require('./volunteergroup');
-var AjaxServices = require('./AJAXServices');
-var volunteerCallback;
+var AJAXServices = require('./AJAXServices');
+var Firebase = require("firebase");
 
 var Volunteer = function(name, email, id) {
     this.name = name;
     this.email = email;
+    this.inBeta = false;
 
     // The id is the user id given by facebook.
     this.id = id;
+    this.defaultGroupId = null;
     this.groups = [];
+    this.groupPermissions = {};
 };
 
 Volunteer.prototype.isMemberOf = function (groupId) {
-    for (var i = 0; i < this.groups.length; i++) {
-        if (this.groups[i].id == groupId) return true;
+    for (var i = 0; i < this.groupPermissions.length; i++) {
+        if (this.groupPermissions[i].groupId == groupId) return true;
     }
     return false;
 }
@@ -32,11 +35,39 @@ Volunteer.castObject = function (obj) {
     return volunteer;
 };
 
+Volunteer.LoadVolunteerWithFirebase = function (id, name, email, callback) {
+    console.log("Volunteer::LoadVolunteerWithFirebase");
+
+    var onSuccess = function (response) {
+        console.log("Loaded from Firebase successfully with response ");
+        console.log(response);
+        if (response) {
+            volunteer = Volunteer.castObject(response);
+        } else {
+            volunteer = new Volunteer(name, email, id);
+            new AJAXServices().SetFirebaseData("users/" + id, volunteer);
+        }
+        callback(volunteer);
+    };
+    var onFailure = function (response) {
+        console.log("failed");
+        callback(null, new ServerResponse("err"));
+    };
+
+    var dataServices = new AJAXServices(onSuccess, onFailure);
+    dataServices.GetFirebaseData("users/" + id);
+}
+
 // Using this.id, attempt to load the volunteer from the
 // database.  If no such volunteer exists, AddNewVolunteer
 // will be called with some basic defaults supplied by
 // facebook.
-Volunteer.LoadVolunteer = function (anID, name, email, callback) {
+Volunteer.LoadVolunteer = function (id, name, email, callback) {
+    if (AJAXServices.useFirebase) {
+        Volunteer.LoadVolunteerWithFirebase(id, name, email, callback);
+        return;
+    }
+
     console.log("Volunteer::LoadVolunteer");
     if (jQuery.isEmptyObject(name)) { name = ""; }
     if (jQuery.isEmptyObject(email)) { email = ""; }
@@ -55,7 +86,6 @@ Volunteer.LoadVolunteer = function (anID, name, email, callback) {
             console.log("Volunteer::LoadVolunteerWithData: Error occurred");
             ShowErrorMessage(response.d);
         }
-        //hideThrobber();
     };
 
     //Invoked when the server has an error (just an example)
@@ -64,20 +94,17 @@ Volunteer.LoadVolunteer = function (anID, name, email, callback) {
         var errorString = '';
         errorString += 'Message:==>' + error.responseText + '\n\n';
 
-        // just in case...
-        //hideThrobber();
-
         // TODO: Change so callbacks look something like this:
         // outer.callback(null, new ServerResponse(Failed));
         alert(errorString);
     };
 
-    var ajax = new AjaxServices(LoadedVolunteerWithData,
+    var ajax = new AJAXServices(LoadedVolunteerWithData,
                                 FailedCallback);
     ajax.CallJSONService(
         "../../WebServices/volunteerServices.asmx",
         "getVolunteer",
-        { anID: anID, name: name, email: email });
+        { anID: id, name: name, email: email });
 };
 
 function ShowErrorMessage(serverResponse) {
@@ -89,15 +116,9 @@ function ShowErrorMessage(serverResponse) {
             msg += serverResponse.messages[i] + '\n\r';
         }
     }
-    //hideThrobber();
 
     alert(msg);
 }
-
-Volunteer.prototype.AddNewVolunteer = function() {
-    // TODO: Implement
-
-};
 
 // Returns the default volunteer group this volunteer belongs to,
 // if any. If the volunteer does not exist yet in the server db, they
