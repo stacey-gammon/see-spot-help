@@ -45,7 +45,7 @@ Volunteer.LoadVolunteerWithFirebase = function (id, name, email, callback) {
             volunteer = Volunteer.castObject(response);
         } else {
             volunteer = new Volunteer(name, email, id);
-            new AJAXServices().SetFirebaseData("users/" + id, volunteer);
+            AJAXServices.SetFirebaseData("users/" + id, volunteer);
         }
         callback(volunteer);
     };

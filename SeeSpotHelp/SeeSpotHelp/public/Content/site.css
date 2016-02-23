@@ -18,6 +18,16 @@ p {
     letter-spacing: 1px;
 }
 
+.privateBetaPage {
+    padding: 20px;
+    margin: 20px;
+}
+
+.loginPage {
+    padding: 20px;
+    margin: 20px;
+}
+
 .takePhotoButton {
     display: inline;
 }

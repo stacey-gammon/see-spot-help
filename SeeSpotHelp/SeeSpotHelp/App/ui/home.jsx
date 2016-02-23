@@ -113,18 +113,28 @@ var Home = React.createClass({
         // instructions for how to search or add for a new volunteer group.
         if (volunteer && volunteer.getDefaultVolunteerGroup()) {
             this.context.router.push("/shelterHomePage");
-        } else {
+        } else if (volunteer && volunteer.inBeta) {
             this.context.router.push("/profilePage");
+        } else if (volunteer && !volunteer.inBeta) {
+            this.context.router.push("/privateBetaPage");
         }
     },
 
     render: function () {
-        return (
-          <div>
-            <MyNavBar/>
-            {this.props.children}
-          </div>
-      );
+        if (LoginStore.user && LoginStore.user.inBeta) {
+            return (
+              <div>
+                <MyNavBar/>
+                {this.props.children}
+              </div>
+          );
+        } else {
+            return (
+                <div>
+                    {this.props.children}
+                </div>
+                );
+        }
     }
 });
 

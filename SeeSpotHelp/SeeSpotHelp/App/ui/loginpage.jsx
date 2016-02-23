@@ -13,7 +13,7 @@ var LoginPage = React.createClass({
 
     render: function () {
         console.log("LoginPage::render");
-        return (<div>
+        return (<div className="loginPage">
                     <h1>To get started, log in with your facebook account.</h1>
                     <FacebookLogin/>
                 </div>

@@ -33,47 +33,25 @@ class PermissionsStore extends EventEmitter {
         this.removeListener(CHANGE_EVENT, callback);
     }
 
-    getMemberGroups () {
-        //var memberGroups = [];
-        //return this.groups[groupId];
+    getMemberGroupIds () {
+        var memberGroups = [];
+        for (var groupId in groupPermissions) {
+            if (groupPermisions[groupId] != VolunteerGroup.PermissionsEnum.NONMEMBER) {
+                memberGroupIds.push(groupId);
+            }
+        }
+        return memberGroupIds;
     }
 
     emitChange() {
         this.emit(CHANGE_EVENT);
     }
 
-    loadGroupsForUser(user) {
-        var outer = this;
-        var onSuccess = function (groupPermissions) {
-            console.log("Loaded users group permissions: ");
-            console.log(groupPermissions);
-            var groupLoaded = function (group) {
-                console.log("Loading group");
-                console.log(group);
-                outer.groups[group.id] = group;
-                outer.emitChange();
-            };
-
-            for (var prop in groupPermissions) {
-                var dataServices = new AJAXServices(groupLoaded, null);
-                console.log("prop = " + prop);
-                dataServices.GetFirebaseData("groups/" + prop);
-            }
-        };
-
-        var dataServices = new AJAXServices(onSuccess, null);
-        dataServices.GetFirebaseData("groupPermissions/" + user.id);
-    }
-
     handleAction(action) {
         console.log("GroupStore:handleAction: " + action.type);
         switch (action.type) {
-            case ActionConstants.NEW_GROUP_ADDED:
-                this.groups[action.group.id] = action.group;
-                this.emitChange();
-                break;
             case ActionConstants.LOGIN_USER_SUCCESS:
-                this.loadGroupsForUser(action.user);
+                // this.loadGroupsForUser(action.user);
             default:
                 break;
         };

@@ -8,7 +8,7 @@ module.exports = {
         './ui/home.jsx'
         ],
     output: {
-        path: path.join(__dirname, 'Built'),
+        path: path.join(__dirname, 'public/Built'),
         filename: '[name].bundle.js'
     },
     plugins: [

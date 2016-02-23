@@ -35,7 +35,7 @@ var MyNavBar = React.createClass({
         console.log("MyNavBar::render , user = ");
         console.log(this.state.user);
         return (
-            <Navbar className="navbar navbar-light bg-faded">
+            <Navbar ref="mynavbar" className="navbar navbar-light bg-faded">
                 <Nav className="nav navbar-nav navbar-custom">
                     <LinkContainer to={{ pathname: "shelterHomePage", state: { user: this.state.user } }}>
                         <NavItem>
