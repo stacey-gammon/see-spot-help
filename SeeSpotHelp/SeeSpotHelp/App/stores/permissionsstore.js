@@ -33,7 +33,12 @@ class PermissionsStore extends EventEmitter {
         this.removeListener(CHANGE_EVENT, callback);
     }
 
-    getMemberGroupIds () {
+    loadGroupPermissionsForUser() {
+        console.log("loadGroupPermissionsForUser");
+
+    }
+
+    getMemberGroupIds() {
         var memberGroups = [];
         for (var groupId in groupPermissions) {
             if (groupPermisions[groupId] != VolunteerGroup.PermissionsEnum.NONMEMBER) {
@@ -51,7 +56,7 @@ class PermissionsStore extends EventEmitter {
         console.log("GroupStore:handleAction: " + action.type);
         switch (action.type) {
             case ActionConstants.LOGIN_USER_SUCCESS:
-                // this.loadGroupsForUser(action.user);
+              //  this.loadGroupPermissionsForUser(action.user);
             default:
                 break;
         };

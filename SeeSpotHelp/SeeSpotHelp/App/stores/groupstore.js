@@ -20,6 +20,11 @@ class GroupStore extends EventEmitter {
             outer.handleAction(action);
         });
         this.groups = {};
+        this.loadedUserGroups = false;
+    }
+
+    loadedUserGroups() {
+        return this.loadedUserGroups;
     }
 
     addChangeListener(callback) {
@@ -34,6 +39,8 @@ class GroupStore extends EventEmitter {
     }
 
     getGroupById(groupId) {
+        console.log("GetGroupById, groups =");
+        console.log(this.groups);
         return this.groups[groupId];
     }
 
@@ -41,22 +48,44 @@ class GroupStore extends EventEmitter {
         this.emit(CHANGE_EVENT);
     }
 
+    getUsersMemberGroups(user) {
+        var usersGroups = []
+        for (var groupId in this.groups) {
+            console.log("Group: ");
+            console.log(this.groups[groupId]);
+            if (this.groups[groupId].userPermissionsMap[user.id] !=
+                    VolunteerGroup.PermissionsEnum.NONMEMBER) {
+                usersGroups.push(this.groups[groupId]);
+            }
+        }
+        return usersGroups;
+    }
+
     loadGroupsForUser(user) {
         var outer = this;
         var onSuccess = function (groupPermissions) {
             console.log("Loaded users group permissions: ");
             console.log(groupPermissions);
+
             var groupLoaded = function (group) {
                 console.log("Loading group");
                 console.log(group);
                 outer.groups[group.id] = group;
                 outer.emitChange();
+                outer.loadedUserGroups = true;
             };
 
+            var userInGroups = false;
             for (var prop in groupPermissions) {
                 var dataServices = new AJAXServices(groupLoaded, null);
                 console.log("prop = " + prop);
                 dataServices.GetFirebaseData("groups/" + prop);
+                userInGroups = false;
+            }
+
+            if (!userInGroups) {
+                outer.loadedUserGroups = true;
+                outer.emitChange();
             }
         };
 

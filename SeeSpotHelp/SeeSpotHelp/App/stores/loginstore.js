@@ -15,28 +15,16 @@ class LoginStore extends EventEmitter {
         super();
         var outer = this;
         this.dispatchToken = Dispatcher.register(function (action) {
-            console.log("LoginStore:Dispatcher:register");
             outer.handleAction(action);
         });
-        try {
-            this.user = JSON.parse(localStorage.getItem("user"));
-            if (this.user) {
-                this.user = Volunteer.castObject(this.user);
-            }
-        } catch (error) {
-            console.log("Error: " + error);
-            this.user = null;
-        }
     }
 
     addChangeListener(callback) {
-        console.log("LoginStore:addChangeListener");
         this.on(CHANGE_EVENT, callback);
     }
 
     // @param {function} callback
     removeChangeListener(callback) {
-        console.log("LoginStore:removeChangeListener");
         this.removeListener(CHANGE_EVENT, callback);
     }
 
@@ -49,7 +37,6 @@ class LoginStore extends EventEmitter {
     }
 
     handleAction(action) {
-        console.log("LoginStore:handleAction: " + action.type);
         switch (action.type) {
             case ActionConstants.LOGIN_USER_SUCCESS:
                 this.user = action.user;

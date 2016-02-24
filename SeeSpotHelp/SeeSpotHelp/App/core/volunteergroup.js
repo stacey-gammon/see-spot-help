@@ -161,7 +161,7 @@ VolunteerGroup.prototype.insertWithFirebase = function (user, callback) {
         } else {
             outer.id = null;
             outer.id = AJAXServices.PushFirebaseData("groups", outer).id;
-            console.log("Pushing new group");
+            AJAXServices.UpdateFirebaseData("groups/" + outer.id, { id: outer.id });
             AJAXServices.UpdateFirebaseData(
                 "groupPermissions/" + user.id + "/" + outer.id,
                 { permission : VolunteerGroup.PermissionsEnum.ADMIN });

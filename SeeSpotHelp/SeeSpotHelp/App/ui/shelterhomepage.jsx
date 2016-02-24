@@ -15,12 +15,22 @@ var AJAXServices = require("../core/AJAXServices");
 
 var ShelterHomePage = React.createClass({
     getInitialState: function () {
+        console.log("ShelterHomePage:getInitialState");
         var query = this.props.location ? this.props.location.query : null;
         var group = null;
         if (query && query.groupId) {
-            group = VolunteerGroup.getFakeGroups()[query.groupId];
+            // TODO: need to load the group on search page.
+            group = GroupStore.getGroupById(query.groupId);
         } else if (LoginStore.user) {
-            group = GroupStore.getGroupById(LoginStore.user.defaultGroupId);
+            if (LoginStore.user.defaultGroupId) {
+                console.log("Default Group id: " + LoginStore.user.defaultGroupId);
+                group = GroupStore.getGroupById(LoginStore.user.defaultGroupId);
+                console.log(group);
+            } else {
+                console.log("No default group selected, so just grabbing the first group");
+                var memberGroups = GroupStore.getUsersMemberGroups(LoginStore.user);
+                group = memberGroups.length ? memberGroups[0] : null;
+            }
         }
         return {
             user: LoginStore.user,
@@ -50,30 +60,14 @@ var ShelterHomePage = React.createClass({
     },
 
     render: function () {
-        console.log("shelterhomepage::render");
-        var query = this.props.location ? this.props.location.query : null;
-
-        var defaultGroup = null;
-        // When the page is loaded up via nav bar, user is stored in this.state.user.
-        // When the page is dynamically loaded via home when user logs in, the user
-        // is passed in via props.location.state.
-        var user = this.state.user;
-        if (query && query.groupId) {
-            defaultGroup = VolunteerGroup.getFakeGroups()[query.groupId];
-            sessionStorage.setItem("defaultGroup", JSON.stringify(defaultGroup));
-        }
-
-        if (!defaultGroup && user) {
-            defaultGroup = GroupStore.getGroupById(user.defaultGroupId);
-        }
-        if (defaultGroup) {
-            var animals = FakeData.getFakeAnimalDataForGroup(defaultGroup.id);
+        if (this.state.group) {
+            var animals = FakeData.getFakeAnimalDataForGroup(this.state.group.id);
             return (
                 <div className="shelterHomePage">
-                    <ShelterInfoBox group={defaultGroup} user={user}/>
-                    <ShelterActionsBox user={user} group={defaultGroup}/>
+                    <ShelterInfoBox group={this.state.group} user={this.state.user}/>
+                    <ShelterActionsBox user={this.state.user} group={this.state.group}/>
                     <hr/>
-                    <AnimalList animals={animals} user={user}/>
+                    <AnimalList animals={animals} user={this.state.user}/>
                 </div>
             );
         } else if (LoginStore.user) {

@@ -10,6 +10,7 @@ var ShelterInfoBox = require("./shelterinfobox");
 var AddNewShelter = require("./addnewshelter");
 var ShelterSearchPage = require("./sheltersearchpage");
 var LoginStore = require("../stores/loginstore");
+var GroupStore = require("../stores/groupstore");
 var LoginActions = require("../actions/loginactions");
 
 var ProfilePage = React.createClass({
@@ -17,28 +18,33 @@ var ProfilePage = React.createClass({
         router: React.PropTypes.object.isRequired
     },
 
-    getInitialState: function() {
+    getInitialState: function () {
+        console.log("ProfilePage:getInitialState");
         var user = LoginStore.user;
+        var groups = GroupStore.getUsersMemberGroups(user);
+        console.log("groups = ");
+        console.log(groups);
         return {
             user: user,
-            groups: user ? user.groups : []
+            groups: groups
         }
     },
 
     componentDidMount: function () {
         LoginStore.addChangeListener(this.onChange);
-        FB.Event.subscribe("auth.logout", LoginActions.userLoggedOut);
-        FB.XFBML.parse();
+        GroupStore.addChangeListener(this.onChange);
     },
 
     componentWillUnmount: function () {
         LoginStore.removeChangeListener(this.onChange);
+        GroupStore.removeChangeListener(this.onChange);
     },
 
     onChange: function () {
         this.setState(
             {
-                user: LoginStore.user
+                user: LoginStore.user,
+                groups: GroupStore.getUsersMemberGroups(LoginStore.user)
             });
     },
 
@@ -51,7 +57,7 @@ var ProfilePage = React.createClass({
 
     getGroups: function() {
         console.log("ProfilePage:getGroups");
-        if (this.state.groups.length == 0) {
+        if (this.state.groups.length == 0 && GroupStore.loadedUserGroups) {
             return (
                 <div>
                     <h1>You are not part of any volunteer groups.  To get started&nbsp;
@@ -61,7 +67,7 @@ var ProfilePage = React.createClass({
                     </h1>
                 </div>
             );
-        } else {
+        } else if (this.state.groups.length) {
             var groups = this.state.groups.map(this.getGroupElement);
             return (
                 <div>
@@ -69,6 +75,8 @@ var ProfilePage = React.createClass({
                     {groups}
                 </div>
             );
+        } else {
+            return <div></div>
         }
     },
 
@@ -81,6 +89,7 @@ var ProfilePage = React.createClass({
                     <h2>Email: {this.state.user.email}</h2>
                     <hr/>
                     {this.getGroups()}
+                    <br/><br/>
                     <FacebookLogin />
                 </div>
             );

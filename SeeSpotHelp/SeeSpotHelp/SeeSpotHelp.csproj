@@ -209,8 +209,6 @@
     <Content Include="App\ui\sheltersearchpage.jsx" />
     <Content Include="App\ui\sheltersearchresults.jsx" />
     <Content Include="App\ui\takephotobutton.jsx" />
-    <Content Include="App\ui\testA.jsx" />
-    <Content Include="App\ui\testB.jsx" />
     <Content Include="BHGtest.aspx" />
     <Content Include="public\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

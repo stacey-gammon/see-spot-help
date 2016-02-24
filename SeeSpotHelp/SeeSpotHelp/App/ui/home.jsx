@@ -67,7 +67,23 @@ var Home = React.createClass({
     componentDidMount: function() {
         console.log("Home::componentDidMount");
         LoginStore.addChangeListener(this.onChange);
-        this.loadPageForUser();
+
+        try {
+            var user = JSON.parse(localStorage.getItem("user"));
+            if (user) {
+                var onSuccess = function (user) {
+                    console.log("Grabbed user from server with user: ");
+                    console.log(user);
+                    LoginActions.userLoggedIn(user);
+                };
+                Volunteer.LoadVolunteer(user.id, user.name, user.email, onSuccess);
+            } else {
+                this.loadPageForUser();
+            }
+        } catch (error) {
+            console.log("Error: " + error);
+            this.loadPageForUser();
+        }
     },
 
     componentWillUnmount: function () {
