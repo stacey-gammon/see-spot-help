@@ -1,6 +1,7 @@
 ﻿"use strict"
 
 var React = require("react");
+var Link = require("react-router").Link;
 var AnimalList = require("./animallist");
 var ShelterSearchBox = require("./sheltersearchbox");
 var ShelterInfoBox = require("./shelterinfobox");
@@ -75,11 +76,24 @@ var ShelterHomePage = React.createClass({
                     <AnimalList animals={animals} user={user}/>
                 </div>
             );
-        } else {
-            console.log("No user logged in...");
+        } else if (LoginStore.user) {
             return (
-                <ShelterSearchBox user={user}/>
+                <div>
+                    <h1>
+                        You are not part of any volunteer groups.  To get started&nbsp;
+                    <Link to="shelterSearchPage">search</Link>
+                        &nbsp;for a group to join, or&nbsp;
+                    <Link to="addNewShelter">add</Link> a new one.
+                    </h1>
+                </div>
             );
+        } else {
+            <div>
+                <h1>To get started&nbsp;
+            <Link to="shelterSearchPage">search</Link>
+                &nbsp;for a group, or <Link to="loginPage">log in</Link> to join or add one.
+            </h1>
+        </div>
         }
     }
 });
