@@ -675,6 +675,7 @@
     <Content Include="public\Content\kendo\2016.1.112\kendo.silver.mobile.min.css.map" />
     <Content Include="public\Content\kendo\2016.1.112\kendo.uniform.min.css.map" />
     <Content Include="public\Content\kendo\2016.1.112\kendo.uniform.mobile.min.css.map" />
+    <Content Include="public\manifest.json" />
     <None Include="scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />

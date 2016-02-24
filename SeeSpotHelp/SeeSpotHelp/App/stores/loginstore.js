@@ -3,6 +3,7 @@
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
+var Volunteer = require('../core/volunteer');
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");
@@ -17,7 +18,15 @@ class LoginStore extends EventEmitter {
             console.log("LoginStore:Dispatcher:register");
             outer.handleAction(action);
         });
-        this.user = JSON.parse(sessionStorage.getItem("user"));
+        try {
+            this.user = JSON.parse(localStorage.getItem("user"));
+            if (this.user) {
+                this.user = Volunteer.castObject(this.user);
+            }
+        } catch (error) {
+            console.log("Error: " + error);
+            this.user = null;
+        }
     }
 
     addChangeListener(callback) {
@@ -44,6 +53,7 @@ class LoginStore extends EventEmitter {
         switch (action.type) {
             case ActionConstants.LOGIN_USER_SUCCESS:
                 this.user = action.user;
+                localStorage.setItem("user", JSON.stringify(this.user));
                 this.error = null;
                 this.emitChange();
                 break;
@@ -57,6 +67,7 @@ class LoginStore extends EventEmitter {
                 console.log("LoginStore:handleAction:LOGOUT_USER");
                 this.user = null;
                 this.error = null;
+                localStorage.setItem("user", null);
                 this.emitChange();
                 break;
 

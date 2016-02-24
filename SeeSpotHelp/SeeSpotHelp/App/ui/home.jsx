@@ -41,7 +41,6 @@ var Home = React.createClass({
 
     facebookInitialized: function () {
         this.subscribeToLoginEvents();
-        LoginService.loginWithFacebook();
     },
 
     componentWillMount: function () {
@@ -67,16 +66,8 @@ var Home = React.createClass({
 
     componentDidMount: function() {
         console.log("Home::componentDidMount");
-
-        var defaultGroup = null;
-        if (sessionStorage.getItem("defaultGroup")) {
-            defaultGroup = JSON.parse(sessionStorage.getItem("defaultGroup"));
-        }
-
-        this.setState({
-            defaultGroup: defaultGroup
-        });
         LoginStore.addChangeListener(this.onChange);
+        this.loadPageForUser();
     },
 
     componentWillUnmount: function () {
@@ -86,37 +77,23 @@ var Home = React.createClass({
 
     onChange: function () {
         console.log("Home:onChange");
-        if (LoginStore.user && LoginStore.user.inBeta) {
-            this.loadPageForVolunteer(LoginStore.user);
-        } else if (LoginStore.user && !LoginStore.user.inBeta) {
-            this.context.router.push("/privateBetaPage");
-        } else {
-            this.context.router.push("/loginPage");
-        }
+        this.loadPageForUser();
     },
 
-    loadPageForVolunteer: function (volunteer) {
+    loadPageForUser: function () {
         console.log("Home::LoadPageForVolunteer");
-
-        // If there isn't yet a default group choosen for this session, seed it from
-        // server side data, whatever group the volunteer is a part of.  Searching and
-        // selecting another group will overrie the session default, so the user
-        // continues to see their last selected group, but it will not be stored on the
-        // server unless the volunteer is an actual group member.  Will have to work
-        // this use case out more.
-        if (!this.state.defaultGroup && volunteer) {
-            //this.setState({ "defaultGroup": volunteer.getDefaultVolunteerGroup() });
-        }
 
         // If the user is signed in and belongs to a volunteer group, show them that
         // page first.  If they don't, show them their profile page where there will be
         // instructions for how to search or add for a new volunteer group.
-        if (volunteer && volunteer.getDefaultVolunteerGroup()) {
+        if (LoginStore.user && LoginStore.user.getDefaultVolunteerGroup()) {
             this.context.router.push("/shelterHomePage");
-        } else if (volunteer && volunteer.inBeta) {
+        } else if (LoginStore.user && LoginStore.user.inBeta) {
             this.context.router.push("/profilePage");
-        } else if (volunteer && !volunteer.inBeta) {
+        } else if (LoginStore.user && !LoginStore.user.inBeta) {
             this.context.router.push("/privateBetaPage");
+        } else {
+            this.context.router.push("/loginPage");
         }
     },
 
