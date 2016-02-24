@@ -185,7 +185,7 @@
     <Content Include="App\core\volunteergroup.js" />
     <Content Include="App\stores\groupstore.js" />
     <Content Include="App\stores\loginstore.js" />
-    <Content Include="App\stores\permissionsstore.js" />
+    <Content Include="App\stores\animalstore.js" />
     <Content Include="App\tests\addnewshelterpage-test.jsx" />
     <Content Include="App\tests\animalactionsbox-test.jsx" />
     <Content Include="App\tests\shelteractionsbox-test.jsx" />

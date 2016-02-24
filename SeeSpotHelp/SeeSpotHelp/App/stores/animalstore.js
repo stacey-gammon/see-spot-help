@@ -11,7 +11,7 @@ var assign = require("object-assign");
 
 var CHANGE_EVENT = "change";
 
-class PermissionsStore extends EventEmitter {
+class AnimalStore extends EventEmitter {
     constructor() {
         super();
         var outer = this;
@@ -19,33 +19,16 @@ class PermissionsStore extends EventEmitter {
             console.log("GroupStore:Dispatcher:register");
             outer.handleAction(action);
         });
-        this.groupPermissions = {};
+        this.animals = {};
     }
 
     addChangeListener(callback) {
-        console.log("LoginStore:addChangeListener");
         this.on(CHANGE_EVENT, callback);
     }
 
     // @param {function} callback
     removeChangeListener(callback) {
-        console.log("LoginStore:removeChangeListener");
         this.removeListener(CHANGE_EVENT, callback);
-    }
-
-    loadGroupPermissionsForUser() {
-        console.log("loadGroupPermissionsForUser");
-
-    }
-
-    getMemberGroupIds() {
-        var memberGroups = [];
-        for (var groupId in groupPermissions) {
-            if (groupPermisions[groupId] != VolunteerGroup.PermissionsEnum.NONMEMBER) {
-                memberGroupIds.push(groupId);
-            }
-        }
-        return memberGroupIds;
     }
 
     emitChange() {
@@ -53,7 +36,6 @@ class PermissionsStore extends EventEmitter {
     }
 
     handleAction(action) {
-        console.log("GroupStore:handleAction: " + action.type);
         switch (action.type) {
             case ActionConstants.LOGIN_USER_SUCCESS:
               //  this.loadGroupPermissionsForUser(action.user);
@@ -63,4 +45,4 @@ class PermissionsStore extends EventEmitter {
     }
 };
 
-module.exports = new PermissionsStore();
+module.exports = new AnimalStore();

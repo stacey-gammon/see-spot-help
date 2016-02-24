@@ -1,19 +1,18 @@
 ﻿var LoginStore = require("../stores/loginstore");
-var AjaxServices = require('./AJAXServices');
+var AJAXServices = require('./AJAXServices');
 var ServerResponse = require('./serverresponse');
 
 // An animal that is currently being managed by a volunteer group.
 
-var Animal = function(name, type, breed, age, volunteerGroup, status, photo, id, groupId) {
+var Animal = function(name, type, breed, age, status, photo, id, groupId) {
     this.name = name;
     this.type = type;
     this.breed = breed;
     this.age = age;
-    this.volunteerGroup = volunteerGroup;
     this.status = status ? status : Animal.StatusEnum.ADOPTABLE;
     this.photo = photo;
     this.id = id;
-    this.groupId = volunteerGroup ? volunteerGroup.id : "";
+    this.groupId = groupId;
 }
 
 Animal.StatusEnum = Object.freeze(
@@ -42,6 +41,20 @@ Animal.prototype.copyFieldsFrom = function (other) {
     }
 }
 
+Animal.prototype.insertWithFirebase = function () {
+    console.log("Animal.insertWithFirebase");
+    var firebasePath = "groups/" + this.groupId + "/animals";
+
+    // Get rid of undefineds to make firebase happy.
+    this.id = null;
+    if (!this.photo) this.photo = null;
+
+    this.id = AJAXServices.PushFirebaseData(firebasePath, this).id;
+    console.log("resetting id on the animal, path = " + firebasePath + "/" + this.id);
+    AJAXServices.UpdateFirebaseData(firebasePath + "/" + this.id, { id: this.id });
+};
+
+
 // Attempts to insert the current instance into the database as
 // a animal
 // @param callback {Function(Animal, ServerResponse) }
@@ -51,6 +64,11 @@ Animal.prototype.copyFieldsFrom = function (other) {
 Animal.prototype.insert = function (callback) {
     console.log("Animal::insert animal:");
     console.log(this);
+
+    if (AJAXServices.useFirebase) {
+        this.insertWithFirebase();
+        return;
+    }
 
     var SuccessCallback = function (response) {
         console.log("Animal::SuccessCallback");
@@ -69,7 +87,7 @@ Animal.prototype.insert = function (callback) {
         callback(null, new ServerResponse(errorString));
     };
 
-    var ajax = new AjaxServices(SuccessCallback, FailureCallback);
+    var ajax = new AJAXServices(SuccessCallback, FailureCallback);
     ajax.CallJSONService(
         "../../WebServices/AnimalServices.asmx",
         "insert",
@@ -108,7 +126,7 @@ Animal.prototype.update = function (callback) {
         callback(null, new ServerResponse(errorString));
     };
 
-    var ajax = new AjaxServices(SuccessCallback, FailureCallback);
+    var ajax = new AJAXServices(SuccessCallback, FailureCallback);
     ajax.CallJSONService(
         "../../WebServices/AnimalServices.asmx",
         "update",

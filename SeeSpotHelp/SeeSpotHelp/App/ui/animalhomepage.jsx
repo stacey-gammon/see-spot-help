@@ -11,10 +11,12 @@ var AnimalHomePage = React.createClass({
     getInitialState: function() {
         var animal = this.props.location &&
                      this.props.location.state &&
-                     this.props.location.state.animal;
+                     this.props.location.state.animal ||
+                     this.props.animal;
         var group = this.props.location &&
                     this.props.location.state &&
-                    this.props.location.state.group;
+                    this.props.location.state.group ||
+                    this.props.group;
         return {
             animal: animal,
             group: group

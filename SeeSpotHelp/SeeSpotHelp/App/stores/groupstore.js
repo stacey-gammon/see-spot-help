@@ -3,6 +3,7 @@
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
+var Animal = require('../core/animal');
 var AJAXServices = require('../core/AJAXServices');
 var Firebase = require("firebase");
 
@@ -28,13 +29,11 @@ class GroupStore extends EventEmitter {
     }
 
     addChangeListener(callback) {
-        console.log("LoginStore:addChangeListener");
         this.on(CHANGE_EVENT, callback);
     }
 
     // @param {function} callback
     removeChangeListener(callback) {
-        console.log("LoginStore:removeChangeListener");
         this.removeListener(CHANGE_EVENT, callback);
     }
 
@@ -70,6 +69,9 @@ class GroupStore extends EventEmitter {
             var groupLoaded = function (group) {
                 console.log("Loading group");
                 console.log(group);
+                for (var animal in group.animals) {
+                    group[animal] = Animal.castObject(group[animal]);
+                }
                 outer.groups[group.id] = group;
                 outer.emitChange();
                 outer.loadedUserGroups = true;
@@ -98,6 +100,10 @@ class GroupStore extends EventEmitter {
         switch (action.type) {
             case ActionConstants.NEW_GROUP_ADDED:
                 this.groups[action.group.id] = action.group;
+                this.emitChange();
+                break;
+            case ActionConstants.NEW_ANIMAL_ADDED:
+                this.groups[action.group.id].animals[action.animal.id] = action.animal;
                 this.emitChange();
                 break;
             case ActionConstants.LOGIN_USER_SUCCESS:

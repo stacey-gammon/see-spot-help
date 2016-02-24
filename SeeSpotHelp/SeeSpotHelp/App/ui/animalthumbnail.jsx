@@ -15,7 +15,7 @@ var AnimalThumbnail = React.createClass({
             {
                 pathname: "animalHomePage",
                 state: {
-                    group: this.props.animal.volunteerGroup,
+                    group: this.props.group,
                     animal: this.props.animal
                 }
             });

@@ -8,6 +8,7 @@ var InputFieldValidation = require("../core/inputfieldvalidation");
 var TakePhotoButton = require("./takephotobutton");
 var LoginStore = require("../stores/loginstore");
 var Utils = require("../core/utils");
+var GroupActions = require("../actions/groupactions");
 
 var AddAdoptablePage = React.createClass({
     getInitialState: function () {
@@ -50,6 +51,9 @@ var AddAdoptablePage = React.createClass({
         };
     },
 
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
     validateFields: function () {
         console.log("AddAdoptablePage::validateFields");
         var errorFound = false;
@@ -93,7 +97,9 @@ var AddAdoptablePage = React.createClass({
                 var animal = new Animal();
                 animal.groupId = this.state.group.id;
                 Utils.CopyInputFieldsIntoObject(this.state.fields, animal);
-                animal.insert(this.insertGroupCallback);
+                animal.insert();
+                GroupActions.newAnimalAdded(this.state.group, this.state.animal);
+                this.context.router.push("/shelterHomePage");
             }
         }
     },

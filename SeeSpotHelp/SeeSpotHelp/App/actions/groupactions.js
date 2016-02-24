@@ -12,6 +12,14 @@ var GroupActions = {
             group: group
         });
     },
+    newAnimalAdded: function (group, animal) {
+        console.log("GroupActions:newAnimalAdded");
+        Dispatcher.dispatch({
+            type: ActionConstants.NEW_ANIMAL_ADDED,
+            group: group,
+            animal: animal
+        });
+    },
 };
 
 module.exports = GroupActions;

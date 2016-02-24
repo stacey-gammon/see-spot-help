@@ -61,13 +61,12 @@ var ShelterHomePage = React.createClass({
 
     render: function () {
         if (this.state.group) {
-            var animals = FakeData.getFakeAnimalDataForGroup(this.state.group.id);
             return (
                 <div className="shelterHomePage">
                     <ShelterInfoBox group={this.state.group} user={this.state.user}/>
                     <ShelterActionsBox user={this.state.user} group={this.state.group}/>
                     <hr/>
-                    <AnimalList animals={animals} user={this.state.user}/>
+                    <AnimalList group={this.state.group} user={this.state.user}/>
                 </div>
             );
         } else if (LoginStore.user) {

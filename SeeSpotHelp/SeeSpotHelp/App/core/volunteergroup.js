@@ -33,6 +33,7 @@ var VolunteerGroup = function(name, shelter, address, city, state, zipCode, id) 
     // Mapping of user id to permission enum, one entry per
     // member in the volunteer group.
     this.userPermissionsMap = {};
+    this.animals = {};
 };
 
 // Casts the given obj as a volunteer group.  Careful -
