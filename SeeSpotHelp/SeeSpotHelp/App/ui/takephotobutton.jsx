@@ -57,9 +57,8 @@ var TakePhotoButton = React.createClass({
         this.refs.addPhotoFileInput.click();
     },
 
-    isMemberOf: function() {
-        return this.state.user &&
-               this.state.user.isMemberOf(this.props.group.id);
+    allowAction: function() {
+        return this.props.group.shouldAllowUserToEdit(this.state.user.id);
     },
 
     render: function () {
@@ -67,7 +66,7 @@ var TakePhotoButton = React.createClass({
         return (
             <div className="takePhotoButton" >
                 <button className="btn btn-info buttonPadding"
-                        disabled={!this.isMemberOf()}
+                        disabled={!this.allowAction()}
                         onClick={this.addPhoto}>
                     <span className="glyphicon glyphicon-camera"></span>
                 </button>

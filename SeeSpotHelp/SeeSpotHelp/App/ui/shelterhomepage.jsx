@@ -81,12 +81,14 @@ var ShelterHomePage = React.createClass({
                 </div>
             );
         } else {
+            return (
             <div>
                 <h1>To get started&nbsp;
-            <Link to="shelterSearchPage">search</Link>
-                &nbsp;for a group, or <Link to="loginPage">log in</Link> to join or add one.
-            </h1>
-        </div>
+                <Link to="shelterSearchPage">search</Link>
+                    &nbsp;for a group, or <Link to="loginPage">log in</Link> to join or add one.
+                </h1>
+            </div>
+        );
         }
     }
 });

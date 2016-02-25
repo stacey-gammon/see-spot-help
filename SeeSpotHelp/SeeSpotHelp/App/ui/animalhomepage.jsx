@@ -31,10 +31,10 @@ var AnimalHomePage = React.createClass({
             return (
                 <div className="container-fluid">
                     <div className="row">
-                        <div className="col-xs-6">
+                        <div className="col-xs-3">
                             <img className="img-rounded img-responsive animalImg" src={animal.photo} />
                         </div>
-                        <div className="col-xs-6">
+                        <div className="col-xs-9">
                             <h1 className="animalInfo">{animal.name}</h1>
                             <h2 className="animalInfo">{animal.age} years old</h2>
                             <h2 className="animalInfo">{animal.breed}</h2>

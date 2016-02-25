@@ -10,7 +10,7 @@ var AnimalList = React.createClass({
         console.log("generateAnimal, animal = ");
         console.log(animal);
         return (
-            <AnimalThumbnail animal={animal} group={this.props.group}/>
+            <AnimalThumbnail animal={animal} user={this.props.user} group={this.props.group }/>
         );
     },
 
@@ -23,7 +23,7 @@ var AnimalList = React.createClass({
             }
         }
         return (
-            <div className="container-fluid">
+            <div className="list-group">
                 {animals}
             </div>
         );

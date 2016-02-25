@@ -37,7 +37,7 @@ class AnimalStore extends EventEmitter {
 
     handleAction(action) {
         switch (action.type) {
-            case ActionConstants.LOGIN_USER_SUCCESS:
+            case ActionConstants.ANIMAL_UPDATED:
               //  this.loadGroupPermissionsForUser(action.user);
             default:
                 break;
