@@ -20,6 +20,14 @@ var GroupActions = {
             animal: animal
         });
     },
+    animalUpdated: function (group, animal) {
+        console.log("GroupActions:animalUpdated");
+        Dispatcher.dispatch({
+            type: ActionConstants.ANIMAL_UPDATED,
+            group: group,
+            animal: animal
+        });
+    },
 };
 
 module.exports = GroupActions;

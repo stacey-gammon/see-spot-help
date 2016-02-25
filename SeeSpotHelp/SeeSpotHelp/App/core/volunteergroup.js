@@ -44,7 +44,7 @@ var VolunteerGroup = function(name, shelter, address, city, state, zipCode, id) 
 // properties.
 VolunteerGroup.castObject = function(obj) {
     var group = new VolunteerGroup();
-    group.copyFieldsFrom(obj);
+    group = Object.assign(group, obj);
     return group;
 };
 
@@ -124,6 +124,12 @@ VolunteerGroup.search = function (searchText) {
         }
     }
     return results;
+};
+
+VolunteerGroup.prototype.shouldAllowUserToEdit = function (userId) {
+    var userPermissions = this.getUserPermissions(userId);
+    return userPermissions == VolunteerGroup.PermissionsEnum.MEMBER ||
+           userPermissions == VolunteerGroup.PermissionsEnum.ADMIN;
 };
 
 VolunteerGroup.prototype.getUserPermissions = function (userId) {
@@ -225,6 +231,13 @@ VolunteerGroup.prototype.insert = function (user, callback) {
         });
 };
 
+VolunteerGroup.prototype.updateWithFirebase = function (callback) {
+    console.log("VolunteerGroup.updateWithFirebase with:");
+    console.log(this);
+    AJAXServices.UpdateFirebaseData("groups/" + this.id, this);
+    callback(this, new ServerResponse());
+};
+
 // Attempts to update the current volunteer group into the database.
 // @param callback {Function(VolunteerGroup, ServerResponse) }
 //     callback is expected to take as a first argument the potentially
@@ -234,16 +247,7 @@ VolunteerGroup.prototype.update = function (callback) {
     console.log("VolunteerGroup::update");
 
     if (AJAXServices.useFirebase) {
-        var ref = new Firebase(AJAXServices.firebaseUrl + "/groups/" + this.id);
-        ref.once("value", function (data) {
-            console.log("Updating group data");
-            if (data.name != this.name) {
-                AJAXServices.SetFirebaseData("groupsByName/" + data.name, null);
-                AJAXServices.SetFirebaseData("groupsByName/" + this.name, this);
-            }
-            AJAXServices.UpdateFirebaseData("groups/" + this.id, this);
-        });
-        return;
+        return this.updateWithFirebase(callback);
     }
 
 

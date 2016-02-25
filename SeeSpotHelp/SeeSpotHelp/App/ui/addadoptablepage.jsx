@@ -32,7 +32,7 @@ var AddAdoptablePage = React.createClass({
         var group = this.props.group ? this.props.group :
             this.props.location ? this.props.location.state.group : null;
         var animal = this.props.animal ? this.props.animal :
-            this.props.location ? this.props.location.state.group : null;
+            this.props.location ? this.props.location.state.animal : null;
 
         // If in edit mode, fill in field values.
         if (editMode) {
@@ -93,12 +93,22 @@ var AddAdoptablePage = React.createClass({
             if (this.state.editMode) {
                 Utils.CopyInputFieldsIntoObject(this.state.fields, this.state.animal);
                 this.state.animal.update(this.insertGroupCallback);
+                GroupActions.animalUpdated(this.state.group, this.state.animal);
+                this.context.router.push(
+                    {
+                        pathname: "animalHomePage",
+                        state: {
+                            group: this.state.group,
+                            animal: this.state.animal,
+                            user: this.state.user
+                        }
+                    });
             } else {
                 var animal = new Animal();
                 animal.groupId = this.state.group.id;
                 Utils.CopyInputFieldsIntoObject(this.state.fields, animal);
                 animal.insert();
-                GroupActions.newAnimalAdded(this.state.group, this.state.animal);
+                GroupActions.newAnimalAdded(this.state.group, animal);
                 this.context.router.push("/shelterHomePage");
             }
         }

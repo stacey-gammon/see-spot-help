@@ -41,6 +41,9 @@ var AddNewShelter = React.createClass({
             this.props.location && this.props.location.state ?
             this.props.location.state.group : null;
 
+        console.log("AddNewShelter:getInitialState with group:");
+        console.log(group);
+
         // If in edit mode, fill in field values.
         if (editMode) {
             for (var field in inputFields) {
@@ -107,6 +110,8 @@ var AddNewShelter = React.createClass({
         var errorFound = this.validateFields();
         if (!errorFound) {
             if (this.state.editMode) {
+                console.log("original group:");
+                console.log(this.state.group);
                 this.state.group.updateFromInputFields(this.state.fields);
                 console.log("Updated group:");
                 console.log(this.state.group);

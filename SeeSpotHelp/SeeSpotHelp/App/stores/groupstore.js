@@ -70,7 +70,7 @@ class GroupStore extends EventEmitter {
                 console.log("Loading group");
                 console.log(group);
                 for (var animal in group.animals) {
-                    group[animal] = Animal.castObject(group[animal]);
+                    group.animals[animal] = Animal.castObject(group.animals[animal]);
                 }
                 outer.groups[group.id] = group;
                 outer.emitChange();
@@ -103,6 +103,7 @@ class GroupStore extends EventEmitter {
                 this.emitChange();
                 break;
             case ActionConstants.NEW_ANIMAL_ADDED:
+            case ActionConstants.ANIMAL_UPDATED:
                 this.groups[action.group.id].animals[action.animal.id] = action.animal;
                 this.emitChange();
                 break;

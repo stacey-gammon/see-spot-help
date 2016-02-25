@@ -10,8 +10,8 @@ var Animal = function(name, type, breed, age, status, photo, id, groupId) {
     this.breed = breed;
     this.age = age;
     this.status = status ? status : Animal.StatusEnum.ADOPTABLE;
-    this.photo = photo;
-    this.id = id;
+    this.photo = photo ? photo : null;
+    this.id = id ? id : null;
     this.groupId = groupId;
 }
 
@@ -101,13 +101,23 @@ Animal.prototype.insert = function (callback) {
         });
 };
 
-// Attempts to update the current animal into the database.
-// @param callback {Function(Animal, ServerResponse) }
+Animal.prototype.updateWithFirebase = function (callback) {
+    console.log("Animal.updateWithFirebase");
+    AJAXServices.UpdateFirebaseData("groups/" + this.groupId + "/animals/" + this.id, this);
+    callback(this, new ServerResponse());
+};
+
+// Attempts to update the current volunteer group into the database.
+// @param callback {Function(VolunteerGroup, ServerResponse) }
 //     callback is expected to take as a first argument the potentially
-//     updated animal (null on failure) and a server
+//     updated volunteer group (null on failure) and a server
 //     response to hold error and success information.
 Animal.prototype.update = function (callback) {
     console.log("Animal::update");
+
+    if (AJAXServices.useFirebase) {
+        return this.updateWithFirebase(callback);
+    }
 
     var SuccessCallback = function (response) {
         console.log("Animal::SuccessCallback");
