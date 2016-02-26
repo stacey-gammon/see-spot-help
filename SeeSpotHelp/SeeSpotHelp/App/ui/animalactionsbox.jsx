@@ -14,7 +14,7 @@ var AnimalActionsBox = React.createClass({
     getInitialState: function() {
         return {
             walking: false,
-            user: LoginStore.user,
+            user: LoginStore.getUser(),
             animal: this.props.animal,
             group: VolunteerGroup.castObject(this.props.group)
         }

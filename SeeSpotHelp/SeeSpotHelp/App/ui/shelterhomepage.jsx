@@ -33,7 +33,7 @@ var ShelterHomePage = React.createClass({
             }
         }
         return {
-            user: LoginStore.user,
+            user: LoginStore.getUser(),
             group: group
         }
     },
@@ -55,7 +55,7 @@ var ShelterHomePage = React.createClass({
         this.setState(
             {
                 user: LoginStore.user,
-                group: GroupStore.getGroupById(this.state.group.id)
+                group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
             });
     },
 

@@ -6,6 +6,7 @@ var VolunteerGroup = require('../core/volunteergroup');
 var Animal = require('../core/animal');
 var AJAXServices = require('../core/AJAXServices');
 var Firebase = require("firebase");
+var GroupActions = require("../actions/groupactions");
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");
@@ -38,8 +39,10 @@ class GroupStore extends EventEmitter {
     }
 
     getGroupById(groupId) {
-        console.log("GetGroupById, groups =");
-        console.log(this.groups);
+        if (!this.groups[groupId]) {
+            console.log("group requested that hasn't been downloaded.  Downloading now...");
+            this.downloadGroup(groupId);
+        }
         return this.groups[groupId];
     }
 
@@ -60,28 +63,32 @@ class GroupStore extends EventEmitter {
         return usersGroups;
     }
 
+    downloadGroup(groupId) {
+        var outer = this;
+        var groupLoaded = function (group) {
+            console.log("Loading group");
+            console.log(group);
+            for (var animal in group.animals) {
+                group.animals[animal] = Animal.castObject(group.animals[animal]);
+            }
+            outer.groups[group.id] = group;
+            outer.emitChange();
+            outer.loadedUserGroups = true;
+        };
+
+        var dataServices = new AJAXServices(groupLoaded, null);
+        dataServices.GetFirebaseData("groups/" + groupId);
+    }
+
     loadGroupsForUser(user) {
         var outer = this;
         var onSuccess = function (groupPermissions) {
             console.log("Loaded users group permissions: ");
             console.log(groupPermissions);
 
-            var groupLoaded = function (group) {
-                console.log("Loading group");
-                console.log(group);
-                for (var animal in group.animals) {
-                    group.animals[animal] = Animal.castObject(group.animals[animal]);
-                }
-                outer.groups[group.id] = group;
-                outer.emitChange();
-                outer.loadedUserGroups = true;
-            };
-
             var userInGroups = false;
-            for (var prop in groupPermissions) {
-                var dataServices = new AJAXServices(groupLoaded, null);
-                console.log("prop = " + prop);
-                dataServices.GetFirebaseData("groups/" + prop);
+            for (var groupId in groupPermissions) {
+                outer.downloadGroup(groupId);
                 userInGroups = false;
             }
 

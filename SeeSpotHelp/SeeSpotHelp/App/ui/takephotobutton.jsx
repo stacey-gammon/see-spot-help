@@ -7,7 +7,7 @@ var LoginStore = require("../stores/loginstore");
 var TakePhotoButton = React.createClass({
     getInitialState: function() {
         return {
-            user: LoginStore.user
+            user: LoginStore.getUser()
         }
     },
 

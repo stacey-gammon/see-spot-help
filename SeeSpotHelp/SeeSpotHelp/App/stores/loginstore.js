@@ -4,6 +4,7 @@ var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
 var Volunteer = require('../core/volunteer');
+var LoginActions = require("../actions/loginactions");
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");
@@ -30,6 +31,21 @@ class LoginStore extends EventEmitter {
 
     isLoggedIn() {
         return !!this.user;
+    }
+
+    // In case of a hard refresh, always attempt to re-grab the user data from local
+    // storage if it doesn't exist.
+    getUser() {
+        if (!this.user) {
+            this.user = JSON.parse(localStorage.getItem("user"));
+            if (this.user) {
+                var onSuccess = function (user) {
+                    LoginActions.userLoggedIn(user);
+                };
+                Volunteer.LoadVolunteer(this.user.id, this.user.name, this.user.email, onSuccess);
+            }
+        }
+        return this.user;
     }
 
     emitChange() {

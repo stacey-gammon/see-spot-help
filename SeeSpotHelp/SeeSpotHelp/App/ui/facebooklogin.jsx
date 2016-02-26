@@ -6,7 +6,7 @@ var LoginService = require("../core/loginservice");
 
 var FacebookLogin = React.createClass({
     loginAction: function () {
-        if (LoginStore.user) {
+        if (LoginStore.getUser()) {
             LoginService.logout();
         } else {
             LoginService.loginWithFacebook();

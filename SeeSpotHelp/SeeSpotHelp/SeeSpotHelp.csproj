@@ -693,6 +693,8 @@
     <Content Include="public\Content\kendo\2016.1.112\kendo.uniform.min.css.map" />
     <Content Include="public\Content\kendo\2016.1.112\kendo.uniform.mobile.min.css.map" />
     <Content Include="public\manifest.json" />
+    <Content Include="App\ui\grouplistitem.jsx" />
+    <None Include="App\ui\editgroupbutton.jsx" />
     <None Include="scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />

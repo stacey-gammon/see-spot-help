@@ -8,9 +8,11 @@ var VolunteerGroup = require("../core/volunteergroup");
 var Volunteer = require("../core/volunteer");
 var ConstStrings = require("../core/conststrings");
 var LoginStore = require("../stores/loginstore");
+var ShelterInfoBox = require("../ui/shelterinfobox");
 var EditGroupButton = require("../ui/editgroupbutton");
+var GroupStore = require("../stores/groupstore");
 
-var ShelterActionsBox = React.createClass({
+var GroupListItem = React.createClass({
     getInitialState: function() {
         var user = LoginStore.getUser();
         var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
@@ -25,16 +27,20 @@ var ShelterActionsBox = React.createClass({
 
     componentDidMount: function () {
         LoginStore.addChangeListener(this.onChange);
+        GroupStore.addChangeListener(this.onChange);
     },
 
     componentWillUnmount: function () {
         LoginStore.removeChangeListener(this.onChange);
+        GroupStore.removeChangeListener(this.onChange);
     },
 
     onChange: function () {
         this.setState(
             {
-                user: LoginStore.user
+                user: LoginStore.getUser(),
+                group: GroupStore.getGroupById(group.id),
+                permissions: group.getUserPermissions(user.id)
             });
     },
 
@@ -55,18 +61,17 @@ var ShelterActionsBox = React.createClass({
         );
     },
 
-    getAddAdoptableButton: function () {
-        if (!this.state.user ||
-            this.state.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER) {
+    getEditGroupButton: function () {
+        if (this.state.permissions != VolunteerGroup.PermissionsEnum.ADMIN) {
             return null;
         }
         return (
             <LinkContainer
-                to={{ pathname: "addAdoptablePage",
-                    state: { user: this.state.user, group: this.state.group } }}>
-                <button className="btn btn-info addAdoptableButton buttonPadding">
-                    <span className="glyphicon glyphicon-plus"/>
-                    &nbsp;Animal
+                to={{ pathname: "addNewShelter",
+                    state: { user: this.state.user, editMode: true, group: this.state.group } }}>
+                <button className="btn btn-info editShelterButton buttonPadding"
+                        ref="editShelterButton">
+                    {ConstStrings.Edit}
                 </button>
             </LinkContainer>
         );
@@ -105,15 +110,23 @@ var ShelterActionsBox = React.createClass({
     },
 
     render: function () {
-        console.log("ShelterActionsBox:render:");
+        console.log("GroupListItem:render:");
         return (
-            <div className="shelterActionsBox">
-                {this.getAddAdoptableButton()}
-                {this.getLeaveGroupButton()}
-                {this.getRequestToJoinButton()}
-            </div>
+            <a href="#" className="list-group-item animalListElement">
+                <LinkContainer to={{ pathname: "shelterHomePage" ,
+                    state: { user: this.props.user, group: this.props.group, animal: this.props.animal} }}>
+                    <div className="media">
+                        <div className="media-body">
+                            <ShelterInfoBox group={this.props.group}/>
+                        </div>
+                        <div className="media-right">
+                            <EditGroupButton user={this.props.user} group={this.props.group}/>
+                        </div>
+                    </div>
+                </LinkContainer>
+            </a>
         );
     }
 });
 
-module.exports = ShelterActionsBox;
+module.exports = GroupListItem;

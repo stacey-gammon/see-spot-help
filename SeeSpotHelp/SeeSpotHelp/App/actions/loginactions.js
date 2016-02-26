@@ -2,7 +2,6 @@
 
 var Dispatcher = require('../dispatcher/dispatcher');
 var ActionConstants = require('../constants/actionconstants');
-var LoginStore = require("../stores/loginstore");
 
 var LoginActions = {
     userLoggedIn: function (user) {

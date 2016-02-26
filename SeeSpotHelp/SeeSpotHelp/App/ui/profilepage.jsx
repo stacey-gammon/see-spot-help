@@ -2,7 +2,6 @@
 
 var React = require("react");
 var Link = require("react-router").Link;
-var FakeData = require("../core/fakedata");
 var Volunteer = require("../core/volunteer");
 var VolunteerGroup = require("../core/volunteergroup");
 var FacebookLogin = require("./facebooklogin");
@@ -12,6 +11,7 @@ var ShelterSearchPage = require("./sheltersearchpage");
 var LoginStore = require("../stores/loginstore");
 var GroupStore = require("../stores/groupstore");
 var LoginActions = require("../actions/loginactions");
+var GroupListItem = require("../ui/grouplistitem");
 
 var ProfilePage = React.createClass({
     contextTypes: {
@@ -51,7 +51,7 @@ var ProfilePage = React.createClass({
     getGroupElement: function(group) {
         console.log("ProfilePage:GetGroupElement");
         return (
-            <ShelterInfoBox group={group}/>
+            <GroupListItem user={this.state.user} group={group}/>
         );
     },
 
@@ -71,7 +71,7 @@ var ProfilePage = React.createClass({
             var groups = this.state.groups.map(this.getGroupElement);
             return (
                 <div>
-                    <h2>Your volunteer groups</h2>
+                    <h1>Your volunteer groups</h1>
                     {groups}
                 </div>
             );

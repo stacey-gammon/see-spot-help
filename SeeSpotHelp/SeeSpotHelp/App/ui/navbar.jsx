@@ -12,7 +12,7 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 var MyNavBar = React.createClass({
     getInitialState: function () {
         return {
-            user: LoginStore.user
+            user: LoginStore.getUser()
         }
     },
 
@@ -27,7 +27,7 @@ var MyNavBar = React.createClass({
     onChange: function () {
         this.setState(
             {
-                user: LoginStore.user
+                user: LoginStore.getUser()
             });
     },
 

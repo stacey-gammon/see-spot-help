@@ -55,7 +55,7 @@ var AddNewShelter = React.createClass({
         return {
             errorMessage: null,
             fields: inputFields,
-            user : LoginStore.user,
+            user : LoginStore.getUser(),
             group: group,
             editMode: editMode
         };
