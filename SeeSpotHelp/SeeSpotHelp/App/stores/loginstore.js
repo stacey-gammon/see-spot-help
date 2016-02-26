@@ -39,6 +39,7 @@ class LoginStore extends EventEmitter {
         if (!this.user) {
             this.user = JSON.parse(localStorage.getItem("user"));
             if (this.user) {
+                console.log("grabbing user from local storage");
                 var onSuccess = function (user) {
                     LoginActions.userLoggedIn(user);
                 };

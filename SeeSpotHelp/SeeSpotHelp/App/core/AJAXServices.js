@@ -10,6 +10,16 @@ var AJAXServices = function (successCallback, failureCallback) {
 AJAXServices.useFirebase = true;
 AJAXServices.firebaseURL = "https://shining-torch-1432.firebaseio.com/";
 
+AJAXServices.startStringSearch = function (path, child, searchText, onSuccess) {
+    console.log("AJAXServices::startSearch");
+
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    ref.orderByChild(child).startAt(searchText).endAt(searchText + "\uf8ff").on("value",
+        function (snapshot) {
+            onSuccess(snapshot.val());
+        });
+};
+
 AJAXServices.prototype.GetFirebaseData = function(path) {
     console.log("AJAXServices:GetFirebaseData for url " + path);
     var ref = new Firebase(this.firebaseURL + "/" + path);

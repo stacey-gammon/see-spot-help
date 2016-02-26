@@ -5,6 +5,8 @@ var LinkContainer = require("react-router-bootstrap").LinkContainer;
 var VolunteerGroup = require("../core/volunteergroup");
 var ShelterSearchResults = require("./sheltersearchresults");
 var LoginStore = require("../stores/loginstore");
+var AJAXServices = require("../core/AJAXServices");
+var Firebase = require("firebase");
 
 var AddNewShelterButton = React.createClass({
     getInitialState: function () {
@@ -48,23 +50,28 @@ var AddNewShelterButton = React.createClass({
 });
 
 var ShelterSearchBox = React.createClass({
-    shelterSearch: function () {
-        console.log("ShelterSearchBox::render");
-        var searchText = this.refs.shelterSearchInput.value;
-        var results = VolunteerGroup.search(searchText);
-        this.setState({
-            results: results,
-            searchText: searchText
-        });
-    },
-    getInitialState:function() {
+    getInitialState: function () {
         return {
-            results: []
+            results: {}
         }
     },
 
+    getResults: function (results) {
+        console.log("ShelterSearchBox:getResults:");
+        console.log(results);
+        this.setState({
+            results: results
+        });
+    },
+
+    shelterSearch: function () {
+        var searchText = this.refs.shelterSearchInput.value;
+        AJAXServices.startStringSearch("groups", "name", searchText, this.getResults);
+    },
+
     render: function () {
-        console.log("ShelterSearchBox::render");
+        console.log("ShelterSearchBox::render, results:");
+        console.log(this.state.results);
         return (
             <div className="shelterSearchBox">
                 <h1>Search for a shelter, rescue or volunteer group to join</h1>

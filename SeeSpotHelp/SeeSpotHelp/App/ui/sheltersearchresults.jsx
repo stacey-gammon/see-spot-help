@@ -20,12 +20,14 @@ var ShelterSearchResults = React.createClass({
     onChange: function () {
         this.setState(
             {
-                user: LoginStore.user
+                user: LoginStore.getUser()
             });
     },
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     goToGroup: function(group) {
         console.log("Going to home page for group " + group.id);
         sessionStorage.setItem("defaultGroup", JSON.stringify(group));
@@ -33,6 +35,7 @@ var ShelterSearchResults = React.createClass({
                                    query: { groupId: group.id },
                                    state: { defaultGroup: group, user: this.state.user } });
     },
+
     generateResult: function(result) {
         return (
             <button className="btn btn-primary shelterResult" onClick={this.goToGroup.bind(this, result)}>
@@ -45,8 +48,11 @@ var ShelterSearchResults = React.createClass({
         
     },
 
-    render: function() {
-        var items = this.props.results.map(this.generateResult);
+    render: function () {
+        var items = [];
+        for (var groupId in this.props.results) {
+            items.push(this.generateResult(this.props.results[groupId]));
+        }
         return (
             <div>
                 {items}

@@ -67,7 +67,10 @@ var Home = React.createClass({
     componentDidMount: function() {
         console.log("Home::componentDidMount");
         LoginStore.addChangeListener(this.onChange);
-        this.setState({ user: LoginStore.getUser() });
+        this.setState({
+            user: LoginStore.getUser()
+        });
+        this.loadPageForUser();S
     },
 
     componentWillUnmount: function () {
