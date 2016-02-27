@@ -5,6 +5,7 @@ var Link = require("react-router").Link;
 var AnimalList = require("./animallist");
 var ShelterSearchBox = require("./sheltersearchbox");
 var ShelterInfoBox = require("./shelterinfobox");
+var ShelterMembersTab = require("./sheltermemberstab");
 var ShelterActionsBox = require("./shelteractionsbox");
 var FakeData = require("../core/fakedata");
 var Volunteer = require("../core/volunteer");
@@ -12,6 +13,13 @@ var VolunteerGroup = require("../core/volunteergroup");
 var LoginStore = require("../stores/loginstore");
 var GroupStore = require("../stores/groupstore");
 var AJAXServices = require("../core/AJAXServices");
+
+var ReactBootstrap = require("react-bootstrap");
+var Tab = ReactBootstrap.Tab;
+var Tabs = ReactBootstrap.Tabs;
+var ReactRouterBootstrap = require("react-router-bootstrap");
+
+var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 var ShelterHomePage = React.createClass({
     getInitialState: function () {
@@ -34,7 +42,7 @@ var ShelterHomePage = React.createClass({
         }
         return {
             user: LoginStore.getUser(),
-            group: group
+            group: VolunteerGroup.castObject(group)
         }
     },
 
@@ -61,12 +69,19 @@ var ShelterHomePage = React.createClass({
 
     render: function () {
         if (this.state.group) {
+            var memberTitle = "Members (" + this.state.group.memberCount() + ")";
             return (
-                <div className="shelterHomePage">
-                    <ShelterInfoBox group={this.state.group} user={this.state.user}/>
-                    <ShelterActionsBox user={this.state.user} group={this.state.group}/>
-                    <hr/>
-                    <AnimalList group={this.state.group} user={this.state.user}/>
+                <div>
+                    <ShelterInfoBox group={this.state.group} user={this.state.user} />
+                    <ShelterActionsBox user={this.state.user} group={this.state.group} />
+                    <Tabs defaultActiveKey={1}>
+                        <Tab eventKey={1} title="Animals">
+                            <AnimalList group={this.state.group} user={this.state.user}/>
+                        </Tab>
+                        <Tab eventKey={2} title={memberTitle}>
+                            <ShelterMembersTab group={this.state.group} user={this.state.user}/>
+                        </Tab>
+                    </Tabs>
                 </div>
             );
         } else if (LoginStore.user) {

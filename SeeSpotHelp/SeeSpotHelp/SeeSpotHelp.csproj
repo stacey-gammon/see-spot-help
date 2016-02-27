@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\actions\groupactions.js" />
+    <Content Include="App\actions\volunteeractions.js" />
     <Content Include="App\actions\loginactions.js" />
     <Content Include="App\constants\actionconstants.js" />
     <Content Include="App\core\utils.js" />
@@ -184,6 +185,7 @@
     <Content Include="App\core\volunteer.js" />
     <Content Include="App\core\volunteergroup.js" />
     <Content Include="App\stores\groupstore.js" />
+    <Content Include="App\stores\volunteerstore.js" />
     <Content Include="App\stores\loginstore.js" />
     <Content Include="App\stores\animalstore.js" />
     <Content Include="App\tests\addnewshelterpage-test.jsx" />
@@ -695,6 +697,9 @@
     <Content Include="public\manifest.json" />
     <Content Include="App\ui\grouplistitem.jsx" />
     <None Include="App\ui\editgroupbutton.jsx" />
+    <Content Include="App\ui\shelteranimalstab.jsx" />
+    <Content Include="App\ui\sheltermemberstab.jsx" />
+    <Content Include="App\ui\memberlistitem.jsx" />
     <None Include="scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />

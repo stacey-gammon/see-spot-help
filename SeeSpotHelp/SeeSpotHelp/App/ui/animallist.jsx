@@ -15,6 +15,8 @@ var AnimalList = React.createClass({
     },
 
     render: function () {
+        console.log("AnimalList:render, group = ");
+        console.log(this.props.group);
         var animals = [];
         for (var key in this.props.group.animals) {
             console.log("key = " + key);

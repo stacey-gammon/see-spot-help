@@ -7,7 +7,8 @@ var ActionConstants = Object.freeze(
         LOGIN_USER_ERROR: 2,
         NEW_GROUP_ADDED: 3,
         ANIMAL_UPDATED: 4,
-        NEW_ANIMAL_ADDED: 5
+        NEW_ANIMAL_ADDED: 5,
+        MEMBER_DOWNLOADED: 6
     }
 );
 

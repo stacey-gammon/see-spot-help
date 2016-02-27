@@ -111,16 +111,25 @@ var GroupListItem = React.createClass({
 
     render: function () {
         console.log("GroupListItem:render:");
+        var group = VolunteerGroup.castObject(this.props.group);
+        console.log("group: ");
+        console.log(group);
+        var permission = group.getUserPermissions(this.props.user.id);
+        var headerText = permission == VolunteerGroup.PermissionsEnum.ADMIN ?
+            "Admin" : permission == VolunteerGroup.PermissionsEnum.MEMBER ?
+            "Member" : permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ?
+            "Membership Pending" : "";
         return (
             <a href="#" className="list-group-item animalListElement">
                 <LinkContainer to={{ pathname: "shelterHomePage" ,
-                    state: { user: this.props.user, group: this.props.group, animal: this.props.animal} }}>
+                    state: { user: this.props.user, group: group, animal: this.props.animal} }}>
                     <div className="media">
                         <div className="media-body">
-                            <ShelterInfoBox group={this.props.group}/>
+                            <h2>-- {headerText} --</h2>
+                            <ShelterInfoBox group={group}/>
                         </div>
                         <div className="media-right">
-                            <EditGroupButton user={this.props.user} group={this.props.group}/>
+                            <EditGroupButton user={this.props.user} group={group}/>
                         </div>
                     </div>
                 </LinkContainer>

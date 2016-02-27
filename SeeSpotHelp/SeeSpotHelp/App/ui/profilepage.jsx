@@ -71,7 +71,6 @@ var ProfilePage = React.createClass({
             var groups = this.state.groups.map(this.getGroupElement);
             return (
                 <div>
-                    <h1>Your volunteer groups:</h1>
                     {groups}
                 </div>
             );

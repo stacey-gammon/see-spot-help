@@ -18,6 +18,7 @@ class LoginStore extends EventEmitter {
         this.dispatchToken = Dispatcher.register(function (action) {
             outer.handleAction(action);
         });
+        var users = {};
     }
 
     addChangeListener(callback) {

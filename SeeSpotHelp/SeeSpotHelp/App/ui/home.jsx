@@ -8,6 +8,8 @@ var AddAdoptablePage = require("./addadoptablepage");
 var ProfilePage = require("./profilepage");
 var LoginPage = require("./loginpage");
 var PrivateBetaPage = require("./privatebetapage");
+var ShelterAnimalsTab = require("./shelteranimalstab");
+var ShelterMembersTab = require("./sheltermemberstab");
 var MyNavBar = require("./navbar");
 
 var LoginService = require("../core/loginservice");
@@ -70,7 +72,7 @@ var Home = React.createClass({
         this.setState({
             user: LoginStore.getUser()
         });
-        this.loadPageForUser();S
+        this.loadPageForUser();
     },
 
     componentWillUnmount: function () {
@@ -128,6 +130,8 @@ var routes = (
     <Route path="profilePage" component={ProfilePage} />
     <Route path="privateBetaPage" component={PrivateBetaPage} />
     <Route path="loginPage" component={LoginPage} />
+    <Route path="shelterAnimalsTab" component={ShelterAnimalsTab} />
+    <Route path="shelterMembersTab" component={ShelterMembersTab} />
   </Router>
 );
 

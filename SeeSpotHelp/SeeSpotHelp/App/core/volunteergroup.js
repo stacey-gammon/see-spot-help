@@ -54,6 +54,17 @@ VolunteerGroup.prototype.copyFieldsFrom = function (other) {
     }
 }
 
+VolunteerGroup.prototype.memberCount = function () {
+    var count = 0;
+    for (var memberId in this.userPermissionsMap) {
+        if (this.userPermissionsMap[memberId] == VolunteerGroup.PermissionsEnum.ADMIN ||
+            this.userPermissionsMap[memberId] == VolunteerGroup.PermissionsEnum.MEMBER) {
+            count++;
+        }
+    }
+    return count;
+}
+
 VolunteerGroup.PermissionsEnum = Object.freeze(
     {
         MEMBER: 0,
