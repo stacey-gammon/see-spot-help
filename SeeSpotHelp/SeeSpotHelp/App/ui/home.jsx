@@ -87,6 +87,7 @@ var Home = React.createClass({
 
     loadPageForUser: function () {
         console.log("Home::LoadPageForVolunteer");
+        console.log(LoginStore.user);
 
         // If the user is signed in and belongs to a volunteer group, show them that
         // page first.  If they don't, show them their profile page where there will be

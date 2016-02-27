@@ -15,14 +15,13 @@ var VolunteerStore = require("../stores/volunteerstore");
 
 var MemberListItem = React.createClass({
     getInitialState: function() {
-        var user = this.props.user;
+        var member = this.props.member
         var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-        var permissions = user && group ? group.getUserPermissions(user.id) : null;
 
         return {
-            user: user,
-            group: group,
-            permissions: permissions
+            user: LoginStore.getUser(),
+            member: member,
+            group: group
         };
     },
 
@@ -41,25 +40,91 @@ var MemberListItem = React.createClass({
     onChange: function () {
         this.setState(
             {
-                user: VolunteerStore.getVolunteerById(this.props.user.id),
-                group: GroupStore.getGroupById(group.id),
-                permissions: group.getUserPermissions(user.id)
+                member: VolunteerStore.getVolunteerById(this.props.member.id),
+                group: GroupStore.getGroupById(group.id)
             });
+    },
+
+    approveMembership: function () {
+        this.state.group.updateMembership(this.props.member, VolunteerGroup.PermissionsEnum.MEMBER);
+    },
+
+    denyMembership: function () {
+        this.state.group.updateMembership(this.props.member, VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED);
+    },
+
+    getApproveMembershipButton: function() {
+        var group = VolunteerGroup.castObject(this.props.group);
+        var permission = group.getUserPermissions(this.props.member.id);
+        var text = permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ? "Approve" :
+            permission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ? "Re-approve" : "";
+        if (text != "") {
+            return (
+                <div>
+                <button className="btn btn-primary" onClick={this.approveMembership }>{text}</button>
+                </div>
+            );
+        } else {
+            return null;
+        }
+    },
+
+    getBootMembershipButton: function() {
+        var group = VolunteerGroup.castObject(this.props.group);
+        var permission = group.getUserPermissions(this.props.member.id);
+        var text = permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ? "Deny" : "Boot";
+        if (permission != VolunteerGroup.PermissionsEnum.ADMIN &&
+            permission != VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
+            return (
+                <div>
+                <button className="btn btn-warning" onClick={this.denyMembership }>{text}</button>
+                </div>
+            );
+        } else {
+            return null;
+        }
+    },
+
+    getActions: function () {
+        var group = VolunteerGroup.castObject(this.props.group);
+        if (group.getUserPermissions(this.state.user.id) == VolunteerGroup.PermissionsEnum.ADMIN) {
+            return (
+                <div className="media-right">
+                    {this.getApproveMembershipButton()}
+                    {this.getBootMembershipButton()}
+                </div>
+            );
+        } else {
+            return null;
+        }
     },
 
     render: function () {
         console.log("MemberListItem:render:");
         var group = VolunteerGroup.castObject(this.props.group);
-        var permission = group.getUserPermissions(this.props.user.id);
-        var adminText = permission == VolunteerGroup.PermissionsEnum.ADMIN ? "(admin)" : "";
+        var permission = group.getUserPermissions(this.props.member.id);
+
+        var className = "list-group-item memberListElement";
+        // TODO: Give admins a way to view previously booted or denied members so they have a
+        // chance to re-add (but hide by default).
+        if (permission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
+            className += " membershipRevokedStyle";
+        }
+
+        var extraInfo = permission == VolunteerGroup.PermissionsEnum.ADMIN ? "(admin)" : "";
+        if (group.getUserPermissions(this.state.user.id) == VolunteerGroup.PermissionsEnum.ADMIN) {
+            extraInfo = permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ? "(membership pending)" :
+                permission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ? "(membership denied)" : extraInfo;
+        }
         return (
-            <a href="#" className="list-group-item memberListElement">
+            <a href="#" className={className}>
                 <LinkContainer to={{ pathname: "memberHomePage" ,
-                    state: { user: this.props.user} }}>
+                    state: { member: this.props.member} }}>
                     <div className="media">
                         <div className="media-body">
-                            <h2>{this.props.user.name} {adminText}</h2>
+                            <h2>{this.props.member.name} {extraInfo}</h2>
                         </div>
+                        {this.getActions()}
                     </div>
                 </LinkContainer>
             </a>

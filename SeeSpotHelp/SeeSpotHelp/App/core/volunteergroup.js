@@ -152,8 +152,16 @@ VolunteerGroup.prototype.getUserPermissions = function (userId) {
     }
 };
 
-VolunteerGroup.prototype.requestToJoin = function(user) {
-    // TODO: Implement and hook into server-side.
+VolunteerGroup.prototype.requestToJoin = function (user) {
+    this.updateMembership(user, VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP);
+}
+
+VolunteerGroup.prototype.updateMembership = function (user, membershipType) {
+    this.userPermissionsMap[user.id] = membershipType;
+    AJAXServices.SetFirebaseData("groups/" + this.id + "/userPermissionsMap", this.userPermissionsMap);
+
+    user.groups[this.id] = membershipType;
+    AJAXServices.UpdateFirebaseData("users/" + user.id + "/groups", user.groups);
 }
 
 // Returns a volunteer group object for the given id.  null if
@@ -184,7 +192,9 @@ VolunteerGroup.prototype.insertWithFirebase = function (user, callback) {
                 "groupPermissions/" + user.id + "/" + outer.id,
                 { permission : VolunteerGroup.PermissionsEnum.ADMIN });
             AJAXServices.SetFirebaseData("groupsByName/" + outer.name, outer);
-            AJAXServices.UpdateFirebaseData("users/" + user.id, { defaultGroupId : outer.id });
+
+            user.groups[outer.id] = VolunteerGroup.PermissionsEnum.ADMIN;
+            AJAXServices.UpdateFirebaseData("users/" + user.id + "/groups", user.groups);
             callback(outer, new ServerResponse());
         }
     }

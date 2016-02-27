@@ -18,6 +18,11 @@ p {
     letter-spacing: 1px;
 }
 
+.membershipRevokedStyle {
+    background-color: lightgray;
+    color: darkgray;
+}
+
 .animalListElement {
     padding: 10px;
     margin: 10px;

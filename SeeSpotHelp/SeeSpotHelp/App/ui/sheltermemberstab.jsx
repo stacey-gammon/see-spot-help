@@ -49,9 +49,9 @@ var ShelterMembersTab = React.createClass({
             });
     },
 
-    generateMember: function (user) {
+    generateMember: function (member) {
         return (
-            <MemberListItem user={user} group={this.state.group }/>
+            <MemberListItem user={this.state.user} member={member} group={this.state.group }/>
         );
     },
 

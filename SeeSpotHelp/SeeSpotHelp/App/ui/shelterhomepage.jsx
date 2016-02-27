@@ -29,15 +29,16 @@ var ShelterHomePage = React.createClass({
         if (query && query.groupId) {
             // TODO: need to load the group on search page.
             group = GroupStore.getGroupById(query.groupId);
-        } else if (LoginStore.user) {
-            if (LoginStore.user.defaultGroupId) {
-                console.log("Default Group id: " + LoginStore.user.defaultGroupId);
-                group = GroupStore.getGroupById(LoginStore.user.defaultGroupId);
+        } else {
+            group = this.props.location &&
+                    this.props.location.state &&
+                    this.props.location.state.group ||
+                    this.props.group;
+            
+            if (LoginStore.user && !group) {
+                console.log("Default Group id: " + LoginStore.user.defaultGroupId());
+                group = GroupStore.getGroupById(LoginStore.user.defaultGroupId());
                 console.log(group);
-            } else {
-                console.log("No default group selected, so just grabbing the first group");
-                var memberGroups = GroupStore.getUsersMemberGroups(LoginStore.user);
-                group = memberGroups.length ? memberGroups[0] : null;
             }
         }
         return {

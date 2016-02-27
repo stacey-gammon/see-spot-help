@@ -12,16 +12,14 @@ var Volunteer = function(name, email, id) {
 
     // The id is the user id given by facebook.
     this.id = id;
-    this.defaultGroupId = null;
-    this.groups = [];
-    this.groupPermissions = {};
+    this.groups = {};
 };
 
-Volunteer.prototype.isMemberOf = function (groupId) {
-    for (var i = 0; i < this.groupPermissions.length; i++) {
-        if (this.groupPermissions[i].groupId == groupId) return true;
+Volunteer.prototype.defaultGroupId = function () {
+    for (var groupId in this.groups) {
+        return groupId;
     }
-    return false;
+    return null;
 }
 
 // Casts the given obj as a Volunteer.  Careful - obj must have

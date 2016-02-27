@@ -34,10 +34,12 @@ var EditGroupButton = React.createClass({
     },
 
     onChange: function () {
+        var user = LoginStore.getUser();
+        var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
         this.setState(
             {
-                user: LoginStore.user,
-                group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null,
+                user: user,
+                group: group,
                 permissions: user && group ? group.getUserPermissions(user.id) : null
             });
     },

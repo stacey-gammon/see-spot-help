@@ -36,11 +36,14 @@ var GroupListItem = React.createClass({
     },
 
     onChange: function () {
+        var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
+        var user = LoginStore.getUser();
+        console.log("group = ", group);
         this.setState(
             {
-                user: LoginStore.getUser(),
-                group: GroupStore.getGroupById(group.id),
-                permissions: group.getUserPermissions(user.id)
+                user: user,
+                group: group,
+                permissions: group ? group.getUserPermissions(user.id) : null
             });
     },
 
@@ -95,6 +98,7 @@ var GroupListItem = React.createClass({
         var pending = this.state.permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
 
         if (this.state.permissions != VolunteerGroup.PermissionsEnum.NONMEMBER &&
+            this.state.permissions != VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED &&
             !pending) {
             return null;
         }
@@ -122,7 +126,7 @@ var GroupListItem = React.createClass({
         return (
             <a href="#" className="list-group-item animalListElement">
                 <LinkContainer to={{ pathname: "shelterHomePage" ,
-                    state: { user: this.props.user, group: group, animal: this.props.animal} }}>
+                    state: { user: this.props.user, group: group} }}>
                     <div className="media">
                         <div className="media-body">
                             <h2>-- {headerText} --</h2>

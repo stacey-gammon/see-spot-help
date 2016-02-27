@@ -38,13 +38,14 @@ class LoginStore extends EventEmitter {
     // storage if it doesn't exist.
     getUser() {
         if (!this.user) {
-            this.user = JSON.parse(localStorage.getItem("user"));
-            if (this.user) {
+            var user = JSON.parse(localStorage.getItem("user"));
+            if (user) {
                 console.log("grabbing user from local storage");
                 var onSuccess = function (user) {
+                    user = Volunteer.castObject(user);
                     LoginActions.userLoggedIn(user);
                 };
-                Volunteer.LoadVolunteer(this.user.id, this.user.name, this.user.email, onSuccess);
+                Volunteer.LoadVolunteer(user.id, "", "", onSuccess);
             }
         }
         return this.user;
@@ -78,7 +79,7 @@ class LoginStore extends EventEmitter {
 
             case ActionConstants.NEW_GROUP_ADDED:
                 this.user.defaultGroupId = action.group.id;
-                this.user.groupPermissions[action.group.id] =
+                this.user.groups[action.group.id] =
                     VolunteerGroup.PermissionsEnum.ADMIN;
                 this.emitChange();
                 break;

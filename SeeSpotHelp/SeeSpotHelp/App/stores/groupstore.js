@@ -53,10 +53,9 @@ class GroupStore extends EventEmitter {
     getUsersMemberGroups(user) {
         var usersGroups = []
         for (var groupId in this.groups) {
-            console.log("Group: ");
-            console.log(this.groups[groupId]);
-            var permission = this.groups[groupId].userPermissionsMap[user.id];
-            if (permission && permission != VolunteerGroup.PermissionsEnum.NONMEMBER) {
+            console.log("getUsersMemberGroups:GroupId:", groupId);
+            if (user.id in this.groups[groupId].userPermissionsMap &&
+                this.groups[groupId].userPermissionsMap[user.id] != VolunteerGroup.PermissionsEnum.NONMEMBER) {
                 usersGroups.push(this.groups[groupId]);
             }
         }
@@ -66,8 +65,9 @@ class GroupStore extends EventEmitter {
     downloadGroup(groupId) {
         var outer = this;
         var groupLoaded = function (group) {
-            console.log("Loading group");
+            console.log("downloadGroup:Loading group");
             console.log(group);
+            group = VolunteerGroup.castObject(group);
             for (var animal in group.animals) {
                 group.animals[animal] = Animal.castObject(group.animals[animal]);
             }
@@ -82,12 +82,12 @@ class GroupStore extends EventEmitter {
 
     loadGroupsForUser(user) {
         var outer = this;
-        var onSuccess = function (groupPermissions) {
-            console.log("Loaded users group permissions: ");
-            console.log(groupPermissions);
+        var onSuccess = function (groups) {
+            console.log("Loaded users groups: ");
+            console.log(groups);
 
             var userInGroups = false;
-            for (var groupId in groupPermissions) {
+            for (var groupId in groups) {
                 outer.downloadGroup(groupId);
                 userInGroups = false;
             }
@@ -99,7 +99,7 @@ class GroupStore extends EventEmitter {
         };
 
         var dataServices = new AJAXServices(onSuccess, null);
-        dataServices.GetFirebaseData("groupPermissions/" + user.id);
+        dataServices.GetFirebaseData("users/" + user.id + "/groups");
     }
 
     handleAction(action) {
