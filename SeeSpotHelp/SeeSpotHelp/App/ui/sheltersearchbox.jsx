@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 var React = require("react");
+var Link = require("react-router").Link;
 var LinkContainer = require("react-router-bootstrap").LinkContainer;
 var VolunteerGroup = require("../core/volunteergroup");
 var ShelterSearchResults = require("./sheltersearchresults");
@@ -85,6 +86,11 @@ var ShelterSearchBox = React.createClass({
                            <span className="glyphicon glyphicon-search"></span>
                         </button>
                     </span>
+                </div>
+                <div>
+                    <h1>Can't find what you're looking for?
+                    <Link to="addNewShelter">Add</Link> your own group!
+                    </h1>
                 </div>
                 <ShelterSearchResults results={this.state.results} user={this.state.user}/>
                 <AddNewShelterButton user={this.state.user} searchText={this.state.searchText}/>

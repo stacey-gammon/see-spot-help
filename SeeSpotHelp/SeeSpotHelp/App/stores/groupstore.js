@@ -55,8 +55,8 @@ class GroupStore extends EventEmitter {
         for (var groupId in this.groups) {
             console.log("Group: ");
             console.log(this.groups[groupId]);
-            if (this.groups[groupId].userPermissionsMap[user.id] !=
-                    VolunteerGroup.PermissionsEnum.NONMEMBER) {
+            var permission = this.groups[groupId].userPermissionsMap[user.id];
+            if (permission && permission != VolunteerGroup.PermissionsEnum.NONMEMBER) {
                 usersGroups.push(this.groups[groupId]);
             }
         }

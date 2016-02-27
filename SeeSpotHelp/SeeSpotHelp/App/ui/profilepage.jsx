@@ -72,6 +72,13 @@ var ProfilePage = React.createClass({
             return (
                 <div>
                     {groups}
+                    <div>
+                        <h1>
+                        <Link to="shelterSearchPage">Search</Link>
+                            &nbsp;for a new group to join, or&nbsp;
+                        <Link to="addNewShelter">add</Link> your own!
+                        </h1>
+                    </div>
                 </div>
             );
         } else {

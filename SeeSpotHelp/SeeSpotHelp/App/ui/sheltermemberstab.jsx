@@ -29,6 +29,7 @@ var ShelterMembersTab = React.createClass({
     componentDidMount: function () {
         LoginStore.addChangeListener(this.onChange);
         GroupStore.addChangeListener(this.onChange);
+        VolunteerStore.addChangeListener(this.onChange);
     },
 
     componentWillMount: function () {
@@ -37,6 +38,7 @@ var ShelterMembersTab = React.createClass({
     componentWillUnmount: function () {
         LoginStore.removeChangeListener(this.onChange);
         GroupStore.removeChangeListener(this.onChange);
+        VolunteerStore.removeChangeListener(this.onChange);
     },
 
     onChange: function () {
@@ -58,7 +60,7 @@ var ShelterMembersTab = React.createClass({
         var members = [];
         for (var key in this.props.group.userPermissionsMap) {
             console.log("key = " + key);
-            // LoginStore will handle downloading any user data we don't currently have
+            // VolunteerStore will handle downloading any user data we don't currently have
             // locally and will refresh this element in that case.
             var user = VolunteerStore.getVolunteerById(key);
             if (user) {
