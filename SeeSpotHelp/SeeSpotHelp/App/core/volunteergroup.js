@@ -2,6 +2,7 @@
 
 var ServerResponse = require("./serverresponse");
 var AJAXServices = require('./AJAXServices');
+var GroupActions = require('./actions/groupactions');
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
@@ -28,7 +29,7 @@ var VolunteerGroup = function(name, shelter, address, city, state, zipCode, id) 
     this.city = city;
     this.state = state;
     this.zipCode = zipCode;
-    this.id = id;
+    this.id = id ? id : null;
 
     // Mapping of user id to permission enum, one entry per
     // member in the volunteer group.
@@ -160,46 +161,37 @@ VolunteerGroup.prototype.updateMembership = function (user, membershipType) {
     this.userPermissionsMap[user.id] = membershipType;
     AJAXServices.SetFirebaseData("groups/" + this.id + "/userPermissionsMap", this.userPermissionsMap);
 
-    user.groups[this.id] = membershipType;
+    if (membershipType == VolunteerGroup.PermissionsEnum.NONMEMBER) {
+        delete user.groups[this.id];
+    }
     AJAXServices.UpdateFirebaseData("users/" + user.id + "/groups", user.groups);
 }
 
-// Returns a volunteer group object for the given id.  null if
-// no volunteer group with that id exists.
-VolunteerGroup.loadVolunteerGroup = function(groupId) {
-    // TODO: Implement and hook into database.
-    return VolunteerGroup.getFakeGroups()[groupId];
-};
+VolunteerGroup.prototype.delete = function () {
+    console.log("VolunteerGroup.delete");
+
+    var onComplete = function (error) {
+        if (!error) {
+            GroupActions.groupDeleted(this);
+        } else {
+            console.log("WARN: delete group failed with error " + error);
+        }
+    }
+
+    AJAXServices.SetFirebaseData("deletedGroups/" + this.id, this);
+    AJAXServices.RemoveFirebaseData("groups/" + this.id, onComplete);
+}
 
 VolunteerGroup.prototype.insertWithFirebase = function (user, callback) {
     console.log("VolunteerGroup.insertWithFirebase");
-    var outer = this;
-    var onFailure = function (response) {
-        console.log("failed");
-        callback(null, new ServerResponse("failed"));
-    }
-    // TODO: Race condition here. Set rules for unique name in groupsByName.
-    var onSuccess = function (getResponse) {
-        console.log("VolunteerGroup.insertWithFirebase: onSuccess, response:");
-        console.log(getResponse);
-        if (getResponse != null) {
-            callback(null, new ServerResponse("Volunteer group with that name already exists"));
-        } else {
-            outer.id = null;
-            outer.id = AJAXServices.PushFirebaseData("groups", outer).id;
-            AJAXServices.UpdateFirebaseData("groups/" + outer.id, { id: outer.id });
-            AJAXServices.UpdateFirebaseData(
-                "groupPermissions/" + user.id + "/" + outer.id,
-                { permission : VolunteerGroup.PermissionsEnum.ADMIN });
-            AJAXServices.SetFirebaseData("groupsByName/" + outer.name, outer);
 
-            user.groups[outer.id] = VolunteerGroup.PermissionsEnum.ADMIN;
-            AJAXServices.UpdateFirebaseData("users/" + user.id + "/groups", user.groups);
-            callback(outer, new ServerResponse());
-        }
-    }
-    var dataServices = new AJAXServices(onSuccess, onFailure);
-    dataServices.GetFirebaseData("groupsByName/" + this.name);
+    this.id = null;
+    this.id = AJAXServices.PushFirebaseData("groups", this).id;
+    AJAXServices.UpdateFirebaseData("groups/" + this.id, { id: this.id });
+
+    user.groups[this.id] = VolunteerGroup.PermissionsEnum.ADMIN;
+    AJAXServices.UpdateFirebaseData("users/" + user.id + "/groups", user.groups);
+    callback(this, new ServerResponse());
 };
 
 // Attempts to insert the current instance into the database as

@@ -116,6 +116,10 @@ class GroupStore extends EventEmitter {
                 break;
             case ActionConstants.LOGIN_USER_SUCCESS:
                 this.loadGroupsForUser(action.user);
+                break;
+            case ActionConstants.GROUP_DELETED:
+                delete this.groups[action.group.id];
+                break;
             default:
                 break;
         };

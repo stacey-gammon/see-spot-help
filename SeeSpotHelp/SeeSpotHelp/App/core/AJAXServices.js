@@ -40,6 +40,12 @@ AJAXServices.SetFirebaseData = function(path, value) {
     ref.set(value);
 };
 
+AJAXServices.RemoveFirebaseData = function (path, callback) {
+    console.log("AJAXServices:RemoveFirebaseData");
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    ref.remove(callback);
+};
+
 AJAXServices.PushFirebaseData = function (path, value) {
     console.log("AJAXServices:PushFirebaseData with value ");
     console.log(value);

@@ -10,6 +10,8 @@ var ConstStrings = require("../core/conststrings");
 var LoginStore = require("../stores/loginstore");
 var ShelterInfoBox = require("../ui/shelterinfobox");
 var EditGroupButton = require("../ui/editgroupbutton");
+var LeaveGroupButton = require("../ui/leavegroupbutton");
+var DeleteGroupButton = require("../ui/deletegroupbutton");
 var GroupStore = require("../stores/groupstore");
 
 var GroupListItem = React.createClass({
@@ -45,39 +47,6 @@ var GroupListItem = React.createClass({
                 group: group,
                 permissions: group ? group.getUserPermissions(user.id) : null
             });
-    },
-
-    alertNotImplemented: function () {
-        alert('Sorry, that functionality is not implemented yet!');
-    },
-
-    getLeaveGroupButton: function () {
-        if (!this.state.user ||
-            this.state.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER) {
-            return null;
-        }
-        return (
-            <button className="btn btn-warning leaveShelterButton buttonPadding"
-                    onClick={this.alertNotImplemented}>
-                {ConstStrings.LeaveGroup}
-            </button>
-        );
-    },
-
-    getEditGroupButton: function () {
-        if (this.state.permissions != VolunteerGroup.PermissionsEnum.ADMIN) {
-            return null;
-        }
-        return (
-            <LinkContainer
-                to={{ pathname: "addNewShelter",
-                    state: { user: this.state.user, editMode: true, group: this.state.group } }}>
-                <button className="btn btn-info editShelterButton buttonPadding"
-                        ref="editShelterButton">
-                    {ConstStrings.Edit}
-                </button>
-            </LinkContainer>
-        );
     },
 
     requestToJoin: function () {
@@ -129,11 +98,16 @@ var GroupListItem = React.createClass({
                     state: { user: this.props.user, group: group} }}>
                     <div className="media">
                         <div className="media-body">
-                            <h2>-- {headerText} --</h2>
-                            <ShelterInfoBox group={group}/>
+                            <h1>{this.props.group.name}</h1>
+                            <h2>({headerText})</h2>
+                            <h2>{this.props.group.shelter}</h2>
+                            <h2>{this.props.group.address}</h2>
+                            <h2>{this.props.group.city}, {this.props.group.state} {this.props.group.zipCode}</h2>
                         </div>
                         <div className="media-right">
-                            <EditGroupButton user={this.props.user} group={group}/>
+                            <EditGroupButton user={this.props.user} group={group} />
+                            <LeaveGroupButton user={this.props.user} group={group} />
+                            <DeleteGroupButton user={this.props.user} group={group} />
                         </div>
                     </div>
                 </LinkContainer>

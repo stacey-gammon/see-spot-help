@@ -9,6 +9,7 @@ var Volunteer = require("../core/volunteer");
 var ConstStrings = require("../core/conststrings");
 var LoginStore = require("../stores/loginstore");
 var EditGroupButton = require("../ui/editgroupbutton");
+var LeaveGroupButton = require("../ui/leavegroupbutton");
 
 var ShelterActionsBox = React.createClass({
     getInitialState: function() {
@@ -40,19 +41,6 @@ var ShelterActionsBox = React.createClass({
 
     alertNotImplemented: function () {
         alert('Sorry, that functionality is not implemented yet!');
-    },
-
-    getLeaveGroupButton: function () {
-        if (!this.state.user ||
-            this.state.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER) {
-            return null;
-        }
-        return (
-            <button className="btn btn-warning leaveShelterButton buttonPadding"
-                    onClick={this.alertNotImplemented}>
-                {ConstStrings.LeaveGroup}
-            </button>
-        );
     },
 
     getAddAdoptableButton: function () {
@@ -109,7 +97,7 @@ var ShelterActionsBox = React.createClass({
         return (
             <div className="shelterActionsBox">
                 {this.getAddAdoptableButton()}
-                {this.getLeaveGroupButton()}
+                <LeaveGroupButton group={this.state.group} user={this.state.user}/>
                 {this.getRequestToJoinButton()}
             </div>
         );

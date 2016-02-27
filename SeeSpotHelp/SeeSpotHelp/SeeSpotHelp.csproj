@@ -696,6 +696,8 @@
     <Content Include="public\Content\kendo\2016.1.112\kendo.uniform.mobile.min.css.map" />
     <Content Include="public\manifest.json" />
     <Content Include="App\ui\grouplistitem.jsx" />
+    <Content Include="App\ui\leavegroupbutton.jsx" />
+    <Content Include="App\ui\deletegroupbutton.jsx" />
     <None Include="App\ui\editgroupbutton.jsx" />
     <Content Include="App\ui\shelteranimalstab.jsx" />
     <Content Include="App\ui\sheltermemberstab.jsx" />
