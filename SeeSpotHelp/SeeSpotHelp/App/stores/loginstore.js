@@ -2,9 +2,9 @@
 
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
-var VolunteerGroup = require('../core/volunteergroup');
 var Volunteer = require('../core/volunteer');
 var LoginActions = require("../actions/loginactions");
+var VolunteerGroup = require('../core/volunteergroup');
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");
@@ -78,6 +78,7 @@ class LoginStore extends EventEmitter {
                 break;
 
             case ActionConstants.NEW_GROUP_ADDED:
+            console.log("LoginStore:handleAction: Caught NEW_GROUP_ADDED");
                 this.user.defaultGroupId = action.group.id;
                 this.user.groups[action.group.id] =
                     VolunteerGroup.PermissionsEnum.ADMIN;

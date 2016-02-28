@@ -71,6 +71,7 @@ class VolunteerStore extends EventEmitter {
     handleAction(action) {
         switch (action.type) {
             case ActionConstants.GROUP_DELETED:
+                console.log("VolunteerStore:handleAction: Caught action GROUP_DELETED");
                 // Need to drop all members out of the just deleted group.
                 this.removeAllVolunteersFromGroup(action.group);
             default:

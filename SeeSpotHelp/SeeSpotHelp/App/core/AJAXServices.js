@@ -24,7 +24,7 @@ AJAXServices.prototype.GetFirebaseData = function(path) {
     console.log("AJAXServices:GetFirebaseData for url " + path);
     var ref = new Firebase(this.firebaseURL + "/" + path);
     var outer = this;
-    ref.on("value", function (snapshot) {
+    ref.once("value", function (snapshot) {
         console.log("AJAXServices.GetFirebaseData: Successfully called " + path);
         console.log(snapshot.val());
         outer.onSuccess(snapshot.val());

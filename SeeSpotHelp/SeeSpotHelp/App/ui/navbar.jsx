@@ -17,11 +17,11 @@ var MyNavBar = React.createClass({
     },
 
     componentDidMount: function () {
-        LoginStore.addChangeListener(this.onChange);
+      //  LoginStore.addChangeListener(this.onChange);
     },
 
     componentWillUnmount: function () {
-        LoginStore.removeChangeListener(this.onChange);
+        //LoginStore.removeChangeListener(this.onChange);
     },
 
     onChange: function () {
@@ -37,7 +37,7 @@ var MyNavBar = React.createClass({
         return (
             <Navbar ref="mynavbar" className="navbar navbar-light bg-faded">
                 <Nav className="nav navbar-nav navbar-custom">
-                    <LinkContainer to={{ pathname: "GroupHomePage", state: { user: this.state.user } }}>
+                    <LinkContainer to={{ pathname: "groupHomePage", state: { user: this.state.user } }}>
                         <NavItem>
                             <span className="glyphicon glyphicon-home" />
                         </NavItem>
@@ -47,7 +47,7 @@ var MyNavBar = React.createClass({
                             <span className="glyphicon glyphicon-user" />
                         </NavItem>
                     </LinkContainer>
-                    <LinkContainer  to={{ pathname: "shelterSearchPage", state: { user: this.state.user } }}>
+                    <LinkContainer  to={{ pathname: "searchPage", state: { user: this.state.user } }}>
                     <NavItem>
                         <span className="glyphicon glyphicon-search" />
                     </NavItem>

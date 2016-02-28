@@ -55,7 +55,10 @@ class GroupStore extends EventEmitter {
         for (var groupId in this.groups) {
             console.log("getUsersMemberGroups:GroupId:", groupId);
             if (user.id in this.groups[groupId].userPermissionsMap &&
-                this.groups[groupId].userPermissionsMap[user.id] != VolunteerGroup.PermissionsEnum.NONMEMBER) {
+                this.groups[groupId].userPermissionsMap[user.id] !=
+                    VolunteerGroup.PermissionsEnum.NONMEMBER &&
+                this.groups[groupId].userPermissionsMap[user.id] !=
+                    VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
                 usersGroups.push(this.groups[groupId]);
             }
         }
@@ -65,6 +68,10 @@ class GroupStore extends EventEmitter {
     downloadGroup(groupId) {
         var outer = this;
         var groupLoaded = function (group) {
+            if (!group) {
+                console.log("WARN: group loaded data is null for groupId " + groupId);
+                return;
+            }
             console.log("downloadGroup:Loading group");
             console.log(group);
             group = VolunteerGroup.castObject(group);
@@ -118,7 +125,9 @@ class GroupStore extends EventEmitter {
                 this.loadGroupsForUser(action.user);
                 break;
             case ActionConstants.GROUP_DELETED:
+                console.log("GroupStore:handleaction: caught GROUP_DELETED");
                 delete this.groups[action.group.id];
+                this.emitChange();
                 break;
             default:
                 break;

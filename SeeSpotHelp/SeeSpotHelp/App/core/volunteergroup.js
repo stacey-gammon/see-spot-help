@@ -2,7 +2,6 @@
 
 var ServerResponse = require("./serverresponse");
 var AJAXServices = require('./AJAXServices');
-var GroupActions = require('../actions/groupactions');
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
@@ -82,10 +81,10 @@ VolunteerGroup.PermissionsEnum = Object.freeze(
 // are the field name (e.g. "groupName", "shelterName") and the values are
 // InputFields which hold the values given by the user.
 VolunteerGroup.createFromInputFields = function(inputFields, adminId) {
-    var volunteerGroup = new VolunteerGroup();
-    volunteerGroup.updateFromInputFields(inputFields);
-    volunteerGroup.userPermissionsMap[adminId] = VolunteerGroup.PermissionsEnum.ADMIN;
-    return volunteerGroup;
+    var group = new VolunteerGroup();
+    group.updateFromInputFields(inputFields);
+    group.userPermissionsMap[adminId] = VolunteerGroup.PermissionsEnum.ADMIN;
+    return group;
 };
 
 // Creates and returns a new volunteer group based on the fields supplied
@@ -169,10 +168,10 @@ VolunteerGroup.prototype.updateMembership = function (user, membershipType) {
 
 VolunteerGroup.prototype.delete = function () {
     console.log("VolunteerGroup.delete");
-
+    var outer = this;
     var onComplete = function (error) {
         if (!error) {
-            GroupActions.groupDeleted(this);
+            console.log("VolunteerGroup.delete: Group deleted successfully!");
         } else {
             console.log("WARN: delete group failed with error " + error);
         }

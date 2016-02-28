@@ -123,16 +123,16 @@ var Home = React.createClass({
 
 var routes = (
   <Router path="/" component={Home}>
-    <Route path="shelterSearchPage" component={SearchPage}/>
-    <Route path="GroupHomePage" component={GroupHomePage}/>
+    <Route path="searchPage" component={SearchPage}/>
+    <Route path="groupHomePage" component={GroupHomePage}/>
     <Route path="animalHomePage" component={AnimalHomePage} />
-    <Route path="AddNewGroup" component={AddNewGroup} />
+    <Route path="addNewGroup" component={AddNewGroup} />
     <Route path="addAdoptablepage" component={AddAdoptablePage} />
     <Route path="profilePage" component={ProfilePage} />
     <Route path="privateBetaPage" component={PrivateBetaPage} />
     <Route path="loginPage" component={LoginPage} />
-    <Route path="shelterAnimalsTab" component={GroupAnimalsTab} />
-    <Route path="shelterMembersTab" component={GroupMembersTab} />
+    <Route path="groupAnimalsTab" component={GroupAnimalsTab} />
+    <Route path="groupMembersTab" component={GroupMembersTab} />
   </Router>
 );
 

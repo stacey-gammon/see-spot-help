@@ -39,7 +39,7 @@ var MemberListItem = React.createClass({
 
     onChange: function () {
         var group = this.state.group ?
-            GroupStore.getGroupById(this.state.group) : null;
+            GroupStore.getGroupById(this.state.group.id) : null;
         var member = this.props.member ?
             VolunteerStore.getVolunteerById(this.props.member.id) : null;
         this.setState(
@@ -54,7 +54,8 @@ var MemberListItem = React.createClass({
     },
 
     denyMembership: function () {
-        this.state.group.updateMembership(this.props.member, VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED);
+        this.state.group.updateMembership(
+            this.props.member, VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED);
     },
 
     getApproveMembershipButton: function() {
@@ -65,7 +66,9 @@ var MemberListItem = React.createClass({
         if (text != "") {
             return (
                 <div>
-                <button className="btn btn-primary" onClick={this.approveMembership }>{text}</button>
+                  <button className="btn btn-primary" onClick={this.approveMembership }>
+                    {text}
+                  </button>
                 </div>
             );
         } else {
@@ -106,19 +109,27 @@ var MemberListItem = React.createClass({
     render: function () {
         console.log("MemberListItem:render:");
         var group = VolunteerGroup.castObject(this.props.group);
-        var permission = group.getUserPermissions(this.props.member.id);
+        var memberPermission = group.getUserPermissions(this.props.member.id);
 
         var className = "list-group-item memberListElement";
+        var userPermission = group.getUserPermissions(this.state.user.id);
         // TODO: Give admins a way to view previously booted or denied members so they have a
         // chance to re-add (but hide by default).
-        if (permission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
-            className += " membershipRevokedStyle";
+        if (memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
+            if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN) {
+                className += " membershipRevokedStyle";
+            } else {
+                // Regular members can't see members denied by the admin.
+                return null;
+            }
         }
 
-        var extraInfo = permission == VolunteerGroup.PermissionsEnum.ADMIN ? "(admin)" : "";
-        if (group.getUserPermissions(this.state.user.id) == VolunteerGroup.PermissionsEnum.ADMIN) {
-            extraInfo = permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ? "(membership pending)" :
-                permission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ? "(membership denied)" : extraInfo;
+        var extraInfo = memberPermission == VolunteerGroup.PermissionsEnum.ADMIN ? "(admin)" : "";
+        if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN) {
+            extraInfo = memberPermission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ?
+                "(membership pending)" :
+                memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ?
+                "(membership denied)" : extraInfo;
         }
         return (
             <a href="#" className={className}>
@@ -132,7 +143,7 @@ var MemberListItem = React.createClass({
                     </div>
                 </LinkContainer>
             </a>
-            );
+        );
     }
 });
 

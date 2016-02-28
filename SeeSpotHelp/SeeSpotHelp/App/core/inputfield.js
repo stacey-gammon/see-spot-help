@@ -6,7 +6,6 @@ var ConstStrings = require("./conststrings");
 // @param validations {inputfieldvalidations[]} an array list of input field validations
 // that this field should run during the validate call.
 var InputField = function (validations) {
-    console.log(validations);
     this.hasError = false;
     this.validated = false;
     this.errorMessage = "";
