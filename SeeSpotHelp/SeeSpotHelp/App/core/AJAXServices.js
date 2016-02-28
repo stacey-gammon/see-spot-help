@@ -30,18 +30,34 @@ AJAXServices.GetChildData = function(path, child, value, onSuccess) {
     });
 };
 
-AJAXServices.prototype.GetFirebaseData = function(path) {
+AJAXServices.DetachLisenter = function(path, callback) {
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    ref.off("value", callback);
+}
+
+AJAXServices.prototype.GetFirebaseData = function(path, listen) {
     console.log("AJAXServices:GetFirebaseData for url " + path);
     var ref = new Firebase(this.firebaseURL + "/" + path);
     var outer = this;
-    ref.once("value", function (snapshot) {
-        console.log("AJAXServices.GetFirebaseData: Successfully called " + path);
-        console.log(snapshot.val());
-        outer.onSuccess(snapshot.val());
-    }, function (errorObject) {
-        console.log("The read failed: " + errorObject.code);
-        outer.onFailure(errorObject);
-    });
+    if (listen) {
+        ref.on("value", function (snapshot) {
+            console.log("AJAXServices.GetFirebaseData: Lisening on " + path);
+            console.log(snapshot.val());
+            outer.onSuccess(snapshot.val());
+        }, function (errorObject) {
+            console.log("The read failed: " + errorObject.code);
+            outer.onFailure(errorObject);
+        });
+    } else {
+        ref.once("value", function (snapshot) {
+            console.log("AJAXServices.GetFirebaseData: Successfully called " + path);
+            console.log(snapshot.val());
+            outer.onSuccess(snapshot.val());
+        }, function (errorObject) {
+            console.log("The read failed: " + errorObject.code);
+            outer.onFailure(errorObject);
+        });
+    }
 };
 
 AJAXServices.SetFirebaseData = function(path, value) {

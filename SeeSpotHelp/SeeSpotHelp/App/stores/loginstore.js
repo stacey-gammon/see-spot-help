@@ -5,6 +5,7 @@ var ActionConstants = require('../constants/actionconstants');
 var Volunteer = require('../core/volunteer');
 var LoginActions = require("../actions/loginactions");
 var VolunteerGroup = require('../core/volunteergroup');
+var AJAXServices = require('../core/AJAXServices');
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");
@@ -34,18 +35,20 @@ class LoginStore extends EventEmitter {
         return !!this.user;
     }
 
+    onUserDownloaded(user) {
+        console.log("LoginStore:onUserDownloaded: ", user);
+        this.user = Volunteer.castObject(user);
+        this.emitChange();
+    }
+
     // In case of a hard refresh, always attempt to re-grab the user data from local
     // storage if it doesn't exist.
     getUser() {
         if (!this.user) {
             var user = JSON.parse(localStorage.getItem("user"));
             if (user) {
-                console.log("grabbing user from local storage");
-                var onSuccess = function (user) {
-                    user = Volunteer.castObject(user);
-                    LoginActions.userLoggedIn(user);
-                };
-                Volunteer.LoadVolunteer(user.id, "", "", onSuccess);
+                new AJAXServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
+                    "users/" + user.id, true);
             }
         }
         return this.user;
@@ -57,6 +60,14 @@ class LoginStore extends EventEmitter {
 
     handleAction(action) {
         switch (action.type) {
+            // case ActionConstants.USER_UPDATED:
+            //     console.log("LoginStore:handleAction: USER_UPDATED with user: ",
+            //                 action.user);
+            //     this.user = action.user;
+            //     localStorage.setItem("user", JSON.stringify(this.user));
+            //     this.error = null;
+            //     this.emitChange();
+            //     break;
             case ActionConstants.LOGIN_USER_SUCCESS:
                 console.log("LoginStore:handleAction: LOGIN_USER_SUCCESS with user: ",
                             action.user);
@@ -73,6 +84,9 @@ class LoginStore extends EventEmitter {
 
             case ActionConstants.LOGOUT_USER:
                 console.log("LoginStore:handleAction:LOGOUT_USER");
+                AJAXServices.DetachLisenter(
+                    "users/" + this.user.id,
+                    this.onUserDownloaded.bind(this));
                 this.user = null;
                 this.error = null;
                 localStorage.setItem("user", null);
