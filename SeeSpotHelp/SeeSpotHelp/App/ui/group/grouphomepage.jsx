@@ -36,10 +36,10 @@ var GroupHomePage = React.createClass({
                     this.props.location.state.group ||
                     this.props.group;
 
-            if (LoginStore.getUser() && !group &&
-                LoginStore.getUser().defaultGroupId()) {
+            if (LoginStore.getUser() && !group) {
                 console.log("user = ", LoginStore.getUser());
-                console.log("Default Group id: " + LoginStore.getUser().defaultGroupId());
+                var defaultGroupId = LoginStore.getUser().defaultGroupId();
+                console.log("Default Group id: " + defaultGroupId);
                 group = GroupStore.getGroupById(LoginStore.getUser().defaultGroupId());
                 console.log(group);
             }

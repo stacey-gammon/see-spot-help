@@ -69,26 +69,25 @@ class GroupStore extends EventEmitter {
         return usersGroups;
     }
 
+    groupDownloaded(group) {
+        if (!group) {
+            console.log("WARN: group loaded data is null");
+            return;
+        }
+        console.log("groupDownloaded: group ", group);
+        group = VolunteerGroup.castObject(group);
+        for (var animal in group.animals) {
+            group.animals[animal] = Animal.castObject(group.animals[animal]);
+        }
+        this.groups[group.id] = group;
+        this.emitChange();
+        this.loadedUserGroups = true;
+    }
+
     downloadGroup(groupId) {
         var outer = this;
-        var groupLoaded = function (group) {
-            if (!group) {
-                console.log("WARN: group loaded data is null for groupId " + groupId);
-                return;
-            }
-            console.log("downloadGroup:Loading group");
-            console.log(group);
-            group = VolunteerGroup.castObject(group);
-            for (var animal in group.animals) {
-                group.animals[animal] = Animal.castObject(group.animals[animal]);
-            }
-            outer.groups[group.id] = group;
-            outer.emitChange();
-            outer.loadedUserGroups = true;
-        };
-
-        var dataServices = new AJAXServices(groupLoaded, null);
-        dataServices.GetFirebaseData("groups/" + groupId);
+        var dataServices = new AJAXServices(this.groupDownloaded.bind(this), null);
+        dataServices.GetFirebaseData("groups/" + groupId, true);
     }
 
     loadGroupsForUser(user) {
@@ -130,6 +129,9 @@ class GroupStore extends EventEmitter {
                 break;
             case ActionConstants.GROUP_DELETED:
                 console.log("GroupStore:handleaction: caught GROUP_DELETED");
+                AJAXServices.DetachLisenter(
+                    "groups/" + action.group.id,
+                    this.groupDownloaded.bind(this));
                 delete this.groups[action.group.id];
                 this.emitChange();
                 break;

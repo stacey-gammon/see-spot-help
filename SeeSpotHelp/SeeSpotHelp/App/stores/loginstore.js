@@ -95,7 +95,6 @@ class LoginStore extends EventEmitter {
 
             case ActionConstants.NEW_GROUP_ADDED:
             console.log("LoginStore:handleAction: Caught NEW_GROUP_ADDED");
-                this.user.defaultGroupId = action.group.id;
                 this.user.groups[action.group.id] =
                     VolunteerGroup.PermissionsEnum.ADMIN;
                 this.emitChange();
