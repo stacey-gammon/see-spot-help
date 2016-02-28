@@ -12,6 +12,7 @@ var AnimalNote = require("../../core/animalnote");
 var ConstStrings = require("../../core/conststrings");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
+var AnimalActions = require("../../actions/animalactions");
 
 var AddAnimalNote = React.createClass({
     getInitialState: function() {
@@ -55,6 +56,7 @@ var AddAnimalNote = React.createClass({
     submitNote: function () {
         var note = new AnimalNote(this.refs.note.value, this.state.animal.id, this.state.user.id);
         note.insert();
+        AnimalActions.animalActivityAdded(note);
         this.context.router.push(
             {
                 pathname: "animalHomePage",

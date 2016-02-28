@@ -63,8 +63,8 @@ class AnimalActivityStore extends EventEmitter {
 
     handleAction(action) {
         switch (action.type) {
-            case ActionConstants.ANIMAL_UPDATED:
-              //  this.loadGroupPermissionsForUser(action.user);
+            case ActionConstants.ANIMAL_ACTIVITY_ADDED:
+                this.animalNotes[action.activity.animalId] = action.activity;
             default:
                 break;
         };
