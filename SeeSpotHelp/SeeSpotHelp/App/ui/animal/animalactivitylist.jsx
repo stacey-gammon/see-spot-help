@@ -41,8 +41,8 @@ var AnimalActivityList = React.createClass({
     },
 
     render: function () {
-        console.log("AnimalActivityList:render");
         var notes = AnimalActivityStore.getActivityByAnimalId(this.props.animal.id);
+            console.log("AnimalActivityList:render with notes:", notes);
         var displayNotes = [];
         for (var i = 0; i < notes.length; i++) {
             displayNotes.push(this.generateAnimalNote(notes[i]));

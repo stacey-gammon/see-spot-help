@@ -53,6 +53,7 @@ class AnimalActivityStore extends EventEmitter {
     }
 
     getActivityByAnimalId(animalId) {
+        console.log("AnimalActivityStore:getActivityByAnimalId(" + animalId + ")");
         if (this.animalNotes[animalId]) {
             return this.animalNotes[animalId];
         } else {
@@ -64,7 +65,8 @@ class AnimalActivityStore extends EventEmitter {
     handleAction(action) {
         switch (action.type) {
             case ActionConstants.ANIMAL_ACTIVITY_ADDED:
-                this.animalNotes[action.activity.animalId] = action.activity;
+                this.animalNotes[action.activity.animalId].push(action.activity);
+                this.emitChange();
             default:
                 break;
         };
