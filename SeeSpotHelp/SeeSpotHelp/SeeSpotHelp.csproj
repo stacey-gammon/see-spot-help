@@ -172,6 +172,8 @@
     <Content Include="App\actions\volunteeractions.js" />
     <Content Include="App\actions\loginactions.js" />
     <Content Include="App\constants\actionconstants.js" />
+    <Content Include="App\core\animalactivity.js" />
+    <Content Include="App\core\animalnote.js" />
     <Content Include="App\core\utils.js" />
     <Content Include="App\dispatcher\dispatcher.js" />
     <Content Include="App\core\AJAXServices.js" />
