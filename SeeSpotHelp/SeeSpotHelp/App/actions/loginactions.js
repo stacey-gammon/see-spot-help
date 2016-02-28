@@ -4,6 +4,14 @@ var Dispatcher = require('../dispatcher/dispatcher');
 var ActionConstants = require('../constants/actionconstants');
 
 var LoginActions = {
+    userUpdated: function (user) {
+        console.log("LoginActions:userUpdated");
+        Dispatcher.dispatch({
+            type: ActionConstants.USER_UPDATED,
+            user: user
+        });
+    },
+
     userLoggedIn: function (user) {
         console.log("LoginActions:userLoggedIn");
         Dispatcher.dispatch({

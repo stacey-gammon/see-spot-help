@@ -19,11 +19,10 @@ var ProfilePage = React.createClass({
     },
 
     getInitialState: function () {
-        console.log("ProfilePage:getInitialState");
-        var user = LoginStore.user;
-        var groups = GroupStore.getUsersMemberGroups(user);
-        console.log("groups = ");
-        console.log(groups);
+        var user = LoginStore.getUser();
+        console.log("ProfilePage:getInitialState, user: ", user);
+        var groups = user ? GroupStore.getUsersMemberGroups(user) : [];
+        console.log("groups = ", groups);
         return {
             user: user,
             groups: groups

@@ -52,8 +52,12 @@ class GroupStore extends EventEmitter {
 
     getUsersMemberGroups(user) {
         var usersGroups = []
-        for (var groupId in this.groups) {
+        for (var groupId in user.groups) {
             console.log("getUsersMemberGroups:GroupId:", groupId);
+            if (!this.groups[groupId]) {
+                this.downloadGroup(groupId);
+                continue;
+            }
             if (user.id in this.groups[groupId].userPermissionsMap &&
                 this.groups[groupId].userPermissionsMap[user.id] !=
                     VolunteerGroup.PermissionsEnum.NONMEMBER &&
