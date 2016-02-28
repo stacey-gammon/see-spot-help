@@ -128,7 +128,7 @@ var routes = (
     <Route path="groupHomePage" component={GroupHomePage}/>
     <Route path="animalHomePage" component={AnimalHomePage} />
     <Route path="addNewGroup" component={AddNewGroup} />
-    <Route path="addAdoptablepage" component={AddAnimalPage} />
+    <Route path="addAnimalPage" component={AddAnimalPage} />
     <Route path="profilePage" component={ProfilePage} />
     <Route path="privateBetaPage" component={PrivateBetaPage} />
     <Route path="loginPage" component={LoginPage} />
