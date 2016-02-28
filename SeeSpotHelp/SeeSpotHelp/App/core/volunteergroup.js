@@ -2,7 +2,7 @@
 
 var ServerResponse = require("./serverresponse");
 var AJAXServices = require('./AJAXServices');
-var GroupActions = require('./actions/groupactions');
+var GroupActions = require('../actions/groupactions');
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of

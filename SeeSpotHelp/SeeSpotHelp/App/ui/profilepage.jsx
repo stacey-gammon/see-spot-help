@@ -5,13 +5,13 @@ var Link = require("react-router").Link;
 var Volunteer = require("../core/volunteer");
 var VolunteerGroup = require("../core/volunteergroup");
 var FacebookLogin = require("./facebooklogin");
-var ShelterInfoBox = require("./shelterinfobox");
-var AddNewShelter = require("./addnewshelter");
-var ShelterSearchPage = require("./sheltersearchpage");
+var GroupInfoBox = require("./group/groupinfobox");
+var AddNewGroup = require("./group/addnewgroup");
+var SearchPage = require("./searchpage");
 var LoginStore = require("../stores/loginstore");
 var GroupStore = require("../stores/groupstore");
 var LoginActions = require("../actions/loginactions");
-var GroupListItem = require("../ui/grouplistitem");
+var GroupListItem = require("./group/grouplistitem");
 
 var ProfilePage = React.createClass({
     contextTypes: {
@@ -63,7 +63,7 @@ var ProfilePage = React.createClass({
                     <h1>You are not part of any volunteer groups.  To get started&nbsp;
                     <Link to="shelterSearchPage">search</Link>
                     &nbsp;for a group to join, or&nbsp;
-                    <Link to="addNewShelter">add</Link> a new one.
+                    <Link to="AddNewGroup">add</Link> a new one.
                     </h1>
                 </div>
             );
@@ -76,7 +76,7 @@ var ProfilePage = React.createClass({
                         <h1>
                         <Link to="shelterSearchPage">Search</Link>
                             &nbsp;for a new group to join, or&nbsp;
-                        <Link to="addNewShelter">add</Link> your own!
+                        <Link to="AddNewGroup">add</Link> your own!
                         </h1>
                     </div>
                 </div>

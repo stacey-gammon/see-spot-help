@@ -8,8 +8,8 @@ var VolunteerGroup = require("../core/volunteergroup");
 var Volunteer = require("../core/volunteer");
 var ConstStrings = require("../core/conststrings");
 var LoginStore = require("../stores/loginstore");
-var ShelterInfoBox = require("../ui/shelterinfobox");
-var EditGroupButton = require("../ui/editgroupbutton");
+var GroupInfoBox = require("../ui/group/groupinfobox");
+var EditGroupButton = require("./group/editgroupbutton");
 var GroupStore = require("../stores/groupstore");
 var VolunteerStore = require("../stores/volunteerstore");
 
@@ -38,10 +38,14 @@ var MemberListItem = React.createClass({
     },
 
     onChange: function () {
+        var group = this.state.group ?
+            GroupStore.getGroupById(this.state.group) : null;
+        var member = this.props.member ?
+            VolunteerStore.getVolunteerById(this.props.member.id) : null;
         this.setState(
             {
-                member: VolunteerStore.getVolunteerById(this.props.member.id),
-                group: GroupStore.getGroupById(group.id)
+                member: member,
+                group: group
             });
     },
 

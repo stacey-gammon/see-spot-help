@@ -37,7 +37,7 @@ var MyNavBar = React.createClass({
         return (
             <Navbar ref="mynavbar" className="navbar navbar-light bg-faded">
                 <Nav className="nav navbar-nav navbar-custom">
-                    <LinkContainer to={{ pathname: "shelterHomePage", state: { user: this.state.user } }}>
+                    <LinkContainer to={{ pathname: "GroupHomePage", state: { user: this.state.user } }}>
                         <NavItem>
                             <span className="glyphicon glyphicon-home" />
                         </NavItem>

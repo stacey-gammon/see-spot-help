@@ -188,13 +188,13 @@
     <Content Include="App\stores\volunteerstore.js" />
     <Content Include="App\stores\loginstore.js" />
     <Content Include="App\stores\animalstore.js" />
-    <Content Include="App\tests\addnewshelterpage-test.jsx" />
+    <Content Include="App\tests\AddNewGrouppage-test.jsx" />
     <Content Include="App\tests\animalactionsbox-test.jsx" />
-    <Content Include="App\tests\shelteractionsbox-test.jsx" />
-    <Content Include="App\tests\shelterhomepage-test.jsx" />
-    <Content Include="App\tests\sheltersearchpage-test.jsx" />
+    <Content Include="App\tests\GroupActionsBox-test.jsx" />
+    <Content Include="App\tests\GroupHomePage-test.jsx" />
+    <Content Include="App\tests\searchpage-test.jsx" />
     <Content Include="App\ui\addadoptablepage.jsx" />
-    <Content Include="App\ui\addnewshelter.jsx" />
+    <Content Include="App\ui\AddNewGroup.jsx" />
     <Content Include="App\ui\animalactionsbox.jsx" />
     <Content Include="App\ui\animallist.jsx" />
     <Content Include="App\ui\animalhomepage.jsx" />
@@ -204,12 +204,12 @@
     <Content Include="App\ui\home.jsx" />
     <Content Include="App\ui\navbar.jsx" />
     <Content Include="App\ui\profilepage.jsx" />
-    <Content Include="App\ui\shelteractionsbox.jsx" />
-    <Content Include="App\ui\shelterhomepage.jsx" />
-    <Content Include="App\ui\shelterinfobox.jsx" />
-    <Content Include="App\ui\sheltersearchbox.jsx" />
-    <Content Include="App\ui\sheltersearchpage.jsx" />
-    <Content Include="App\ui\sheltersearchresults.jsx" />
+    <Content Include="App\ui\GroupActionsBox.jsx" />
+    <Content Include="App\ui\GroupHomePage.jsx" />
+    <Content Include="App\ui\groupinfobox.jsx" />
+    <Content Include="App\ui\searchbox.jsx" />
+    <Content Include="App\ui\searchpage.jsx" />
+    <Content Include="App\ui\searchresults.jsx" />
     <Content Include="App\ui\takephotobutton.jsx" />
     <Content Include="BHGtest.aspx" />
     <Content Include="public\fonts\glyphicons-halflings-regular.svg" />
@@ -699,8 +699,8 @@
     <Content Include="App\ui\leavegroupbutton.jsx" />
     <Content Include="App\ui\deletegroupbutton.jsx" />
     <None Include="App\ui\editgroupbutton.jsx" />
-    <Content Include="App\ui\shelteranimalstab.jsx" />
-    <Content Include="App\ui\sheltermemberstab.jsx" />
+    <Content Include="App\ui\groupanimalstab.jsx" />
+    <Content Include="App\ui\groupmemberstab.jsx" />
     <Content Include="App\ui\memberlistitem.jsx" />
     <None Include="scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
@@ -1402,7 +1402,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\packages\JavaScriptEngineSwitcher.V8.1.4.1\build\JavaScriptEngineSwitcher.V8.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JavaScriptEngineSwitcher.V8.1.4.1\build\JavaScriptEngineSwitcher.V8.props'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

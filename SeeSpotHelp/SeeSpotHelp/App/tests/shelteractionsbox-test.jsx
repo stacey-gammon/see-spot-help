@@ -6,23 +6,23 @@ var expect = require("expect"),
     VolunteerGroup = require("../core/volunteergroup"),
     ConstStrings = require("../core/conststrings"),
     LoginStore = require("../stores/loginstore"),
-    ShelterActionsBox = require("../ui/shelteractionsbox.jsx");
+    GroupActionsBox = require("../ui/GroupActionsBox.jsx");
 
 var d3 = require("d3");
 
-describe("ShelterActionsBox", function () {
+describe("GroupActionsBox", function () {
     it("LeaveButtonForMember", function () {
         var volunteer = new Volunteer("Sally", "sally@sally.com", "115");
         LoginStore.user = volunteer;
         var group = new VolunteerGroup("Group name", "shelter name", "address", "25");
         group.userPermissionsMap["115"] = VolunteerGroup.PermissionsEnum.MEMBER;
 
-        var shelterActionsBox = ReactTestUtils.renderIntoDocument(
-            <ShelterActionsBox group={group}/>
+        var GroupActionsBox = ReactTestUtils.renderIntoDocument(
+            <GroupActionsBox group={group}/>
         );
 
         ReactTestUtils.findRenderedDOMComponentWithClass(
-            shelterActionsBox, "leaveShelterButton");
+            GroupActionsBox, "leaveShelterButton");
     });
 
     it("NoLeaveButtonForNonMember", function () {
@@ -30,12 +30,12 @@ describe("ShelterActionsBox", function () {
         LoginStore.user = volunteer;
         var group = new VolunteerGroup("Group name", "shelter name", "address", "25");
 
-        var shelterActionsBox = ReactTestUtils.renderIntoDocument(
-            <ShelterActionsBox group={group}/>
+        var GroupActionsBox = ReactTestUtils.renderIntoDocument(
+            <GroupActionsBox group={group}/>
         );
 
         var leaveButtons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-            shelterActionsBox, "leaveShelterButton");
+            GroupActionsBox, "leaveShelterButton");
         expect(leaveButtons.length).toEqual(0);
     });
 
@@ -44,23 +44,23 @@ describe("ShelterActionsBox", function () {
         LoginStore.user = volunteer;
         var group = new VolunteerGroup("Group name", "shelter name", "address", "25");
 
-        var shelterActionsBox = ReactTestUtils.renderIntoDocument(
-            <ShelterActionsBox group={group}/>
+        var GroupActionsBox = ReactTestUtils.renderIntoDocument(
+            <GroupActionsBox group={group}/>
         );
 
         ReactTestUtils.findRenderedDOMComponentWithClass(
-            shelterActionsBox, "requestToJoinButton");
+            GroupActionsBox, "requestToJoinButton");
     });
     
     it("NoRequestJoinButtonForNotLoggedIn", function () {
         var group = new VolunteerGroup("Group name", "shelter name", "address", "25");
         LoginStore.user = null;
-        var shelterActionsBox = ReactTestUtils.renderIntoDocument(
-            <ShelterActionsBox group={group}/>
+        var GroupActionsBox = ReactTestUtils.renderIntoDocument(
+            <GroupActionsBox group={group}/>
         );
 
         var leaveButtons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-            shelterActionsBox, "requestToJoinButton");
+            GroupActionsBox, "requestToJoinButton");
         expect(leaveButtons.length).toEqual(0);
     });
 
@@ -70,12 +70,12 @@ describe("ShelterActionsBox", function () {
         var group = new VolunteerGroup("Group name", "shelter name", "address", "25");
         group.userPermissionsMap["115"] = VolunteerGroup.PermissionsEnum.MEMBER;
 
-        var shelterActionsBox = ReactTestUtils.renderIntoDocument(
-            <ShelterActionsBox group={group}/>
+        var GroupActionsBox = ReactTestUtils.renderIntoDocument(
+            <GroupActionsBox group={group}/>
         );
 
         var leaveButtons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-            shelterActionsBox, "requestToJoinButton");
+            GroupActionsBox, "requestToJoinButton");
         expect(leaveButtons.length).toEqual(0);
     });
 
@@ -85,12 +85,12 @@ describe("ShelterActionsBox", function () {
         var group = new VolunteerGroup("Group name", "shelter name", "address", "25");
         group.userPermissionsMap["115"] = VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
 
-        var shelterActionsBox = ReactTestUtils.renderIntoDocument(
-            <ShelterActionsBox group={group}/>
+        var GroupActionsBox = ReactTestUtils.renderIntoDocument(
+            <GroupActionsBox group={group}/>
         );
 
         var requestToJoinButton = ReactTestUtils.findRenderedDOMComponentWithClass(
-            shelterActionsBox, "requestToJoinButton");
+            GroupActionsBox, "requestToJoinButton");
         expect(requestToJoinButton.innerHTML).toEqual(ConstStrings.JoinRequestPending);
         expect(requestToJoinButton.disabled).toEqual(true);
     });
@@ -101,15 +101,15 @@ describe("ShelterActionsBox", function () {
         var group = new VolunteerGroup("Group name", "shelter name", "address", "25");
         group.userPermissionsMap["115"] = VolunteerGroup.PermissionsEnum.ADMIN;
 
-        var shelterActionsBox = ReactTestUtils.renderIntoDocument(
-            <ShelterActionsBox group={group}/>
+        var GroupActionsBox = ReactTestUtils.renderIntoDocument(
+            <GroupActionsBox group={group}/>
         );
 
         var requestToJoinButton = ReactDOM.findDOMNode(
-            shelterActionsBox.refs.requestToJoinButton);
+            GroupActionsBox.refs.requestToJoinButton);
         expect(requestToJoinButton).toEqual(null);
         var editButton = ReactDOM.findDOMNode(
-            shelterActionsBox.refs.editShelterButton);
+            GroupActionsBox.refs.editShelterButton);
         expect(editButton.disabled).toEqual(false);
     });
 });

@@ -4,21 +4,21 @@ var expect = require("expect"),
     Volunteer = require("../core/volunteer"),
     VolunteerGroup = require("../core/volunteergroup"),
     LoginStore = require("../stores/loginstore"),
-    ShelterSearchPage = require("../ui/sheltersearchpage.jsx");
+    SearchPage = require("../ui/searchpage.jsx");
 
 var d3 = require("d3");
 
-describe("ShelterSearchPage", function () {
+describe("SearchPage", function () {
     it("ShowEnabledAddButtonAfterSearchForLoggedInUser", function () {
         var user = new Volunteer("sally", "sallyemail", "123");
         LoginStore.user = user;
         var shelterSearchPage = ReactTestUtils.renderIntoDocument(
-            <ShelterSearchPage user={user}/>
+            <SearchPage user={user}/>
         );
 
         // No add button until the user actually starts a search.
         var addButtons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-            shelterSearchPage, "addNewShelterButton");
+            shelterSearchPage, "AddNewGroupButton");
         expect(addButtons.length).toEqual(0);
 
         var searchInput = ReactTestUtils.findRenderedDOMComponentWithClass(
@@ -30,18 +30,18 @@ describe("ShelterSearchPage", function () {
         ReactTestUtils.Simulate.click(searchButton);
 
         var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
-            shelterSearchPage, "addNewShelterButton");
+            shelterSearchPage, "AddNewGroupButton");
         expect(addButton.disabled).toEqual(false);
     });
 
     it("ShowDisabledAddButtonAfterSearchForNoUser", function () {
         LoginStore.user = null;
         var shelterSearchPage = ReactTestUtils.renderIntoDocument(
-            <ShelterSearchPage />
+            <SearchPage />
         );
         // No add button until the user actually starts a search.
         var addButtons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-            shelterSearchPage, "addNewShelterButton");
+            shelterSearchPage, "AddNewGroupButton");
         expect(addButtons.length).toEqual(0);
 
         var searchInput = ReactTestUtils.findRenderedDOMComponentWithClass(
@@ -53,7 +53,7 @@ describe("ShelterSearchPage", function () {
         ReactTestUtils.Simulate.click(searchButton);
 
         var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
-            shelterSearchPage, "addNewShelterButton");
+            shelterSearchPage, "AddNewGroupButton");
         expect(addButton.disabled).toEqual(true);
     });
 });

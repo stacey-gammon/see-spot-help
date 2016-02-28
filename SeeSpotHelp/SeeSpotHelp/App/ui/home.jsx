@@ -1,15 +1,15 @@
 ﻿"use strict"
 
-var ShelterHomePage = require("./shelterhomepage");
-var ShelterSearchPage = require("./sheltersearchpage");
+var GroupHomePage = require("./group/grouphomepage");
+var SearchPage = require("./searchpage");
 var AnimalHomePage = require("./animalHomePage");
-var AddNewShelter = require("./addnewshelter");
+var AddNewGroup = require("./group/addnewgroup");
 var AddAdoptablePage = require("./addadoptablepage");
 var ProfilePage = require("./profilepage");
 var LoginPage = require("./loginpage");
 var PrivateBetaPage = require("./privatebetapage");
-var ShelterAnimalsTab = require("./shelteranimalstab");
-var ShelterMembersTab = require("./sheltermemberstab");
+var GroupAnimalsTab = require("./group/groupanimalstab");
+var GroupMembersTab = require("./group/groupmemberstab");
 var MyNavBar = require("./navbar");
 
 var LoginService = require("../core/loginservice");
@@ -93,7 +93,7 @@ var Home = React.createClass({
         // page first.  If they don't, show them their profile page where there will be
         // instructions for how to search or add for a new volunteer group.
         if (LoginStore.user && LoginStore.user.getDefaultVolunteerGroup()) {
-            this.context.router.push("/shelterHomePage");
+            this.context.router.push("/GroupHomePage");
         } else if (LoginStore.user && LoginStore.user.inBeta) {
             this.context.router.push("/profilePage");
         } else if (LoginStore.user && !LoginStore.user.inBeta) {
@@ -123,16 +123,16 @@ var Home = React.createClass({
 
 var routes = (
   <Router path="/" component={Home}>
-    <Route path="shelterSearchPage" component={ShelterSearchPage}/>
-    <Route path="shelterHomePage" component={ShelterHomePage}/>
+    <Route path="shelterSearchPage" component={SearchPage}/>
+    <Route path="GroupHomePage" component={GroupHomePage}/>
     <Route path="animalHomePage" component={AnimalHomePage} />
-    <Route path="addNewShelter" component={AddNewShelter} />
+    <Route path="AddNewGroup" component={AddNewGroup} />
     <Route path="addAdoptablepage" component={AddAdoptablePage} />
     <Route path="profilePage" component={ProfilePage} />
     <Route path="privateBetaPage" component={PrivateBetaPage} />
     <Route path="loginPage" component={LoginPage} />
-    <Route path="shelterAnimalsTab" component={ShelterAnimalsTab} />
-    <Route path="shelterMembersTab" component={ShelterMembersTab} />
+    <Route path="shelterAnimalsTab" component={GroupAnimalsTab} />
+    <Route path="shelterMembersTab" component={GroupMembersTab} />
   </Router>
 );
 

@@ -109,7 +109,7 @@ var AddAdoptablePage = React.createClass({
                 Utils.CopyInputFieldsIntoObject(this.state.fields, animal);
                 animal.insert();
                 GroupActions.newAnimalAdded(this.state.group, animal);
-                this.context.router.push("/shelterHomePage");
+                this.context.router.push("/GroupHomePage");
             }
         }
     },

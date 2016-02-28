@@ -6,9 +6,9 @@ var FakeData = require("../core/fakedata");
 var Volunteer = require("../core/volunteer");
 var VolunteerGroup = require("../core/volunteergroup");
 var FacebookLogin = require("./facebooklogin");
-var ShelterInfoBox = require("./shelterinfobox");
-var AddNewShelter = require("./addnewshelter");
-var ShelterSearchPage = require("./sheltersearchpage");
+var GroupInfoBox = require("./group/groupinfobox");
+var AddNewGroup = require("./group/addnewgroup");
+var SearchPage = require("./searchpage");
 var LoginStore = require("../stores/loginstore");
 var AJAXServices = require("../core/AJAXServices");
 

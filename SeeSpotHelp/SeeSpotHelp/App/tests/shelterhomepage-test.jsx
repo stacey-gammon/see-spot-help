@@ -4,43 +4,43 @@ var expect = require("expect"),
     Volunteer = require("../core/volunteer"),
     VolunteerGroup = require("../core/volunteergroup"),
     LoginStore = require("../stores/loginstore"),
-    ShelterHomePage = require("../ui/shelterhomepage.jsx");
+    GroupHomePage = require("../ui/GroupHomePage.jsx");
 
 var d3 = require("d3");
 
-describe("ShelterHomePage", function () {
+describe("GroupHomePage", function () {
     it("ShowSearchBarNoUser", function () {
         LoginStore.user = null;
-        var shelterHomePage = ReactTestUtils.renderIntoDocument(
-            <ShelterHomePage />
+        var GroupHomePage = ReactTestUtils.renderIntoDocument(
+            <GroupHomePage />
         );
         ReactTestUtils.findRenderedDOMComponentWithClass(
-            shelterHomePage, "shelterSearchBox");
+            GroupHomePage, "SearchBox");
     });
 
     it("ShowSearchBarNullUser", function () {
         LoginStore.user = null;
-        var shelterHomePage = ReactTestUtils.renderIntoDocument(
-            <ShelterHomePage/>
+        var GroupHomePage = ReactTestUtils.renderIntoDocument(
+            <GroupHomePage/>
         );
         ReactTestUtils.findRenderedDOMComponentWithClass(
-            shelterHomePage, "shelterSearchBox");
+            GroupHomePage, "SearchBox");
     });
 
     it("ShowDefaultGroupLoggedIn", function () {
         var volunteer = new Volunteer("Sally", "sally@sally.com", "115");
         volunteer.groups = [VolunteerGroup.getFakeGroups()["123"]];
         LoginStore.user = volunteer;
-        var shelterHomePage = ReactTestUtils.renderIntoDocument(
-            <ShelterHomePage/>
+        var GroupHomePage = ReactTestUtils.renderIntoDocument(
+            <GroupHomePage/>
         );
 
         var inputFields = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            shelterHomePage, "input");
+            GroupHomePage, "input");
         expect(inputFields.length).toEqual(0);
 
         ReactTestUtils.findRenderedDOMComponentWithClass(
-            shelterHomePage, "shelterInfoBox");
+            GroupHomePage, "shelterInfoBox");
     });
 });
 
