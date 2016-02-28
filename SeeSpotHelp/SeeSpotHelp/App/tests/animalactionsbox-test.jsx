@@ -5,7 +5,7 @@ var expect = require("expect"),
     VolunteerGroup = require("../core/volunteergroup"),
     LoginStore = require("../stores/loginstore"),
     FakeData = require("../core/fakedata"),
-    AnimalActionsBox = require("../ui/animalactionsbox.jsx");
+    AnimalActionsBox = require("../ui/animal/animalactionsbox.jsx");
 
 var d3 = require("d3");
 

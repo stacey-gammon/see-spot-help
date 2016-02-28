@@ -50,12 +50,12 @@ class VolunteerStore extends EventEmitter {
         var onSuccess = function (user) {
             var volunteer = Volunteer.castObject(user);
             delete volunteer.groups[group.id];
-            AJAXServices.removeFirebaseData("users/" + user.id + "/groups/" + group.id);
+            AJAXServices.SetFirebaseData("users/" + user.id + "/groups/", volunteer.groups);
             outer.volunteers[user.id] = volunteer;
         }
 
-        for (var userId in group.userPermissions) {
-            var volunteer = this.volunteer[userId];
+        for (var userId in group.userPermissionsMap) {
+            var volunteer = this.volunteers[userId];
             if (!volunteer) {
                 Volunteer.LoadVolunteer(userId, "", "", onSuccess);
             } else {

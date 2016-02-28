@@ -20,6 +20,16 @@ AJAXServices.startStringSearch = function (path, child, searchText, onSuccess) {
         });
 };
 
+AJAXServices.GetChildData = function(path, child, value, onSuccess) {
+    console.log("AJAXServices:GetFirebaseData for url " + path);
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    ref.orderByChild(child).equalTo(value).once("value", function (snapshot) {
+        console.log("AJAXServices.GetChildData: Successfully called " + path);
+        console.log(snapshot.val());
+        onSuccess(snapshot.val());
+    });
+};
+
 AJAXServices.prototype.GetFirebaseData = function(path) {
     console.log("AJAXServices:GetFirebaseData for url " + path);
     var ref = new Firebase(this.firebaseURL + "/" + path);

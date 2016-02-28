@@ -58,6 +58,8 @@ class LoginStore extends EventEmitter {
     handleAction(action) {
         switch (action.type) {
             case ActionConstants.LOGIN_USER_SUCCESS:
+                console.log("LoginStore:handleAction: LOGIN_USER_SUCCESS with user: ",
+                            action.user);
                 this.user = action.user;
                 localStorage.setItem("user", JSON.stringify(this.user));
                 this.error = null;

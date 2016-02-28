@@ -2,14 +2,15 @@
 
 var GroupHomePage = require("./group/grouphomepage");
 var SearchPage = require("./searchpage");
-var AnimalHomePage = require("./animalHomePage");
+var AnimalHomePage = require("./animal/animalHomePage");
 var AddNewGroup = require("./group/addnewgroup");
-var AddAdoptablePage = require("./addadoptablepage");
+var AddAnimalPage = require("./animal/addanimalpage");
 var ProfilePage = require("./profilepage");
 var LoginPage = require("./loginpage");
 var PrivateBetaPage = require("./privatebetapage");
 var GroupAnimalsTab = require("./group/groupanimalstab");
 var GroupMembersTab = require("./group/groupmemberstab");
+var AddAnimalNote = require("./animal/addanimalnote");
 var MyNavBar = require("./navbar");
 
 var LoginService = require("../core/loginservice");
@@ -127,12 +128,13 @@ var routes = (
     <Route path="groupHomePage" component={GroupHomePage}/>
     <Route path="animalHomePage" component={AnimalHomePage} />
     <Route path="addNewGroup" component={AddNewGroup} />
-    <Route path="addAdoptablepage" component={AddAdoptablePage} />
+    <Route path="addAdoptablepage" component={AddAnimalPage} />
     <Route path="profilePage" component={ProfilePage} />
     <Route path="privateBetaPage" component={PrivateBetaPage} />
     <Route path="loginPage" component={LoginPage} />
     <Route path="groupAnimalsTab" component={GroupAnimalsTab} />
     <Route path="groupMembersTab" component={GroupMembersTab} />
+    <Route path="addAnimalNote" component={AddAnimalNote} />
   </Router>
 );
 
