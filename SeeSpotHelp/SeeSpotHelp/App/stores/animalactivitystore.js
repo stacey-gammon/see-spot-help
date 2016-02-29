@@ -38,18 +38,37 @@ class AnimalActivityStore extends EventEmitter {
         this.emit(CHANGE_EVENT);
     }
 
-    downloadAnimalNotes(animalId) {
-        var outer = this;
-        var onSuccess = function(notes) {
-            outer.animalNotes[animalId] = [];
-            for (var noteId in notes) {
-                var animalNote = AnimalNote.castObject(notes[noteId]);
-                outer.animalNotes[animalId].push(animalNote);
-                console.log("Downloaded note: ", animalNote);
+    animalNotesDownloaded(notes) {
+        var animalId;
+        var notesFound = false;
+        for (var noteId in notes) {
+            animalId = notes[noteId].animalId;
+            var animalNote = AnimalNote.castObject(notes[noteId]);
+            if (!this.animalNotes[animalId]) {
+                this.animalNotes[animalId] = [];
             }
-            outer.emitChange();
-        };
-        AJAXServices.GetChildData("notes", "animalId", animalId, onSuccess);
+            this.animalNotes[animalId].push(animalNote);
+            notesFound = true;
+        }
+        if (notesFound) {
+            this.animalNotes[animalId].sort(function(a, b){
+                return a.timestamp < b.timestamp ? 1 : -1;
+            });
+        }
+        this.emitChange();
+    }
+
+    downloadAnimalNotes(animalId) {
+        // So we don't try to download it again if there are no notes (e.g. differentiate from
+        // null).
+        this.animalNotes[animalId] = [];
+
+        AJAXServices.GetChildData(
+            "notes",
+            "animalId",
+            animalId,
+            this.animalNotesDownloaded.bind(this),
+            true);
     }
 
     getActivityByAnimalId(animalId) {
@@ -66,6 +85,9 @@ class AnimalActivityStore extends EventEmitter {
         switch (action.type) {
             case ActionConstants.ANIMAL_ACTIVITY_ADDED:
                 this.animalNotes[action.activity.animalId].push(action.activity);
+                this.animalNotes[action.activity.animalId].sort(function(a, b){
+                    return a.timestamp < b.timestamp ? 1 : -1;
+                });
                 this.emitChange();
             default:
                 break;

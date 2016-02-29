@@ -11,7 +11,8 @@ var ActionConstants = Object.freeze(
         MEMBER_DOWNLOADED: 6,
         GROUP_DELETED: 7,
         ANIMAL_ACTIVITY_ADDED: 8,
-        USER_UPDATED: 9
+        USER_UPDATED: 9,
+        GROUP_UPDATED: 10
     }
 );
 

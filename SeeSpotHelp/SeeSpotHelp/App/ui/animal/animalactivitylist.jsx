@@ -3,6 +3,7 @@
 var React = require('react');
 var AnimalActivityStore = require("../../stores/animalactivitystore");
 var VolunteerStore = require("../../stores/volunteerstore");
+var AnimalActivityItem = require("./animalactivityitem");
 
 var AnimalActivityList = React.createClass({
     getInitialState: function() {
@@ -30,19 +31,16 @@ var AnimalActivityList = React.createClass({
     },
 
     generateAnimalNote: function (note) {
-        console.log("generateAnimalNote, note = ", note);
         return (
             <a>
-                <div className="list-group-item">
-                    {note.toDisplayString(VolunteerStore.getVolunteerById(note.byUserId))}
-                </div>
+                <AnimalActivityItem animalActivity={note} group={this.props.group}/>
             </a>
         );
     },
 
     render: function () {
         var notes = AnimalActivityStore.getActivityByAnimalId(this.props.animal.id);
-            console.log("AnimalActivityList:render with notes:", notes);
+        console.log("AnimalActivityList:render with notes:", notes);
         var displayNotes = [];
         for (var i = 0; i < notes.length; i++) {
             displayNotes.push(this.generateAnimalNote(notes[i]));

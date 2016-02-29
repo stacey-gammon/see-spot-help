@@ -56,13 +56,13 @@ var ProfilePage = React.createClass({
 
     getGroups: function() {
         console.log("ProfilePage:getGroups");
-        if (this.state.groups.length == 0 && GroupStore.loadedUserGroups) {
+        if (this.state.groups.length == 0) {
             return (
                 <div>
                     <h1>You are not part of any volunteer groups.  To get started&nbsp;
-                    <Link to="shelterSearchPage">search</Link>
+                    <Link to="searchPage">search</Link>
                     &nbsp;for a group to join, or&nbsp;
-                    <Link to="AddNewGroup">add</Link> a new one.
+                    <Link to="addNewGroup">add</Link> a new one.
                     </h1>
                 </div>
             );
@@ -73,9 +73,9 @@ var ProfilePage = React.createClass({
                     {groups}
                     <div>
                         <h1>
-                        <Link to="shelterSearchPage">Search</Link>
+                        <Link to="searchPage">Search</Link>
                             &nbsp;for a new group to join, or&nbsp;
-                        <Link to="AddNewGroup">add</Link> your own!
+                        <Link to="addNewGroup">add</Link> your own!
                         </h1>
                     </div>
                 </div>

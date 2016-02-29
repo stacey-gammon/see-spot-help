@@ -45,9 +45,15 @@ var GroupActionsBox = React.createClass({
         }
         var group = VolunteerGroup.castObject(this.state.group);
         var user = Volunteer.castObject(this.state.user);
-        group.requestToJoin(user);
-        this.refs.requestToJoinButton.disabled = true;
-        this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
+        var pending = this.state.permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
+        if (pending) {
+            this.state.group.updateMembership(user, VolunteerGroup.PermissionsEnum.NONMEMBER);
+            this.refs.requestToJoinButton.innerHTML = ConstStrings.RequestToJoin;
+        } else {
+            group.requestToJoin(user);
+            this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
+        }
+        GroupActions.groupUpdated(this);
     },
 
     getRequestToJoinButton: function () {
@@ -64,7 +70,6 @@ var GroupActionsBox = React.createClass({
         return (
             <button className="btn btn-warning requestToJoinButton buttonPadding"
                     ref="requestToJoinButton"
-                    disabled={pending}
                     onClick={this.requestToJoin}>
                 {text}
             </button>

@@ -115,6 +115,7 @@ class GroupStore extends EventEmitter {
     handleAction(action) {
         console.log("GroupStore:handleAction: " + action.type);
         switch (action.type) {
+            case ActionConstants.GROUP_UPDATED:
             case ActionConstants.NEW_GROUP_ADDED:
                 this.groups[action.group.id] = action.group;
                 this.emitChange();
@@ -129,7 +130,7 @@ class GroupStore extends EventEmitter {
                 break;
             case ActionConstants.GROUP_DELETED:
                 console.log("GroupStore:handleaction: caught GROUP_DELETED");
-                AJAXServices.DetachLisenter(
+                AJAXServices.DetachListener(
                     "groups/" + action.group.id,
                     this.groupDownloaded.bind(this));
                 delete this.groups[action.group.id];

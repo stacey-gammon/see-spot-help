@@ -11,6 +11,7 @@ var LoginStore = require("../stores/loginstore");
 var GroupInfoBox = require("../ui/group/groupinfobox");
 var EditGroupButton = require("./group/editgroupbutton");
 var GroupStore = require("../stores/groupstore");
+var GroupActions = require("../actions/groupactions");
 var VolunteerStore = require("../stores/volunteerstore");
 
 var MemberListItem = React.createClass({
@@ -51,11 +52,13 @@ var MemberListItem = React.createClass({
 
     approveMembership: function () {
         this.state.group.updateMembership(this.props.member, VolunteerGroup.PermissionsEnum.MEMBER);
+        GroupActions.groupUpdated(this);
     },
 
     denyMembership: function () {
         this.state.group.updateMembership(
             this.props.member, VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED);
+        GroupActions.groupUpdated(this);
     },
 
     getApproveMembershipButton: function() {
@@ -115,7 +118,8 @@ var MemberListItem = React.createClass({
         var userPermission = group.getUserPermissions(this.state.user.id);
         // TODO: Give admins a way to view previously booted or denied members so they have a
         // chance to re-add (but hide by default).
-        if (memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
+
+        if (memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ) {
             if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN) {
                 className += " membershipRevokedStyle";
             } else {
@@ -124,8 +128,19 @@ var MemberListItem = React.createClass({
             }
         }
 
+        if (memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPPENDING) {
+           if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN ||
+               this.props.member.id == this.state.user.id) {
+               className += " membershipPendingStyle";
+           } else {
+               // Regular members can't see members denied by the admin.
+               return null;
+           }
+       }
+
         var extraInfo = memberPermission == VolunteerGroup.PermissionsEnum.ADMIN ? "(admin)" : "";
-        if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN) {
+        if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN ||
+            this.props.member.id == this.state.user.id) {
             extraInfo = memberPermission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ?
                 "(membership pending)" :
                 memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ?

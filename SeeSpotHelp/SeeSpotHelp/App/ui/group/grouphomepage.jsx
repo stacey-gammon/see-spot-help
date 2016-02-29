@@ -7,6 +7,8 @@ var SearchBox = require("../searchbox");
 var GroupInfoBox = require("./groupinfobox");
 var GroupMembersTab = require("./groupmemberstab");
 var GroupAnimalsTab = require("./groupanimalstab");
+var GroupActivityTab = require("./groupactivitytab");
+
 var GroupActionsBox = require("./groupactionsbox");
 var FakeData = require("../../core/fakedata");
 var Volunteer = require("../../core/volunteer");
@@ -86,6 +88,9 @@ var GroupHomePage = React.createClass({
                         <Tab eventKey={2} title={memberTitle}>
                             <GroupMembersTab group={this.state.group} user={this.state.user}/>
                         </Tab>
+                        <Tab eventKey={3} title="Activity">
+                            <GroupActivityTab group={this.state.group} user={this.state.user}/>
+                        </Tab>
                     </Tabs>
                 </div>
             );
@@ -94,9 +99,9 @@ var GroupHomePage = React.createClass({
                 <div>
                     <h1>
                         You are not part of any volunteer groups.  To get started&nbsp;
-                    <Link to="shelterSearchPage">search</Link>
+                    <Link to="searchPage">search</Link>
                         &nbsp;for a group to join, or&nbsp;
-                    <Link to="AddNewGroup">add</Link> a new one.
+                    <Link to="addNewGroup">add</Link> a new one.
                     </h1>
                 </div>
             );
@@ -104,7 +109,7 @@ var GroupHomePage = React.createClass({
             return (
             <div>
                 <h1>To get started&nbsp;
-                <Link to="shelterSearchPage">search</Link>
+                <Link to="searchPage">search</Link>
                     &nbsp;for a group, or <Link to="loginPage">log in</Link> to join or add one.
                 </h1>
             </div>

@@ -20,17 +20,25 @@ AJAXServices.startStringSearch = function (path, child, searchText, onSuccess) {
         });
 };
 
-AJAXServices.GetChildData = function(path, child, value, onSuccess) {
+AJAXServices.GetChildData = function(path, child, value, onSuccess, listen) {
     console.log("AJAXServices:GetFirebaseData for url " + path);
     var ref = new Firebase(this.firebaseURL + "/" + path);
-    ref.orderByChild(child).equalTo(value).once("value", function (snapshot) {
-        console.log("AJAXServices.GetChildData: Successfully called " + path);
-        console.log(snapshot.val());
-        onSuccess(snapshot.val());
-    });
+    if (listen) {
+        ref.orderByChild(child).equalTo(value).on("value", function (snapshot) {
+            console.log("AJAXServices.GetChildData: Successfully called " + path);
+            console.log(snapshot.val());
+            onSuccess(snapshot.val());
+        });
+    } else {
+        ref.orderByChild(child).equalTo(value).once("value", function (snapshot) {
+            console.log("AJAXServices.GetChildData: Successfully called " + path);
+            console.log(snapshot.val());
+            onSuccess(snapshot.val());
+        });
+    }
 };
 
-AJAXServices.DetachLisenter = function(path, callback) {
+AJAXServices.DetachListener = function(path, callback) {
     var ref = new Firebase(this.firebaseURL + "/" + path);
     ref.off("value", callback);
 }

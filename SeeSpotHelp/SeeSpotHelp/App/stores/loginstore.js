@@ -84,7 +84,7 @@ class LoginStore extends EventEmitter {
 
             case ActionConstants.LOGOUT_USER:
                 console.log("LoginStore:handleAction:LOGOUT_USER");
-                AJAXServices.DetachLisenter(
+                AJAXServices.DetachListener(
                     "users/" + this.user.id,
                     this.onUserDownloaded.bind(this));
                 this.user = null;
