@@ -6,9 +6,14 @@ var LoginStore = require("../stores/loginstore");
 
 var AnimalActions = {
     animalActivityAdded: function (activity) {
-        console.log("AnimalActions:animalUpdated");
         Dispatcher.dispatch({
             type: ActionConstants.ANIMAL_ACTIVITY_ADDED,
+            activity: activity
+        });
+    },
+    animalActivityDeleted: function (activity) {
+        Dispatcher.dispatch({
+            type: ActionConstants.ANIMAL_ACTIVITY_DELETED,
             activity: activity
         });
     },

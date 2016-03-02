@@ -20,15 +20,20 @@ var AddAnimalNote = React.createClass({
             this.props.location ? this.props.location.state.editMode : null;
         var animal = this.props.animal ? this.props.animal :
             this.props.location ? this.props.location.state.animal : null;
-        var group = this.props.animal ? this.props.group :
+        var group = this.props.group ? this.props.group :
             this.props.location ? this.props.location.state.group : null;
+        var activity = this.props.activity ? this.props.activity :
+            this.props.location ? this.props.location.state.activity : null;
+
+        console.log("animal: ", animal);
 
         var user = LoginStore.getUser();
         return {
             user: user,
             animal: animal,
             editMode: editMode,
-            group: group
+            group: group,
+            activity: activity
         };
     },
     contextTypes: {
@@ -54,27 +59,50 @@ var AddAnimalNote = React.createClass({
     },
 
     submitNote: function () {
-        var note = new AnimalNote(this.refs.note.value, this.state.animal.id, this.state.user.id);
-        note.insert();
-        AnimalActions.animalActivityAdded(note);
-        this.context.router.push(
-            {
-                pathname: "animalHomePage",
-                state: {
-                    group: this.state.group,
-                    animal: this.state.animal,
-                    user: this.state.user
-                }
-            });
+        if (this.state.editMode) {
+            this.state.activity.note = this.refs.note.value;
+            this.state.activity.update();
+        } else {
+            var note = new AnimalNote(
+                this.refs.note.value,
+                this.state.animal.id,
+                this.state.user.id);
+            note.insert();
+            AnimalActions.animalActivityAdded(note);
+        }
+        if (this.state.animal) {
+            this.context.router.push(
+                {
+                    pathname: "animalHomePage",
+                    state: {
+                        group: this.state.group,
+                        animal: this.state.animal,
+                        user: this.state.user
+                    }
+                });
+        } else {
+            this.context.router.push(
+                {
+                    pathname: "groupHomePage",
+                    state: {
+                        group: this.state.group,
+                        user: this.state.user
+                    }
+                });
+        }
     },
 
     render: function () {
         console.log("AddAnimalNote:render:");
+        var value = this.state.editMode ? this.state.activity.note : "";
+        var buttonText = this.state.editMode ? "Update" : "Post";
         return (
             <div>
-                <textarea className="form-control" ref="note" rows="5" id="comment"/>
+                <textarea className="form-control" ref="note" rows="5" id="comment"
+                          defaultValue={value}>
+                </textarea>
                 <button className="btn btn-primary" onClick={this.submitNote}>
-                    Post
+                    {buttonText}
                 </button>
             </div>
         );

@@ -20,20 +20,41 @@ AJAXServices.startStringSearch = function (path, child, searchText, onSuccess) {
         });
 };
 
+AJAXServices.OnChildRemoved = function(path, child, value, onSuccess) {
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    ref.orderByChild(child).equalTo(value).on("child_removed", function (snapshot) {
+        onSuccess(snapshot);
+    });
+}
+
+AJAXServices.OnChildAdded = function(path, child, value, onSuccess) {
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    ref.orderByChild(child).equalTo(value).on("child_added", function (snapshot) {
+        onSuccess(snapshot);
+    });
+}
+
+AJAXServices.OnChildChanged = function(path, child, value, onSuccess) {
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    ref.orderByChild(child).equalTo(value).on("child_changed", function (snapshot) {
+        onSuccess(snapshot);
+    });
+}
+
 AJAXServices.GetChildData = function(path, child, value, onSuccess, listen) {
     console.log("AJAXServices:GetFirebaseData for url " + path);
     var ref = new Firebase(this.firebaseURL + "/" + path);
     if (listen) {
-        ref.orderByChild(child).equalTo(value).on("value", function (snapshot) {
+        ref.orderByChild(child).equalTo(value).on("child_added", function (snapshot) {
             console.log("AJAXServices.GetChildData: Successfully called " + path);
             console.log(snapshot.val());
-            onSuccess(snapshot.val());
+            onSuccess(snapshot);
         });
     } else {
         ref.orderByChild(child).equalTo(value).once("value", function (snapshot) {
             console.log("AJAXServices.GetChildData: Successfully called " + path);
             console.log(snapshot.val());
-            onSuccess(snapshot.val());
+            onSuccess(snapshot);
         });
     }
 };

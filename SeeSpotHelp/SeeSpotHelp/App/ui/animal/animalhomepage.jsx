@@ -70,7 +70,9 @@ var AnimalHomePage = React.createClass({
                     <AnimalActionsBox group={this.state.group}
                                       user={this.state.user}
                                       animal={animal}/>
-                    <AnimalActivityList user={this.state.user} animal={animal} />
+                    <AnimalActivityList user={this.state.user}
+                                        group={this.state.group}
+                                        animal={animal} />
                 </div>
             );
         } else {

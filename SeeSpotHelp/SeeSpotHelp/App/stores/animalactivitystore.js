@@ -38,24 +38,59 @@ class AnimalActivityStore extends EventEmitter {
         this.emit(CHANGE_EVENT);
     }
 
-    animalNotesDownloaded(notes) {
-        var animalId;
-        var notesFound = false;
-        for (var noteId in notes) {
-            animalId = notes[noteId].animalId;
-            var animalNote = AnimalNote.castObject(notes[noteId]);
+    activityAdded(snapshot) {
+        if (snapshot.val()) {
+            var activity = AnimalNote.castObject(snapshot.val());
+            // Wait for the subsequent update call. This is all inefficient.
+            if (activity.id == null) return;
+            var animalId = activity.animalId;
             if (!this.animalNotes[animalId]) {
                 this.animalNotes[animalId] = [];
             }
-            this.animalNotes[animalId].push(animalNote);
-            notesFound = true;
-        }
-        if (notesFound) {
+            this.animalNotes[animalId].push(activity);
             this.animalNotes[animalId].sort(function(a, b){
                 return a.timestamp < b.timestamp ? 1 : -1;
             });
+            this.emitChange();
         }
-        this.emitChange();
+    }
+
+    activityDeleted(snapshot) {
+        var deletedActivity = snapshot.val();
+        var activities = this.animalNotes[deletedActivity.animalId];
+        for (var i = 0; i < activities.length; i++) {
+            if (activities[i].id == deletedActivity.id) {
+                this.animalNotes[deletedActivity.animalId].splice(i, 1);
+                this.emitChange();
+                return;
+            }
+        }
+    }
+
+    activityChanged(snapshot) {
+        var changedActivity = AnimalNote.castObject(snapshot.val());
+        var activities = this.animalNotes[changedActivity.animalId];
+        for (var i = 0; i < activities.length; i++) {
+            if (activities[i].id == changedActivity.id) {
+                activities[i] = changedActivity;
+                this.emitChange();
+                return;
+            }
+        }
+        // Most likely a push call followed by an update call so we can store the id in the
+        // object.
+        this.activityAdded(snapshot);
+    }
+
+    getActivityById(id) {
+        // TODO: may have to change this data structure so we can avoid
+        // the loops.
+        for (var activities in this.animalNotes) {
+            for (var i = 0; i < this.animalNotes[activities].length; i++) {
+                var activity = this.animalNotes[activities][i];
+                if (activity.id == id) return activity;
+            }
+        }
     }
 
     downloadAnimalNotes(animalId) {
@@ -63,12 +98,21 @@ class AnimalActivityStore extends EventEmitter {
         // null).
         this.animalNotes[animalId] = [];
 
-        AJAXServices.GetChildData(
+        AJAXServices.OnChildAdded(
             "notes",
             "animalId",
             animalId,
-            this.animalNotesDownloaded.bind(this),
-            true);
+            this.activityAdded.bind(this));
+        AJAXServices.OnChildRemoved(
+            "notes",
+            "animalId",
+            animalId,
+            this.activityDeleted.bind(this));
+        AJAXServices.OnChildChanged(
+            "notes",
+            "animalId",
+            animalId,
+            this.activityChanged.bind(this));
     }
 
     getActivityByAnimalId(animalId) {
@@ -83,12 +127,15 @@ class AnimalActivityStore extends EventEmitter {
 
     handleAction(action) {
         switch (action.type) {
-            case ActionConstants.ANIMAL_ACTIVITY_ADDED:
-                this.animalNotes[action.activity.animalId].push(action.activity);
-                this.animalNotes[action.activity.animalId].sort(function(a, b){
-                    return a.timestamp < b.timestamp ? 1 : -1;
-                });
-                this.emitChange();
+            // case ActionConstants.ANIMAL_ACTIVITY_DELETED:
+            //     var index = this.animalNotes[action.activity.animalId].indexOf(action.activity,
+            //         function(a, b) {
+            //             return a.id == b.id;
+            //         });
+            //     this.animalNotes[action.activity.animalId].splice(index);
+            //     this.emitChange();
+            //case ActionConstants.ANIMAL_ACTIVITY_ADDED:
+            //    this.emitChange();
             default:
                 break;
         };
