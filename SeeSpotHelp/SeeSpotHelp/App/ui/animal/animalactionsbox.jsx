@@ -70,6 +70,7 @@ var AnimalActionsBox = React.createClass({
         return (
             <div>
                 <LinkContainer
+                    disabled={!this.shouldAllowUserToEdit()}
                     to={{ pathname: "addAnimalNote",
                         state: { user: this.state.user,
                                  animal: this.props.animal,

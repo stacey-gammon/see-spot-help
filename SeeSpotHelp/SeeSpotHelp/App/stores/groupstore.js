@@ -1,15 +1,13 @@
-﻿"use strict";
+"use strict";
 
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
 var Animal = require('../core/animal');
 var AJAXServices = require('../core/AJAXServices');
-var Firebase = require("firebase");
-var GroupActions = require("../actions/groupactions");
+var AnimalStore = require("../stores/animalstore");
 
 var EventEmitter = require('events').EventEmitter;
-var assign = require("object-assign");
 
 var CHANGE_EVENT = "change";
 
@@ -51,7 +49,7 @@ class GroupStore extends EventEmitter {
     }
 
     getUsersMemberGroups(user) {
-        var usersGroups = []
+        var usersGroups = [];
         for (var groupId in user.groups) {
             console.log("getUsersMemberGroups:GroupId:", groupId);
             if (!this.groups[groupId]) {
@@ -74,7 +72,6 @@ class GroupStore extends EventEmitter {
             console.log("WARN: group loaded data is null");
             return;
         }
-        console.log("groupDownloaded: group ", group);
         group = VolunteerGroup.castObject(group);
         for (var animal in group.animals) {
             group.animals[animal] = Animal.castObject(group.animals[animal]);
@@ -85,9 +82,9 @@ class GroupStore extends EventEmitter {
     }
 
     downloadGroup(groupId) {
-        var outer = this;
         var dataServices = new AJAXServices(this.groupDownloaded.bind(this), null);
         dataServices.GetFirebaseData("groups/" + groupId, true);
+        AnimalStore.downloadAnimals(groupId);
     }
 
     loadGroupsForUser(user) {
@@ -120,9 +117,18 @@ class GroupStore extends EventEmitter {
                 this.groups[action.group.id] = action.group;
                 this.emitChange();
                 break;
-            case ActionConstants.NEW_ANIMAL_ADDED:
-            case ActionConstants.ANIMAL_UPDATED:
-                this.groups[action.group.id].animals[action.animal.id] = action.animal;
+            case ActionConstants.ANIMAL_ADDED:
+            case ActionConstants.ANIMAL_CHANGED:
+                var animal = action.animal;
+                var group = this.groups[animal.groupId];
+                if (group) {
+                    group.animals[animal.id] = animal;
+                    this.emitChange();
+                }
+                break;
+            case ActionConstants.ANIMAL_DELETED:
+                var deletedAnimal = action.animal;
+                delete this.groups[deletedAnimal.groupId].animals[deletedAnimal.id];
                 this.emitChange();
                 break;
             case ActionConstants.LOGIN_USER_SUCCESS:
@@ -138,8 +144,8 @@ class GroupStore extends EventEmitter {
                 break;
             default:
                 break;
-        };
+        }
     }
-};
+}
 
 module.exports = new GroupStore();

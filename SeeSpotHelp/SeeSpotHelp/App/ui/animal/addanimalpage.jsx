@@ -54,6 +54,7 @@ var AddAnimalPage = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     validateFields: function () {
         console.log("AddAnimalPage::validateFields");
         var errorFound = false;
@@ -73,17 +74,6 @@ var AddAnimalPage = React.createClass({
             this.setState({ fields: this.state.fields });
         }
         return errorFound;
-    },
-
-    insertGroupCallback: function (group, serverResponse) {
-        console.log("AddAnimalPage::insertGroupCallback");
-        if (serverResponse.hasError) {
-            // Show error message to user.
-            this.setState({ errorMessage: serverResponse.errorMessage });
-        } else {
-            // TODO: Navigate to newly inserted group home page.
-            this.setState({ errorMessage: "Success!" });
-        }
     },
 
     addNewAnimal: function () {
@@ -109,7 +99,16 @@ var AddAnimalPage = React.createClass({
                 Utils.CopyInputFieldsIntoObject(this.state.fields, animal);
                 animal.insert();
                 GroupActions.newAnimalAdded(this.state.group, animal);
-                this.context.router.push("/GroupHomePage");
+                this.context.router.push(
+                    {
+                        pathname: "GroupHomePage",
+                        state: {
+                            group: this.state.group,
+                            animal: this.state.animal,
+                            user: this.state.user
+                        }
+                    }
+                );
             }
         }
     },
@@ -132,6 +131,29 @@ var AddAnimalPage = React.createClass({
         );
     },
 
+    deleteAnimal: function() {
+        this.state.animal.delete();
+        this.context.router.push(
+            {
+                pathname: "GroupHomePage",
+                state: {
+                    group: this.state.group,
+                    user: this.state.user
+                }
+            }
+        );
+    },
+
+    getDeleteButton: function() {
+        if (!this.state.editMode) return null;
+        return (
+            <button className="btn btn-danger"
+                    onClick={this.deleteAnimal}>
+                Delete
+            </button>
+        );
+    },
+
     render: function () {
         console.log("AddAnimalPage: render");
         if (this.state.user == null) {
@@ -151,6 +173,7 @@ var AddAnimalPage = React.createClass({
                 <TakePhotoButton user={this.state.user} group={this.state.group} animal={this.state.animal}/>
                 <button className="btn btn-primary addAdoptableButton"
                         onClick={this.addNewAnimal}>{buttonText}</button>
+                {this.getDeleteButton()}
             </div>
         );
     }

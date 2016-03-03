@@ -80,7 +80,6 @@ var GroupActionsBox = React.createClass({
         console.log("GroupActionsBox:render:");
         return (
             <div className="GroupActionsBox">
-                <LeaveGroupButton group={this.state.group} user={this.state.user}/>
                 {this.getRequestToJoinButton()}
             </div>
         );

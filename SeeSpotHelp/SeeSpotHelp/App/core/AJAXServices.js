@@ -20,23 +20,44 @@ AJAXServices.startStringSearch = function (path, child, searchText, onSuccess) {
         });
 };
 
-AJAXServices.OnChildRemoved = function(path, child, value, onSuccess) {
+AJAXServices.OnMatchingChildRemoved = function(path, child, value, onSuccess) {
     var ref = new Firebase(this.firebaseURL + "/" + path);
     ref.orderByChild(child).equalTo(value).on("child_removed", function (snapshot) {
         onSuccess(snapshot);
     });
 }
 
-AJAXServices.OnChildAdded = function(path, child, value, onSuccess) {
+AJAXServices.OnMatchingChildAdded = function(path, child, value, onSuccess) {
     var ref = new Firebase(this.firebaseURL + "/" + path);
     ref.orderByChild(child).equalTo(value).on("child_added", function (snapshot) {
         onSuccess(snapshot);
     });
 }
 
-AJAXServices.OnChildChanged = function(path, child, value, onSuccess) {
+AJAXServices.OnMatchingChildChanged = function(path, child, value, onSuccess) {
     var ref = new Firebase(this.firebaseURL + "/" + path);
     ref.orderByChild(child).equalTo(value).on("child_changed", function (snapshot) {
+        onSuccess(snapshot);
+    });
+}
+
+AJAXServices.OnChildRemoved = function(path, onSuccess) {
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    ref.on("child_removed", function (snapshot) {
+        onSuccess(snapshot);
+    });
+}
+
+AJAXServices.OnChildAdded = function(path, onSuccess) {
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    ref.on("child_added", function (snapshot) {
+        onSuccess(snapshot);
+    });
+}
+
+AJAXServices.OnChildChanged = function(path, onSuccess) {
+    var ref = new Firebase(this.firebaseURL + "/" + path);
+    ref.on("child_changed", function (snapshot) {
         onSuccess(snapshot);
     });
 }

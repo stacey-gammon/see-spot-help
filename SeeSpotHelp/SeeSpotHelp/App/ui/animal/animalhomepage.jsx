@@ -2,6 +2,8 @@
 
 var React = require('react');
 var LoginStore = require("../../stores/loginstore");
+var Animal = require("../../core/animal");
+var VolunteerGroup = require("../../core/volunteergroup");
 var AnimalActionsBox = require('./animalactionsbox');
 var AnimalPhotoReel = require("./animalphotoreel");
 var AnimalActivityList = require("./animalactivitylist");
@@ -21,6 +23,13 @@ var AnimalHomePage = React.createClass({
                     this.props.location.state &&
                     this.props.location.state.group ||
                     this.props.group;
+
+        if (animal && !(animal instanceof Animal)) {
+            animal = Animal.castObject(animal);
+        }
+        if (group && !(group instanceof VolunteerGroup)) {
+            group = VolunteerGroup.castObject(group);
+        }
         return {
             animal: animal,
             group: group,
@@ -67,7 +76,7 @@ var AnimalHomePage = React.createClass({
                     </div>
                     <AnimalPhotoReel group={this.state.group}
                                      user={this.state.user} animal={animal} />
-                    <AnimalActionsBox group={this.state.group}
+                                 <AnimalActionsBox group={this.state.group}
                                       user={this.state.user}
                                       animal={animal}/>
                     <AnimalActivityList user={this.state.user}

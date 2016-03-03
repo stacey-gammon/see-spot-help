@@ -41,6 +41,11 @@ Animal.prototype.copyFieldsFrom = function (other) {
     }
 }
 
+Animal.prototype.delete = function() {
+    var firebasePath = "groups/" + this.groupId + "/animals";
+    AJAXServices.RemoveFirebaseData(firebasePath + "/" + this.id);
+}
+
 Animal.prototype.insertWithFirebase = function () {
     console.log("Animal.insertWithFirebase");
     var firebasePath = "groups/" + this.groupId + "/animals";

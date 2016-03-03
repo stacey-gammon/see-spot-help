@@ -8,15 +8,6 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 // list. Clicking on the thumbnail will direct the user to the chosen
 // animals home page.
 var AnimalThumbnail = React.createClass({
-    //getInitialState: function () {
-    //    var user = this.props.user;
-    //    var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-
-    //    return {
-    //        user: user,
-    //        group: group
-    //    };
-    //},
 
     contextTypes: {
         router: React.PropTypes.object.isRequired

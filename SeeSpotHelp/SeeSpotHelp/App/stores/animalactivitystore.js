@@ -98,17 +98,17 @@ class AnimalActivityStore extends EventEmitter {
         // null).
         this.animalNotes[animalId] = [];
 
-        AJAXServices.OnChildAdded(
+        AJAXServices.OnMatchingChildAdded(
             "notes",
             "animalId",
             animalId,
             this.activityAdded.bind(this));
-        AJAXServices.OnChildRemoved(
+        AJAXServices.OnMatchingChildRemoved(
             "notes",
             "animalId",
             animalId,
             this.activityDeleted.bind(this));
-        AJAXServices.OnChildChanged(
+        AJAXServices.OnMatchingChildChanged(
             "notes",
             "animalId",
             animalId,

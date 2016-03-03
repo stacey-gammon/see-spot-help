@@ -37,6 +37,8 @@ var GroupHomePage = React.createClass({
                     this.props.location.state &&
                     this.props.location.state.group ||
                     this.props.group;
+            // Force refresh via groupstore
+            group = group ? GroupStore.getGroupById(group.id) : null;
 
             if (LoginStore.getUser() && !group) {
                 console.log("user = ", LoginStore.getUser());
