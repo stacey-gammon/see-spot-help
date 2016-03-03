@@ -82,7 +82,9 @@ var MemberListItem = React.createClass({
     getBootMembershipButton: function() {
         var group = VolunteerGroup.castObject(this.props.group);
         var permission = group.getUserPermissions(this.props.member.id);
-        var text = permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ? "Deny" : "Boot";
+        if (permission == VolunteerGroup.PermissionsEnum.NONMEMBER) return null;
+
+        var text = permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ? "Deny" : "Ban";
         if (permission != VolunteerGroup.PermissionsEnum.ADMIN &&
             permission != VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
             return (
@@ -118,6 +120,8 @@ var MemberListItem = React.createClass({
         var userPermission = group.getUserPermissions(this.state.user.id);
         // TODO: Give admins a way to view previously booted or denied members so they have a
         // chance to re-add (but hide by default).
+
+        if (memberPermission == VolunteerGroup.PermissionsEnum.NONMEMBER) return null;
 
         if (memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ) {
             if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN) {
