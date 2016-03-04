@@ -36,6 +36,30 @@ class GroupStore extends EventEmitter {
         this.removeListener(CHANGE_EVENT, callback);
     }
 
+    getPreviousGroup(groupId) {
+        var previousGroup = null;
+        for (var gId in this.groups) {
+            if (gId == groupId) {
+                return previousGroup;
+            }
+            previousGroup = this.groups[gId];
+        }
+        return null;
+    }
+
+    getNextGroup(groupId) {
+        var groupFound = false;
+        for (var gId in this.groups) {
+            if (groupFound) {
+                return this.groups[gId];
+            }
+            if (gId == groupId) {
+                groupFound = true;
+            }
+        }
+        return null;
+    }
+
     getGroupById(groupId) {
         if (!this.groups[groupId]) {
             console.log("group requested that hasn't been downloaded.  Downloading now...");

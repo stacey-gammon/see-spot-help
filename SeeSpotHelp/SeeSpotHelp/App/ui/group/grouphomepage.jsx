@@ -51,7 +51,58 @@ var GroupHomePage = React.createClass({
         var group = group ? VolunteerGroup.castObject(group) : null;
         return {
             user: LoginStore.getUser(),
+            group: group,
+            fromSearch: query && query.groupId
+        }
+    },
+
+    loadDifferentGroup: function(group) {
+        this.setState({
             group: group
+        });
+    },
+
+    getPreviousButton: function() {
+        if (this.state.fromSearch) return null;
+        var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
+        var previousGroup = null;
+        for (var i = 0; i < usersGroups.length; i++) {
+            if (usersGroups[i].id == this.state.group.id) {
+                break;
+            }
+            previousGroup = usersGroups[i];
+        }
+        if (previousGroup) {
+            return (
+                <button className="btn btn-info"
+                        onClick={this.loadDifferentGroup.bind(this, previousGroup)}>
+                    Prev
+                </button>
+            );
+        }
+    },
+
+    getNextButton: function() {
+        if (this.state.fromSearch) return null;
+        var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
+        var nextGroup = null;
+        var groupFound = false;
+        for (var i = 0; i < usersGroups.length; i++) {
+            if (groupFound) {
+                nextGroup = usersGroups[i];
+                break;
+            }
+            if (usersGroups[i].id == this.state.group.id) {
+                groupFound = true;
+            }
+        }
+        if (nextGroup) {
+            return (
+                <button className="btn btn-info"
+                        onClick={this.loadDifferentGroup.bind(this, nextGroup)}>
+                    Next
+                </button>
+            );
         }
     },
 
@@ -81,7 +132,17 @@ var GroupHomePage = React.createClass({
             var memberTitle = "Members (" + this.state.group.memberCount() + ")";
             return (
                 <div>
-                    <GroupInfoBox group={this.state.group} user={this.state.user} />
+                    <div className="media">
+                        <div className="media-left">
+                            {this.getPreviousButton()}
+                        </div>
+                        <div className="media-body">
+                            <GroupInfoBox group={this.state.group} user={this.state.user} />
+                        </div>
+                        <div className="media-right">
+                            {this.getNextButton()}
+                        </div>
+                    </div>
                     <GroupActionsBox user={this.state.user} group={this.state.group} />
                     <Tabs defaultActiveKey={1}>
                         <Tab eventKey={1} title="Animals">

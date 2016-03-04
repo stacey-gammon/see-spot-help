@@ -28,6 +28,12 @@ var GroupActivityTab = React.createClass({
         }
     },
 
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({
+            group: nextProps.group
+        });
+    },
+
     componentDidMount: function () {
         AnimalActivityStore.addChangeListener(this.onChange);
         LoginStore.addChangeListener(this.onChange);
