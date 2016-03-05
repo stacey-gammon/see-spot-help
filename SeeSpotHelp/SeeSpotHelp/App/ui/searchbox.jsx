@@ -77,13 +77,12 @@ var SearchBox = React.createClass({
             <div className="SearchBox">
                 <h1>Search for a shelter, rescue or volunteer group to join</h1>
                 <div className="input-group">
-                    <input type="text" className="form-control shelterSearchInput"
+                    <input type="text" className="form-control"
                            ref="shelterSearchInput"
                            placeholder="Search..."/>
                     <span className="input-group-btn">
-                        <button type="button" className="btn btn-primary shelterSearchButton"
-                           onClick={this.shelterSearch}>
-                           <span className="glyphicon glyphicon-search"></span>
+                        <button type="button" className="btn btn-default"
+                           onClick={this.shelterSearch}>Go!
                         </button>
                     </span>
                 </div>
