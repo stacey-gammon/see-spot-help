@@ -65,7 +65,8 @@ var AnimalActivityItem = React.createClass({
                     {this.getDeleteActionButton()}
                 </div>
             );
-        } else if (this.state.group.getUserPermissions(this.state.user.id)){
+        } else if (this.state.group.getUserPermissions(this.state.user.id) ==
+                   VolunteerGroup.PermissionsEnum.ADMIN){
             return (
                 <div className="media-right">
                     {this.getDeleteActionButton()}
