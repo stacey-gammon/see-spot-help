@@ -158,12 +158,15 @@ VolunteerGroup.prototype.requestToJoin = function (user) {
 
 VolunteerGroup.prototype.updateMembership = function (user, membershipType) {
     this.userPermissionsMap[user.id] = membershipType;
-    AJAXServices.SetFirebaseData("groups/" + this.id + "/userPermissionsMap", this.userPermissionsMap);
+    AJAXServices.SetFirebaseData("groups/" + this.id + "/userPermissionsMap",
+                                 this.userPermissionsMap);
 
     if (membershipType == VolunteerGroup.PermissionsEnum.NONMEMBER) {
         delete user.groups[this.id];
+    } else {
+        user.groups[this.id] = membershipType;
     }
-    AJAXServices.UpdateFirebaseData("users/" + user.id + "/groups", user.groups);
+    AJAXServices.SetFirebaseData("users/" + user.id + "/groups", user.groups);
 }
 
 VolunteerGroup.prototype.delete = function () {

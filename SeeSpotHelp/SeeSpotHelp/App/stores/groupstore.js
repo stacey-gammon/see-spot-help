@@ -1,15 +1,13 @@
-﻿"use strict";
+"use strict";
 
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
 var Animal = require('../core/animal');
 var AJAXServices = require('../core/AJAXServices');
-var Firebase = require("firebase");
-var GroupActions = require("../actions/groupactions");
+var AnimalStore = require("../stores/animalstore");
 
 var EventEmitter = require('events').EventEmitter;
-var assign = require("object-assign");
 
 var CHANGE_EVENT = "change";
 
@@ -38,6 +36,30 @@ class GroupStore extends EventEmitter {
         this.removeListener(CHANGE_EVENT, callback);
     }
 
+    getPreviousGroup(groupId) {
+        var previousGroup = null;
+        for (var gId in this.groups) {
+            if (gId == groupId) {
+                return previousGroup;
+            }
+            previousGroup = this.groups[gId];
+        }
+        return null;
+    }
+
+    getNextGroup(groupId) {
+        var groupFound = false;
+        for (var gId in this.groups) {
+            if (groupFound) {
+                return this.groups[gId];
+            }
+            if (gId == groupId) {
+                groupFound = true;
+            }
+        }
+        return null;
+    }
+
     getGroupById(groupId) {
         if (!this.groups[groupId]) {
             console.log("group requested that hasn't been downloaded.  Downloading now...");
@@ -51,7 +73,7 @@ class GroupStore extends EventEmitter {
     }
 
     getUsersMemberGroups(user) {
-        var usersGroups = []
+        var usersGroups = [];
         for (var groupId in user.groups) {
             console.log("getUsersMemberGroups:GroupId:", groupId);
             if (!this.groups[groupId]) {
@@ -69,26 +91,24 @@ class GroupStore extends EventEmitter {
         return usersGroups;
     }
 
-    downloadGroup(groupId) {
-        var outer = this;
-        var groupLoaded = function (group) {
-            if (!group) {
-                console.log("WARN: group loaded data is null for groupId " + groupId);
-                return;
-            }
-            console.log("downloadGroup:Loading group");
-            console.log(group);
-            group = VolunteerGroup.castObject(group);
-            for (var animal in group.animals) {
-                group.animals[animal] = Animal.castObject(group.animals[animal]);
-            }
-            outer.groups[group.id] = group;
-            outer.emitChange();
-            outer.loadedUserGroups = true;
-        };
+    groupDownloaded(group) {
+        if (!group) {
+            console.log("WARN: group loaded data is null");
+            return;
+        }
+        group = VolunteerGroup.castObject(group);
+        for (var animal in group.animals) {
+            group.animals[animal] = Animal.castObject(group.animals[animal]);
+        }
+        this.groups[group.id] = group;
+        this.emitChange();
+        this.loadedUserGroups = true;
+    }
 
-        var dataServices = new AJAXServices(groupLoaded, null);
-        dataServices.GetFirebaseData("groups/" + groupId);
+    downloadGroup(groupId) {
+        var dataServices = new AJAXServices(this.groupDownloaded.bind(this), null);
+        dataServices.GetFirebaseData("groups/" + groupId, true);
+        AnimalStore.downloadAnimals(groupId);
     }
 
     loadGroupsForUser(user) {
@@ -116,13 +136,23 @@ class GroupStore extends EventEmitter {
     handleAction(action) {
         console.log("GroupStore:handleAction: " + action.type);
         switch (action.type) {
+            case ActionConstants.GROUP_UPDATED:
             case ActionConstants.NEW_GROUP_ADDED:
                 this.groups[action.group.id] = action.group;
                 this.emitChange();
                 break;
-            case ActionConstants.NEW_ANIMAL_ADDED:
-            case ActionConstants.ANIMAL_UPDATED:
-                this.groups[action.group.id].animals[action.animal.id] = action.animal;
+            case ActionConstants.ANIMAL_ADDED:
+            case ActionConstants.ANIMAL_CHANGED:
+                var animal = action.animal;
+                var group = this.groups[animal.groupId];
+                if (group) {
+                    group.animals[animal.id] = animal;
+                    this.emitChange();
+                }
+                break;
+            case ActionConstants.ANIMAL_DELETED:
+                var deletedAnimal = action.animal;
+                delete this.groups[deletedAnimal.groupId].animals[deletedAnimal.id];
                 this.emitChange();
                 break;
             case ActionConstants.LOGIN_USER_SUCCESS:
@@ -130,13 +160,16 @@ class GroupStore extends EventEmitter {
                 break;
             case ActionConstants.GROUP_DELETED:
                 console.log("GroupStore:handleaction: caught GROUP_DELETED");
+                AJAXServices.DetachListener(
+                    "groups/" + action.group.id,
+                    this.groupDownloaded.bind(this));
                 delete this.groups[action.group.id];
                 this.emitChange();
                 break;
             default:
                 break;
-        };
+        }
     }
-};
+}
 
 module.exports = new GroupStore();

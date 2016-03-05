@@ -7,6 +7,8 @@ var SearchBox = require("../searchbox");
 var GroupInfoBox = require("./groupinfobox");
 var GroupMembersTab = require("./groupmemberstab");
 var GroupAnimalsTab = require("./groupanimalstab");
+var GroupActivityTab = require("./groupactivitytab");
+
 var GroupActionsBox = require("./groupactionsbox");
 var FakeData = require("../../core/fakedata");
 var Volunteer = require("../../core/volunteer");
@@ -35,11 +37,13 @@ var GroupHomePage = React.createClass({
                     this.props.location.state &&
                     this.props.location.state.group ||
                     this.props.group;
+            // Force refresh via groupstore
+            group = group ? GroupStore.getGroupById(group.id) : null;
 
-            if (LoginStore.getUser() && !group &&
-                LoginStore.getUser().defaultGroupId()) {
+            if (LoginStore.getUser() && !group) {
                 console.log("user = ", LoginStore.getUser());
-                console.log("Default Group id: " + LoginStore.getUser().defaultGroupId());
+                var defaultGroupId = LoginStore.getUser().defaultGroupId();
+                console.log("Default Group id: " + defaultGroupId);
                 group = GroupStore.getGroupById(LoginStore.getUser().defaultGroupId());
                 console.log(group);
             }
@@ -47,7 +51,58 @@ var GroupHomePage = React.createClass({
         var group = group ? VolunteerGroup.castObject(group) : null;
         return {
             user: LoginStore.getUser(),
+            group: group,
+            fromSearch: query && query.groupId
+        }
+    },
+
+    loadDifferentGroup: function(group) {
+        this.setState({
             group: group
+        });
+    },
+
+    getPreviousButton: function() {
+        if (this.state.fromSearch) return null;
+        var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
+        var previousGroup = null;
+        for (var i = 0; i < usersGroups.length; i++) {
+            if (usersGroups[i].id == this.state.group.id) {
+                break;
+            }
+            previousGroup = usersGroups[i];
+        }
+        if (previousGroup) {
+            return (
+                <button className="btn btn-info"
+                        onClick={this.loadDifferentGroup.bind(this, previousGroup)}>
+                    Prev
+                </button>
+            );
+        }
+    },
+
+    getNextButton: function() {
+        if (this.state.fromSearch) return null;
+        var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
+        var nextGroup = null;
+        var groupFound = false;
+        for (var i = 0; i < usersGroups.length; i++) {
+            if (groupFound) {
+                nextGroup = usersGroups[i];
+                break;
+            }
+            if (usersGroups[i].id == this.state.group.id) {
+                groupFound = true;
+            }
+        }
+        if (nextGroup) {
+            return (
+                <button className="btn btn-info"
+                        onClick={this.loadDifferentGroup.bind(this, nextGroup)}>
+                    Next
+                </button>
+            );
         }
     },
 
@@ -77,7 +132,17 @@ var GroupHomePage = React.createClass({
             var memberTitle = "Members (" + this.state.group.memberCount() + ")";
             return (
                 <div>
-                    <GroupInfoBox group={this.state.group} user={this.state.user} />
+                    <div className="media">
+                        <div className="media-left">
+                            {this.getPreviousButton()}
+                        </div>
+                        <div className="media-body">
+                            <GroupInfoBox group={this.state.group} user={this.state.user} />
+                        </div>
+                        <div className="media-right">
+                            {this.getNextButton()}
+                        </div>
+                    </div>
                     <GroupActionsBox user={this.state.user} group={this.state.group} />
                     <Tabs defaultActiveKey={1}>
                         <Tab eventKey={1} title="Animals">
@@ -85,6 +150,9 @@ var GroupHomePage = React.createClass({
                         </Tab>
                         <Tab eventKey={2} title={memberTitle}>
                             <GroupMembersTab group={this.state.group} user={this.state.user}/>
+                        </Tab>
+                        <Tab eventKey={3} title="Activity">
+                            <GroupActivityTab group={this.state.group} user={this.state.user}/>
                         </Tab>
                     </Tabs>
                 </div>
@@ -94,9 +162,9 @@ var GroupHomePage = React.createClass({
                 <div>
                     <h1>
                         You are not part of any volunteer groups.  To get started&nbsp;
-                    <Link to="shelterSearchPage">search</Link>
+                    <Link to="searchPage">search</Link>
                         &nbsp;for a group to join, or&nbsp;
-                    <Link to="AddNewGroup">add</Link> a new one.
+                    <Link to="addNewGroup">add</Link> a new one.
                     </h1>
                 </div>
             );
@@ -104,7 +172,7 @@ var GroupHomePage = React.createClass({
             return (
             <div>
                 <h1>To get started&nbsp;
-                <Link to="shelterSearchPage">search</Link>
+                <Link to="searchPage">search</Link>
                     &nbsp;for a group, or <Link to="loginPage">log in</Link> to join or add one.
                 </h1>
             </div>

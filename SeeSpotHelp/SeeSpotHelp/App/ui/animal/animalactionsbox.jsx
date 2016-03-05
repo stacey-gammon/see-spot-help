@@ -70,28 +70,29 @@ var AnimalActionsBox = React.createClass({
         return (
             <div>
                 <LinkContainer
+                    disabled={!this.shouldAllowUserToEdit()}
                     to={{ pathname: "addAnimalNote",
                         state: { user: this.state.user,
                                  animal: this.props.animal,
                                  group: this.state.group,
                                  editMode: false } }}>
-                    <button className="btn btn-info buttonPadding addAnimalNoteButton"
+                    <button className="btn btn-info padding addAnimalNoteButton"
                             disabled={!this.shouldAllowUserToEdit()}>
                         Post
                     </button>
                 </LinkContainer>
-                <button className="btn btn-info buttonPadding walkAnimalButton"
+                <button className="btn btn-info padding walkAnimalButton"
                         id="walkButton"
                         disabled={!this.shouldAllowUserToEdit()}
                         onClick={this.walkFunction}>
                     Walk
                 </button>
-                <button className="btn btn-info buttonPadding"
+                <button className="btn btn-info padding"
                         disabled={!this.shouldAllowUserToEdit()}
                         onClick={this.alertNotImplemented}>
                     Visit
                 </button>
-                <button className="btn btn-info buttonPadding"
+                <button className="btn btn-info padding"
                         disabled={!this.shouldAllowUserToEdit()}
                         onClick={this.alertNotImplemented}>
                     Schedule

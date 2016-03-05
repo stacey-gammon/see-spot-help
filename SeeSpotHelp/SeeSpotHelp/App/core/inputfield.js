@@ -12,6 +12,11 @@ var InputField = function (validations) {
     this.value = "";
     this.validations = validations ? validations : [];
     this.ref = "";
+    this.type = "text";
+};
+
+InputField.prototype.setListItems = function(listItems) {
+    this.listItems = listItems;
 };
 
 InputField.prototype.getUserString = function () {

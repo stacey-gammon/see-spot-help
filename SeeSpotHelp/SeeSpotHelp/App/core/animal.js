@@ -15,6 +15,15 @@ var Animal = function(name, type, breed, age, status, photo, id, groupId) {
     this.groupId = groupId;
 }
 
+Animal.prototype.getPhoto = function() {
+    if (this.photo) return this.photo;
+    return this.type.toLowerCase() == "cat" ?
+        "images/cat.jpg" :
+        this.type.toLowerCase() == "dog" ?
+        "images/dog.jpg" :
+        "images/other.jpg";
+}
+
 Animal.StatusEnum = Object.freeze(
     {
         ADOPTABLE: 0,  // Animal is currently up for adoption.
@@ -39,6 +48,11 @@ Animal.prototype.copyFieldsFrom = function (other) {
     for (var prop in other) {
         this[prop] = other[prop];
     }
+}
+
+Animal.prototype.delete = function() {
+    var firebasePath = "groups/" + this.groupId + "/animals";
+    AJAXServices.RemoveFirebaseData(firebasePath + "/" + this.id);
 }
 
 Animal.prototype.insertWithFirebase = function () {
@@ -101,10 +115,9 @@ Animal.prototype.insert = function (callback) {
         });
 };
 
-Animal.prototype.updateWithFirebase = function (callback) {
+Animal.prototype.updateWithFirebase = function () {
     console.log("Animal.updateWithFirebase");
     AJAXServices.UpdateFirebaseData("groups/" + this.groupId + "/animals/" + this.id, this);
-    callback(this, new ServerResponse());
 };
 
 // Attempts to update the current volunteer group into the database.
@@ -112,11 +125,11 @@ Animal.prototype.updateWithFirebase = function (callback) {
 //     callback is expected to take as a first argument the potentially
 //     updated volunteer group (null on failure) and a server
 //     response to hold error and success information.
-Animal.prototype.update = function (callback) {
+Animal.prototype.update = function () {
     console.log("Animal::update");
 
     if (AJAXServices.useFirebase) {
-        return this.updateWithFirebase(callback);
+        return this.updateWithFirebase();
     }
 
     var SuccessCallback = function (response) {

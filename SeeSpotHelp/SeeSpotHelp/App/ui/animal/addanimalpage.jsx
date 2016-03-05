@@ -19,8 +19,16 @@ var AddAnimalPage = React.createClass({
             "name": new InputField([IFV.validateNotEmpty]),
             "type": new InputField([IFV.validateNotEmpty]),
             "breed": new InputField(),
-            "age": new InputField([IFV.validateNumber])
+            "age": new InputField([IFV.validateNumber]),
+            "description": new InputField()
         };
+        inputFields["description"].type = "textarea";
+        inputFields["type"].type = "dropdown";
+
+        inputFields["type"].setListItems([
+            "Dog", "Cat", "Other"
+        ]);
+
         // Store the ref name on the input field without manually
         // writing it out twice.
         for (var field in inputFields) {
@@ -54,6 +62,7 @@ var AddAnimalPage = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     validateFields: function () {
         console.log("AddAnimalPage::validateFields");
         var errorFound = false;
@@ -75,24 +84,13 @@ var AddAnimalPage = React.createClass({
         return errorFound;
     },
 
-    insertGroupCallback: function (group, serverResponse) {
-        console.log("AddAnimalPage::insertGroupCallback");
-        if (serverResponse.hasError) {
-            // Show error message to user.
-            this.setState({ errorMessage: serverResponse.errorMessage });
-        } else {
-            // TODO: Navigate to newly inserted group home page.
-            this.setState({ errorMessage: "Success!" });
-        }
-    },
-
     addNewAnimal: function () {
         console.log("AddAnimalPage:addNewAnimal");
         var errorFound = this.validateFields();
         if (!errorFound) {
             if (this.state.editMode) {
                 Utils.CopyInputFieldsIntoObject(this.state.fields, this.state.animal);
-                this.state.animal.update(this.insertGroupCallback);
+                this.state.animal.update();
                 GroupActions.animalUpdated(this.state.group, this.state.animal);
                 this.context.router.push(
                     {
@@ -109,26 +107,96 @@ var AddAnimalPage = React.createClass({
                 Utils.CopyInputFieldsIntoObject(this.state.fields, animal);
                 animal.insert();
                 GroupActions.newAnimalAdded(this.state.group, animal);
-                this.context.router.push("/GroupHomePage");
+                this.context.router.push(
+                    {
+                        pathname: "GroupHomePage",
+                        state: {
+                            group: this.state.group,
+                            animal: this.state.animal,
+                            user: this.state.user
+                        }
+                    }
+                );
             }
         }
     },
 
-    createInputField: function (inputField) {
+    createTypeOption: function (option) {
+        return (
+            <option value={option}>{option}</option>
+        );
+    },
+
+    createDropDown: function (inputField) {
+        var options = inputField.listItems.map(this.createTypeOption);
+        var defaultValue = this.state.editMode ?
+            this.state.animal.type : "Dog";
+        return (
+            <div className="form-group">
+              {inputField.getErrorLabel()}
+              <select
+                  value={defaultValue}
+                  className="form-control"
+                  style={{marginBottom: -11 + "px"}}
+                  id={inputField.ref} ref={inputField.ref}>
+                {options}
+              </select>
+            </div>);
+    },
+
+    createInputType: function (inputField) {
         var inputFieldClassName = "form-control " + inputField.ref;
+        if (inputField.type == "text") {
+            return (
+                <input type="text"
+                   ref={inputField.ref}
+                   id={inputField.ref}
+                   className={inputFieldClassName}
+                   defaultValue={inputField.value}/>);
+       } else if (inputField.type == "textarea") {
+           return (
+               <textarea
+                  ref={inputField.ref}
+                  id={inputField.ref}
+                  className={inputFieldClassName}
+                  defaultValue={inputField.value}/>);
+       }
+    },
+
+    createInputField: function (inputField) {
+        if (inputField.listItems) return this.createDropDown(inputField);
         return (
             <div className={inputField.getFormGroupClassName()}>
                 {inputField.getErrorLabel()}
                 <div className="input-group">
                     <span className="input-group-addon">{inputField.getUserString()}</span>
-                    <input type="text"
-                           ref={inputField.ref}
-                           id={inputField.ref}
-                           className={inputFieldClassName}
-                           defaultValue={inputField.value}/>
+                    {this.createInputType(inputField)}
                 </div>
                 {inputField.getValidationSpan()}
             </div>
+        );
+    },
+
+    deleteAnimal: function() {
+        this.state.animal.delete();
+        this.context.router.push(
+            {
+                pathname: "GroupHomePage",
+                state: {
+                    group: this.state.group,
+                    user: this.state.user
+                }
+            }
+        );
+    },
+
+    getDeleteButton: function() {
+        if (!this.state.editMode) return null;
+        return (
+            <button className="btn btn-danger padding pull-right"
+                    onClick={this.deleteAnimal}>
+                Delete
+            </button>
         );
     },
 
@@ -143,14 +211,23 @@ var AddAnimalPage = React.createClass({
             inputFields.push(this.createInputField(field));
         }
         var buttonText = this.state.editMode ? ConstStrings.Update : ConstStrings.Add;
+        var heading = this.state.editMode ?
+            "Edit " + this.state.animal.name :
+            "Add a new adoptable!"
         return (
             <div>
-                <h1>Add Animal</h1>
+                <div className="padding">
+                    <h1>{heading}</h1>
+                </div>
                 {this.state.errorMessage}
                 {inputFields}
-                <TakePhotoButton user={this.state.user} group={this.state.group} animal={this.state.animal}/>
-                <button className="btn btn-primary addAdoptableButton"
+                <TakePhotoButton
+                    user={this.state.user}
+                    group={this.state.group}
+                    animal={this.state.animal}/>
+                <button className="btn btn-primary padding addAdoptableButton"
                         onClick={this.addNewAnimal}>{buttonText}</button>
+                {this.getDeleteButton()}
             </div>
         );
     }

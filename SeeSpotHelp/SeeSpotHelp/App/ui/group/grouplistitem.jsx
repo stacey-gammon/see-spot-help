@@ -49,39 +49,6 @@ var GroupListItem = React.createClass({
             });
     },
 
-    requestToJoin: function () {
-        if (!this.props.group || !this.state.user) {
-            throw "Attempting to join group when user or group is undefined or null";
-        }
-        var group = VolunteerGroup.castObject(this.state.group);
-        var user = Volunteer.castObject(this.state.user);
-        group.requestToJoin(user);
-        this.refs.requestToJoinButton.disabled = true;
-        this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
-    },
-
-    getRequestToJoinButton: function () {
-        console.log("RequestToJoinButton:render, permissions = " + this.state.permissions);
-        if (!this.state.user) return null;
-
-        var pending = this.state.permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
-
-        if (this.state.permissions != VolunteerGroup.PermissionsEnum.NONMEMBER &&
-            this.state.permissions != VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED &&
-            !pending) {
-            return null;
-        }
-        var text = pending ? ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
-        return (
-            <button className="btn btn-warning requestToJoinButton buttonPadding"
-                    ref="requestToJoinButton"
-                    disabled={pending}
-                    onClick={this.requestToJoin}>
-                {text}
-            </button>
-        );
-    },
-
     render: function () {
         console.log("GroupListItem:render:");
         var group = VolunteerGroup.castObject(this.props.group);

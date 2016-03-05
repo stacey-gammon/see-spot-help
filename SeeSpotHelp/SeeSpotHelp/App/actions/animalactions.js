@@ -2,14 +2,24 @@
 
 var Dispatcher = require('../dispatcher/dispatcher');
 var ActionConstants = require('../constants/actionconstants');
-var LoginStore = require("../stores/loginstore");
 
 var AnimalActions = {
-    animalActivityAdded: function (activity) {
-        console.log("AnimalActions:animalUpdated");
+    animalAdded: function (animal) {
         Dispatcher.dispatch({
-            type: ActionConstants.ANIMAL_ACTIVITY_ADDED,
-            activity: activity
+            type: ActionConstants.ANIMAL_ADDED,
+            animal: animal
+        });
+    },
+    animalDeleted: function (animal) {
+        Dispatcher.dispatch({
+            type: ActionConstants.ANIMAL_DELETED,
+            animal: animal
+        });
+    },
+    animalChanged: function (animal) {
+        Dispatcher.dispatch({
+            type: ActionConstants.ANIMAL_CHANGED,
+            animal: animal
         });
     },
 };

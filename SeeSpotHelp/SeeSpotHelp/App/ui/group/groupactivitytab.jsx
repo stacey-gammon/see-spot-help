@@ -1,4 +1,4 @@
-﻿"use strict"
+"use strict"
 
 var React = require("react");
 var Link = require("react-router").Link;
@@ -11,10 +11,12 @@ var Volunteer = require("../../core/volunteer");
 var VolunteerGroup = require("../../core/volunteergroup");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
+var AnimalActivityStore = require("../../stores/animalactivitystore");
 var AJAXServices = require("../../core/AJAXServices");
 var AddAdoptableButton = require("../animal/addanimalbutton");
+var AnimalActivityItem = require("../animal/animalactivityitem");
 
-var GroupAnimalsTab = React.createClass({
+var GroupActivityTab = React.createClass({
     getInitialState: function () {
         var group = this.props.location &&
                     this.props.location.state &&
@@ -33,6 +35,7 @@ var GroupAnimalsTab = React.createClass({
     },
 
     componentDidMount: function () {
+        AnimalActivityStore.addChangeListener(this.onChange);
         LoginStore.addChangeListener(this.onChange);
         GroupStore.addChangeListener(this.onChange);
     },
@@ -41,6 +44,7 @@ var GroupAnimalsTab = React.createClass({
     },
 
     componentWillUnmount: function () {
+        AnimalActivityStore.removeChangeListener(this.onChange);
         LoginStore.removeChangeListener(this.onChange);
         GroupStore.removeChangeListener(this.onChange);
     },
@@ -53,16 +57,35 @@ var GroupAnimalsTab = React.createClass({
             });
     },
 
-    render: function () {
-        console.log("GroupAnimalsTab, group:");
-        console.log(this.state.group);
+    generateActivity: function (activity) {
         return (
-            <div className="shelterAnimalsTab">
-                <AddAdoptableButton group={this.state.group} user={this.state.user}/>
-                <AnimalList group={this.state.group} user={this.state.user}/>
+            <AnimalActivityItem activity={activity}
+                                group={this.state.group}
+                                showAnimalInfo="true"/>
+        );
+    },
+
+    render: function () {
+        var notes = [];
+        for (var key in this.state.group.animals) {
+            var animal = this.state.group.animals[key];
+            notes = notes.concat(
+                AnimalActivityStore.getActivityByAnimalId(animal.id));
+        }
+        notes.sort(function(a,b) {
+            return a.timestamp < b.timestamp ? 1 : -1;
+        });
+
+        var displayNotes = [];
+        for (var i = 0; i < notes.length; i++) {
+            displayNotes.push(this.generateActivity(notes[i]));
+        }
+        return (
+            <div className="list-group">
+                {displayNotes}
             </div>
         );
     }
 });
 
-module.exports = GroupAnimalsTab;
+module.exports = GroupActivityTab;

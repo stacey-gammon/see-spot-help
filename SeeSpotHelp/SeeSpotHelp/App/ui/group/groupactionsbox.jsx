@@ -15,13 +15,17 @@ var GroupActionsBox = React.createClass({
     getInitialState: function() {
         var user = LoginStore.getUser();
         var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-        var permissions = user && group ? group.getUserPermissions(user.id) : null;
 
         return {
             user: user,
-            group: group,
-            permissions: permissions
+            group: group
         };
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({
+            group: nextProps.group
+        });
     },
 
     componentDidMount: function () {
@@ -40,31 +44,38 @@ var GroupActionsBox = React.createClass({
     },
 
     requestToJoin: function () {
-        if (!this.props.group || !this.state.user) {
+        if (!this.state.group || !this.state.user) {
             throw "Attempting to join group when user or group is undefined or null";
         }
+
+        var permissions = this.state.group.getUserPermissions(this.state.user.id);
         var group = VolunteerGroup.castObject(this.state.group);
         var user = Volunteer.castObject(this.state.user);
-        group.requestToJoin(user);
-        this.refs.requestToJoinButton.disabled = true;
-        this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
+        var pending = permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
+        if (pending) {
+            this.state.group.updateMembership(user, VolunteerGroup.PermissionsEnum.NONMEMBER);
+            this.refs.requestToJoinButton.innerHTML = ConstStrings.RequestToJoin;
+        } else {
+            group.requestToJoin(user);
+            this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
+        }
+        GroupActions.groupUpdated(this);
     },
 
     getRequestToJoinButton: function () {
         console.log("RequestToJoinButton:render, permissions = " + this.state.permissions);
         if (!this.state.user) return null;
 
-        var pending = this.state.permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
+        var permissions = this.state.group.getUserPermissions(this.state.user.id);
+        var pending = permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
 
-        if (this.state.permissions != VolunteerGroup.PermissionsEnum.NONMEMBER &&
-            !pending) {
+        if (permissions != VolunteerGroup.PermissionsEnum.NONMEMBER && !pending) {
             return null;
         }
         var text = pending ? ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
         return (
             <button className="btn btn-warning requestToJoinButton buttonPadding"
                     ref="requestToJoinButton"
-                    disabled={pending}
                     onClick={this.requestToJoin}>
                 {text}
             </button>
@@ -75,7 +86,6 @@ var GroupActionsBox = React.createClass({
         console.log("GroupActionsBox:render:");
         return (
             <div className="GroupActionsBox">
-                <LeaveGroupButton group={this.state.group} user={this.state.user}/>
                 {this.getRequestToJoinButton()}
             </div>
         );

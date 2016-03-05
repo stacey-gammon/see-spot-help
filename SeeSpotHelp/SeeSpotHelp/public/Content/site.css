@@ -18,6 +18,13 @@ p {
     letter-spacing: 1px;
 }
 
+.selectList {
+    margin: 5px;
+    padding: 5px;
+    width: 100%;
+    max-width: 200px;
+}
+
 .membershipRevokedStyle {
     background-color: lightgray;
     color: darkgray;
@@ -79,8 +86,9 @@ p {
     margin: 10px;
 }
 
-.buttonPadding {
-    margin: 2px
+.padding {
+    margin: 2px;
+    padding: 5px;
 }
 
 .animalImg {

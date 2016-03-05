@@ -52,7 +52,7 @@ var EditGroupButton = React.createClass({
             <LinkContainer
                 to={{ pathname: "AddNewGroup",
                     state: { user: this.state.user, editMode: true, group: this.state.group } }}>
-                <button className="btn btn-info editShelterButton buttonPadding"
+                <button className="btn btn-info editShelterButton padding"
                         ref="editShelterButton">
                     {ConstStrings.Edit}
                 </button>

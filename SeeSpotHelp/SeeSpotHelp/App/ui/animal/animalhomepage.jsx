@@ -2,6 +2,8 @@
 
 var React = require('react');
 var LoginStore = require("../../stores/loginstore");
+var Animal = require("../../core/animal");
+var VolunteerGroup = require("../../core/volunteergroup");
 var AnimalActionsBox = require('./animalactionsbox');
 var AnimalPhotoReel = require("./animalphotoreel");
 var AnimalActivityList = require("./animalactivitylist");
@@ -21,6 +23,13 @@ var AnimalHomePage = React.createClass({
                     this.props.location.state &&
                     this.props.location.state.group ||
                     this.props.group;
+
+        if (animal && !(animal instanceof Animal)) {
+            animal = Animal.castObject(animal);
+        }
+        if (group && !(group instanceof VolunteerGroup)) {
+            group = VolunteerGroup.castObject(group);
+        }
         return {
             animal: animal,
             group: group,
@@ -37,19 +46,22 @@ var AnimalHomePage = React.createClass({
     render: function () {
         console.log("AnimalHomePage:render: ");
         console.log(this.state.animal);
-        var imageSrc = this.state.animal.photo || "images/dog.jpg";
+        var imageSrc = this.state.animal.getPhoto();
         var animal = this.state.animal;
         if (animal) {
             return (
                 <div>
                     <div className="media">
                         <div className="media-left">
-                            <img className="media-object" src={imageSrc} />
+                            <img className="media-object"
+                                 style={{margin: 5 + "px"}}
+                                 src={imageSrc} />
                         </div>
-                        <div className="media-body">
+                        <div className="media-body padding">
                             <h1 className="animalInfo">{animal.name}</h1>
                             <h2 className="animalInfo">{animal.age} years old</h2>
                             <h2 className="animalInfo">{animal.breed}</h2>
+                            <p className="animalInfo">{animal.description}</p>
                         </div>
                         <div className="media-right">
                             <LinkContainer
@@ -69,8 +81,11 @@ var AnimalHomePage = React.createClass({
                                      user={this.state.user} animal={animal} />
                     <AnimalActionsBox group={this.state.group}
                                       user={this.state.user}
+                                      style={{margin: 10 + 'px'}}
                                       animal={animal}/>
-                    <AnimalActivityList user={this.state.user} animal={animal} />
+                    <AnimalActivityList user={this.state.user}
+                                        group={this.state.group}
+                                        animal={animal} />
                 </div>
             );
         } else {

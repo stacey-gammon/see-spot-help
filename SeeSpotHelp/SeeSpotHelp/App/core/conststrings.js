@@ -1,7 +1,7 @@
 ﻿
 var ConstStrings = {
     RequestToJoin: "Request to join",
-    JoinRequestPending: "Request pending",
+    JoinRequestPending: "Request pending (click to cancel)",
     LeaveGroup: "Leave",
     GroupName: "Group Name",
     Shelter: "Shelter",
@@ -15,7 +15,8 @@ var ConstStrings = {
     Name: "Name",
     Breed: "Breed",
     Type: "Type",
-    Age: "Age"
+    Age: "Age",
+    Description: "Description"
 };
 
 module.exports = ConstStrings;
