@@ -15,7 +15,8 @@ var ConstStrings = {
     Name: "Name",
     Breed: "Breed",
     Type: "Type",
-    Age: "Age"
+    Age: "Age",
+    Description: "Description"
 };
 
 module.exports = ConstStrings;

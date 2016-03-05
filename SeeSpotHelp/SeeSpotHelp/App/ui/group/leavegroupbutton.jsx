@@ -55,7 +55,7 @@ var LeaveGroupButton = React.createClass({
             return null;
         }
         return (
-            <button className="btn btn-warning leaveShelterButton buttonPadding"
+            <button className="btn btn-warning leaveShelterButton padding"
                         ref="leaveGroupButton"
                     onClick={this.leaveGroup}>
                     Leave

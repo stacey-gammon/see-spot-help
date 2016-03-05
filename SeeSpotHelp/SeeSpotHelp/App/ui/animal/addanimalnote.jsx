@@ -66,6 +66,7 @@ var AddAnimalNote = React.createClass({
             var note = new AnimalNote(
                 this.refs.note.value,
                 this.state.animal.id,
+                this.state.group.id,
                 this.state.user.id);
             note.insert();
             AnimalActions.animalActivityAdded(note);

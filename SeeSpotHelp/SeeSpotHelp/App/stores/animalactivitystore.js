@@ -22,7 +22,7 @@ class AnimalActivityStore extends EventEmitter {
         });
 
         this.animalNotes = {};
-        this.userNotes = {};
+        this.userActivity = {};
     }
 
     addChangeListener(callback) {
@@ -36,6 +36,50 @@ class AnimalActivityStore extends EventEmitter {
 
     emitChange() {
         this.emit(CHANGE_EVENT);
+    }
+
+    userActivityAdded(snapshot) {
+        if (snapshot.val()) {
+            var activity = AnimalNote.castObject(snapshot.val());
+            // Wait for the subsequent update call. This is all inefficient.
+            if (activity.id == null) return;
+            var userId = activity.byUserId;
+            if (!this.userActivity[userId]) {
+                this.userActivity[userId] = [];
+            }
+            this.userActivity[userId].push(activity);
+            this.userActivity[userId].sort(function(a, b){
+                return a.timestamp < b.timestamp ? 1 : -1;
+            });
+            this.emitChange();
+        }
+    }
+
+    userActivityDeleted(snapshot) {
+        var deletedActivity = snapshot.val();
+        var activities = this.userActivity[deletedActivity.userId];
+        for (var i = 0; i < activities.length; i++) {
+            if (activities[i].id == deletedActivity.id) {
+                this.userActivity[deletedActivity.byUserId].splice(i, 1);
+                this.emitChange();
+                return;
+            }
+        }
+    }
+
+    userActivityChanged(snapshot) {
+        var changedActivity = AnimalNote.castObject(snapshot.val());
+        var activities = this.userActivity[changedActivity.byUserId];
+        for (var i = 0; i < activities.length; i++) {
+            if (activities[i].id == changedActivity.id) {
+                activities[i] = changedActivity;
+                this.emitChange();
+                return;
+            }
+        }
+        // Most likely a push call followed by an update call so we can store the id in the
+        // object.
+        this.activityAdded(snapshot);
     }
 
     activityAdded(snapshot) {
@@ -115,8 +159,29 @@ class AnimalActivityStore extends EventEmitter {
             this.activityChanged.bind(this));
     }
 
+    downloadUserActivity(userId) {
+        // So we don't try to download it again if there are no notes (e.g. differentiate from
+        // null).
+        this.userActivity[userId] = [];
+
+        AJAXServices.OnMatchingChildAdded(
+            "notes",
+            "byUserId",
+            userId,
+            this.userActivityAdded.bind(this));
+        AJAXServices.OnMatchingChildRemoved(
+            "notes",
+            "byUserId",
+            userId,
+            this.userActivityDeleted.bind(this));
+        AJAXServices.OnMatchingChildChanged(
+            "notes",
+            "byUserId",
+            userId,
+            this.userActivityChanged.bind(this));
+    }
+
     getActivityByAnimalId(animalId) {
-        console.log("AnimalActivityStore:getActivityByAnimalId(" + animalId + ")");
         if (this.animalNotes[animalId]) {
             return this.animalNotes[animalId];
         } else {
@@ -125,17 +190,17 @@ class AnimalActivityStore extends EventEmitter {
         }
     }
 
+    getActivityByUserId(userId) {
+        if (this.userActivity[userId]) {
+            return this.userActivity[userId];
+        } else {
+            this.downloadUserActivity(userId);
+            return [];
+        }
+    }
+
     handleAction(action) {
         switch (action.type) {
-            // case ActionConstants.ANIMAL_ACTIVITY_DELETED:
-            //     var index = this.animalNotes[action.activity.animalId].indexOf(action.activity,
-            //         function(a, b) {
-            //             return a.id == b.id;
-            //         });
-            //     this.animalNotes[action.activity.animalId].splice(index);
-            //     this.emitChange();
-            //case ActionConstants.ANIMAL_ACTIVITY_ADDED:
-            //    this.emitChange();
             default:
                 break;
         };

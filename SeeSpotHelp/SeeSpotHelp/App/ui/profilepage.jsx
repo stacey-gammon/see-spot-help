@@ -11,7 +11,12 @@ var SearchPage = require("./searchpage");
 var LoginStore = require("../stores/loginstore");
 var GroupStore = require("../stores/groupstore");
 var LoginActions = require("../actions/loginactions");
-var GroupListItem = require("./group/grouplistitem");
+var UserGroupsTab = require("./person/usergroupstab");
+var UserActivityTab = require("./person/useractivitytab");
+var ReactBootstrap = require("react-bootstrap");
+var Tab = ReactBootstrap.Tab;
+var Tabs = ReactBootstrap.Tabs;
+var ReactRouterBootstrap = require("react-router-bootstrap");
 
 var ProfilePage = React.createClass({
     contextTypes: {
@@ -20,12 +25,8 @@ var ProfilePage = React.createClass({
 
     getInitialState: function () {
         var user = LoginStore.getUser();
-        console.log("ProfilePage:getInitialState, user: ", user);
-        var groups = user ? GroupStore.getUsersMemberGroups(user) : [];
-        console.log("groups = ", groups);
         return {
-            user: user,
-            groups: groups
+            user: user
         }
     },
 
@@ -42,47 +43,8 @@ var ProfilePage = React.createClass({
     onChange: function () {
         this.setState(
             {
-                user: LoginStore.user,
-                groups: GroupStore.getUsersMemberGroups(LoginStore.user)
+                user: LoginStore.user
             });
-    },
-
-    getGroupElement: function(group) {
-        console.log("ProfilePage:GetGroupElement");
-        return (
-            <GroupListItem user={this.state.user} group={group}/>
-        );
-    },
-
-    getGroups: function() {
-        console.log("ProfilePage:getGroups");
-        if (this.state.groups.length == 0) {
-            return (
-                <div>
-                    <h1>You are not part of any volunteer groups.  To get started&nbsp;
-                    <Link to="searchPage">search</Link>
-                    &nbsp;for a group to join, or&nbsp;
-                    <Link to="addNewGroup">add</Link> a new one.
-                    </h1>
-                </div>
-            );
-        } else if (this.state.groups.length) {
-            var groups = this.state.groups.map(this.getGroupElement);
-            return (
-                <div>
-                    {groups}
-                    <div>
-                        <h1>
-                        <Link to="searchPage">Search</Link>
-                            &nbsp;for a new group to join, or&nbsp;
-                        <Link to="addNewGroup">add</Link> your own!
-                        </h1>
-                    </div>
-                </div>
-            );
-        } else {
-            return <div></div>
-        }
     },
 
     render: function () {
@@ -90,12 +52,24 @@ var ProfilePage = React.createClass({
         if (this.state.user) {
             return (
                 <div>
-                    <h1>Hello, {this.state.user.name}</h1>
-                    <h2>Email: {this.state.user.email}</h2>
-                    <hr/>
-                    {this.getGroups()}
+                    <div className="media padding">
+                        <div className="media-body">
+                        <h1>Hello, {this.state.user.name}</h1>
+                        <h2>Email: {this.state.user.email}</h2>
+                        </div>
+                        <div className="media-right">
+                            <FacebookLogin />
+                        </div>
+                    </div>
+                    <Tabs defaultActiveKey={1}>
+                        <Tab eventKey={1} title="Groups">
+                            <UserGroupsTab user={this.state.user}/>
+                        </Tab>
+                        <Tab eventKey={2} title="Activity">
+                            <UserActivityTab user={this.state.user}/>
+                        </Tab>
+                    </Tabs>
                     <br/><br/>
-                    <FacebookLogin />
                 </div>
             );
         } else {

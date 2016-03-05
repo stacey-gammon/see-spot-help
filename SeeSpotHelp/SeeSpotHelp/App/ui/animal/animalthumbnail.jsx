@@ -26,7 +26,7 @@ var AnimalThumbnail = React.createClass({
     },
 
     render: function () {
-        var imageSrc = this.props.animal.photo || "images/dog.jpg";
+        var imageSrc = this.props.animal.getPhoto();
         return (
             <a href="#" className="list-group-item animalListElement">
                 <LinkContainer to={{ pathname: "animalHomePage" ,

@@ -13,13 +13,17 @@ var AddAdoptableButton = React.createClass({
     getInitialState: function() {
         var user = LoginStore.getUser();
         var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-        var permissions = user && group ? group.getUserPermissions(user.id) : null;
 
         return {
             user: user,
-            group: group,
-            permissions: permissions
+            group: group
         };
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({
+            group: nextProps.group
+        });
     },
 
     componentDidMount: function () {
@@ -44,17 +48,18 @@ var AddAdoptableButton = React.createClass({
     },
 
     getAddAdoptableButton: function () {
+        var permissions = this.state.group.getUserPermissions(this.state.user.id);
         if (!this.state.user ||
-            this.state.permissions == VolunteerGroup.PermissionsEnum.NONMEMBER ||
-            this.state.permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ||
-            this.state.permissions == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
+            permissions == VolunteerGroup.PermissionsEnum.NONMEMBER ||
+            permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ||
+            permissions == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
             return null;
         }
         return (
             <LinkContainer
                 to={{ pathname: "addAnimalPage",
                     state: { user: this.state.user, group: this.state.group } }}>
-                <button className="btn btn-info addAdoptableButton buttonPadding">
+                <button className="btn btn-info addAdoptableButton padding">
                     <span className="glyphicon glyphicon-plus"/>
                     &nbsp;Animal
                 </button>

@@ -65,7 +65,7 @@ var TakePhotoButton = React.createClass({
         console.log("TakePhotoButton::render");
         return (
             <div className="takePhotoButton" >
-                <button className="btn btn-info buttonPadding"
+                <button className="btn btn-info padding"
                         disabled={!this.allowAction()}
                         onClick={this.addPhoto}>
                     <span className="glyphicon glyphicon-camera"></span>

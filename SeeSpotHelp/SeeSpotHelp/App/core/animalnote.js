@@ -2,11 +2,12 @@
 var AJAXServices = require('./AJAXServices');
 var dateFormat = require('dateformat');
 
-var AnimalNote = function(note, animalId, userId) {
+var AnimalNote = function(note, animalId, groupId, userId) {
     this.note = note;
     this.timestamp = Date.now();
     this.byUserId = userId;
     this.animalId = animalId;
+    this.groupId = groupId;
     this.id = null;
 }
 
@@ -24,7 +25,7 @@ AnimalNote.prototype.delete = function() {
 }
 
 AnimalNote.prototype.getDateForDisplay = function() {
-    return dateFormat(new Date(this.timestamp), "dddd, mmmm dS, yyyy, h:MM TT");
+    return dateFormat(new Date(this.timestamp), "mm/dd/yy, h:MM TT");
 }
 
 AnimalNote.prototype.toDisplayString = function() {
