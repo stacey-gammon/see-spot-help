@@ -65,6 +65,7 @@ var AnimalHomePage = React.createClass({
                         </div>
                         <div className="media-right">
                             <LinkContainer
+                                disabled={!this.shouldAllowUserToEdit()}
                                 to={{ pathname: "addAnimalPage",
                                     state: { user: this.state.user,
                                              group: this.state.group,
