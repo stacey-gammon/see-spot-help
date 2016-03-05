@@ -63,6 +63,12 @@ p {
     border: solid 1px black;
 }
 
+.searchInputBox {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+
 .privateBetaPage {
     padding: 20px;
     margin: 20px;

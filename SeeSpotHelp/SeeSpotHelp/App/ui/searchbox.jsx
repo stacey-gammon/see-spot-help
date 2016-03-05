@@ -76,7 +76,7 @@ var SearchBox = React.createClass({
         return (
             <div className="SearchBox">
                 <h1>Search for a shelter, rescue or volunteer group to join</h1>
-                <div className="input-group">
+                <div className="input-group searchInputBox">
                     <input type="text" className="form-control"
                            ref="shelterSearchInput"
                            placeholder="Search..."/>

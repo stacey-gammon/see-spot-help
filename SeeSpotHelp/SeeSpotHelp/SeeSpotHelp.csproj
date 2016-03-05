@@ -708,6 +708,8 @@
     <Content Include="App\ui\group\grouplistitem.jsx" />
     <Content Include="App\ui\group\groupmemberstab.jsx" />
     <Content Include="App\ui\group\leavegroupbutton.jsx" />
+    <Content Include="App\ui\person\useractivitytab.jsx" />
+    <Content Include="App\ui\person\usergroupstab.jsx" />
     <None Include="scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />
