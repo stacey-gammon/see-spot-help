@@ -60,6 +60,7 @@ var UserActivityTab = React.createClass({
 
     generateActivity: function (activity) {
         var group = GroupStore.getGroupById(activity.groupId);
+        if (!group) return null;
         return (
             <AnimalActivityItem activity={activity}
                                 group={group}
