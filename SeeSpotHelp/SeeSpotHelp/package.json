@@ -54,6 +54,8 @@
     "flux": "^2.1.1",
     "connect": "2.4.2",
     "dateformat": "*",
-    "serve-static": "*"
+    "serve-static": "*",
+    "firebase-tools": "2.2.1 ",
+    "firebase": "2.4.1"
   }
 }
