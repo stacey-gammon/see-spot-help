@@ -57,6 +57,9 @@
     "serve-static": "*",
     "firebase-tools": "2.2.1 ",
     "firebase": "2.4.1",
-    "webpack": "1.12.14"
+    "webpack": "1.12.14",
+	"eslint-config-google": "*",
+	"eslint": "*",
+	"object-assign": "*"
   }
 }
