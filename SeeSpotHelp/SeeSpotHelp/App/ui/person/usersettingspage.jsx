@@ -35,6 +35,7 @@ var UserSettingsPage = React.createClass({
         this.state.user.displayName = this.refs.displayName.value;
         this.state.email = this.refs.email.value;
         this.state.user.update();
+        this.context.router.push("/profilePage");
     },
 
     render: function () {

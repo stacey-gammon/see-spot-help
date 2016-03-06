@@ -62,14 +62,14 @@ var MyNavBar = React.createClass({
                             <Dropdown.Toggle
                                 hidden="true"
                                 noCaret="true">
-                                <button className="btn btn-default"
-                                        data-toggle="dropdown">
-                                    <span className="glyphicon glyphicon-menu-hamburger" />
+                                <button className="hamburgerDropdown">
+                                    <span className="glyphicon glyphicon-cog" />
                                 </button>
                             </Dropdown.Toggle>
-                            <Dropdown.Menu>
+                            <Dropdown.Menu className="dropdownMenuStyle">
                                 <LinkContainer  to={{ pathname: "userSettingsPage" }}>
-                                    <MenuItem eventKey={3.1}>Settings</MenuItem>
+                                    <MenuItem className="dropdownMenuStyle"
+                                              eventKey={3.1}>Settings</MenuItem>
                                 </LinkContainer>
                             </Dropdown.Menu>
                       </Dropdown>
