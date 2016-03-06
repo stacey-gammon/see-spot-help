@@ -225,7 +225,7 @@ var AddAnimalPage = React.createClass({
 					user={this.state.user}
 					group={this.state.group}
 					animal={this.state.animal}/>
-				<button className="btn btn-primary padding addAdoptableButton"
+				<button className="btn btn-primary padding AddAnimalButton"
 						onClick={this.addNewAnimal}>{buttonText}</button>
 				{this.getDeleteButton()}
 			</div>

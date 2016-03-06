@@ -12,7 +12,7 @@ var VolunteerGroup = require("../../core/volunteergroup");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
 var AJAXServices = require("../../core/AJAXServices");
-var AddAdoptableButton = require("../animal/addanimalbutton");
+var AddAnimalButton = require("../animal/addanimalbutton");
 
 var GroupAnimalsTab = React.createClass({
 	getInitialState: function () {
@@ -58,7 +58,7 @@ var GroupAnimalsTab = React.createClass({
 		console.log(this.state.group);
 		return (
 			<div className="shelterAnimalsTab">
-				<AddAdoptableButton group={this.state.group} user={this.state.user}/>
+				<AddAnimalButton group={this.state.group} user={this.state.user}/>
 				<AnimalList group={this.state.group} user={this.state.user}/>
 			</div>
 		);

@@ -1,30 +1,19 @@
 var React = require("react");
-var ReactBootstrap = require("react-bootstrap");
-var ReactRouterBootstrap = require('react-router-bootstrap');
-var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-var VolunteerGroup = require("../../core/volunteergroup");
-var Volunteer = require("../../core/volunteer");
 var AnimalNote = require("../../core/animalnote");
-var ConstStrings = require("../../core/conststrings");
+var Utils = require("../../core/utils");
+
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
-var AnimalActions = require("../../actions/animalactions");
 
 var AddAnimalNote = React.createClass({
 	getInitialState: function() {
-		var editMode = this.props.editMode ? this.props.editMode :
-			this.props.location ? this.props.location.state.editMode : null;
-		var animal = this.props.animal ? this.props.animal :
-			this.props.location ? this.props.location.state.animal : null;
-		var group = this.props.group ? this.props.group :
-			this.props.location ? this.props.location.state.group : null;
-		var activity = this.props.activity ? this.props.activity :
-			this.props.location ? this.props.location.state.activity : null;
-
-		console.log("animal: ", animal);
-
+		var editMode = Utils.FindPassedInProperty(this, "editMode");
+		var animal = Utils.FindPassedInProperty(this, "animal");
+		var group = Utils.FindPassedInProperty(this, "group");
+		var activity = Utils.FindPassedInProperty(this, "activity");
 		var user = LoginStore.getUser();
+
 		return {
 			user: user,
 			animal: animal,
@@ -33,29 +22,33 @@ var AddAnimalNote = React.createClass({
 			activity: activity
 		};
 	},
+
+	// Required for page transitions via this.context.router.push.
 	contextTypes: {
 		router: React.PropTypes.object.isRequired
 	},
-	componentDidMount: function () {
-		LoginStore.addChangeListener(this.onChange);
+
+	// Listen for changes made to the group in case the user was banned or membership was approved,
+	// we'll need up update the actions they can use.
+	componentDidMount: function() {
+		GroupStore.addChangeListener(this.onChange);
 	},
 
-	componentWillUnmount: function () {
-		LoginStore.removeChangeListener(this.onChange);
+	componentWillUnmount: function() {
+		GroupStore.removeChangeListener(this.onChange);
 	},
 
-	onChange: function () {
+	onChange: function() {
 		var user = LoginStore.getUser();
 		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
 		this.setState(
 			{
 				user: user,
-				group: group,
-				permissions: user && group ? group.getUserPermissions(user.id) : null
+				group: group
 			});
 	},
 
-	submitNote: function () {
+	submitNote: function() {
 		if (this.state.editMode) {
 			this.state.activity.note = this.refs.note.value;
 			this.state.activity.update();
@@ -67,6 +60,7 @@ var AddAnimalNote = React.createClass({
 				this.state.user.id);
 			note.insert();
 		}
+
 		if (this.state.animal) {
 			this.context.router.push(
 				{
@@ -89,14 +83,18 @@ var AddAnimalNote = React.createClass({
 		}
 	},
 
-	render: function () {
+	render: function() {
 		console.log("AddAnimalNote:render:");
 		var value = this.state.editMode ? this.state.activity.note : "";
 		var buttonText = this.state.editMode ? "Update" : "Post";
 		return (
 			<div>
-				<textarea className="form-control" ref="note" rows="5" id="comment"
-						  defaultValue={value}>
+				<textarea
+					className="form-control"
+					ref="note"
+					rows="5"
+					id="comment"
+					defaultValue={value}>
 				</textarea>
 				<button className="btn btn-primary" onClick={this.submitNote}>
 					{buttonText}

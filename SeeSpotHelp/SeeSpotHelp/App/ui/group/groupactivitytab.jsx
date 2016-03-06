@@ -13,7 +13,7 @@ var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
 var AnimalActivityStore = require("../../stores/animalactivitystore");
 var AJAXServices = require("../../core/AJAXServices");
-var AddAdoptableButton = require("../animal/addanimalbutton");
+var AddAnimalButton = require("../animal/addanimalbutton");
 var AnimalActivityItem = require("../animal/animalactivityitem");
 
 var GroupActivityTab = React.createClass({

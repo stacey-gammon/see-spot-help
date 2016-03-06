@@ -1,15 +1,14 @@
-"use strict"
+"use strict";
 
 var React = require("react");
-var ReactRouterBootstrap = require('react-router-bootstrap');
-var LinkContainer = ReactRouterBootstrap.LinkContainer;
+var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
 var VolunteerGroup = require("../../core/volunteergroup");
 var Volunteer = require("../../core/volunteer");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
 
-var AddAdoptableButton = React.createClass({
+var AddAnimalButton = React.createClass({
 	getInitialState: function() {
 		var user = LoginStore.getUser();
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
@@ -26,17 +25,17 @@ var AddAdoptableButton = React.createClass({
 		});
 	},
 
-	componentDidMount: function () {
+	componentDidMount: function() {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
 	},
 
-	componentWillUnmount: function () {
+	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
 	},
 
-	onChange: function () {
+	onChange: function() {
 		var user = LoginStore.getUser();
 		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
 		this.setState(
@@ -47,8 +46,10 @@ var AddAdoptableButton = React.createClass({
 			});
 	},
 
-	getAddAdoptableButton: function () {
-		if (!this.state.user) return null;
+	getAddAnimalButton: function() {
+		if (!this.state.user) {
+			return null;
+		}
 		var permissions = this.state.group.getUserPermissions(this.state.user.id);
 		if (!this.state.user ||
 			permissions == VolunteerGroup.PermissionsEnum.NONMEMBER ||
@@ -58,9 +59,9 @@ var AddAdoptableButton = React.createClass({
 		}
 		return (
 			<LinkContainer
-				to={{ pathname: "addAnimalPage",
-					state: { user: this.state.user, group: this.state.group } }}>
-				<button className="btn btn-info addAdoptableButton padding">
+				to={{pathname: "addAnimalPage",
+					state: {user: this.state.user, group: this.state.group}}}>
+				<button className="btn btn-info AddAnimalButton padding">
 					<span className="glyphicon glyphicon-plus"/>
 					&nbsp;Animal
 				</button>
@@ -68,14 +69,14 @@ var AddAdoptableButton = React.createClass({
 		);
 	},
 
-	render: function () {
-		console.log("AddAdoptableButton:render:");
+	render: function() {
+		console.log("AddAnimalButton:render:");
 		return (
 			<div>
-				{this.getAddAdoptableButton()}
+				{this.getAddAnimalButton()}
 			</div>
 		);
 	}
 });
 
-module.exports = AddAdoptableButton;
+module.exports = AddAnimalButton;
