@@ -55,9 +55,6 @@ var ProfilePage = React.createClass({
 						<div className="media-body">
 						<h1>Hello, {this.state.user.name}</h1>
 						</div>
-						<div className="media-right">
-							<FacebookLogin />
-						</div>
 					</div>
 					<Tabs defaultActiveKey={1}>
 						<Tab eventKey={1} title="Groups">

@@ -70,9 +70,13 @@ var UserSettingsPage = React.createClass({
 					</div>
 					<p>* Supply a display name if you would like to protect your privacy</p>
 					<br/>
-					<button className="btn btn-info" onClick={this.updateSettings}>
-						Update
-					</button>
+					<div style={{textAlign: 'center'}}>
+						<button className="btn btn-info" onClick={this.updateSettings}>
+							Update
+						</button>
+						<FacebookLogin />
+
+					</div>
 				</div>
 			);
 		} else {
