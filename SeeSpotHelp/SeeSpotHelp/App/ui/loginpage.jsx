@@ -7,18 +7,18 @@ var LoginStore = require("../stores/loginstore");
 var AJAXServices = require("../core/AJAXServices");
 
 var LoginPage = React.createClass({
-    contextTypes: {
-        router: React.PropTypes.object.isRequired
-    },
+	contextTypes: {
+		router: React.PropTypes.object.isRequired
+	},
 
-    render: function () {
-        console.log("LoginPage::render");
-        return (<div className="loginPage">
-                    <h1>To get started, log in with your facebook account.</h1>
-                    <FacebookLogin/>
-                </div>
-        );
-    }
+	render: function () {
+		console.log("LoginPage::render");
+		return (<div className="loginPage">
+					<h1>To get started, log in with your facebook account.</h1>
+					<FacebookLogin/>
+				</div>
+		);
+	}
 });
 
 module.exports = LoginPage;

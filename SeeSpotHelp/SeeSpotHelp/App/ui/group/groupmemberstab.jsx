@@ -15,70 +15,70 @@ var VolunteerStore = require("../../stores/volunteerstore");
 var AJAXServices = require("../../core/AJAXServices");
 
 var GroupMembersTab = React.createClass({
-    getInitialState: function () {
-        var group = this.props.location &&
-                    this.props.location.state &&
-                    this.props.location.state.group ||
-                    this.props.group;
-        return {
-            user: LoginStore.getUser(),
-            group: group
-        }
-    },
+	getInitialState: function () {
+		var group = this.props.location &&
+					this.props.location.state &&
+					this.props.location.state.group ||
+					this.props.group;
+		return {
+			user: LoginStore.getUser(),
+			group: group
+		}
+	},
 
-    componentWillReceiveProps: function(nextProps) {
-        this.setState({
-            group: nextProps.group
-        });
-    },
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			group: nextProps.group
+		});
+	},
 
-    componentDidMount: function () {
-        LoginStore.addChangeListener(this.onChange);
-        GroupStore.addChangeListener(this.onChange);
-        VolunteerStore.addChangeListener(this.onChange);
-    },
+	componentDidMount: function () {
+		LoginStore.addChangeListener(this.onChange);
+		GroupStore.addChangeListener(this.onChange);
+		VolunteerStore.addChangeListener(this.onChange);
+	},
 
-    componentWillMount: function () {
-    },
+	componentWillMount: function () {
+	},
 
-    componentWillUnmount: function () {
-        LoginStore.removeChangeListener(this.onChange);
-        GroupStore.removeChangeListener(this.onChange);
-        VolunteerStore.removeChangeListener(this.onChange);
-    },
+	componentWillUnmount: function () {
+		LoginStore.removeChangeListener(this.onChange);
+		GroupStore.removeChangeListener(this.onChange);
+		VolunteerStore.removeChangeListener(this.onChange);
+	},
 
-    onChange: function () {
-        this.setState(
-            {
-                user: LoginStore.user,
-                group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
-            });
-    },
+	onChange: function () {
+		this.setState(
+			{
+				user: LoginStore.user,
+				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
+			});
+	},
 
-    generateMember: function (member) {
-        return (
-            <MemberListItem user={this.state.user} member={member} group={this.state.group }/>
-        );
-    },
+	generateMember: function (member) {
+		return (
+			<MemberListItem user={this.state.user} member={member} group={this.state.group }/>
+		);
+	},
 
-    render: function () {
-        console.log("GroupMembersTab: render");
-        var members = [];
-        for (var key in this.props.group.userPermissionsMap) {
-            console.log("key = " + key);
-            // VolunteerStore will handle downloading any user data we don't currently have
-            // locally and will refresh this element in that case.
-            var member = VolunteerStore.getVolunteerById(key);
-            if (member) {
-                members.push(this.generateMember(member));
-            }
-        }
-        return (
-            <div className="list-group">
-                {members}
-            </div>
-        );
-    }
+	render: function () {
+		console.log("GroupMembersTab: render");
+		var members = [];
+		for (var key in this.props.group.userPermissionsMap) {
+			console.log("key = " + key);
+			// VolunteerStore will handle downloading any user data we don't currently have
+			// locally and will refresh this element in that case.
+			var member = VolunteerStore.getVolunteerById(key);
+			if (member) {
+				members.push(this.generateMember(member));
+			}
+		}
+		return (
+			<div className="list-group">
+				{members}
+			</div>
+		);
+	}
 });
 
 module.exports = GroupMembersTab;

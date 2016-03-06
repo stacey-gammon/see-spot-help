@@ -1,167 +1,77 @@
-﻿var LoginStore = require("../stores/loginstore");
 var AJAXServices = require('./AJAXServices');
 var ServerResponse = require('./serverresponse');
 
 // An animal that is currently being managed by a volunteer group.
 
 var Animal = function(name, type, breed, age, status, photo, id, groupId) {
-    this.name = name;
-    this.type = type;
-    this.breed = breed;
-    this.age = age;
-    this.status = status ? status : Animal.StatusEnum.ADOPTABLE;
-    this.photo = photo ? photo : null;
-    this.id = id ? id : null;
-    this.groupId = groupId;
+	this.name = name;
+	this.type = type;
+	this.breed = breed;
+	this.age = age;
+	this.status = status ? status : Animal.StatusEnum.ADOPTABLE;
+	this.photo = photo ? photo : null;
+	this.id = id ? id : null;
+	this.groupId = groupId;
 }
 
 Animal.prototype.getPhoto = function() {
-    if (this.photo) return this.photo;
-    return this.type.toLowerCase() == "cat" ?
-        "images/cat.jpg" :
-        this.type.toLowerCase() == "dog" ?
-        "images/dog.jpg" :
-        "images/other.jpg";
+	if (this.photo) return this.photo;
+	return this.type.toLowerCase() == "cat" ?
+		"images/cat.jpg" :
+		this.type.toLowerCase() == "dog" ?
+		"images/dog.jpg" :
+		"images/other.jpg";
 }
 
 Animal.StatusEnum = Object.freeze(
-    {
-        ADOPTABLE: 0,  // Animal is currently up for adoption.
-        RESCUEONLY: 1,  // Animal can be adopted to rescue groups only.
-        MEDICAL: 2,  // Animal is not up for adoption due to medical reasons.
-        ADOPTED: 3,  // Animal has been adopted, YAY!
-        PTS: 4,  // Animal has been put to sleep. :*(
-        NLL: 5,  // Animal is No Longer Living due to other reasons.  Can be
-        // used instead of PTS if people would prefer not to specify,
-        // or if animal died of other causes.
-        OTHER: 6 // In case I'm missing any other circumstances...
-    }
+	{
+		ADOPTABLE: 0,  // Animal is currently up for adoption.
+		RESCUEONLY: 1,  // Animal can be adopted to rescue groups only.
+		MEDICAL: 2,  // Animal is not up for adoption due to medical reasons.
+		ADOPTED: 3,  // Animal has been adopted, YAY!
+		PTS: 4,  // Animal has been put to sleep. :*(
+		NLL: 5,  // Animal is No Longer Living due to other reasons.  Can be
+		// used instead of PTS if people would prefer not to specify,
+		// or if animal died of other causes.
+		OTHER: 6 // In case I'm missing any other circumstances...
+	}
 );
 
 Animal.castObject = function (obj) {
-    var animal = new Animal();
-    animal.copyFieldsFrom(obj);
-    return animal;
+	var animal = new Animal();
+	animal.copyFieldsFrom(obj);
+	return animal;
 };
 
 Animal.prototype.copyFieldsFrom = function (other) {
-    for (var prop in other) {
-        this[prop] = other[prop];
-    }
+	for (var prop in other) {
+		this[prop] = other[prop];
+	}
 }
 
 Animal.prototype.delete = function() {
-    var firebasePath = "groups/" + this.groupId + "/animals";
-    AJAXServices.RemoveFirebaseData(firebasePath + "/" + this.id);
+	var firebasePath = "groups/" + this.groupId + "/animals";
+	AJAXServices.RemoveFirebaseData(firebasePath + "/" + this.id);
 }
-
-Animal.prototype.insertWithFirebase = function () {
-    console.log("Animal.insertWithFirebase");
-    var firebasePath = "groups/" + this.groupId + "/animals";
-
-    // Get rid of undefineds to make firebase happy.
-    this.id = null;
-    if (!this.photo) this.photo = null;
-
-    this.id = AJAXServices.PushFirebaseData(firebasePath, this).id;
-    console.log("resetting id on the animal, path = " + firebasePath + "/" + this.id);
-    AJAXServices.UpdateFirebaseData(firebasePath + "/" + this.id, { id: this.id });
-};
-
 
 // Attempts to insert the current instance into the database as
 // a animal
-// @param callback {Function(Animal, ServerResponse) }
-//     callback is expected to take as a first argument the potentially
-//     inserted animal (null on failure) and a server
-//     response to hold error and success information.
 Animal.prototype.insert = function (callback) {
-    console.log("Animal::insert animal:");
-    console.log(this);
+	var firebasePath = "groups/" + this.groupId + "/animals";
 
-    if (AJAXServices.useFirebase) {
-        this.insertWithFirebase();
-        return;
-    }
+	// Get rid of undefineds to make firebase happy.
+	this.id = null;
+	if (!this.photo) this.photo = null;
 
-    var SuccessCallback = function (response) {
-        console.log("Animal::SuccessCallback");
-        if (response.d.result) {
-            var animal = Animal.castObject(response.d.animal);
-            callback(animal, new ServerResponse());
-        } else {
-            console.log("Animal::SuccessCallback: Error occurred");
-            callback(null, new ServerResponse(response.d));
-        }
-    };
-
-    var FailureCallback = function (error) {
-        console.log("Animal:Insert:FailureCallback");
-        var errorString = 'Message:==>' + error.responseText + '\n\n';
-        callback(null, new ServerResponse(errorString));
-    };
-
-    var ajax = new AJAXServices(SuccessCallback, FailureCallback);
-    ajax.CallJSONService(
-        "../../WebServices/AnimalServices.asmx",
-        "insert",
-        {
-            name: this.name,
-            type: this.type,
-            breed: this.breed,
-            age: this.age,
-            status: this.status,
-            groupId: Number(this.groupId)
-        });
+	this.id = AJAXServices.PushFirebaseData(firebasePath, this).id;
+	console.log("resetting id on the animal, path = " + firebasePath + "/" + this.id);
+	AJAXServices.UpdateFirebaseData(firebasePath + "/" + this.id, { id: this.id });
 };
 
-Animal.prototype.updateWithFirebase = function () {
-    console.log("Animal.updateWithFirebase");
-    AJAXServices.UpdateFirebaseData("groups/" + this.groupId + "/animals/" + this.id, this);
-};
-
-// Attempts to update the current volunteer group into the database.
-// @param callback {Function(VolunteerGroup, ServerResponse) }
-//     callback is expected to take as a first argument the potentially
-//     updated volunteer group (null on failure) and a server
-//     response to hold error and success information.
+// Attempts to update the Animal in the database.
 Animal.prototype.update = function () {
-    console.log("Animal::update");
-
-    if (AJAXServices.useFirebase) {
-        return this.updateWithFirebase();
-    }
-
-    var SuccessCallback = function (response) {
-        console.log("Animal::SuccessCallback");
-        if (response.d.result) {
-            var animal = Animal.castObject(response.d.animal);
-            callback(animal, new ServerResponse());
-        } else {
-            console.log("Animal::SuccessCallback: Error occurred");
-            callback(null, new ServerResponse(response.d));
-        }
-    };
-
-    var FailureCallback = function (error) {
-        console.log("Animal:Insert:FailureCallback");
-        var errorString = 'Message:==>' + error.responseText + '\n\n';
-        callback(null, new ServerResponse(errorString));
-    };
-
-    var ajax = new AJAXServices(SuccessCallback, FailureCallback);
-    ajax.CallJSONService(
-        "../../WebServices/AnimalServices.asmx",
-        "update",
-        {
-            id: this.id,
-            name: this.name,
-            type: this.type,
-            breed: this.breed,
-            age: this.age,
-            status: this.status,
-            groupId: this.groupId
-        });
+	console.log("Animal.updateWithFirebase");
+	AJAXServices.UpdateFirebaseData("groups/" + this.groupId + "/animals/" + this.id, this);
 };
 
 module.exports = Animal;

@@ -30,117 +30,117 @@ var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 
 var Home = React.createClass({
-    contextTypes: {
-        router: React.PropTypes.object.isRequired
-    },
+	contextTypes: {
+		router: React.PropTypes.object.isRequired
+	},
 
-    getInitialState: function () {
-        return {};
-    },
+	getInitialState: function () {
+		return {};
+	},
 
-    subscribeToLoginEvents: function() {
-        FB.Event.subscribe("auth.login", LoginService.loginWithFacebook);
-        FB.Event.subscribe("auth.logout", LoginActions.userLoggedOut);
-    },
+	subscribeToLoginEvents: function() {
+		FB.Event.subscribe("auth.login", LoginService.loginWithFacebook);
+		FB.Event.subscribe("auth.logout", LoginActions.userLoggedOut);
+	},
 
-    facebookInitialized: function () {
-        this.subscribeToLoginEvents();
-    },
+	facebookInitialized: function () {
+		this.subscribeToLoginEvents();
+	},
 
-    componentWillMount: function () {
-        var home = this;
-        window.fbAsyncInit = function () {
-            FB.init({
-                appId: '1021154377958416',
-                xfbml: true,
-                version: 'v2.5'
-            });
-            home.facebookInitialized();
-        };
+	componentWillMount: function () {
+		var home = this;
+		window.fbAsyncInit = function () {
+			FB.init({
+				appId: '1021154377958416',
+				xfbml: true,
+				version: 'v2.5'
+			});
+			home.facebookInitialized();
+		};
 
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=1021154377958416";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-    },
+		(function (d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s);
+			js.id = id;
+			js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=1021154377958416";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+	},
 
-    componentDidMount: function() {
-        console.log("Home::componentDidMount");
-        LoginStore.addChangeListener(this.onChange);
-        this.setState({
-            user: LoginStore.getUser()
-        });
-        this.loadPageForUser();
-    },
+	componentDidMount: function() {
+		console.log("Home::componentDidMount");
+		LoginStore.addChangeListener(this.onChange);
+		this.setState({
+			user: LoginStore.getUser()
+		});
+		this.loadPageForUser();
+	},
 
-    componentWillUnmount: function () {
-        console.log("Home:componentWillUnmount");
-        LoginStore.removeChangeListener(this.onChange);
-    },
+	componentWillUnmount: function () {
+		console.log("Home:componentWillUnmount");
+		LoginStore.removeChangeListener(this.onChange);
+	},
 
-    onChange: function () {
-        console.log("Home:onChange");
-        this.loadPageForUser();
-    },
+	onChange: function () {
+		console.log("Home:onChange");
+		this.loadPageForUser();
+	},
 
-    loadPageForUser: function () {
-        console.log("Home::LoadPageForVolunteer");
-        console.log(LoginStore.user);
+	loadPageForUser: function () {
+		console.log("Home::LoadPageForVolunteer");
+		console.log(LoginStore.user);
 
-        // If the user is signed in and belongs to a volunteer group, show them that
-        // page first.  If they don't, show them their profile page where there will be
-        // instructions for how to search or add for a new volunteer group.
-        if (LoginStore.user && LoginStore.user.getDefaultVolunteerGroup()) {
-            this.context.router.push("/GroupHomePage");
-        } else if (LoginStore.user && LoginStore.user.inBeta) {
-            this.context.router.push("/profilePage");
-        } else if (LoginStore.user && !LoginStore.user.inBeta) {
-            this.context.router.push("/privateBetaPage");
-        } else {
-            this.context.router.push("/loginPage");
-        }
-    },
+		// If the user is signed in and belongs to a volunteer group, show them that
+		// page first.  If they don't, show them their profile page where there will be
+		// instructions for how to search or add for a new volunteer group.
+		if (LoginStore.user && LoginStore.user.getDefaultVolunteerGroup()) {
+			this.context.router.push("/GroupHomePage");
+		} else if (LoginStore.user && LoginStore.user.inBeta) {
+			this.context.router.push("/profilePage");
+		} else if (LoginStore.user && !LoginStore.user.inBeta) {
+			this.context.router.push("/privateBetaPage");
+		} else {
+			this.context.router.push("/loginPage");
+		}
+	},
 
-    render: function () {
-        if (LoginStore.user && LoginStore.user.inBeta) {
-            return (
-              <div>
-                <MyNavBar/>
-                {this.props.children}
-              </div>
-          );
-        } else {
-            return (
-                <div>
-                    {this.props.children}
-                </div>
-                );
-        }
-    }
+	render: function () {
+		if (LoginStore.user && LoginStore.user.inBeta) {
+			return (
+			  <div>
+				<MyNavBar/>
+				{this.props.children}
+			  </div>
+		  );
+		} else {
+			return (
+				<div>
+					{this.props.children}
+				</div>
+				);
+		}
+	}
 });
 
 var routes = (
   <Router path="/" component={Home}>
-    <Route path="searchPage" component={SearchPage}/>
-    <Route path="groupHomePage" component={GroupHomePage}/>
-    <Route path="animalHomePage" component={AnimalHomePage} />
-    <Route path="addNewGroup" component={AddNewGroup} />
-    <Route path="addAnimalPage" component={AddAnimalPage} />
-    <Route path="profilePage" component={ProfilePage} />
-    <Route path="privateBetaPage" component={PrivateBetaPage} />
-    <Route path="loginPage" component={LoginPage} />
-    <Route path="groupAnimalsTab" component={GroupAnimalsTab} />
-    <Route path="groupMembersTab" component={GroupMembersTab} />
-    <Route path="addAnimalNote" component={AddAnimalNote} />
-    <Route path="userSettingsPage" component={UserSettingsPage} />
+	<Route path="searchPage" component={SearchPage}/>
+	<Route path="groupHomePage" component={GroupHomePage}/>
+	<Route path="animalHomePage" component={AnimalHomePage} />
+	<Route path="addNewGroup" component={AddNewGroup} />
+	<Route path="addAnimalPage" component={AddAnimalPage} />
+	<Route path="profilePage" component={ProfilePage} />
+	<Route path="privateBetaPage" component={PrivateBetaPage} />
+	<Route path="loginPage" component={LoginPage} />
+	<Route path="groupAnimalsTab" component={GroupAnimalsTab} />
+	<Route path="groupMembersTab" component={GroupMembersTab} />
+	<Route path="addAnimalNote" component={AddAnimalNote} />
+	<Route path="userSettingsPage" component={UserSettingsPage} />
   </Router>
 );
 
 ReactDOM.render(
-    <Router routes={routes}/>,
-    document.getElementById('content')
+	<Router routes={routes}/>,
+	document.getElementById('content')
 );

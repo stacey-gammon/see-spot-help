@@ -5,35 +5,35 @@ var LoginStore = require("../../stores/loginstore");
 var TakePhotoButton = require("../takephotobutton");
 
 var AnimalPhotoReel = React.createClass({
-    getInitialState: function() {
-        return {
-            user: LoginStore.getUser()
-        }
-    },
+	getInitialState: function() {
+		return {
+			user: LoginStore.getUser()
+		}
+	},
 
-    componentDidMount: function () {
-        LoginStore.addChangeListener(this.onChange);
-    },
+	componentDidMount: function () {
+		LoginStore.addChangeListener(this.onChange);
+	},
 
-    componentWillUnmount: function () {
-        LoginStore.removeChangeListener(this.onChange);
-    },
+	componentWillUnmount: function () {
+		LoginStore.removeChangeListener(this.onChange);
+	},
 
-    onChange: function () {
-        this.setState(
-            {
-                user: LoginStore.user
-            });
-    },
+	onChange: function () {
+		this.setState(
+			{
+				user: LoginStore.user
+			});
+	},
 
-    render: function () {
-        console.log("AnimalPhotoReel::render");
-        return (
-            <div className="animalPhotoReel" >
-                <TakePhotoButton group={this.props.group} user={this.props.user} animal={this.props.animal}/>
-            </div>
-        );
-    }
+	render: function () {
+		console.log("AnimalPhotoReel::render");
+		return (
+			<div className="animalPhotoReel" >
+				<TakePhotoButton group={this.props.group} user={this.props.user} animal={this.props.animal}/>
+			</div>
+		);
+	}
 });
 
 module.exports = AnimalPhotoReel;

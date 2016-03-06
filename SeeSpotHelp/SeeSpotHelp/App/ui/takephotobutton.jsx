@@ -5,77 +5,77 @@ var AjaxServices = require("../core/AJAXServices");
 var LoginStore = require("../stores/loginstore");
 
 var TakePhotoButton = React.createClass({
-    getInitialState: function() {
-        return {
-            user: LoginStore.getUser()
-        }
-    },
+	getInitialState: function() {
+		return {
+			user: LoginStore.getUser()
+		}
+	},
 
-    componentDidMount: function () {
-        LoginStore.addChangeListener(this.onChange);
-    },
+	componentDidMount: function () {
+		LoginStore.addChangeListener(this.onChange);
+	},
 
-    componentWillUnmount: function () {
-        LoginStore.removeChangeListener(this.onChange);
-    },
+	componentWillUnmount: function () {
+		LoginStore.removeChangeListener(this.onChange);
+	},
 
-    onChange: function () {
-        this.setState(
-            {
-                user: LoginStore.user
-            });
-    },
+	onChange: function () {
+		this.setState(
+			{
+				user: LoginStore.user
+			});
+	},
 
-    uploadSucceeded: function() {
-        alert("yay!");
-    },
+	uploadSucceeded: function() {
+		alert("yay!");
+	},
 
-    uploadFailed: function(error) {
-        alert("boo!" + error.responseText);
-    },
+	uploadFailed: function(error) {
+		alert("boo!" + error.responseText);
+	},
 
-    uploadFile: function (file) {
-        console.log("AnimalActionsBox::uploadFile");
-        var ajax = new AjaxServices(this.uploadSucceeded,
-                                    this.uploadFailed);
-        console.log("file = ");
-        console.log(file);
-        ajax.callFileUploadService(
-            "../../WebServices/imageServices.asmx",
-            "saveImageFile",
-            file);
-    },
+	uploadFile: function (file) {
+		console.log("AnimalActionsBox::uploadFile");
+		var ajax = new AjaxServices(this.uploadSucceeded,
+									this.uploadFailed);
+		console.log("file = ");
+		console.log(file);
+		ajax.callFileUploadService(
+			"../../WebServices/imageServices.asmx",
+			"saveImageFile",
+			file);
+	},
 
-    loadPhoto: function() {
-        console.log("AnimalActionsBox::LoadPhoto");
-       var file = this.refs.addPhotoFileInput.files[0];
-       this.uploadFile(file);
+	loadPhoto: function() {
+		console.log("AnimalActionsBox::LoadPhoto");
+	   var file = this.refs.addPhotoFileInput.files[0];
+	   this.uploadFile(file);
    },
 
-    addPhoto: function() {
-        console.log("AnimalActionsBox::addPhoto");
-        this.refs.addPhotoFileInput.click();
-    },
+	addPhoto: function() {
+		console.log("AnimalActionsBox::addPhoto");
+		this.refs.addPhotoFileInput.click();
+	},
 
-    allowAction: function() {
-        return this.props.group.shouldAllowUserToEdit(this.state.user.id);
-    },
+	allowAction: function() {
+		return this.props.group.shouldAllowUserToEdit(this.state.user.id);
+	},
 
-    render: function () {
-        console.log("TakePhotoButton::render");
-        return (
-            <div className="takePhotoButton" >
-                <button className="btn btn-info padding"
-                        disabled={!this.allowAction()}
-                        onClick={this.addPhoto}>
-                    <span className="glyphicon glyphicon-camera"></span>
-                </button>
-                <input type="file" accept="image/*"
-                       onChange={this.loadPhoto}
-                       className="addPhotoFileInput" ref="addPhotoFileInput"/>
-            </div>
-        );
-    }
+	render: function () {
+		console.log("TakePhotoButton::render");
+		return (
+			<div className="takePhotoButton" >
+				<button className="btn btn-info padding"
+						disabled={!this.allowAction()}
+						onClick={this.addPhoto}>
+					<span className="glyphicon glyphicon-camera"></span>
+				</button>
+				<input type="file" accept="image/*"
+					   onChange={this.loadPhoto}
+					   className="addPhotoFileInput" ref="addPhotoFileInput"/>
+			</div>
+		);
+	}
 });
 
 module.exports = TakePhotoButton;

@@ -8,8 +8,8 @@
 // goind with the latter.
 
 var ServerResponse = function (errorMessage) {
-    this.hasError = !!errorMessage;
-    this.errorMessage = errorMessage;
+	this.hasError = !!errorMessage;
+	this.errorMessage = errorMessage;
 };
 
 module.exports = ServerResponse;

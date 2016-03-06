@@ -14,109 +14,109 @@ var assign = require("object-assign");
 var CHANGE_EVENT = "change";
 
 class AnimalStore extends EventEmitter {
-    constructor() {
-        super();
-        var outer = this;
-        this.dispatchToken = Dispatcher.register(function (action) {
-            console.log("AnimalStore:Dispatcher:register");
-            outer.handleAction(action);
-        });
+	constructor() {
+		super();
+		var outer = this;
+		this.dispatchToken = Dispatcher.register(function (action) {
+			console.log("AnimalStore:Dispatcher:register");
+			outer.handleAction(action);
+		});
 
-        this.animals = {};
-        this.currentAnimal = null;
-    }
+		this.animals = {};
+		this.currentAnimal = null;
+	}
 
-    getCurrentAnimal() {
-        if (!this.currentAnimal) {
-            this.currentAnimal =
-                Animal.castObject(JSON.parse(sessionStorage.getItem("currentAnimal")));
-        }
-        return this.currentAnimal;
-    }
+	getCurrentAnimal() {
+		if (!this.currentAnimal) {
+			this.currentAnimal =
+				Animal.castObject(JSON.parse(sessionStorage.getItem("currentAnimal")));
+		}
+		return this.currentAnimal;
+	}
 
-    setCurrentAnimal(animal) {
-        this.currentAnimal = animal;
-        sessionStorage.setItem("currentAnimal", JSON.stringify(this.currentAnimal));
-    }
+	setCurrentAnimal(animal) {
+		this.currentAnimal = animal;
+		sessionStorage.setItem("currentAnimal", JSON.stringify(this.currentAnimal));
+	}
 
-    addChangeListener(callback) {
-        this.on(CHANGE_EVENT, callback);
-    }
+	addChangeListener(callback) {
+		this.on(CHANGE_EVENT, callback);
+	}
 
-    // @param {function} callback
-    removeChangeListener(callback) {
-        this.removeListener(CHANGE_EVENT, callback);
-    }
+	// @param {function} callback
+	removeChangeListener(callback) {
+		this.removeListener(CHANGE_EVENT, callback);
+	}
 
-    emitChange() {
-        this.emit(CHANGE_EVENT);
-    }
+	emitChange() {
+		this.emit(CHANGE_EVENT);
+	}
 
-    animalAdded(snapshot) {
-        if (snapshot.val()) {
-            var animal = Animal.castObject(snapshot.val());
-            // Wait for the subsequent update to set the id.
-            if (!animal.id) return;
-            if (!this.animals[animal.groupId]) {
-                this.animals[animal.groupId] = [];
-            }
-            this.animals[animal.groupId].push(animal);
+	animalAdded(snapshot) {
+		if (snapshot.val()) {
+			var animal = Animal.castObject(snapshot.val());
+			// Wait for the subsequent update to set the id.
+			if (!animal.id) return;
+			if (!this.animals[animal.groupId]) {
+				this.animals[animal.groupId] = [];
+			}
+			this.animals[animal.groupId].push(animal);
 
-            // TODO: sort by latest activity
-            // this.animals[animal.groupId].sort(function(a, b){
-            //     return a.timestamp < b.timestamp ? 1 : -1;
-            // });
-            AnimalActions.animalAdded(animal);
-            this.emitChange();
-        }
-    }
+			// TODO: sort by latest activity
+			// this.animals[animal.groupId].sort(function(a, b){
+			//	 return a.timestamp < b.timestamp ? 1 : -1;
+			// });
+			AnimalActions.animalAdded(animal);
+			this.emitChange();
+		}
+	}
 
-    animalDeleted(snapshot) {
-        var deletedAnimal = snapshot.val();
-        var animals = this.animals[deletedAnimal.groupId];
-        for (var i = 0; i < animals.length; i++) {
-            if (animals[i].id == deletedAnimal.id) {
-                this.animals[deletedAnimal.groupId].splice(i, 1);
-                AnimalActions.animalDeleted(deletedAnimal);
-                this.emitChange();
-                return;
-            }
-        }
-    }
+	animalDeleted(snapshot) {
+		var deletedAnimal = snapshot.val();
+		var animals = this.animals[deletedAnimal.groupId];
+		for (var i = 0; i < animals.length; i++) {
+			if (animals[i].id == deletedAnimal.id) {
+				this.animals[deletedAnimal.groupId].splice(i, 1);
+				AnimalActions.animalDeleted(deletedAnimal);
+				this.emitChange();
+				return;
+			}
+		}
+	}
 
-    animalChanged(snapshot) {
-        var changedAnimal = Animal.castObject(snapshot.val());
-        var activities = this.animals[changedAnimal.groupId];
-        for (var i = 0; i < this.animals.length; i++) {
-            if (this.animals[i].id == changedAnimal.id) {
-                this.animals[i] = changedAnimal;
-                AnimalActions.animalChanged(changedAnimal);
-                this.emitChange();
-                return;
-            }
-        }
-        // Must have been an update to a newly added animal id.
-        this.animalAdded(snapshot);
-    }
+	animalChanged(snapshot) {
+		var changedAnimal = Animal.castObject(snapshot.val());
+		var activities = this.animals[changedAnimal.groupId];
+		for (var i = 0; i < this.animals.length; i++) {
+			if (this.animals[i].id == changedAnimal.id) {
+				this.animals[i] = changedAnimal;
+				AnimalActions.animalChanged(changedAnimal);
+				this.emitChange();
+				return;
+			}
+		}
+		// Must have been an update to a newly added animal id.
+		this.animalAdded(snapshot);
+	}
 
-    downloadAnimals(groupId) {
-        AJAXServices.OnChildAdded(
-            "groups/" + groupId + "/animals",
-            this.animalAdded.bind(this));
-        AJAXServices.OnChildRemoved(
-            "groups/" + groupId + "/animals",
-            this.animalDeleted.bind(this));
-        AJAXServices.OnChildChanged(
-            "groups/" + groupId + "/animals",
-            this.animalChanged.bind(this));
-    }
+	downloadAnimals(groupId) {
+		AJAXServices.OnChildAdded(
+			"groups/" + groupId + "/animals",
+			this.animalAdded.bind(this));
+		AJAXServices.OnChildRemoved(
+			"groups/" + groupId + "/animals",
+			this.animalDeleted.bind(this));
+		AJAXServices.OnChildChanged(
+			"groups/" + groupId + "/animals",
+			this.animalChanged.bind(this));
+	}
 
-    handleAction(action) {
-        switch (action.type) {
-            default:
-                break;
-        }
-    }
+	handleAction(action) {
+		switch (action.type) {
+			default:
+				break;
+		}
+	}
 }
 
 module.exports = new AnimalStore();

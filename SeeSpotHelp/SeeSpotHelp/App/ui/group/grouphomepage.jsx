@@ -25,167 +25,167 @@ var ReactRouterBootstrap = require("react-router-bootstrap");
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 var GroupHomePage = React.createClass({
-    getInitialState: function () {
-        console.log("GroupHomePage:getInitialState");
-        var query = this.props.location ? this.props.location.query : null;
-        var group = null;
-        if (query && query.groupId) {
-            // TODO: need to load the group on search page.
-            group = GroupStore.getGroupById(query.groupId);
-        } else {
-            group = this.props.location &&
-                    this.props.location.state &&
-                    this.props.location.state.group ||
-                    this.props.group;
-            // Force refresh via groupstore
-            group = group ? GroupStore.getGroupById(group.id) : null;
-            //
-            // if (LoginStore.getUser() && !group) {
-            //     console.log("user = ", LoginStore.getUser());
-            //     var defaultGroupId = LoginStore.getUser().defaultGroupId();
-            //     console.log("Default Group id: " + defaultGroupId);
-            //     group = GroupStore.getGroupById(LoginStore.getUser().defaultGroupId());
-            //     console.log(group);
-            // }
-        }
-        var group = group ? VolunteerGroup.castObject(group) : null;
-        if (group) {
-            GroupStore.setCurrentGroup(group);
-        } else {
-            group = GroupStore.getCurrentGroup();
-            // TODO: I think we need to also grab and set the group here if the user refreshed the
-            // page.
-        }
-        return {
-            user: LoginStore.getUser(),
-            group: group,
-            fromSearch: query && query.groupId
-        }
-    },
+	getInitialState: function () {
+		console.log("GroupHomePage:getInitialState");
+		var query = this.props.location ? this.props.location.query : null;
+		var group = null;
+		if (query && query.groupId) {
+			// TODO: need to load the group on search page.
+			group = GroupStore.getGroupById(query.groupId);
+		} else {
+			group = this.props.location &&
+					this.props.location.state &&
+					this.props.location.state.group ||
+					this.props.group;
+			// Force refresh via groupstore
+			group = group ? GroupStore.getGroupById(group.id) : null;
+			//
+			// if (LoginStore.getUser() && !group) {
+			//	 console.log("user = ", LoginStore.getUser());
+			//	 var defaultGroupId = LoginStore.getUser().defaultGroupId();
+			//	 console.log("Default Group id: " + defaultGroupId);
+			//	 group = GroupStore.getGroupById(LoginStore.getUser().defaultGroupId());
+			//	 console.log(group);
+			// }
+		}
+		var group = group ? VolunteerGroup.castObject(group) : null;
+		if (group) {
+			GroupStore.setCurrentGroup(group);
+		} else {
+			group = GroupStore.getCurrentGroup();
+			// TODO: I think we need to also grab and set the group here if the user refreshed the
+			// page.
+		}
+		return {
+			user: LoginStore.getUser(),
+			group: group,
+			fromSearch: query && query.groupId
+		}
+	},
 
-    loadDifferentGroup: function(group) {
-        this.setState({
-            group: group
-        });
-    },
+	loadDifferentGroup: function(group) {
+		this.setState({
+			group: group
+		});
+	},
 
-    getPreviousButton: function() {
-        if (this.state.fromSearch || !this.state.user) return null;
-        var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
-        var previousGroup = null;
-        for (var i = 0; i < usersGroups.length; i++) {
-            if (usersGroups[i].id == this.state.group.id) {
-                break;
-            }
-            previousGroup = usersGroups[i];
-        }
-        if (previousGroup) {
-            return (
-                <button className="btn btn-info"
-                        onClick={this.loadDifferentGroup.bind(this, previousGroup)}>
-                    Prev
-                </button>
-            );
-        }
-    },
+	getPreviousButton: function() {
+		if (this.state.fromSearch || !this.state.user) return null;
+		var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
+		var previousGroup = null;
+		for (var i = 0; i < usersGroups.length; i++) {
+			if (usersGroups[i].id == this.state.group.id) {
+				break;
+			}
+			previousGroup = usersGroups[i];
+		}
+		if (previousGroup) {
+			return (
+				<button className="btn btn-info"
+						onClick={this.loadDifferentGroup.bind(this, previousGroup)}>
+					Prev
+				</button>
+			);
+		}
+	},
 
-    getNextButton: function() {
-        if (this.state.fromSearch || !this.state.user) return null;
-        var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
-        var nextGroup = null;
-        var groupFound = false;
-        for (var i = 0; i < usersGroups.length; i++) {
-            if (groupFound) {
-                nextGroup = usersGroups[i];
-                break;
-            }
-            if (usersGroups[i].id == this.state.group.id) {
-                groupFound = true;
-            }
-        }
-        if (nextGroup) {
-            return (
-                <button className="btn btn-info"
-                        onClick={this.loadDifferentGroup.bind(this, nextGroup)}>
-                    Next
-                </button>
-            );
-        }
-    },
+	getNextButton: function() {
+		if (this.state.fromSearch || !this.state.user) return null;
+		var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
+		var nextGroup = null;
+		var groupFound = false;
+		for (var i = 0; i < usersGroups.length; i++) {
+			if (groupFound) {
+				nextGroup = usersGroups[i];
+				break;
+			}
+			if (usersGroups[i].id == this.state.group.id) {
+				groupFound = true;
+			}
+		}
+		if (nextGroup) {
+			return (
+				<button className="btn btn-info"
+						onClick={this.loadDifferentGroup.bind(this, nextGroup)}>
+					Next
+				</button>
+			);
+		}
+	},
 
-    componentDidMount: function () {
-        LoginStore.addChangeListener(this.onChange);
-        GroupStore.addChangeListener(this.onChange);
-    },
+	componentDidMount: function () {
+		LoginStore.addChangeListener(this.onChange);
+		GroupStore.addChangeListener(this.onChange);
+	},
 
-    componentWillMount: function () {
-    },
+	componentWillMount: function () {
+	},
 
-    componentWillUnmount: function () {
-        LoginStore.removeChangeListener(this.onChange);
-        GroupStore.removeChangeListener(this.onChange);
-    },
+	componentWillUnmount: function () {
+		LoginStore.removeChangeListener(this.onChange);
+		GroupStore.removeChangeListener(this.onChange);
+	},
 
-    onChange: function () {
-        this.setState(
-            {
-                user: LoginStore.user,
-                group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
-            });
-    },
+	onChange: function () {
+		this.setState(
+			{
+				user: LoginStore.user,
+				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
+			});
+	},
 
-    render: function () {
-        if (this.state.group) {
-            var memberTitle = "Members (" + this.state.group.memberCount() + ")";
-            return (
-                <div>
-                    <div className="media">
-                        <div className="media-left">
-                            {this.getPreviousButton()}
-                        </div>
-                        <div className="media-body">
-                            <GroupInfoBox group={this.state.group} user={this.state.user} />
-                        </div>
-                        <div className="media-right">
-                            {this.getNextButton()}
-                        </div>
-                    </div>
-                    <GroupActionsBox user={this.state.user} group={this.state.group} />
-                    <Tabs defaultActiveKey={1}>
-                        <Tab eventKey={1} title="Animals">
-                            <GroupAnimalsTab group={this.state.group} user={this.state.user}/>
-                        </Tab>
-                        <Tab eventKey={2} title={memberTitle}>
-                            <GroupMembersTab group={this.state.group} user={this.state.user}/>
-                        </Tab>
-                        <Tab eventKey={3} title="Activity">
-                            <GroupActivityTab group={this.state.group} user={this.state.user}/>
-                        </Tab>
-                    </Tabs>
-                </div>
-            );
-        } else if (LoginStore.user) {
-            return (
-                <div>
-                    <h1>
-                        You are not part of any volunteer groups.  To get started&nbsp;
-                    <Link to="searchPage">search</Link>
-                        &nbsp;for a group to join, or&nbsp;
-                    <Link to="addNewGroup">add</Link> a new one.
-                    </h1>
-                </div>
-            );
-        } else {
-            return (
-            <div>
-                <h1>To get started&nbsp;
-                <Link to="searchPage">search</Link>
-                    &nbsp;for a group, or <Link to="loginPage">log in</Link> to join or add one.
-                </h1>
-            </div>
-        );
-        }
-    }
+	render: function () {
+		if (this.state.group) {
+			var memberTitle = "Members (" + this.state.group.memberCount() + ")";
+			return (
+				<div>
+					<div className="media">
+						<div className="media-left">
+							{this.getPreviousButton()}
+						</div>
+						<div className="media-body">
+							<GroupInfoBox group={this.state.group} user={this.state.user} />
+						</div>
+						<div className="media-right">
+							{this.getNextButton()}
+						</div>
+					</div>
+					<GroupActionsBox user={this.state.user} group={this.state.group} />
+					<Tabs defaultActiveKey={1}>
+						<Tab eventKey={1} title="Animals">
+							<GroupAnimalsTab group={this.state.group} user={this.state.user}/>
+						</Tab>
+						<Tab eventKey={2} title={memberTitle}>
+							<GroupMembersTab group={this.state.group} user={this.state.user}/>
+						</Tab>
+						<Tab eventKey={3} title="Activity">
+							<GroupActivityTab group={this.state.group} user={this.state.user}/>
+						</Tab>
+					</Tabs>
+				</div>
+			);
+		} else if (LoginStore.user) {
+			return (
+				<div>
+					<h1>
+						You are not part of any volunteer groups.  To get started&nbsp;
+					<Link to="searchPage">search</Link>
+						&nbsp;for a group to join, or&nbsp;
+					<Link to="addNewGroup">add</Link> a new one.
+					</h1>
+				</div>
+			);
+		} else {
+			return (
+			<div>
+				<h1>To get started&nbsp;
+				<Link to="searchPage">search</Link>
+					&nbsp;for a group, or <Link to="loginPage">log in</Link> to join or add one.
+				</h1>
+			</div>
+		);
+		}
+	}
 });
 
 module.exports = GroupHomePage;

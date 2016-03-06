@@ -15,54 +15,54 @@ var AJAXServices = require("../../core/AJAXServices");
 var AddAdoptableButton = require("../animal/addanimalbutton");
 
 var GroupAnimalsTab = React.createClass({
-    getInitialState: function () {
-        var group = this.props.location &&
-                    this.props.location.state &&
-                    this.props.location.state.group ||
-                    this.props.group;
-        return {
-            user: LoginStore.getUser(),
-            group: group
-        }
-    },
+	getInitialState: function () {
+		var group = this.props.location &&
+					this.props.location.state &&
+					this.props.location.state.group ||
+					this.props.group;
+		return {
+			user: LoginStore.getUser(),
+			group: group
+		}
+	},
 
-    componentWillReceiveProps: function(nextProps) {
-        this.setState({
-            group: nextProps.group
-        });
-    },
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			group: nextProps.group
+		});
+	},
 
-    componentDidMount: function () {
-        LoginStore.addChangeListener(this.onChange);
-        GroupStore.addChangeListener(this.onChange);
-    },
+	componentDidMount: function () {
+		LoginStore.addChangeListener(this.onChange);
+		GroupStore.addChangeListener(this.onChange);
+	},
 
-    componentWillMount: function () {
-    },
+	componentWillMount: function () {
+	},
 
-    componentWillUnmount: function () {
-        LoginStore.removeChangeListener(this.onChange);
-        GroupStore.removeChangeListener(this.onChange);
-    },
+	componentWillUnmount: function () {
+		LoginStore.removeChangeListener(this.onChange);
+		GroupStore.removeChangeListener(this.onChange);
+	},
 
-    onChange: function () {
-        this.setState(
-            {
-                user: LoginStore.user,
-                group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
-            });
-    },
+	onChange: function () {
+		this.setState(
+			{
+				user: LoginStore.user,
+				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
+			});
+	},
 
-    render: function () {
-        console.log("GroupAnimalsTab, group:");
-        console.log(this.state.group);
-        return (
-            <div className="shelterAnimalsTab">
-                <AddAdoptableButton group={this.state.group} user={this.state.user}/>
-                <AnimalList group={this.state.group} user={this.state.user}/>
-            </div>
-        );
-    }
+	render: function () {
+		console.log("GroupAnimalsTab, group:");
+		console.log(this.state.group);
+		return (
+			<div className="shelterAnimalsTab">
+				<AddAdoptableButton group={this.state.group} user={this.state.user}/>
+				<AnimalList group={this.state.group} user={this.state.user}/>
+			</div>
+		);
+	}
 });
 
 module.exports = GroupAnimalsTab;

@@ -6,50 +6,50 @@ var VolunteerStore = require("../../stores/volunteerstore");
 var AnimalActivityItem = require("./animalactivityitem");
 
 var AnimalActivityList = React.createClass({
-    getInitialState: function() {
-        return {
-            animal: this.props.animal
-        };
-    },
+	getInitialState: function() {
+		return {
+			animal: this.props.animal
+		};
+	},
 
-    componentDidMount: function () {
-        AnimalActivityStore.addChangeListener(this.onChange);
-        // In case a user changes their name on us, update the note.
-        VolunteerStore.addChangeListener(this.onChange);
-    },
+	componentDidMount: function () {
+		AnimalActivityStore.addChangeListener(this.onChange);
+		// In case a user changes their name on us, update the note.
+		VolunteerStore.addChangeListener(this.onChange);
+	},
 
-    componentWillUnmount: function () {
-        AnimalActivityStore.removeChangeListener(this.onChange);
-        VolunteerStore.removeChangeListener(this.onChange);
-    },
+	componentWillUnmount: function () {
+		AnimalActivityStore.removeChangeListener(this.onChange);
+		VolunteerStore.removeChangeListener(this.onChange);
+	},
 
-    onChange: function () {
-        this.setState(
-            {
-                animal: this.props.animal
-            });
-    },
+	onChange: function () {
+		this.setState(
+			{
+				animal: this.props.animal
+			});
+	},
 
-    generateAnimalNote: function (note) {
-        return (
-            <AnimalActivityItem activity={note} group={this.props.group}
-                                animal={this.state.animal}/>
-        );
-    },
+	generateAnimalNote: function (note) {
+		return (
+			<AnimalActivityItem activity={note} group={this.props.group}
+								animal={this.state.animal}/>
+		);
+	},
 
-    render: function () {
-        var notes = AnimalActivityStore.getActivityByAnimalId(this.props.animal.id);
-        console.log("AnimalActivityList:render with notes:", notes);
-        var displayNotes = [];
-        for (var i = 0; i < notes.length; i++) {
-            displayNotes.push(this.generateAnimalNote(notes[i]));
-        }
-        return (
-            <div className="list-group">
-                {displayNotes}
-            </div>
-        );
-    }
+	render: function () {
+		var notes = AnimalActivityStore.getActivityByAnimalId(this.props.animal.id);
+		console.log("AnimalActivityList:render with notes:", notes);
+		var displayNotes = [];
+		for (var i = 0; i < notes.length; i++) {
+			displayNotes.push(this.generateAnimalNote(notes[i]));
+		}
+		return (
+			<div className="list-group">
+				{displayNotes}
+			</div>
+		);
+	}
 });
 
 module.exports = AnimalActivityList;
