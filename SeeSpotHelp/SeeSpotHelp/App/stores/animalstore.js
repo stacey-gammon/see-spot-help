@@ -23,6 +23,20 @@ class AnimalStore extends EventEmitter {
         });
 
         this.animals = {};
+        this.currentAnimal = null;
+    }
+
+    getCurrentAnimal() {
+        if (!this.currentAnimal) {
+            this.currentAnimal =
+                Animal.castObject(JSON.parse(sessionStorage.getItem("currentAnimal")));
+        }
+        return this.currentAnimal;
+    }
+
+    setCurrentAnimal(animal) {
+        this.currentAnimal = animal;
+        sessionStorage.setItem("currentAnimal", JSON.stringify(this.currentAnimal));
     }
 
     addChangeListener(callback) {

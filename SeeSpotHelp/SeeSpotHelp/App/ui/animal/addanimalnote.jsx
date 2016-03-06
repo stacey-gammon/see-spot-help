@@ -69,7 +69,6 @@ var AddAnimalNote = React.createClass({
                 this.state.group.id,
                 this.state.user.id);
             note.insert();
-            AnimalActions.animalActivityAdded(note);
         }
         if (this.state.animal) {
             this.context.router.push(

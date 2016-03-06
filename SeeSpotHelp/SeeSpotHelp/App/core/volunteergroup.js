@@ -144,7 +144,6 @@ VolunteerGroup.prototype.shouldAllowUserToEdit = function (userId) {
 };
 
 VolunteerGroup.prototype.getUserPermissions = function (userId) {
-    console.log("VolunteerGroup.prototype.getUserPermissions for " + userId);
     if (this.userPermissionsMap.hasOwnProperty(userId)) {
         return this.userPermissionsMap[userId];
     } else {

@@ -65,7 +65,7 @@ var AnimalActivityItem = React.createClass({
                     {this.getDeleteActionButton()}
                 </div>
             );
-        } else if (this.state.group.getUserPermissions(this.state.user.id) ==
+        } else if (this.props.group.getUserPermissions(this.state.user.id) ==
                    VolunteerGroup.PermissionsEnum.ADMIN){
             return (
                 <div className="media-right">
@@ -78,9 +78,14 @@ var AnimalActivityItem = React.createClass({
     },
 
     getAnimalNameHeader: function() {
-        if (this.props.showAnimalInfo && this.state.group) {
+        if (this.props.showAnimalInfo && this.props.group) {
+            var animal = this.props.group.animals[this.props.activity.animalId];
+            if (!animal) {
+                console.log("WARN: no animal with id " + this.props.activity.animalId +
+                    " in group " + this.props.group.name);
+            }
             var animalName =
-                this.state.group.animals[this.props.activity.animalId].name;
+                this.props.group.animals[this.props.activity.animalId].name;
             return (
                 <h4>{animalName}</h4>
             );
@@ -90,7 +95,6 @@ var AnimalActivityItem = React.createClass({
     },
 
     render: function () {
-        console.log("AnimalActivityItem:render:");
         var member = VolunteerStore.getVolunteerById(this.props.activity.byUserId);
         var userName =
             !member ?

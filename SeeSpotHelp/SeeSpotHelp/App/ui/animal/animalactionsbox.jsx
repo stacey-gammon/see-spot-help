@@ -58,7 +58,6 @@ var AnimalActionsBox = React.createClass({
 
     shouldAllowUserToEdit: function () {
         var edit = this.state.group.shouldAllowUserToEdit(this.state.user.id);
-        console.log("allow edit? " + edit);
         return edit;
     },
 

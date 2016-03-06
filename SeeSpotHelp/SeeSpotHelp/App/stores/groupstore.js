@@ -21,6 +21,22 @@ class GroupStore extends EventEmitter {
         });
         this.groups = {};
         this.loadedUserGroups = false;
+        this.currentGroup = null;
+    }
+
+    getCurrentGroup() {
+        if (!this.currentGroup) {
+            this.currentGroup =
+                VolunteerGroup.castObject(JSON.parse(sessionStorage.getItem("currentGroup")));
+            // Need to establish listener callbacks.
+            this.downloadGroup(this.currentGroup.id);
+        }
+        return this.currentGroup;
+    }
+
+    setCurrentGroup(group) {
+        this.currentGroup = group;
+        sessionStorage.setItem("currentGroup", JSON.stringify(this.currentGroup));
     }
 
     loadedUserGroups() {

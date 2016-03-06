@@ -6,6 +6,7 @@ var Animal = require("../../core/animal");
 var VolunteerGroup = require("../../core/volunteergroup");
 var AnimalActionsBox = require('./animalactionsbox');
 var AnimalPhotoReel = require("./animalphotoreel");
+var AnimalStore = require("../../stores/animalstore");
 var AnimalActivityList = require("./animalactivitylist");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
@@ -30,6 +31,14 @@ var AnimalHomePage = React.createClass({
         if (group && !(group instanceof VolunteerGroup)) {
             group = VolunteerGroup.castObject(group);
         }
+
+        if (animal) {
+            AnimalStore.setCurrentAnimal(animal);
+        } else {
+            animal = AnimalStore.getCurrentAnimal();
+            // TODO: I think we need to also grab and set the group here if the user refreshed the
+            // page.
+        }
         return {
             animal: animal,
             group: group,
@@ -38,14 +47,12 @@ var AnimalHomePage = React.createClass({
     },
 
     shouldAllowUserToEdit: function () {
+        if (!this.state.user) return false;
         var edit = this.state.group.shouldAllowUserToEdit(this.state.user.id);
-        console.log("allow edit? " + edit);
         return edit;
     },
 
     render: function () {
-        console.log("AnimalHomePage:render: ");
-        console.log(this.state.animal);
         var imageSrc = this.state.animal.getPhoto();
         var animal = this.state.animal;
         if (animal) {

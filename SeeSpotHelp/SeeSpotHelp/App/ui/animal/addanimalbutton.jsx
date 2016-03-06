@@ -48,6 +48,7 @@ var AddAdoptableButton = React.createClass({
     },
 
     getAddAdoptableButton: function () {
+        if (!this.state.user) return null;
         var permissions = this.state.group.getUserPermissions(this.state.user.id);
         if (!this.state.user ||
             permissions == VolunteerGroup.PermissionsEnum.NONMEMBER ||

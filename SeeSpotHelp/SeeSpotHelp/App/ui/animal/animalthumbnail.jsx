@@ -37,8 +37,8 @@ var AnimalThumbnail = React.createClass({
                         </div>
                         <div className="media-body">
                             <h4 className="media-heading">{this.props.animal.name}</h4>
-                            <p className="animalThumbnailText">{this.props.animal.breed}</p>
-                            <p className="animalThumbnailText">{this.props.animal.age} years old</p>
+                            <div className="animalThumbnailText">{this.props.animal.breed}</div>
+                            <div className="animalThumbnailText">{this.props.animal.age} years old</div>
                         </div>
                     </div>
                 </LinkContainer>

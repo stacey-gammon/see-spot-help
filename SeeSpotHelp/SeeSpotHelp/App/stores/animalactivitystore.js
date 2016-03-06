@@ -79,7 +79,7 @@ class AnimalActivityStore extends EventEmitter {
         }
         // Most likely a push call followed by an update call so we can store the id in the
         // object.
-        this.activityAdded(snapshot);
+        this.userActivityAdded(snapshot);
     }
 
     activityAdded(snapshot) {
@@ -88,9 +88,20 @@ class AnimalActivityStore extends EventEmitter {
             // Wait for the subsequent update call. This is all inefficient.
             if (activity.id == null) return;
             var animalId = activity.animalId;
+            console.log("Activity for animal " + animalId + " and id " + activity.id + " added");
             if (!this.animalNotes[animalId]) {
                 this.animalNotes[animalId] = [];
             }
+
+            // Make sure we don't insert the same note twice.  Need to get to the bottom of why
+            // this is being called twice for the same activity.
+            for (var i = 0; i < this.animalNotes[animalId].length; i++) {
+                if (this.animalNotes[animalId][i].id == activity.id) {
+                    console.log("WARN: same activity attempted to be added twice.")
+                    return;
+                }
+            }
+
             this.animalNotes[animalId].push(activity);
             this.animalNotes[animalId].sort(function(a, b){
                 return a.timestamp < b.timestamp ? 1 : -1;
@@ -138,6 +149,7 @@ class AnimalActivityStore extends EventEmitter {
     }
 
     downloadAnimalNotes(animalId) {
+        console.log("Download activity for " + animalId);
         // So we don't try to download it again if there are no notes (e.g. differentiate from
         // null).
         this.animalNotes[animalId] = [];

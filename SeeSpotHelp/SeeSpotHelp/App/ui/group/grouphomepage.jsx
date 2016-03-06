@@ -39,16 +39,23 @@ var GroupHomePage = React.createClass({
                     this.props.group;
             // Force refresh via groupstore
             group = group ? GroupStore.getGroupById(group.id) : null;
-
-            if (LoginStore.getUser() && !group) {
-                console.log("user = ", LoginStore.getUser());
-                var defaultGroupId = LoginStore.getUser().defaultGroupId();
-                console.log("Default Group id: " + defaultGroupId);
-                group = GroupStore.getGroupById(LoginStore.getUser().defaultGroupId());
-                console.log(group);
-            }
+            //
+            // if (LoginStore.getUser() && !group) {
+            //     console.log("user = ", LoginStore.getUser());
+            //     var defaultGroupId = LoginStore.getUser().defaultGroupId();
+            //     console.log("Default Group id: " + defaultGroupId);
+            //     group = GroupStore.getGroupById(LoginStore.getUser().defaultGroupId());
+            //     console.log(group);
+            // }
         }
         var group = group ? VolunteerGroup.castObject(group) : null;
+        if (group) {
+            GroupStore.setCurrentGroup(group);
+        } else {
+            group = GroupStore.getCurrentGroup();
+            // TODO: I think we need to also grab and set the group here if the user refreshed the
+            // page.
+        }
         return {
             user: LoginStore.getUser(),
             group: group,
@@ -63,7 +70,7 @@ var GroupHomePage = React.createClass({
     },
 
     getPreviousButton: function() {
-        if (this.state.fromSearch) return null;
+        if (this.state.fromSearch || !this.state.user) return null;
         var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
         var previousGroup = null;
         for (var i = 0; i < usersGroups.length; i++) {
@@ -83,7 +90,7 @@ var GroupHomePage = React.createClass({
     },
 
     getNextButton: function() {
-        if (this.state.fromSearch) return null;
+        if (this.state.fromSearch || !this.state.user) return null;
         var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
         var nextGroup = null;
         var groupFound = false;

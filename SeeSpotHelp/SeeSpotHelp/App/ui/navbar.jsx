@@ -60,6 +60,7 @@ var MyNavBar = React.createClass({
                     <Nav pullRight>
                         <Dropdown componentClass="li">
                             <Dropdown.Toggle
+                                className="dropdownToggleStyle"
                                 hidden="true"
                                 noCaret="true">
                                 <button className="hamburgerDropdown">
