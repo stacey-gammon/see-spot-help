@@ -32,18 +32,13 @@ var AnimalHomePage = React.createClass({
 			group = VolunteerGroup.castObject(group);
 		}
 
-		if (animal) {
-			AnimalStore.setCurrentAnimal(animal);
-		} else {
-			animal = AnimalStore.getCurrentAnimal();
-			// TODO: I think we need to also grab and set the group here if the user refreshed the
-			// page.
-		}
-		return {
+		var state = {
 			animal: animal,
 			group: group,
-			user: LoginStore.getUser()
+			user: LoginStore.user
 		};
+		Utils.LoadOrStateState(state);
+		return state;
 	},
 
 	shouldAllowUserToEdit: function () {

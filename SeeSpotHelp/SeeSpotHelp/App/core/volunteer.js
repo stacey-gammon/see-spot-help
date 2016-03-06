@@ -14,6 +14,9 @@ var Volunteer = function(name, email, id) {
 	// The id is the user id given by facebook.
 	this.id = id;
 	this.groups = {};
+
+	// Unfortunately, I don't know anyway to generate this dynamically.
+	this.classNameForSessionStorage = 'Volunteer';
 };
 
 Volunteer.prototype.defaultGroupId = function () {

@@ -22,6 +22,8 @@ var AJAXServices = require('./AJAXServices');
 // @param zipCode {string} The zip code the shelter resides in.
 // @param id {string} the id of the group.
 var VolunteerGroup = function(name, shelter, address, city, state, zipCode, id) {
+	// This is only used when loading state from session storage, to know how to cast the object
+	this.isAGroup = true;
 	this.name = name;
 	this.shelter = shelter;
 	this.address = address;
@@ -34,6 +36,9 @@ var VolunteerGroup = function(name, shelter, address, city, state, zipCode, id) 
 	// member in the volunteer group.
 	this.userPermissionsMap = {};
 	this.animals = {};
+
+	// Unfortunately, I don't know anyway to generate this dynamically.
+	this.classNameForSessionStorage = 'VolunteerGroup';
 };
 
 // Casts the given obj as a volunteer group.  Careful -

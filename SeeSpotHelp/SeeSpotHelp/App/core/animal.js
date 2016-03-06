@@ -12,6 +12,10 @@ var Animal = function(name, type, breed, age, status, photo, id, groupId) {
 	this.photo = photo ? photo : null;
 	this.id = id ? id : null;
 	this.groupId = groupId;
+
+
+	// Unfortunately, I don't know anyway to generate this dynamically.
+	this.classNameForSessionStorage = 'Animal';
 }
 
 Animal.prototype.getPhoto = function() {

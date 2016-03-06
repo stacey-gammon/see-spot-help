@@ -9,6 +9,10 @@ var AnimalNote = function(note, animalId, groupId, userId) {
 	this.animalId = animalId;
 	this.groupId = groupId;
 	this.id = null;
+
+
+	// Unfortunately, I don't know anyway to generate this dynamically.
+	this.classNameForSessionStorage = 'AnimalNote';
 }
 
 AnimalNote.prototype.insert = function() {
