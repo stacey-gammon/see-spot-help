@@ -87,18 +87,24 @@ var AddAnimalNote = React.createClass({
 		console.log("AddAnimalNote:render:");
 		var value = this.state.editMode ? this.state.activity.note : "";
 		var buttonText = this.state.editMode ? "Update" : "Post";
+		var headerText = this.state.editMode ?
+			'Update your post about ' + this.state.animal.name :
+			'Make a post about ' + this.state.animal.name;
 		return (
 			<div>
-				<textarea
-					className="form-control"
-					ref="note"
-					rows="5"
-					id="comment"
-					defaultValue={value}>
-				</textarea>
-				<button className="btn btn-primary" onClick={this.submitNote}>
-					{buttonText}
-				</button>
+				<h1>{headerText}</h1>
+				<div className="center-block padding">
+					<textarea
+						className="form-control padding center-block PostTextArea"
+						ref="note"
+						rows="5"
+						id="comment"
+						defaultValue={value}>
+					</textarea>
+					<button className="btn btn-primary center-block" onClick={this.submitNote}>
+						{buttonText}
+					</button>
+				</div>
 			</div>
 		);
 	}

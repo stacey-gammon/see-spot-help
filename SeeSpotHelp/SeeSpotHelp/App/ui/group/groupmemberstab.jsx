@@ -62,10 +62,8 @@ var GroupMembersTab = React.createClass({
 	},
 
 	render: function () {
-		console.log("GroupMembersTab: render");
 		var members = [];
 		for (var key in this.props.group.userPermissionsMap) {
-			console.log("key = " + key);
 			// VolunteerStore will handle downloading any user data we don't currently have
 			// locally and will refresh this element in that case.
 			var member = VolunteerStore.getVolunteerById(key);

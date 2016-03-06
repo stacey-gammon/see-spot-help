@@ -23,7 +23,6 @@ class AnimalStore extends EventEmitter {
 		});
 
 		this.animals = {};
-		this.currentAnimal = null;
 	}
 
 	addChangeListener(callback) {
