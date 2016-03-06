@@ -58,7 +58,7 @@ var AnimalActivityItem = React.createClass({
     },
 
     getActions: function () {
-        if (this.props.activity.byUserId == this.state.user.id) {
+        if (this.props.activity.userId == this.state.user.id) {
             return (
                 <div className="media-right">
                     {this.getEditActionButton()}
@@ -95,7 +95,7 @@ var AnimalActivityItem = React.createClass({
     },
 
     render: function () {
-        var member = VolunteerStore.getVolunteerById(this.props.activity.byUserId);
+        var member = VolunteerStore.getVolunteerById(this.props.activity.userId);
         var userName =
             !member ?
             "...loading" :

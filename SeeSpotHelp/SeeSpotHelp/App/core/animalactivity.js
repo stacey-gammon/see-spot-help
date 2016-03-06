@@ -4,7 +4,7 @@ var AJAXServices = require('./AJAXServices');
 
 var AnimalActivity = function(animalNote, animalId, userId) {
     this.animalNote = animalNote;
-    this.byUserId = userId;
+    this.userId = userId;
     this.animalId = animalId;
     this.id = null;
 }

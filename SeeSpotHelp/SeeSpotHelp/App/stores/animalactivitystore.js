@@ -43,7 +43,7 @@ class AnimalActivityStore extends EventEmitter {
             var activity = AnimalNote.castObject(snapshot.val());
             // Wait for the subsequent update call. This is all inefficient.
             if (activity.id == null) return;
-            var userId = activity.byUserId;
+            var userId = activity.userId;
             if (!this.userActivity[userId]) {
                 this.userActivity[userId] = [];
             }
@@ -60,7 +60,7 @@ class AnimalActivityStore extends EventEmitter {
         var activities = this.userActivity[deletedActivity.userId];
         for (var i = 0; i < activities.length; i++) {
             if (activities[i].id == deletedActivity.id) {
-                this.userActivity[deletedActivity.byUserId].splice(i, 1);
+                this.userActivity[deletedActivity.userId].splice(i, 1);
                 this.emitChange();
                 return;
             }
@@ -69,7 +69,7 @@ class AnimalActivityStore extends EventEmitter {
 
     userActivityChanged(snapshot) {
         var changedActivity = AnimalNote.castObject(snapshot.val());
-        var activities = this.userActivity[changedActivity.byUserId];
+        var activities = this.userActivity[changedActivity.userId];
         for (var i = 0; i < activities.length; i++) {
             if (activities[i].id == changedActivity.id) {
                 activities[i] = changedActivity;
@@ -178,17 +178,17 @@ class AnimalActivityStore extends EventEmitter {
 
         AJAXServices.OnMatchingChildAdded(
             "notes",
-            "byUserId",
+            "userId",
             userId,
             this.userActivityAdded.bind(this));
         AJAXServices.OnMatchingChildRemoved(
             "notes",
-            "byUserId",
+            "userId",
             userId,
             this.userActivityDeleted.bind(this));
         AJAXServices.OnMatchingChildChanged(
             "notes",
-            "byUserId",
+            "userId",
             userId,
             this.userActivityChanged.bind(this));
     }
