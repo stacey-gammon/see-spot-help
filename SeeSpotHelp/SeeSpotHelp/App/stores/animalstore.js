@@ -38,6 +38,15 @@ class AnimalStore extends EventEmitter {
 		this.emit(CHANGE_EVENT);
 	}
 
+	getAnimalById(animalId, groupId) {
+		for (var i = 0; i <  this.animals[groupId].length; i++) {
+			if (this.animals[groupId][i].id == animalId) {
+				return this.animals[groupId][i];
+			}
+		}
+		return null;
+	}
+
 	animalAdded(snapshot) {
 		if (snapshot.val()) {
 			var animal = Animal.castObject(snapshot.val());
