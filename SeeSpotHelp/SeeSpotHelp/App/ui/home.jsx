@@ -11,6 +11,7 @@ var PrivateBetaPage = require("./privatebetapage");
 var GroupAnimalsTab = require("./group/groupanimalstab");
 var GroupMembersTab = require("./group/groupmemberstab");
 var AddAnimalNote = require("./animal/addanimalnote");
+var UserSettingsPage = require("./person/usersettingspage");
 var MyNavBar = require("./navbar");
 
 var LoginService = require("../core/loginservice");
@@ -135,6 +136,7 @@ var routes = (
     <Route path="groupAnimalsTab" component={GroupAnimalsTab} />
     <Route path="groupMembersTab" component={GroupMembersTab} />
     <Route path="addAnimalNote" component={AddAnimalNote} />
+    <Route path="userSettingsPage" component={UserSettingsPage} />
   </Router>
 );
 

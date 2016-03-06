@@ -7,6 +7,10 @@ var LoginStore = require("../stores/loginstore");
 var Navbar = ReactBootstrap.Navbar;
 var Nav = ReactBootstrap.Nav;
 var NavItem = ReactBootstrap.NavItem;
+var NavDropdown = ReactBootstrap.NavDropdown;
+var Dropdown = ReactBootstrap.Dropdown;
+var MenuItem = ReactBootstrap.MenuItem;
+var Glyphicon = ReactBootstrap.Glyphicon;
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 var MyNavBar = React.createClass({
@@ -52,6 +56,23 @@ var MyNavBar = React.createClass({
                         <span className="glyphicon glyphicon-search" />
                     </NavItem>
                     </LinkContainer>
+                    </Nav>
+                    <Nav pullRight>
+                        <Dropdown componentClass="li">
+                            <Dropdown.Toggle
+                                hidden="true"
+                                noCaret="true">
+                                <button className="btn btn-default"
+                                        data-toggle="dropdown">
+                                    <span className="glyphicon glyphicon-menu-hamburger" />
+                                </button>
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <LinkContainer  to={{ pathname: "userSettingsPage" }}>
+                                    <MenuItem eventKey={3.1}>Settings</MenuItem>
+                                </LinkContainer>
+                            </Dropdown.Menu>
+                      </Dropdown>
                     </Nav>
             </Navbar>
         );

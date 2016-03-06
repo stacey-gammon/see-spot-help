@@ -13,6 +13,15 @@ h2 {
     letter-spacing: 1px;
 }
 
+.dropdown-toggle {
+    visibility: hidden;
+    height: 0px;
+    width: 0px;
+}
+
+.hamburgerDropdown {
+}
+
 p {
     font-size: 12px;
     letter-spacing: 1px;

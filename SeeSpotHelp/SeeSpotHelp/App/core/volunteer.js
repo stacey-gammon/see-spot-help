@@ -7,6 +7,7 @@ var Firebase = require("firebase");
 
 var Volunteer = function(name, email, id) {
     this.name = name;
+    this.displayName = name;
     this.email = email;
     this.inBeta = false;
 
@@ -127,6 +128,10 @@ Volunteer.prototype.getDefaultVolunteerGroup = function() {
     // we let them specify the "default" one?  Probably not a common
     // scenario to have more than one.
     return this.groups.length > 0 ? this.groups[0] : null;
+};
+
+Volunteer.prototype.update = function() {
+    AJAXServices.SetFirebaseData("users/" + this.id, this);
 };
 
 module.exports = Volunteer;

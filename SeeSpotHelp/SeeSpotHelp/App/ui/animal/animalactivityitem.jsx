@@ -92,7 +92,12 @@ var AnimalActivityItem = React.createClass({
     render: function () {
         console.log("AnimalActivityItem:render:");
         var member = VolunteerStore.getVolunteerById(this.props.activity.byUserId);
-        var userName = member ? member.name : "...loading";
+        var userName =
+            !member ?
+            "...loading" :
+            member.displayName ?
+            member.displayName :
+            member.name;
         var date = this.props.activity.getDateForDisplay();
         var userAndDateInfo = " - " + userName + " - " + date;
         return (
