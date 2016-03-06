@@ -46,14 +46,12 @@ var UserGroupsTab = React.createClass({
 	},
 
 	getGroupElement: function(group) {
-		console.log("ProfilePage:GetGroupElement");
 		return (
 			<GroupListItem user={this.state.user} group={group}/>
 		);
 	},
 
 	getGroups: function() {
-		console.log("ProfilePage:getGroups");
 		if (this.state.groups.length == 0) {
 			return (
 				<div>

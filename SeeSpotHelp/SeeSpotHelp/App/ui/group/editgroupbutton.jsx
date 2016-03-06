@@ -52,16 +52,15 @@ var EditGroupButton = React.createClass({
 			<LinkContainer
 				to={{ pathname: "AddNewGroup",
 					state: { user: this.state.user, editMode: true, group: this.state.group } }}>
-				<button className="btn btn-info editShelterButton padding"
+				<button className="invisible-button"
 						ref="editShelterButton">
-					{ConstStrings.Edit}
+					<span className="glyphicon glyphicon-edit group-list-glyph"></span>
 				</button>
 			</LinkContainer>
 		);
 	},
 
 	render: function () {
-		console.log("EditGroupButton:render:");
 		return (
 			<div>
 				{this.getEditGroupButton()}

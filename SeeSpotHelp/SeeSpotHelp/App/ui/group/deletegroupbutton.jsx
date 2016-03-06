@@ -58,9 +58,9 @@ var DeleteGroupButton = React.createClass({
 		if (this.state.permissions != VolunteerGroup.PermissionsEnum.ADMIN) {
 			return null;
 		}
-		return (<button className="btn btn-danger buttonPadding"
+		return (<button className="invisible-button"
 						onClick={this.deleteGroup}>
-					Delete
+					<span className="glyphicon glyphicon-remove-circle group-list-glyph"></span>
 				</button>
 		);
 	},

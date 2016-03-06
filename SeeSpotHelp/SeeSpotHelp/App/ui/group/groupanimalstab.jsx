@@ -57,7 +57,7 @@ var GroupAnimalsTab = React.createClass({
 		console.log("GroupAnimalsTab, group:");
 		console.log(this.state.group);
 		return (
-			<div className="shelterAnimalsTab">
+			<div className="shelterAnimalsTab center-block">
 				<AddAnimalButton group={this.state.group} user={this.state.user}/>
 				<AnimalList group={this.state.group} user={this.state.user}/>
 			</div>

@@ -39,21 +39,21 @@ var MyNavBar = React.createClass({
 		console.log("MyNavBar::render , user = ");
 		console.log(this.state.user);
 		return (
-			<Navbar ref="mynavbar" className="navbar navbar-light bg-faded">
+			<Navbar ref="mynavbar" className="navbar navbar-light bg-faded sh-navbar">
 				<Nav className="nav navbar-nav navbar-custom">
 					<LinkContainer to={{ pathname: "groupHomePage", state: { user: this.state.user } }}>
-						<NavItem>
-							<span className="glyphicon glyphicon-home" />
+						<NavItem className="nav-item">
+							<span className="glyphicon glyphicon-home nav-item" />
 						</NavItem>
 					</LinkContainer>
 					<LinkContainer to={{ pathname: "profilePage", state: { user: this.state.user } }}>
-						<NavItem>
-							<span className="glyphicon glyphicon-user" />
+						<NavItem className="nav-item">
+							<span className="glyphicon glyphicon-user nav-item" />
 						</NavItem>
 					</LinkContainer>
 					<LinkContainer  to={{ pathname: "searchPage", state: { user: this.state.user } }}>
-					<NavItem>
-						<span className="glyphicon glyphicon-search" />
+					<NavItem className="nav-item">
+						<span className="glyphicon glyphicon-search nav-item" />
 					</NavItem>
 					</LinkContainer>
 					</Nav>
@@ -64,7 +64,7 @@ var MyNavBar = React.createClass({
 								hidden="true"
 								noCaret="true">
 								<button className="hamburgerDropdown">
-									<span className="glyphicon glyphicon-cog" />
+									<span className="glyphicon glyphicon-cog nav-item" />
 								</button>
 							</Dropdown.Toggle>
 							<Dropdown.Menu className="dropdownMenuStyle">

@@ -71,7 +71,7 @@ var GroupHomePage = React.createClass({
 		}
 		if (previousGroup) {
 			return (
-				<button className="btn btn-info"
+				<button className="btn btn-default"
 						onClick={this.loadDifferentGroup.bind(this, previousGroup)}>
 					Prev
 				</button>
@@ -95,7 +95,7 @@ var GroupHomePage = React.createClass({
 		}
 		if (nextGroup) {
 			return (
-				<button className="btn btn-info"
+				<button className="btn btn-default"
 						onClick={this.loadDifferentGroup.bind(this, nextGroup)}>
 					Next
 				</button>

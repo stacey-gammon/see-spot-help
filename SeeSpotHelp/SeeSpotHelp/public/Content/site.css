@@ -32,14 +32,84 @@ h2 {
     float: right;
 }
 
+.navbar {
+	background-color: #F5FAFA;
+}
+
+.nav-item {
+	-webkit-appearance: none;
+	color: #B7AFA3;
+	outline: none;
+	border: 0;
+	background: transparent;
+	margin: 0px;
+}
+
+.nav-item:hover {
+	color: #3e3931;
+}
+
+.glyphicon {
+	color: #B7AFA3;
+}
+
+.glyphicon:hover {
+	color: #3e3931;
+}
+
+.glyph-warning {
+	color: red;
+}
+
+.group-list-glyph {
+	font-size: 1.5em;
+	color: #505050;
+}
+.group-list-glyph:hover {
+	color: #434343;
+}
+
+.glyph-warning:hover {
+	color: darkred;
+}
+
+.invisible-button {
+	-webkit-appearance: none;
+	outline: none;
+	border: 0;
+	background: transparent;
+}
+
 .hamburgerDropdown {
-    -webkit-appearance: none;
-    outline: none;
-    border: 0;
-    background: transparent;
-    font-size:1.5em;
-    margin: 6px;
-    float: right;
+	-webkit-appearance: none;
+	outline: none;
+	border: 0;
+	background: transparent;
+	font-size:1.3em;
+	margin-top: 11px;
+	margin-right: -10px;
+	float: right;
+}
+
+.btn-info {
+	background-color: #6D929B;
+	padding: 8px 20px 8px 20px !important;
+	border: 1px solid #4c686f;
+}
+
+.btn-info:hover {
+	background-color: #4c686f;
+}
+
+.btn-primary {
+	background-color: #E8D0A9;
+	padding: 8px 20px 8px 20px !important;
+	border: 1px solid white;
+}
+
+.btn-primary:hover {
+	background-color: #dfbd86;
+	border 1px solid white;
 }
 
 .dropdownMenuStyle {
@@ -74,7 +144,7 @@ p {
     -moz-box-shadow: 5px 5px 7px 2px rgba(153,153,153,0.63);
     box-shadow: 5px 5px 7px 2px rgba(153,153,153,0.63);
 
-    background-color: #e5fbff;
+    background-color: #C1DAD6;
     /* for a gradient: */
     /*
     background: rgba(255,255,255,1);
