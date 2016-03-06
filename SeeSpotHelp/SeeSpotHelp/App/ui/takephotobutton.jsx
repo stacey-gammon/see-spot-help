@@ -67,8 +67,10 @@ var TakePhotoButton = React.createClass({
 			<div className="takePhotoButton" >
 				<button className="btn btn-info padding"
 						disabled={!this.allowAction()}
-						onClick={this.addPhoto}>
-					<span className="glyphicon glyphicon-camera"></span>
+						onClick={this.addPhoto}
+						style={{padding: '8px 4px 8px 12px'}}>
+					<span className="glyphicon glyphicon-camera"
+						style={{color: 'white', marginRight: '10px'}}></span>
 				</button>
 				<input type="file" accept="image/*"
 					   onChange={this.loadPhoto}

@@ -25,34 +25,32 @@ var AnimalActivityItem = React.createClass({
 	},
 
 	deleteAction: function (event) {
-		this.props.activity.delete();
-		AnimalActions.animalActivityDeleted();
+		if (confirm("Are you sure you want to delete this post?")) {
+			this.props.activity.delete();
+			AnimalActions.animalActivityDeleted();
+		}
 	},
 
 	getEditActionButton: function() {
 		return (
-			<div>
-				<LinkContainer
-					to={{ pathname: "addAnimalNote",
-						state: { user: this.state.user,
-								 animal: this.props.animal,
-								 activity: this.props.activity,
-								 group: this.props.group,
-								 editMode: true } }}>
-					<button className="btn btn-info">
-						Edit
-					</button>
-				</LinkContainer>
-			</div>
+			<LinkContainer
+				to={{ pathname: "addAnimalNote",
+					state: { user: this.state.user,
+							 animal: this.props.animal,
+							 activity: this.props.activity,
+							 group: this.props.group,
+							 editMode: true } }}>
+				<span style={{marginLeft: '10px'}} className="glyphicon glyphicon-edit">
+				</span>
+			</LinkContainer>
 		);
 	},
 
 	getDeleteActionButton: function() {
 		return (
 			<div>
-				<button className="btn btn-danger" onClick={this.deleteAction}>
-					<span className="glyphicon glyphicon-remove-circle"/>
-				</button>
+				<span onClick={this.deleteAction}
+					className="glyphicon glyphicon-remove-circle"/>
 			</div>
 		);
 	},
@@ -61,7 +59,6 @@ var AnimalActivityItem = React.createClass({
 		if (this.props.activity.userId == this.state.user.id) {
 			return (
 				<div className="media-right">
-					{this.getEditActionButton()}
 					{this.getDeleteActionButton()}
 				</div>
 			);
@@ -109,7 +106,8 @@ var AnimalActivityItem = React.createClass({
 				<div className="media">
 					<div className="media-body">
 						{this.getAnimalNameHeader()}
-						<p>{this.props.activity.toDisplayString()}</p>
+						<p>{this.props.activity.toDisplayString()}
+						{this.getEditActionButton()}</p>
 						<p>{userAndDateInfo}</p>
 					</div>
 					{this.getActions()}

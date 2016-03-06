@@ -178,22 +178,24 @@ var AddAnimalPage = React.createClass({
 	},
 
 	deleteAnimal: function() {
-		this.state.animal.delete();
-		this.context.router.push(
-			{
-				pathname: "GroupHomePage",
-				state: {
-					group: this.state.group,
-					user: this.state.user
+		if (confirm("Are you sure you want to permanently delete this animal?")) {
+			this.state.animal.delete();
+			this.context.router.push(
+				{
+					pathname: "GroupHomePage",
+					state: {
+						group: this.state.group,
+						user: this.state.user
+					}
 				}
-			}
-		);
+			);
+		}
 	},
 
 	getDeleteButton: function() {
 		if (!this.state.editMode) return null;
 		return (
-			<button className="btn btn-danger padding pull-right"
+			<button className="btn btn-warning"
 					onClick={this.deleteAnimal}>
 				Delete
 			</button>
@@ -225,9 +227,11 @@ var AddAnimalPage = React.createClass({
 					user={this.state.user}
 					group={this.state.group}
 					animal={this.state.animal}/>
+				<div style={{textAlign: 'center'}}>
 				<button className="btn btn-info padding AddAnimalButton"
 						onClick={this.addNewAnimal}>{buttonText}</button>
 				{this.getDeleteButton()}
+				</div>
 			</div>
 		);
 	}

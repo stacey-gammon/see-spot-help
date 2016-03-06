@@ -49,6 +49,22 @@ var AnimalHomePage = React.createClass({
 		return edit;
 	},
 
+	getEditIcon: function() {
+		if (!this.shouldAllowUserToEdit()) return null;
+		return (
+			<LinkContainer
+				to={{ pathname: "addAnimalPage",
+					state: { user: this.state.user,
+							 group: this.state.group,
+							 animal: this.state.animal,
+							 editMode: true } }}>
+				<span style={{marginLeft: '10px'}}
+						className="glyphicon glyphicon-edit">
+				</span>
+			</LinkContainer>
+		);
+	},
+
 	render: function () {
 		var imageSrc = this.state.animal.getPhoto();
 		var animal = this.state.animal;
@@ -62,24 +78,12 @@ var AnimalHomePage = React.createClass({
 								 src={imageSrc} />
 						</div>
 						<div className="media-body padding">
-							<h1 className="animalInfo">{animal.name}</h1>
+							<h1 className="animalInfo">{animal.name}
+							{this.getEditIcon()}
+							</h1>
 							<h2 className="animalInfo">{animal.age} years old</h2>
 							<h2 className="animalInfo">{animal.breed}</h2>
 							<p className="animalInfo">{animal.description}</p>
-						</div>
-						<div className="media-right">
-							<LinkContainer
-								disabled={!this.shouldAllowUserToEdit()}
-								to={{ pathname: "addAnimalPage",
-									state: { user: this.state.user,
-											 group: this.state.group,
-											 animal: this.state.animal,
-											 editMode: true } }}>
-								<button className="btn btn-info buttonPadding editAnimalButton"
-										disabled={!this.shouldAllowUserToEdit()}>
-									Edit
-								</button>
-							</LinkContainer>
 						</div>
 					</div>
 					<AnimalPhotoReel group={this.state.group}
