@@ -2,6 +2,8 @@
 
 var React = require('react');
 var LoginStore = require("../../stores/loginstore");
+
+var Utils = require("../../core/utils");
 var Animal = require("../../core/animal");
 var VolunteerGroup = require("../../core/volunteergroup");
 var AnimalActionsBox = require('./animalactionsbox');
