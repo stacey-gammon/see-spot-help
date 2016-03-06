@@ -45,22 +45,23 @@ var DeleteGroupButton = React.createClass({
 	},
 
 	deleteGroup: function(event) {
-		console.log("DeleteGroupButton: deleteGroup");
-		// This is a hack because a parent LinkContainer element is
-		// redirecting the user to another page.
-		event.stopPropagation();
-		// TODO: warn the user first
-		this.state.group.delete();
-		GroupActions.groupDeleted(this.state.group);
+		if (confirm("WAIT! Are you sure you want to permanently delete this group?")) {
+			// This is a hack because a parent LinkContainer element is
+			// redirecting the user to another page.
+			event.stopPropagation();
+			// TODO: warn the user first
+			this.state.group.delete();
+			GroupActions.groupDeleted(this.state.group);
+		}
 	},
 
 	getDeleteGroupButton: function () {
 		if (this.state.permissions != VolunteerGroup.PermissionsEnum.ADMIN) {
 			return null;
 		}
-		return (<button className="invisible-button"
+		return (<button className="btn btn-warn"
 						onClick={this.deleteGroup}>
-					<span className="glyphicon glyphicon-remove-circle group-list-glyph"></span>
+					Delete
 				</button>
 		);
 	},

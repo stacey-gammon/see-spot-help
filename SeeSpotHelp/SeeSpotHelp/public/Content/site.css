@@ -93,23 +93,12 @@ h2 {
 
 .btn-info {
 	background-color: #6D929B;
-	padding: 8px 20px 8px 20px !important;
+	margin: 3px;
 	border: 1px solid #4c686f;
 }
 
 .btn-info:hover {
 	background-color: #4c686f;
-}
-
-.btn-primary {
-	background-color: #E8D0A9;
-	padding: 8px 20px 8px 20px !important;
-	border: 1px solid white;
-}
-
-.btn-primary:hover {
-	background-color: #dfbd86;
-	border 1px solid white;
 }
 
 .dropdownMenuStyle {

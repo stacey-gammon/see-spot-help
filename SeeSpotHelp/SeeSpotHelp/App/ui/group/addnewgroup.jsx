@@ -7,6 +7,7 @@ var InputField = require("../../core/inputfield");
 var InputFieldValidation = require("../../core/inputfieldvalidation");
 var LoginStore = require("../../stores/loginstore");
 var GroupActions = require("../../actions/groupactions");
+var DeleteGroupButton = require("./deletegroupbutton");
 
 var STATES = [
 	"AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",
@@ -41,19 +42,14 @@ var AddNewGroup = React.createClass({
 			this.props.location && this.props.location.state ?
 			this.props.location.state.group : null;
 
-		console.log("AddNewGroup:getInitialState with group:");
-		console.log(group);
-
 		// If in edit mode, fill in field values.
 		if (editMode) {
 			for (var field in inputFields) {
 				inputFields[field].value = group[field];
-				console.log("Setting " + field + " to " + group[field]);
 			}
 		}
 
 		return {
-			errorMessage: null,
 			fields: inputFields,
 			user : LoginStore.getUser(),
 			group: group,
@@ -106,16 +102,10 @@ var AddNewGroup = React.createClass({
 	},
 
 	addNewVolunteerGroup: function () {
-		console.log("AddNewGroup:addNewVolunteerGroup");
 		var errorFound = this.validateFields();
 		if (!errorFound) {
 			if (this.state.editMode) {
-				console.log("original group:");
-				console.log(this.state.group);
 				this.state.group.updateFromInputFields(this.state.fields);
-				console.log("Updated group:");
-				console.log(this.state.group);
-
 				this.state.group.update(this.insertGroupCallback);
 			} else {
 				var group = VolunteerGroup.createFromInputFields(
@@ -144,8 +134,24 @@ var AddNewGroup = React.createClass({
 		);
 	},
 
-	render: function () {
-		console.log("AddNewGroup: render");
+	deleteGroup: function() {
+		if (confirm("WAIT! Are you sure you want to permanently delete this group?")) {
+			this.state.group.delete();
+			GroupActions.groupDeleted(this.state.group);
+		}
+	},
+
+	getDeleteGroupButton: function() {
+		if (!this.state.editMode) return null;
+		return (
+			<button className="btn btn-warning"
+					onClick={this.deleteGroup}>
+				Delete
+			</button>
+		);
+	},
+
+	render: function() {
 		if (this.state.user == null) {
 			throw "Non logged in user is attempting to add a new shelter";
 		}
@@ -159,8 +165,13 @@ var AddNewGroup = React.createClass({
 			<div>
 				{this.state.errorMessage}
 				{inputFields}
-				<button className="btn btn-primary addNewGroupButton"
-				onClick={this.addNewVolunteerGroup}>{buttonText}</button>
+				<div style={{textAlign: 'center'}}
+					 className="center-block">
+					<button className="btn btn-info"
+					onClick={this.addNewVolunteerGroup}>{buttonText}
+					</button>
+					{this.getDeleteGroupButton()}
+				</div>
 			</div>
 		);
 	}

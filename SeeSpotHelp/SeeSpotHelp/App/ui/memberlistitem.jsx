@@ -69,7 +69,7 @@ var MemberListItem = React.createClass({
 		if (text != "") {
 			return (
 				<div>
-				  <button className="btn btn-primary" onClick={this.approveMembership }>
+				  <button className="btn btn-info" onClick={this.approveMembership }>
 					{text}
 				  </button>
 				</div>

@@ -70,7 +70,7 @@ var UserSettingsPage = React.createClass({
 					</div>
 					<p>* Supply a display name if you would like to protect your privacy</p>
 					<br/>
-					<button className="btn btn-primary" onClick={this.updateSettings}>
+					<button className="btn btn-info" onClick={this.updateSettings}>
 						Update
 					</button>
 				</div>

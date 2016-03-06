@@ -38,7 +38,7 @@ var ShelterSearchResults = React.createClass({
 
 	generateResult: function(result) {
 		return (
-			<button className="btn btn-primary shelterResult" onClick={this.goToGroup.bind(this, result)}>
+			<button className="btn btn-info shelterResult" onClick={this.goToGroup.bind(this, result)}>
 				{result.name} - {result.shelterName} - {result.address}
 			</button>
 		);

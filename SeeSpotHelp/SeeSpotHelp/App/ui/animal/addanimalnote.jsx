@@ -101,7 +101,7 @@ var AddAnimalNote = React.createClass({
 						id="comment"
 						defaultValue={value}>
 					</textarea>
-					<button className="btn btn-primary center-block" onClick={this.submitNote}>
+					<button className="btn btn-info center-block" onClick={this.submitNote}>
 						{buttonText}
 					</button>
 				</div>

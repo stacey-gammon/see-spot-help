@@ -42,7 +42,7 @@ var PrivateBetaPage = React.createClass({
 			<div> {onWaitingListText}<br/>
 			   <input type="text" ref="email"/>
 			   <br />
-			   <button className="btn btn-primary" onClick={this.signUp}>Enter</button>
+			   <button className="btn btn-info" onClick={this.signUp}>Enter</button>
 			</div>);
 		} else {
 			return (<div>Thank You!</div>);

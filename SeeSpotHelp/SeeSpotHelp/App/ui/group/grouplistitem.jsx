@@ -72,9 +72,7 @@ var GroupListItem = React.createClass({
 							<h2>{this.props.group.city}, {this.props.group.state} {this.props.group.zipCode}</h2>
 						</div>
 						<div className="media-right">
-							<EditGroupButton user={this.props.user} group={group} />
 							<LeaveGroupButton user={this.props.user} group={group} />
-							<DeleteGroupButton user={this.props.user} group={group} />
 						</div>
 					</div>
 				</LinkContainer>
