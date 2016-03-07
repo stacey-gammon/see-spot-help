@@ -1,10 +1,8 @@
 ﻿"use strict"
 
 var React = require("react");
-var Volunteer = require("../core/volunteer");
 var FacebookLogin = require("./facebooklogin");
 var LoginStore = require("../stores/loginstore");
-var AJAXServices = require("../core/AJAXServices");
 
 var LoginPage = React.createClass({
 	contextTypes: {

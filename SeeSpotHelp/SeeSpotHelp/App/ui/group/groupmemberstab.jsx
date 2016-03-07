@@ -2,7 +2,7 @@
 
 var React = require("react");
 var Link = require("react-router").Link;
-var MemberListItem = require("../memberlistitem");
+var MemberListItem = require("../person/memberlistitem");
 var SearchBox = require("../searchbox");
 var GroupInfoBox = require("./groupinfobox");
 var GroupActionsBox = require("./groupactionsbox");
