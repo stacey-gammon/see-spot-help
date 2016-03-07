@@ -1,4 +1,18 @@
-﻿"use strict"
+﻿"use strict";
+
+/* eslint-disable no-unused-vars */
+var React = require("react");
+var ReactDOM = require("react-dom");
+var ReactRouter = require("react-router");
+var Router = ReactRouter.Router;
+var Route = ReactRouter.Route;
+var DefaultRoute = ReactRouter.DefaultRoute;
+var browserHistory = ReactRouter.browserHistory;
+var IndexRoute = ReactRouter.IndexRoute;
+
+var MyNavBar = require("./navbar");
+var User = require("../core/volunteer");
+/* eslint-enable no-unused-vars */
 
 var GroupHomePage = require("./group/grouphomepage");
 var SearchPage = require("./searchpage");
@@ -13,22 +27,9 @@ var GroupAnimalsTab = require("./group/groupanimalstab");
 var GroupMembersTab = require("./group/groupmemberstab");
 var AddAnimalNote = require("./animal/addanimalnote");
 var UserSettingsPage = require("./person/usersettingspage");
-var MyNavBar = require("./navbar");
-
 var LoginService = require("../core/loginservice");
-var Volunteer = require("../core/volunteer");
-
 var LoginStore = require("../stores/loginstore");
 var LoginActions = require("../actions/loginactions");
-
-var Dispatcher = require("../dispatcher/dispatcher");
-
-var React = require("react");
-var ReactDOM = require("react-dom");
-var ReactRouter = require("react-router");
-var Router = ReactRouter.Router;
-var Route = ReactRouter.Route;
-var IndexRoute = ReactRouter.IndexRoute;
 
 var Home = React.createClass({
 	contextTypes: {
@@ -70,40 +71,23 @@ var Home = React.createClass({
 	},
 
 	componentDidMount: function() {
-		console.log("Home::componentDidMount");
+		// console.log("Home::componentDidMount");
 		LoginStore.addChangeListener(this.onChange);
 		this.setState({
 			user: LoginStore.getUser()
 		});
-		this.loadPageForUser();
 	},
 
 	componentWillUnmount: function () {
-		console.log("Home:componentWillUnmount");
 		LoginStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function () {
-		console.log("Home:onChange");
-		this.loadPageForUser();
-	},
-
-	loadPageForUser: function () {
-		console.log("Home::LoadPageForVolunteer");
-		console.log(LoginStore.user);
-
-		// If the user is signed in and belongs to a volunteer group, show them that
-		// page first.  If they don't, show them their profile page where there will be
-		// instructions for how to search or add for a new volunteer group.
-		if (LoginStore.user && LoginStore.user.getDefaultVolunteerGroup()) {
-			this.context.router.push("/GroupHomePage");
-		} else if (LoginStore.user && LoginStore.user.inBeta) {
-			this.context.router.push("/profilePage");
-		} else if (LoginStore.user && !LoginStore.user.inBeta) {
-			this.context.router.push("/privateBetaPage");
-		} else {
-			this.context.router.push("/loginPage");
-		}
+		this.setState(
+			{
+				user: LoginStore.getUser()
+			}
+		)
 	},
 
 	render: function () {
@@ -125,21 +109,22 @@ var Home = React.createClass({
 });
 
 var routes = (
-  <Router path="/" component={Home}>
-	<Route path="searchPage" component={SearchPage}/>
-	<Route path="groupHomePage" component={GroupHomePage}/>
-	<Route path="animalHomePage" component={AnimalHomePage} />
-	<Route path="addNewGroup" component={AddNewGroup} />
-	<Route path="addAnimalPage" component={AddAnimalPage} />
-	<Route path="profilePage" component={ProfilePage} />
-	<Route path="memberPage" component={MemberPage} />
-	<Route path="privateBetaPage" component={PrivateBetaPage} />
-	<Route path="loginPage" component={LoginPage} />
-	<Route path="groupAnimalsTab" component={GroupAnimalsTab} />
-	<Route path="groupMembersTab" component={GroupMembersTab} />
-	<Route path="addAnimalNote" component={AddAnimalNote} />
-	<Route path="userSettingsPage" component={UserSettingsPage} />
-  </Router>
+	<Router history={browserHistory} path="/" component={Home}>
+		<IndexRoute component={ProfilePage} />
+		<Route path="searchPage" component={SearchPage}/>
+		<Route path="groupHomePage" component={GroupHomePage}/>
+		<Route path="animalHomePage" component={AnimalHomePage} />
+		<Route path="addNewGroup" component={AddNewGroup} />
+		<Route path="addAnimalPage" component={AddAnimalPage} />
+		<Route path="profilePage" component={ProfilePage} />
+		<Route path="memberPage" component={MemberPage} />
+		<Route path="privateBetaPage" component={PrivateBetaPage} />
+		<Route path="loginPage" component={LoginPage} />
+		<Route path="groupAnimalsTab" component={GroupAnimalsTab} />
+		<Route path="groupMembersTab" component={GroupMembersTab} />
+		<Route path="addAnimalNote" component={AddAnimalNote} />
+		<Route path="userSettingsPage" component={UserSettingsPage} />
+	</Router>
 );
 
 ReactDOM.render(

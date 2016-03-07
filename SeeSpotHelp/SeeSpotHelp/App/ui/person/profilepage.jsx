@@ -26,10 +26,8 @@ var ProfilePage = React.createClass({
 	},
 
 	getInitialState: function () {
-		var member = Utils.FindPassedInProperty(this, 'member') || LoginStore.getUser();
-
 		var state = {
-			member: member
+			user: LoginStore.getUser()
 		};
 		Utils.LoadOrStateState(state);
 		return state;
@@ -46,23 +44,16 @@ var ProfilePage = React.createClass({
 	},
 
 	onChange: function () {
-		var id;
-		if (this.state.member) {
-			id = this.state.member.id;
-		} else if (LoginStore.user){
-			id = LoginStore.user.id;
-		}
 		this.setState(
 			{
-				member: VolunteerStore.getVolunteerById(id)
+				user: LoginStore.getUser()
 			});
 	},
 
 	render: function () {
-		if (!LoginStore.user || !this.state.member) return null;
-		var yourself = LoginStore.user && LoginStore.user.id == this.state.member.id;
-		var heading = yourself ? "Hello, " + this.state.member.name : this.state.member.displayName;
-		if (this.state.member) {
+		if (!LoginStore.user) return null;
+		var heading = "Hello, " + this.state.user.name;
+		if (this.state.user) {
 			return (
 				<div>
 					<div className="media padding">
@@ -72,10 +63,10 @@ var ProfilePage = React.createClass({
 					</div>
 					<Tabs defaultActiveKey={1}>
 						<Tab eventKey={1} title="Groups">
-							<UserGroupsTab user={this.state.member}/>
+							<UserGroupsTab user={this.state.user}/>
 						</Tab>
 						<Tab eventKey={2} title="Activity">
-							<UserActivityTab user={this.state.member}/>
+							<UserActivityTab user={this.state.user}/>
 						</Tab>
 					</Tabs>
 					<br/><br/>

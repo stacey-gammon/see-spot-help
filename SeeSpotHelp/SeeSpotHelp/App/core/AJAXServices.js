@@ -91,8 +91,6 @@ AJAXServices.prototype.GetFirebaseData = function(path, listen) {
 	var outer = this;
 	if (listen) {
 		ref.on("value", function (snapshot) {
-			console.log("AJAXServices.GetFirebaseData: Lisening on " + path);
-			console.log(snapshot.val());
 			outer.onSuccess(snapshot.val());
 		}, function (errorObject) {
 			console.log("The read failed: " + errorObject.code);

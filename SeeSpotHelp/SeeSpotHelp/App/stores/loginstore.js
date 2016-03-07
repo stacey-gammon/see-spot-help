@@ -20,6 +20,7 @@ class LoginStore extends EventEmitter {
 			outer.handleAction(action);
 		});
 		var users = {};
+		var listenersAttached = false;
 	}
 
 	addChangeListener(callback) {
@@ -44,9 +45,10 @@ class LoginStore extends EventEmitter {
 	// In case of a hard refresh, always attempt to re-grab the user data from local
 	// storage if it doesn't exist.
 	getUser() {
-		if (!this.user) {
+		if (!this.user && !this.listenersAttached) {
 			var user = JSON.parse(localStorage.getItem("user"));
 			if (user) {
+				this.listenersAttached = true;
 				new AJAXServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
 					"users/" + user.id, true);
 			}
@@ -68,14 +70,14 @@ class LoginStore extends EventEmitter {
 			//	 this.error = null;
 			//	 this.emitChange();
 			//	 break;
-			case ActionConstants.LOGIN_USER_SUCCESS:
-				console.log("LoginStore:handleAction: LOGIN_USER_SUCCESS with user: ",
-							action.user);
-				this.user = action.user;
-				localStorage.setItem("user", JSON.stringify(this.user));
-				this.error = null;
-				this.emitChange();
-				break;
+			// case ActionConstants.LOGIN_USER_SUCCESS:
+			// 	console.log("LoginStore:handleAction: LOGIN_USER_SUCCESS with user: ",
+			// 				action.user);
+			// 	this.user = action.user;
+			// 	localStorage.setItem("user", JSON.stringify(this.user));
+			// 	this.error = null;
+			// 	this.emitChange();
+			// 	break;
 
 			case ActionConstants.LOGIN_USER_ERROR:
 				this.error = action.error;
