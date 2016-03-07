@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 var React = require("react");
 var Volunteer = require("../../core/volunteer");
@@ -20,7 +20,7 @@ var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
 var ReactRouterBootstrap = require("react-router-bootstrap");
 
-var ProfilePage = React.createClass({
+var MemberPage = React.createClass({
 	contextTypes: {
 		router: React.PropTypes.object.isRequired
 	},
@@ -60,8 +60,8 @@ var ProfilePage = React.createClass({
 
 	render: function () {
 		if (!LoginStore.user || !this.state.member) return null;
-		var yourself = LoginStore.user && LoginStore.user.id == this.state.member.id;
-		var heading = yourself ? "Hello, " + this.state.member.name : this.state.member.displayName;
+		var heading = this.state.member.displayName ?
+			this.state.member.displayName : this.state.member.name;
 		if (this.state.member) {
 			return (
 				<div>
@@ -81,15 +81,8 @@ var ProfilePage = React.createClass({
 					<br/><br/>
 				</div>
 			);
-		} else {
-			return (
-				<div>
-					<h1>To get started, log in with facebook</h1>
-					<FacebookLogin />
-				</div>
-			);
 		}
 	}
 });
 
-module.exports = ProfilePage;
+module.exports = MemberPage;

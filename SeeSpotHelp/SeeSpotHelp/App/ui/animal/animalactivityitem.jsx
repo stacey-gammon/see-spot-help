@@ -102,17 +102,25 @@ var AnimalActivityItem = React.createClass({
 		var date = this.props.activity.getDateForDisplay();
 		var userAndDateInfo = " - " + userName + " - " + date;
 		return (
-			<a className="list-group-item">
+			<div className="list-group-item">
 				<div className="media">
 					<div className="media-body">
 						{this.getAnimalNameHeader()}
 						<p>{this.props.activity.toDisplayString()}
 						{this.getEditActionButton()}</p>
-						<p>{userAndDateInfo}</p>
+						<p>
+						<a><LinkContainer
+							to={{ pathname: "/memberPage",
+								state: { member: member} }}>
+							<button className="invisible-button">{userName}</button>
+						</LinkContainer>
+						</a>
+						{date}
+						</p>
 					</div>
 					{this.getActions()}
 				</div>
-			</a>
+			</div>
 		);
 	}
 });

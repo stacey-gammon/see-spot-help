@@ -135,7 +135,7 @@ var AddAnimalPage = React.createClass({
 			<div className="form-group">
 			  {inputField.getErrorLabel()}
 			  <select
-				  value={defaultValue}
+				  defaultValue={defaultValue}
 				  className="form-control"
 				  style={{marginBottom: -11 + "px"}}
 				  id={inputField.ref} ref={inputField.ref}>

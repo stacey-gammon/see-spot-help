@@ -6,11 +6,12 @@ var AnimalList = require("../animal/animallist");
 var SearchBox = require("../searchbox");
 var GroupInfoBox = require("../group/groupinfobox");
 var GroupActionsBox = require("../group/groupactionsbox");
-var FakeData = require("../../core/fakedata");
+var Utils = require("../../core/utils");
 var Volunteer = require("../../core/volunteer");
 var VolunteerGroup = require("../../core/volunteergroup");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
+var VolunteerStore = require("../../stores/volunteerstore");
 var AnimalActivityStore = require("../../stores/animalactivitystore");
 var AJAXServices = require("../../core/AJAXServices");
 var AddAnimalButton = require("../animal/addanimalbutton");
@@ -19,7 +20,7 @@ var GroupListItem = require("../group/grouplistitem");
 
 var UserGroupsTab = React.createClass({
 	getInitialState: function () {
-		var user = LoginStore.getUser();
+		var user = Utils.FindPassedInProperty(this, 'user') || LoginStore.user;
 		var groups = user ? GroupStore.getUsersMemberGroups(user) : [];
 		return {
 			user: user,
@@ -28,9 +29,15 @@ var UserGroupsTab = React.createClass({
 	},
 
 	onChange: function () {
+		var user;
+		if (!this.state.user) {
+			user = LoginStore.user
+		} else {
+			user = VolunteerStore.getVolunteerById(this.state.user.id);
+		}
 		this.setState(
 			{
-				user: LoginStore.user,
+				user: user,
 				groups: GroupStore.getUsersMemberGroups(LoginStore.user)
 			});
 	},
@@ -51,8 +58,25 @@ var UserGroupsTab = React.createClass({
 		);
 	},
 
+	getSearchOrAddText: function() {
+		if (this.state.user.id != LoginStore.user.id) return null;
+		return (
+			<h1>
+			<Link to="searchPage">Search</Link>
+				&nbsp;for a new group to join, or&nbsp;
+			<Link to="addNewGroup">add</Link> your own!
+			</h1>
+		);
+	},
+
 	getGroups: function() {
-		if (this.state.groups.length == 0) {
+		if (!this.state.user) return null;
+		if (this.state.groups.length == 0 &&
+			this.state.user.id != LoginStore.user.id) {
+				return (
+					<div>This user does not currently belong to any groups.</div>
+				);
+		} else if (this.state.groups.length == 0) {
 			return (
 				<div>
 					<h1>You are not part of any volunteer groups.  To get started&nbsp;
@@ -68,11 +92,7 @@ var UserGroupsTab = React.createClass({
 				<div>
 					{groups}
 					<div>
-						<h1>
-						<Link to="searchPage">Search</Link>
-							&nbsp;for a new group to join, or&nbsp;
-						<Link to="addNewGroup">add</Link> your own!
-						</h1>
+						{this.getSearchOrAddText()}
 					</div>
 				</div>
 			);

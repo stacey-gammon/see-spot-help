@@ -6,6 +6,7 @@ var AnimalHomePage = require("./animal/animalHomePage");
 var AddNewGroup = require("./group/addnewgroup");
 var AddAnimalPage = require("./animal/addanimalpage");
 var ProfilePage = require("./person/profilepage");
+var MemberPage = require("./person/memberpage");
 var LoginPage = require("./loginpage");
 var PrivateBetaPage = require("./privatebetapage");
 var GroupAnimalsTab = require("./group/groupanimalstab");
@@ -131,6 +132,7 @@ var routes = (
 	<Route path="addNewGroup" component={AddNewGroup} />
 	<Route path="addAnimalPage" component={AddAnimalPage} />
 	<Route path="profilePage" component={ProfilePage} />
+	<Route path="memberPage" component={MemberPage} />
 	<Route path="privateBetaPage" component={PrivateBetaPage} />
 	<Route path="loginPage" component={LoginPage} />
 	<Route path="groupAnimalsTab" component={GroupAnimalsTab} />

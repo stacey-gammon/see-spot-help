@@ -6,32 +6,31 @@ var AnimalList = require("../animal/animallist");
 var SearchBox = require("../searchbox");
 var GroupInfoBox = require("../group/groupinfobox");
 var GroupActionsBox = require("../group/groupactionsbox");
-var FakeData = require("../../core/fakedata");
+var Utils = require("../../core/utils");
 var Volunteer = require("../../core/volunteer");
 var VolunteerGroup = require("../../core/volunteergroup");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
+var VolunteerStore = require("../../stores/volunteerstore");
 var AnimalStore = require("../../stores/animalstore");
 var AnimalActivityStore = require("../../stores/animalactivitystore");
-var AJAXServices = require("../../core/AJAXServices");
 var AddAnimalButton = require("../animal/addanimalbutton");
 var AnimalActivityItem = require("../animal/animalactivityitem");
 
 var UserActivityTab = React.createClass({
 	getInitialState: function () {
-		var group = this.props.location &&
-					this.props.location.state &&
-					this.props.location.state.group ||
-					this.props.group;
+		var group = Utils.FindPassedInProperty(this, 'group');
+		var user = Utils.FindPassedInProperty(this, 'user');
 		return {
-			user: LoginStore.getUser(),
+			user: user,
 			group: group
 		}
 	},
 
 	componentWillReceiveProps: function(nextProps) {
 		this.setState({
-			group: nextProps.group
+			group: nextProps.group,
+			user: nextProps.user
 		});
 	},
 
@@ -53,7 +52,7 @@ var UserActivityTab = React.createClass({
 	onChange: function () {
 		this.setState(
 			{
-				user: LoginStore.user,
+				user: VolunteerStore.getVolunteerById(this.state.user.id),
 				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
 			});
 	},
@@ -72,6 +71,9 @@ var UserActivityTab = React.createClass({
 	},
 
 	render: function () {
+		if (!this.state.user) return (
+			<div>Loading...</div>
+		);
 		var notes =
 			AnimalActivityStore.getActivityByUserId(this.state.user.id);
 

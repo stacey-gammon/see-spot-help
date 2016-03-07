@@ -24,8 +24,10 @@ Utils.CopyInputFieldsIntoObject = function(inputFields, object) {
 // along but this is easy for now to just check all ways.
 Utils.FindPassedInProperty = function(reactClass, property) {
 	if (reactClass.props[property]) {
-		return reactClass.props.property;
-	} else if (reactClass.props.location && reactClass.props.location.state[property]) {
+		return reactClass.props[property];
+	} else if (reactClass.props.location &&
+		reactClass.props.location.state &&
+		reactClass.props.location.state[property]) {
 		return reactClass.props.location.state[property];
 	} else {
 		return null;

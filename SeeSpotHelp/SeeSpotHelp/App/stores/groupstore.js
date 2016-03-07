@@ -61,7 +61,7 @@ class GroupStore extends EventEmitter {
 	}
 
 	getGroupById(groupId) {
-		if (!this.groups[groupId]) {
+		if (!this.groups.hasOwnProperty(groupId)) {
 			console.log("group requested that hasn't been downloaded.  Downloading now...");
 			this.downloadGroup(groupId);
 		}
@@ -106,6 +106,12 @@ class GroupStore extends EventEmitter {
 	}
 
 	downloadGroup(groupId) {
+		// Already a download requested, skip.
+		if (this.groups.hasOwnProperty(groupId)) {
+			return;
+		} else {
+			this.groups[groupId] = null;
+		}
 		var dataServices = new AJAXServices(this.groupDownloaded.bind(this), null);
 		dataServices.GetFirebaseData("groups/" + groupId, true);
 		AnimalStore.downloadAnimals(groupId);
