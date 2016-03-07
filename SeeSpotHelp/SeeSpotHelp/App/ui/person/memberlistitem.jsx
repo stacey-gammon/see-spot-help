@@ -9,7 +9,6 @@ var Volunteer = require("../../core/volunteer");
 var ConstStrings = require("../../core/conststrings");
 var LoginStore = require("../../stores/loginstore");
 var GroupInfoBox = require("../../ui/group/groupinfobox");
-var EditGroupButton = require("../group/editgroupbutton");
 var GroupStore = require("../../stores/groupstore");
 var GroupActions = require("../../actions/groupactions");
 var VolunteerStore = require("../../stores/volunteerstore");

@@ -7,7 +7,6 @@ var InputField = require("../../core/inputfield");
 var InputFieldValidation = require("../../core/inputfieldvalidation");
 var LoginStore = require("../../stores/loginstore");
 var GroupActions = require("../../actions/groupactions");
-var DeleteGroupButton = require("./deletegroupbutton");
 
 var STATES = [
 	"AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",
