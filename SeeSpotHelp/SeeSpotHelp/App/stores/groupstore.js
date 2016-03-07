@@ -73,6 +73,7 @@ class GroupStore extends EventEmitter {
 	}
 
 	getUsersMemberGroups(user) {
+		if (!user) return null;
 		var usersGroups = [];
 		for (var groupId in user.groups) {
 			console.log("getUsersMemberGroups:GroupId:", groupId);

@@ -11,6 +11,7 @@ var SearchPage = require("../searchpage");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
 var VolunteerStore = require("../../stores/volunteerstore");
+var LoginPage = require("../loginpage");
 
 var LoginActions = require("../../actions/loginactions");
 var UserGroupsTab = require("./usergroupstab");
@@ -51,9 +52,14 @@ var ProfilePage = React.createClass({
 	},
 
 	render: function () {
-		if (!LoginStore.user) return null;
-		var heading = "Hello, " + this.state.user.name;
+		// There is no user and none is going to be downloaded, we must prompt them to log in.
+		// TODO: when we open the app up to the public, we must be able to handle non-logged in
+		// users.
+		if (!LoginStore.getUser() && !LoginStore.listenersAttached) {
+			this.context.router.push("/loginpage");
+		}
 		if (this.state.user) {
+			var heading = "Hello, " + this.state.user.name;
 			return (
 				<div>
 					<div className="media padding">
@@ -74,10 +80,7 @@ var ProfilePage = React.createClass({
 			);
 		} else {
 			return (
-				<div>
-					<h1>To get started, log in with facebook</h1>
-					<FacebookLogin />
-				</div>
+				<LoginPage/>
 			);
 		}
 	}

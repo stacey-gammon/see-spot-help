@@ -10,11 +10,10 @@ var AJAXServices = require('../core/AJAXServices');
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");
 
-var CHANGE_EVENT = "change";
-
 class LoginStore extends EventEmitter {
 	constructor() {
 		super();
+		this.ChangeEventEnum = LoginStore.ChangeEventEnum;
 		var outer = this;
 		this.dispatchToken = Dispatcher.register(function (action) {
 			outer.handleAction(action);
@@ -23,13 +22,15 @@ class LoginStore extends EventEmitter {
 		var listenersAttached = false;
 	}
 
-	addChangeListener(callback) {
-		this.on(CHANGE_EVENT, callback);
+	addChangeListener(callback, changeEvent) {
+		if (!changeEvent) changeEvent = LoginStore.ChangeEventEnum.ANY;
+		this.on(changeEvent, callback);
 	}
 
 	// @param {function} callback
-	removeChangeListener(callback) {
-		this.removeListener(CHANGE_EVENT, callback);
+	removeChangeListener(callback, changeEvent) {
+		if (!changeEvent) changeEvent = LoginStore.ChangeEventEnum.ANY;
+		this.removeListener(changeEvent, callback);
 	}
 
 	isLoggedIn() {
@@ -56,8 +57,11 @@ class LoginStore extends EventEmitter {
 		return this.user;
 	}
 
-	emitChange() {
-		this.emit(CHANGE_EVENT);
+	emitChange(changeEvent) {
+		this.emit(LoginStore.ChangeEventEnum.ANY);
+		if (changeEvent) {
+			this.emit(changeEvent);
+		}
 	}
 
 	handleAction(action) {
@@ -70,14 +74,12 @@ class LoginStore extends EventEmitter {
 			//	 this.error = null;
 			//	 this.emitChange();
 			//	 break;
-			// case ActionConstants.LOGIN_USER_SUCCESS:
-			// 	console.log("LoginStore:handleAction: LOGIN_USER_SUCCESS with user: ",
-			// 				action.user);
-			// 	this.user = action.user;
-			// 	localStorage.setItem("user", JSON.stringify(this.user));
-			// 	this.error = null;
-			// 	this.emitChange();
-			// 	break;
+			case ActionConstants.LOGIN_USER_SUCCESS:
+				this.user = action.user;
+				localStorage.setItem("user", JSON.stringify(this.user));
+				this.error = null;
+				this.emitChange(LoginStore.ChangeEventEnum.LOGGED_IN);
+				break;
 
 			case ActionConstants.LOGIN_USER_ERROR:
 				this.error = action.error;
@@ -106,6 +108,11 @@ class LoginStore extends EventEmitter {
 				break;
 		};
 	}
+};
+
+LoginStore.ChangeEventEnum = {
+	ANY: 'ANY',
+	LOGGED_IN: 'LOGGED_IN'
 };
 
 module.exports = new LoginStore();

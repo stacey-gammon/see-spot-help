@@ -32,16 +32,25 @@ class VolunteerStore extends EventEmitter {
 	}
 
 	getVolunteerById(userId) {
-		if (this.volunteers[userId]) return this.volunteers[userId];
+		if (this.volunteers.hasOwnProperty(userId)) {
+			return this.volunteers[userId];
+		} else {
+			// Prevent multiple listeners being attached before the data is returned.
+			this.volunteers[userId] = null;
+			this.downloadVolunteer(userId);
+			return null;
+		}
+	}
 
-		console.log("downloading user " + userId);
-		var outer = this;
-		var onSuccess = function (user) {
-			outer.volunteers[user.id] = Volunteer.castObject(user);
-			outer.emitChange();
-		};
-		Volunteer.LoadVolunteer(userId, "", "", onSuccess)
-		return null;
+	volunteerDownloaded(volunteer) {
+		this.volunteers[volunteer.id] = Volunteer.castObject(volunteer);
+		this.emitChange();
+	}
+
+	downloadVolunteer(userId) {
+		new AJAXServices(this.volunteerDownloaded.bind(this)).GetFirebaseData(
+			"users/" + userId,
+			true);
 	}
 
 	removeAllVolunteersFromGroup(group) {

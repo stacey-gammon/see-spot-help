@@ -45,11 +45,13 @@ var UserGroupsTab = React.createClass({
 	componentDidMount: function () {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
+		VolunteerStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function () {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
+		VolunteerStore.removeChangeListener(this.onChange);
 	},
 
 	getGroupElement: function(group) {
@@ -72,7 +74,8 @@ var UserGroupsTab = React.createClass({
 	getGroups: function() {
 		if (!this.state.user) return null;
 		if (this.state.groups.length == 0 &&
-			this.state.user.id != LoginStore.user.id) {
+			(!LoginStore.user ||
+			this.state.user.id != LoginStore.user.id)) {
 				return (
 					<div>This user does not currently belong to any groups.</div>
 				);

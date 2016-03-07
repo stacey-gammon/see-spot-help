@@ -40,8 +40,13 @@ var Home = React.createClass({
 		return {};
 	},
 
+	userLoggedIn: function() {
+		LoginServer.loginWithFacebook();
+		this.context.router.push("/profilePage");
+	},
+
 	subscribeToLoginEvents: function() {
-		FB.Event.subscribe("auth.login", LoginService.loginWithFacebook);
+		FB.Event.subscribe("auth.login", this.userLoggedIn);
 		FB.Event.subscribe("auth.logout", LoginActions.userLoggedOut);
 	},
 
@@ -71,7 +76,6 @@ var Home = React.createClass({
 	},
 
 	componentDidMount: function() {
-		// console.log("Home::componentDidMount");
 		LoginStore.addChangeListener(this.onChange);
 		this.setState({
 			user: LoginStore.getUser()

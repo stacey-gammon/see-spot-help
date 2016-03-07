@@ -39,7 +39,13 @@ var UserSettingsPage = React.createClass({
 	},
 
 	render: function () {
-		console.log("UserSettingsPage::render");
+		// There is no user and none is going to be downloaded, we must prompt them to log in.
+		// TODO: when we open the app up to the public, we must be able to handle non-logged in
+		// users.
+		if (!LoginStore.getUser() && !LoginStore.listenersAttached) {
+			this.context.router.push("/loginpage");
+		}
+
 		if (this.state.user) {
 			var displayName = this.state.user.displayName ?
 				this.state.user.displayName : this.state.user.name;
@@ -74,7 +80,7 @@ var UserSettingsPage = React.createClass({
 						<button className="btn btn-info" onClick={this.updateSettings}>
 							Update
 						</button>
-						<FacebookLogin />
+						<FacebookLogin displayInline="true"/>
 
 					</div>
 				</div>
