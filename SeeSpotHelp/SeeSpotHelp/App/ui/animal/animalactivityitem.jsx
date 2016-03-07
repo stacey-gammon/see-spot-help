@@ -32,6 +32,9 @@ var AnimalActivityItem = React.createClass({
 	},
 
 	getEditActionButton: function() {
+		if (this.props.activity.userId != this.state.user.id) {
+			return null;
+		}
 		return (
 			<LinkContainer
 				to={{ pathname: "addAnimalNote",
@@ -56,14 +59,9 @@ var AnimalActivityItem = React.createClass({
 	},
 
 	getActions: function () {
-		if (this.props.activity.userId == this.state.user.id) {
-			return (
-				<div className="media-right">
-					{this.getDeleteActionButton()}
-				</div>
-			);
-		} else if (this.props.group.getUserPermissions(this.state.user.id) ==
-				   VolunteerGroup.PermissionsEnum.ADMIN){
+		if (this.props.activity.userId == this.state.user.id ||
+			this.props.group.getUserPermissions(this.state.user.id) ==
+				   VolunteerGroup.PermissionsEnum.ADMIN) {
 			return (
 				<div className="media-right">
 					{this.getDeleteActionButton()}
