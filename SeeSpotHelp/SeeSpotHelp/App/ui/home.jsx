@@ -27,45 +27,27 @@ var GroupAnimalsTab = require("./group/groupanimalstab");
 var GroupMembersTab = require("./group/groupmemberstab");
 var AddAnimalNote = require("./animal/addanimalnote");
 var UserSettingsPage = require("./person/usersettingspage");
-var LoginService = require("../core/loginservice");
 var LoginStore = require("../stores/loginstore");
-var LoginActions = require("../actions/loginactions");
 
 var Home = React.createClass({
 	contextTypes: {
 		router: React.PropTypes.object.isRequired
 	},
 
-	getInitialState: function () {
+	getInitialState: function() {
 		return {};
 	},
 
-	userLoggedIn: function() {
-		LoginServer.loginWithFacebook();
-		this.context.router.push("/profilePage");
-	},
-
-	subscribeToLoginEvents: function() {
-		FB.Event.subscribe("auth.login", this.userLoggedIn);
-		FB.Event.subscribe("auth.logout", LoginActions.userLoggedOut);
-	},
-
-	facebookInitialized: function () {
-		this.subscribeToLoginEvents();
-	},
-
-	componentWillMount: function () {
-		var home = this;
-		window.fbAsyncInit = function () {
+	componentWillMount: function() {
+		window.fbAsyncInit = function() {
 			FB.init({
 				appId: '1021154377958416',
 				xfbml: true,
 				version: 'v2.5'
 			});
-			home.facebookInitialized();
 		};
 
-		(function (d, s, id) {
+		(function(d, s, id) {
 			var js, fjs = d.getElementsByTagName(s)[0];
 			if (d.getElementById(id)) return;
 			js = d.createElement(s);
@@ -82,33 +64,32 @@ var Home = React.createClass({
 		});
 	},
 
-	componentWillUnmount: function () {
+	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
 	},
 
-	onChange: function () {
+	onChange: function() {
 		this.setState(
 			{
 				user: LoginStore.getUser()
 			}
-		)
+		);
 	},
 
-	render: function () {
+	render: function() {
 		if (LoginStore.user && LoginStore.user.inBeta) {
 			return (
-			  <div>
-				<MyNavBar/>
-				{this.props.children}
-			  </div>
-		  );
-		} else {
-			return (
 				<div>
+					<MyNavBar/>
 					{this.props.children}
 				</div>
-				);
+			);
 		}
+		return (
+			<div>
+				{this.props.children}
+			</div>
+		);
 	}
 });
 
