@@ -1,4 +1,4 @@
-var AJAXServices = require('./AJAXServices');
+var DataServices = require('./dataservices');
 var ServerResponse = require('./serverresponse');
 
 // An animal that is currently being managed by a volunteer group.
@@ -55,7 +55,7 @@ Animal.prototype.copyFieldsFrom = function (other) {
 
 Animal.prototype.delete = function() {
 	var firebasePath = "groups/" + this.groupId + "/animals";
-	AJAXServices.RemoveFirebaseData(firebasePath + "/" + this.id);
+	DataServices.RemoveFirebaseData(firebasePath + "/" + this.id);
 }
 
 // Attempts to insert the current instance into the database as
@@ -67,15 +67,15 @@ Animal.prototype.insert = function (callback) {
 	this.id = null;
 	if (!this.photo) this.photo = null;
 
-	this.id = AJAXServices.PushFirebaseData(firebasePath, this).id;
+	this.id = DataServices.PushFirebaseData(firebasePath, this).id;
 	console.log("resetting id on the animal, path = " + firebasePath + "/" + this.id);
-	AJAXServices.UpdateFirebaseData(firebasePath + "/" + this.id, { id: this.id });
+	DataServices.UpdateFirebaseData(firebasePath + "/" + this.id, { id: this.id });
 };
 
 // Attempts to update the Animal in the database.
 Animal.prototype.update = function () {
 	console.log("Animal.updateWithFirebase");
-	AJAXServices.UpdateFirebaseData("groups/" + this.groupId + "/animals/" + this.id, this);
+	DataServices.UpdateFirebaseData("groups/" + this.groupId + "/animals/" + this.id, this);
 };
 
 module.exports = Animal;

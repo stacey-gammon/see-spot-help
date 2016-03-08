@@ -4,7 +4,7 @@ var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
 var AnimalNote = require("../core/animalnote");
-var AJAXServices = require('../core/AJAXServices');
+var DataServices = require('../core/dataservices');
 var Firebase = require("firebase");
 
 var EventEmitter = require('events').EventEmitter;
@@ -154,17 +154,17 @@ class AnimalActivityStore extends EventEmitter {
 		// null).
 		this.animalNotes[animalId] = [];
 
-		AJAXServices.OnMatchingChildAdded(
+		DataServices.OnMatchingChildAdded(
 			"notes",
 			"animalId",
 			animalId,
 			this.activityAdded.bind(this));
-		AJAXServices.OnMatchingChildRemoved(
+		DataServices.OnMatchingChildRemoved(
 			"notes",
 			"animalId",
 			animalId,
 			this.activityDeleted.bind(this));
-		AJAXServices.OnMatchingChildChanged(
+		DataServices.OnMatchingChildChanged(
 			"notes",
 			"animalId",
 			animalId,
@@ -176,17 +176,17 @@ class AnimalActivityStore extends EventEmitter {
 		// null).
 		this.userActivity[userId] = [];
 
-		AJAXServices.OnMatchingChildAdded(
+		DataServices.OnMatchingChildAdded(
 			"notes",
 			"userId",
 			userId,
 			this.userActivityAdded.bind(this));
-		AJAXServices.OnMatchingChildRemoved(
+		DataServices.OnMatchingChildRemoved(
 			"notes",
 			"userId",
 			userId,
 			this.userActivityDeleted.bind(this));
-		AJAXServices.OnMatchingChildChanged(
+		DataServices.OnMatchingChildChanged(
 			"notes",
 			"userId",
 			userId,

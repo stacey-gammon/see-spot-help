@@ -4,7 +4,7 @@ var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
 var Animal = require('../core/animal');
-var AJAXServices = require('../core/AJAXServices');
+var DataServices = require('../core/dataservices');
 var AnimalStore = require("../stores/animalstore");
 
 var EventEmitter = require('events').EventEmitter;
@@ -113,7 +113,7 @@ class GroupStore extends EventEmitter {
 		} else {
 			this.groups[groupId] = null;
 		}
-		var dataServices = new AJAXServices(this.groupDownloaded.bind(this), null);
+		var dataServices = new DataServices(this.groupDownloaded.bind(this), null);
 		dataServices.GetFirebaseData("groups/" + groupId, true);
 		AnimalStore.downloadAnimals(groupId);
 	}
@@ -136,7 +136,7 @@ class GroupStore extends EventEmitter {
 			}
 		};
 
-		var dataServices = new AJAXServices(onSuccess, null);
+		var dataServices = new DataServices(onSuccess, null);
 		dataServices.GetFirebaseData("users/" + user.id + "/groups");
 	}
 
@@ -167,7 +167,7 @@ class GroupStore extends EventEmitter {
 				break;
 			case ActionConstants.GROUP_DELETED:
 				console.log("GroupStore:handleaction: caught GROUP_DELETED");
-				AJAXServices.DetachListener(
+				DataServices.DetachListener(
 					"groups/" + action.group.id,
 					this.groupDownloaded.bind(this));
 				delete this.groups[action.group.id];

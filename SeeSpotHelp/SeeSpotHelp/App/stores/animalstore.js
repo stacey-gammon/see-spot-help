@@ -4,7 +4,7 @@ var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
 var Animal = require("../core/animal");
-var AJAXServices = require('../core/AJAXServices');
+var DataServices = require('../core/dataservices');
 var AnimalActions = require('../actions/animalactions');
 var Firebase = require("firebase");
 
@@ -95,13 +95,13 @@ class AnimalStore extends EventEmitter {
 	}
 
 	downloadAnimals(groupId) {
-		AJAXServices.OnChildAdded(
+		DataServices.OnChildAdded(
 			"groups/" + groupId + "/animals",
 			this.animalAdded.bind(this));
-		AJAXServices.OnChildRemoved(
+		DataServices.OnChildRemoved(
 			"groups/" + groupId + "/animals",
 			this.animalDeleted.bind(this));
-		AJAXServices.OnChildChanged(
+		DataServices.OnChildChanged(
 			"groups/" + groupId + "/animals",
 			this.animalChanged.bind(this));
 	}

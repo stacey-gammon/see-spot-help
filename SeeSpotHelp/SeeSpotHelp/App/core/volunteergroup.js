@@ -1,7 +1,7 @@
 ﻿"use strict"
 
 var ServerResponse = require("./serverresponse");
-var AJAXServices = require('./AJAXServices');
+var DataServices = require('./dataservices');
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
@@ -162,7 +162,7 @@ VolunteerGroup.prototype.requestToJoin = function (user) {
 
 VolunteerGroup.prototype.updateMembership = function (user, membershipType) {
 	this.userPermissionsMap[user.id] = membershipType;
-	AJAXServices.SetFirebaseData("groups/" + this.id + "/userPermissionsMap",
+	DataServices.SetFirebaseData("groups/" + this.id + "/userPermissionsMap",
 								 this.userPermissionsMap);
 
 	if (membershipType == VolunteerGroup.PermissionsEnum.NONMEMBER) {
@@ -170,7 +170,7 @@ VolunteerGroup.prototype.updateMembership = function (user, membershipType) {
 	} else {
 		user.groups[this.id] = membershipType;
 	}
-	AJAXServices.SetFirebaseData("users/" + user.id + "/groups", user.groups);
+	DataServices.SetFirebaseData("users/" + user.id + "/groups", user.groups);
 }
 
 VolunteerGroup.prototype.delete = function () {
@@ -184,19 +184,19 @@ VolunteerGroup.prototype.delete = function () {
 		}
 	}
 
-	AJAXServices.SetFirebaseData("deletedGroups/" + this.id, this);
-	AJAXServices.RemoveFirebaseData("groups/" + this.id, onComplete);
+	DataServices.SetFirebaseData("deletedGroups/" + this.id, this);
+	DataServices.RemoveFirebaseData("groups/" + this.id, onComplete);
 }
 
 VolunteerGroup.prototype.insertWithFirebase = function (user, callback) {
 	console.log("VolunteerGroup.insertWithFirebase");
 
 	this.id = null;
-	this.id = AJAXServices.PushFirebaseData("groups", this).id;
-	AJAXServices.UpdateFirebaseData("groups/" + this.id, { id: this.id });
+	this.id = DataServices.PushFirebaseData("groups", this).id;
+	DataServices.UpdateFirebaseData("groups/" + this.id, { id: this.id });
 
 	user.groups[this.id] = VolunteerGroup.PermissionsEnum.ADMIN;
-	AJAXServices.UpdateFirebaseData("users/" + user.id + "/groups", user.groups);
+	DataServices.UpdateFirebaseData("users/" + user.id + "/groups", user.groups);
 	callback(this, new ServerResponse());
 };
 
@@ -209,7 +209,7 @@ VolunteerGroup.prototype.insertWithFirebase = function (user, callback) {
 VolunteerGroup.prototype.insert = function (user, callback) {
 	console.log("VolunteerGroup::insert");
 
-	if (AJAXServices.useFirebase) {
+	if (DataServices.useFirebase) {
 		return this.insertWithFirebase(user, callback);
 	}
 
@@ -234,7 +234,7 @@ VolunteerGroup.prototype.insert = function (user, callback) {
 		callback(null, new ServerResponse(errorString));
 	};
 
-	var ajax = new AJAXServices(LoadedGroupWithData,
+	var ajax = new DataServices(LoadedGroupWithData,
 								FailedCallback);
 	ajax.CallJSONService(
 		"../../WebServices/VolunteerGroupServices.asmx",
@@ -253,7 +253,7 @@ VolunteerGroup.prototype.insert = function (user, callback) {
 VolunteerGroup.prototype.updateWithFirebase = function (callback) {
 	console.log("VolunteerGroup.updateWithFirebase with:");
 	console.log(this);
-	AJAXServices.UpdateFirebaseData("groups/" + this.id, this);
+	DataServices.UpdateFirebaseData("groups/" + this.id, this);
 	callback(this, new ServerResponse());
 };
 
@@ -265,7 +265,7 @@ VolunteerGroup.prototype.updateWithFirebase = function (callback) {
 VolunteerGroup.prototype.update = function (callback) {
 	console.log("VolunteerGroup::update");
 
-	if (AJAXServices.useFirebase) {
+	if (DataServices.useFirebase) {
 		return this.updateWithFirebase(callback);
 	}
 
@@ -290,7 +290,7 @@ VolunteerGroup.prototype.update = function (callback) {
 		callback(null, new ServerResponse(errorString));
 	};
 
-	var ajax = new AJAXServices(UpdatedGroup,
+	var ajax = new DataServices(UpdatedGroup,
 								FailedCallback);
 	ajax.CallJSONService(
 		"../../WebServices/VolunteerGroupServices.asmx",

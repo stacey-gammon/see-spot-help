@@ -2,7 +2,7 @@
 // managed by facebook login and authentication.
 
 var VolunteerGroup = require('./volunteergroup');
-var AJAXServices = require('./AJAXServices');
+var DataServices = require('./dataservices');
 var Firebase = require("firebase");
 
 var Volunteer = function(name, email, id) {
@@ -47,7 +47,7 @@ Volunteer.LoadVolunteerWithFirebase = function (id, name, email, callback) {
 			volunteer = Volunteer.castObject(response);
 		} else {
 			volunteer = new Volunteer(name, email, id);
-			AJAXServices.SetFirebaseData("users/" + id, volunteer);
+			DataServices.SetFirebaseData("users/" + id, volunteer);
 		}
 		callback(volunteer);
 	};
@@ -56,7 +56,7 @@ Volunteer.LoadVolunteerWithFirebase = function (id, name, email, callback) {
 		callback(null, new ServerResponse("err"));
 	};
 
-	var dataServices = new AJAXServices(onSuccess, onFailure);
+	var dataServices = new DataServices(onSuccess, onFailure);
 	dataServices.GetFirebaseData("users/" + id);
 }
 
@@ -65,7 +65,7 @@ Volunteer.LoadVolunteerWithFirebase = function (id, name, email, callback) {
 // will be called with some basic defaults supplied by
 // facebook.
 Volunteer.LoadVolunteer = function (id, name, email, callback) {
-	if (AJAXServices.useFirebase) {
+	if (DataServices.useFirebase) {
 		Volunteer.LoadVolunteerWithFirebase(id, name, email, callback);
 		return;
 	}
@@ -101,7 +101,7 @@ Volunteer.LoadVolunteer = function (id, name, email, callback) {
 		alert(errorString);
 	};
 
-	var ajax = new AJAXServices(LoadedVolunteerWithData,
+	var ajax = new DataServices(LoadedVolunteerWithData,
 								FailedCallback);
 	ajax.CallJSONService(
 		"../../WebServices/volunteerServices.asmx",
@@ -134,7 +134,7 @@ Volunteer.prototype.getDefaultVolunteerGroup = function() {
 };
 
 Volunteer.prototype.update = function() {
-	AJAXServices.SetFirebaseData("users/" + this.id, this);
+	DataServices.SetFirebaseData("users/" + this.id, this);
 };
 
 module.exports = Volunteer;

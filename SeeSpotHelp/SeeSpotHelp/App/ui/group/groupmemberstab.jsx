@@ -12,7 +12,7 @@ var VolunteerGroup = require("../../core/volunteergroup");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
 var VolunteerStore = require("../../stores/volunteerstore");
-var AJAXServices = require("../../core/AJAXServices");
+var DataServices = require("../../core/dataservices");
 
 var GroupMembersTab = React.createClass({
 	getInitialState: function () {

@@ -11,7 +11,7 @@ var Volunteer = require("../../core/volunteer");
 var VolunteerGroup = require("../../core/volunteergroup");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
-var AJAXServices = require("../../core/AJAXServices");
+var DataServices = require("../../core/dataservices");
 var AddAnimalButton = require("../animal/addanimalbutton");
 
 var GroupAnimalsTab = React.createClass({

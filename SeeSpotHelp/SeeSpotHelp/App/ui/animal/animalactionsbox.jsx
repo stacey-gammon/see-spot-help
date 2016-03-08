@@ -1,7 +1,7 @@
 ﻿"use strict"
 
 var React = require("react");
-var AjaxServices = require("../../core/AJAXServices");
+var AjaxServices = require("../../core/dataservices");
 var TakePhotoButton = require("../takephotobutton");
 var LoginStore = require("../../stores/loginstore");
 var VolunteerGroup = require("../../core/volunteergroup");

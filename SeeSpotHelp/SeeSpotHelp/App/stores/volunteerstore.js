@@ -5,7 +5,7 @@ var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
 var Volunteer = require('../core/volunteer');
 var LoginActions = require("../actions/loginactions");
-var AJAXServices = require("../core/AJAXServices");
+var DataServices = require("../core/dataservices");
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");
@@ -48,7 +48,7 @@ class VolunteerStore extends EventEmitter {
 	}
 
 	downloadVolunteer(userId) {
-		new AJAXServices(this.volunteerDownloaded.bind(this)).GetFirebaseData(
+		new DataServices(this.volunteerDownloaded.bind(this)).GetFirebaseData(
 			"users/" + userId,
 			true);
 	}
@@ -59,7 +59,7 @@ class VolunteerStore extends EventEmitter {
 		var onSuccess = function (user) {
 			var volunteer = Volunteer.castObject(user);
 			delete volunteer.groups[group.id];
-			AJAXServices.SetFirebaseData("users/" + user.id + "/groups/", volunteer.groups);
+			DataServices.SetFirebaseData("users/" + user.id + "/groups/", volunteer.groups);
 			outer.volunteers[user.id] = volunteer;
 		}
 

@@ -1,17 +1,17 @@
 ﻿// A helpful class filled with functions for validating various
 // input fields.
-var AJAXServices = function (successCallback, failureCallback) {
+var DataServices = function (successCallback, failureCallback) {
 	this.successCallback = successCallback;
 	this.failureCallback = failureCallback;
 
 	this.firebaseURL = "https://shining-torch-1432.firebaseio.com/";
 };
 
-AJAXServices.useFirebase = true;
-AJAXServices.firebaseURL = "https://shining-torch-1432.firebaseio.com/";
+DataServices.useFirebase = true;
+DataServices.firebaseURL = "https://shining-torch-1432.firebaseio.com/";
 
-AJAXServices.startStringSearch = function (path, child, searchText, onSuccess) {
-	console.log("AJAXServices::startSearch");
+DataServices.startStringSearch = function (path, child, searchText, onSuccess) {
+	console.log("DataServices::startSearch");
 
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	ref.orderByChild(child).startAt(searchText).endAt(searchText + "\uf8ff").on("value",
@@ -20,73 +20,73 @@ AJAXServices.startStringSearch = function (path, child, searchText, onSuccess) {
 		});
 };
 
-AJAXServices.OnMatchingChildRemoved = function(path, child, value, onSuccess) {
+DataServices.OnMatchingChildRemoved = function(path, child, value, onSuccess) {
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	ref.orderByChild(child).equalTo(value).on("child_removed", function (snapshot) {
 		onSuccess(snapshot);
 	});
 }
 
-AJAXServices.OnMatchingChildAdded = function(path, child, value, onSuccess) {
+DataServices.OnMatchingChildAdded = function(path, child, value, onSuccess) {
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	ref.orderByChild(child).equalTo(value).on("child_added", function (snapshot) {
 		onSuccess(snapshot);
 	});
 }
 
-AJAXServices.OnMatchingChildChanged = function(path, child, value, onSuccess) {
+DataServices.OnMatchingChildChanged = function(path, child, value, onSuccess) {
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	ref.orderByChild(child).equalTo(value).on("child_changed", function (snapshot) {
 		onSuccess(snapshot);
 	});
 }
 
-AJAXServices.OnChildRemoved = function(path, onSuccess) {
+DataServices.OnChildRemoved = function(path, onSuccess) {
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	ref.on("child_removed", function (snapshot) {
 		onSuccess(snapshot);
 	});
 }
 
-AJAXServices.OnChildAdded = function(path, onSuccess) {
+DataServices.OnChildAdded = function(path, onSuccess) {
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	ref.on("child_added", function (snapshot) {
 		onSuccess(snapshot);
 	});
 }
 
-AJAXServices.OnChildChanged = function(path, onSuccess) {
+DataServices.OnChildChanged = function(path, onSuccess) {
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	ref.on("child_changed", function (snapshot) {
 		onSuccess(snapshot);
 	});
 }
 
-AJAXServices.GetChildData = function(path, child, value, onSuccess, listen) {
-	console.log("AJAXServices:GetFirebaseData for url " + path);
+DataServices.GetChildData = function(path, child, value, onSuccess, listen) {
+	console.log("DataServices:GetFirebaseData for url " + path);
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	if (listen) {
 		ref.orderByChild(child).equalTo(value).on("child_added", function (snapshot) {
-			console.log("AJAXServices.GetChildData: Successfully called " + path);
+			console.log("DataServices.GetChildData: Successfully called " + path);
 			console.log(snapshot.val());
 			onSuccess(snapshot);
 		});
 	} else {
 		ref.orderByChild(child).equalTo(value).once("value", function (snapshot) {
-			console.log("AJAXServices.GetChildData: Successfully called " + path);
+			console.log("DataServices.GetChildData: Successfully called " + path);
 			console.log(snapshot.val());
 			onSuccess(snapshot);
 		});
 	}
 };
 
-AJAXServices.DetachListener = function(path, callback) {
+DataServices.DetachListener = function(path, callback) {
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	ref.off("value", callback);
 }
 
-AJAXServices.prototype.GetFirebaseData = function(path, listen) {
-	console.log("AJAXServices:GetFirebaseData for url " + path);
+DataServices.prototype.GetFirebaseData = function(path, listen) {
+	console.log("DataServices:GetFirebaseData for url " + path);
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	var outer = this;
 	if (listen) {
@@ -98,7 +98,7 @@ AJAXServices.prototype.GetFirebaseData = function(path, listen) {
 		});
 	} else {
 		ref.once("value", function (snapshot) {
-			console.log("AJAXServices.GetFirebaseData: Successfully called " + path);
+			console.log("DataServices.GetFirebaseData: Successfully called " + path);
 			console.log(snapshot.val());
 			outer.onSuccess(snapshot.val());
 		}, function (errorObject) {
@@ -108,20 +108,20 @@ AJAXServices.prototype.GetFirebaseData = function(path, listen) {
 	}
 };
 
-AJAXServices.SetFirebaseData = function(path, value) {
-	console.log("AJAXServices:SetFirebaseData");
+DataServices.SetFirebaseData = function(path, value) {
+	console.log("DataServices:SetFirebaseData");
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	ref.set(value);
 };
 
-AJAXServices.RemoveFirebaseData = function (path, callback) {
-	console.log("AJAXServices:RemoveFirebaseData");
+DataServices.RemoveFirebaseData = function (path, callback) {
+	console.log("DataServices:RemoveFirebaseData");
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	ref.remove(callback);
 };
 
-AJAXServices.PushFirebaseData = function (path, value) {
-	console.log("AJAXServices:PushFirebaseData with value ");
+DataServices.PushFirebaseData = function (path, value) {
+	console.log("DataServices:PushFirebaseData with value ");
 	console.log(value);
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	var newPath = ref.push(value);
@@ -129,8 +129,8 @@ AJAXServices.PushFirebaseData = function (path, value) {
 	return value;
 };
 
-AJAXServices.UpdateFirebaseData = function (path, value) {
-	console.log("AJAXServices:UpdateFirebaseData");
+DataServices.UpdateFirebaseData = function (path, value) {
+	console.log("DataServices:UpdateFirebaseData");
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	var newPath = ref.update(value);
 	return value;
@@ -141,10 +141,10 @@ AJAXServices.UpdateFirebaseData = function (path, value) {
 //*  A JSON web service MUST have the <ScriptService> attribute, and any methods called must have a <ScriptMethod> attribute.
 //*/
 //Note: The __type property must be the first JSON property of an object to ensure proper serialization/deserialization
-AJAXServices.prototype.CallJSONService = function (callbackURI,
+DataServices.prototype.CallJSONService = function (callbackURI,
 												   methodName,
 												   params) {
-	console.log("AJAXServices::CallJSONService");
+	console.log("DataServices::CallJSONService");
 	$.ajax({
 		type: 'POST',
 		contentType: 'application/json',
@@ -161,15 +161,15 @@ AJAXServices.prototype.CallJSONService = function (callbackURI,
 		}.bind(this));   // response data contains the javascript object parsed from the JSON data.
 };
 
-AJAXServices.prototype.callFileUploadService = function (callbackURI,
+DataServices.prototype.callFileUploadService = function (callbackURI,
 														 methodName,
 														 file) {
 	var fd = new FormData();
-	// console.log("AJAXServices:callFileUploadService: with file");
+	// console.log("DataServices:callFileUploadService: with file");
    // console.log(file);
 	fd.append('file', file);
 
-	console.log("AJAXServices::CallFileUploadService");
+	console.log("DataServices::CallFileUploadService");
 	$.ajax({
 		type: 'POST',
 		contentType: false,
@@ -185,15 +185,15 @@ AJAXServices.prototype.callFileUploadService = function (callbackURI,
 		}.bind(this));   // response data contains the javascript object parsed from the JSON data.
 };
 
-AJAXServices.prototype.onSuccess = function (response) {
-	console.log("AJAXServices::OnSuccess");
+DataServices.prototype.onSuccess = function (response) {
+	console.log("DataServices::OnSuccess");
 	this.successCallback(response);
 };
 
-AJAXServices.prototype.onFailure = function (response) {
-	console.log("AJAXServices::OnFailure, response:");
+DataServices.prototype.onFailure = function (response) {
+	console.log("DataServices::OnFailure, response:");
 	console.log(response);
 	this.failureCallback(response);
 };
 
-module.exports = AJAXServices;
+module.exports = DataServices;

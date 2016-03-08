@@ -10,7 +10,7 @@ var GroupInfoBox = require("./group/groupinfobox");
 var AddNewGroup = require("./group/addnewgroup");
 var SearchPage = require("./searchpage");
 var LoginStore = require("../stores/loginstore");
-var AJAXServices = require("../core/AJAXServices");
+var DataServices = require("../core/dataservices");
 
 
 var PrivateBetaPage = React.createClass({
@@ -26,7 +26,7 @@ var PrivateBetaPage = React.createClass({
 
 	signUp: function () {
 		var email = this.refs["email"].value;
-		AJAXServices.UpdateFirebaseData("users/" + LoginStore.user.id, { waitingListEmail : email, onWaitingList : true });
+		DataServices.UpdateFirebaseData("users/" + LoginStore.user.id, { waitingListEmail : email, onWaitingList : true });
 		this.setState({signedUp: true});
 	},
 

@@ -1,7 +1,7 @@
 ﻿"use strict"
 
 var React = require("react");
-var AjaxServices = require("../core/AJAXServices");
+var AjaxServices = require("../core/dataservices");
 var LoginStore = require("../stores/loginstore");
 
 var TakePhotoButton = React.createClass({

@@ -16,7 +16,7 @@ var STATES = [
 ];
 
 var AddNewGroup = React.createClass({
-	getInitialState: function () {
+	getInitialState: function() {
 		console.log("AddNewGroup::getInitialState");
 		// for short hand.
 		var IFV = InputFieldValidation;
@@ -60,7 +60,7 @@ var AddNewGroup = React.createClass({
 		router: React.PropTypes.object.isRequired
 	},
 
-	validateFields: function () {
+	validateFields: function() {
 		console.log("AddNewGroup::validateFields");
 		var errorFound = false;
 		for (var key in this.state.fields) {
@@ -81,7 +81,7 @@ var AddNewGroup = React.createClass({
 		return errorFound;
 	},
 
-	insertGroupCallback: function (group, serverResponse) {
+	insertGroupCallback: function(group, serverResponse) {
 		console.log("AddNewGroup::insertGroupCallback, group=");
 		console.log(group);
 
@@ -100,7 +100,7 @@ var AddNewGroup = React.createClass({
 		}
 	},
 
-	addNewVolunteerGroup: function () {
+	addNewVolunteerGroup: function() {
 		var errorFound = this.validateFields();
 		if (!errorFound) {
 			if (this.state.editMode) {
@@ -115,7 +115,7 @@ var AddNewGroup = React.createClass({
 		}
 	},
 
-	createInputField: function (inputField) {
+	createInputField: function(inputField) {
 		var inputFieldClassName = "form-control " + inputField.ref;
 		return (
 			<div className={inputField.getFormGroupClassName()}>

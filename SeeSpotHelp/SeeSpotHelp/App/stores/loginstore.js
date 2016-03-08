@@ -5,7 +5,7 @@ var ActionConstants = require('../constants/actionconstants');
 var Volunteer = require('../core/volunteer');
 var LoginActions = require("../actions/loginactions");
 var VolunteerGroup = require('../core/volunteergroup');
-var AJAXServices = require('../core/AJAXServices');
+var DataServices = require('../core/dataservices');
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");
@@ -50,7 +50,7 @@ class LoginStore extends EventEmitter {
 			var user = JSON.parse(localStorage.getItem("user"));
 			if (user) {
 				this.listenersAttached = true;
-				new AJAXServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
+				new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
 					"users/" + user.id, true);
 			}
 		}
@@ -88,7 +88,7 @@ class LoginStore extends EventEmitter {
 
 			case ActionConstants.LOGOUT_USER:
 				console.log("LoginStore:handleAction:LOGOUT_USER");
-				AJAXServices.DetachListener(
+				DataServices.DetachListener(
 					"users/" + this.user.id,
 					this.onUserDownloaded.bind(this));
 				this.user = null;

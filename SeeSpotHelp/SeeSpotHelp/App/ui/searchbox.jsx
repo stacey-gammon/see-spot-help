@@ -6,7 +6,7 @@ var LinkContainer = require("react-router-bootstrap").LinkContainer;
 var VolunteerGroup = require("../core/volunteergroup");
 var ShelterSearchResults = require("./searchresults");
 var LoginStore = require("../stores/loginstore");
-var AJAXServices = require("../core/AJAXServices");
+var DataServices = require("../core/dataservices");
 var Firebase = require("firebase");
 
 var AddNewGroupButton = React.createClass({
@@ -67,7 +67,7 @@ var SearchBox = React.createClass({
 
 	shelterSearch: function () {
 		var searchText = this.refs.shelterSearchInput.value;
-		AJAXServices.startStringSearch("groups", "name", searchText, this.getResults);
+		DataServices.startStringSearch("groups", "name", searchText, this.getResults);
 	},
 
 	render: function () {

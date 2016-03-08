@@ -1,5 +1,5 @@
 
-var AJAXServices = require('./AJAXServices');
+var DataServices = require('./dataservices');
 var dateFormat = require('dateformat');
 
 var AnimalNote = function(note, animalId, groupId, userId) {
@@ -16,16 +16,16 @@ var AnimalNote = function(note, animalId, groupId, userId) {
 }
 
 AnimalNote.prototype.insert = function() {
-	this.id = AJAXServices.PushFirebaseData("notes", this).id;
-	AJAXServices.UpdateFirebaseData("notes/" + this.id, this);
+	this.id = DataServices.PushFirebaseData("notes", this).id;
+	DataServices.UpdateFirebaseData("notes/" + this.id, this);
 }
 
 AnimalNote.prototype.update = function() {
-	AJAXServices.UpdateFirebaseData("notes/" + this.id, this);
+	DataServices.UpdateFirebaseData("notes/" + this.id, this);
 }
 
 AnimalNote.prototype.delete = function() {
-	AJAXServices.RemoveFirebaseData("notes/" + this.id);
+	DataServices.RemoveFirebaseData("notes/" + this.id);
 }
 
 AnimalNote.prototype.getDateForDisplay = function() {

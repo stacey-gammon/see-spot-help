@@ -1,5 +1,5 @@
 
-var AJAXServices = require('./AJAXServices');
+var DataServices = require('./dataservices');
 
 
 var AnimalActivity = function(animalNote, animalId, userId) {
