@@ -47,7 +47,7 @@ var AddAnimalButton = React.createClass({
 	},
 
 	getAddAnimalButton: function() {
-		if (!this.state.user) {
+		if (!this.state.user || !this.state.group) {
 			return null;
 		}
 		var permissions = this.state.group.getUserPermissions(this.state.user.id);

@@ -58,7 +58,7 @@ var GroupListItem = React.createClass({
 			"Member" : permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ?
 			"Membership Pending" : "";
 		return (
-			<a className="list-group-item animalListElement">
+			<a className="list-group-item groupListElement">
 				<LinkContainer to={{ pathname: "GroupHomePage" ,
 					state: { user: this.props.user, group: group} }}>
 					<div className="media">

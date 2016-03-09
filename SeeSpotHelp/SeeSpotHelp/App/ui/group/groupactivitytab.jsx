@@ -66,6 +66,7 @@ var GroupActivityTab = React.createClass({
 	},
 
 	render: function () {
+		if (!this.state.group) return null;
 		var notes = [];
 		for (var key in this.state.group.animals) {
 			var animal = this.state.group.animals[key];
