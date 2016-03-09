@@ -21,26 +21,14 @@ var GroupStore = require("../../stores/groupstore");
 
 var GroupHomePage = React.createClass({
 	getInitialState: function() {
-		console.log("GroupHomePage:getInitialState");
 		var query = this.props.location ? this.props.location.query : null;
 		var group = null;
 		if (query && query.groupId) {
 			group = GroupStore.getGroupById(query.groupId);
 		} else {
-			group = this.props.location &&
-					this.props.location.state &&
-					this.props.location.state.group ||
-					this.props.group;
+			group = Utils.FindPassedInProperty(this, 'group');
 			// Force refresh via groupstore
 			group = group ? GroupStore.getGroupById(group.id) : null;
-			//
-			// if (LoginStore.getUser() && !group) {
-			//	 console.log("user = ", LoginStore.getUser());
-			//	 var defaultGroupId = LoginStore.getUser().defaultGroupId();
-			//	 console.log("Default Group id: " + defaultGroupId);
-			//	 group = GroupStore.getGroupById(LoginStore.getUser().defaultGroupId());
-			//	 console.log(group);
-			// }
 		}
 
 		var state = {

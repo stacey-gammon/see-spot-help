@@ -1,7 +1,6 @@
 ﻿var React = require('react');
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var ReactBootstrap = require('react-bootstrap');
-var FacebookLogin = require('./facebooklogin');
 var LoginStore = require("../stores/loginstore");
 
 var Navbar = ReactBootstrap.Navbar;
@@ -14,48 +13,25 @@ var Glyphicon = ReactBootstrap.Glyphicon;
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 var MyNavBar = React.createClass({
-	getInitialState: function () {
+	getInitialState: function() {
 		return {
 			user: LoginStore.getUser()
 		}
 	},
 
-	componentDidMount: function () {
-	  //  LoginStore.addChangeListener(this.onChange);
-	},
-
-	componentWillUnmount: function () {
-		//LoginStore.removeChangeListener(this.onChange);
-	},
-
-	onChange: function () {
-		this.setState(
-			{
-				user: LoginStore.getUser()
-			});
-	},
-
 	render: function() {
-		console.log("MyNavBar::render , user = ");
-		console.log(this.state.user);
 		return (
 			<Navbar ref="mynavbar" className="navbar navbar-light bg-faded sh-navbar">
 				<Nav className="nav navbar-nav navbar-custom">
-					<LinkContainer to={{ pathname: "groupHomePage", state: { user: this.state.user } }}>
-						<NavItem className="nav-item">
+						<NavItem className="nav-item" href="#groupHomePage">
 							<span className="glyphicon glyphicon-home nav-item" />
 						</NavItem>
-					</LinkContainer>
-					<LinkContainer to={{ pathname: "profilePage", state: { user: this.state.user } }}>
-						<NavItem className="nav-item">
+						<NavItem className="nav-item" href="#profilePage">
 							<span className="glyphicon glyphicon-user nav-item" />
 						</NavItem>
-					</LinkContainer>
-					<LinkContainer  to={{ pathname: "searchPage", state: { user: this.state.user } }}>
-					<NavItem className="nav-item">
+					<NavItem className="nav-item" href="#searchPage">
 						<span className="glyphicon glyphicon-search nav-item" />
 					</NavItem>
-					</LinkContainer>
 					</Nav>
 					<Nav pullRight>
 						<Dropdown componentClass="li">

@@ -66,14 +66,6 @@ class LoginStore extends EventEmitter {
 
 	handleAction(action) {
 		switch (action.type) {
-			// case ActionConstants.USER_UPDATED:
-			//	 console.log("LoginStore:handleAction: USER_UPDATED with user: ",
-			//				 action.user);
-			//	 this.user = action.user;
-			//	 localStorage.setItem("user", JSON.stringify(this.user));
-			//	 this.error = null;
-			//	 this.emitChange();
-			//	 break;
 			case ActionConstants.LOGIN_USER_SUCCESS:
 				this.user = action.user;
 				localStorage.setItem("user", JSON.stringify(this.user));

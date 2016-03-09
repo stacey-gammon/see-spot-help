@@ -3,18 +3,15 @@
 var React = require("react");
 var Link = require("react-router").Link;
 var LinkContainer = require("react-router-bootstrap").LinkContainer;
-var VolunteerGroup = require("../core/volunteergroup");
 var ShelterSearchResults = require("./searchresults");
 var LoginStore = require("../stores/loginstore");
 var DataServices = require("../core/dataservices");
-var Firebase = require("firebase");
 
 var AddNewGroupButton = React.createClass({
 	getInitialState: function () {
-		return {
-			user: LoginStore.getUser()
-		}
+		return {}
 	},
+
 	componentDidMount: function () {
 		LoginStore.addChangeListener(this.onChange);
 	},
@@ -24,15 +21,11 @@ var AddNewGroupButton = React.createClass({
 	},
 
 	onChange: function () {
-		this.setState(
-			{
-				user: LoginStore.user
-			});
+		forceUpdate();
 	},
 
 	render: function() {
-		console.log("AddNewGroupButton:render: User = " + this.state.user);
-		var disabled = !this.state.user;
+		var disabled = !LoginStore.getUser();
 		var disabledDiv = "";
 		if (disabled) {
 			disabledDiv = (<div>*You must be logged in to add a new group</div>);
@@ -40,8 +33,10 @@ var AddNewGroupButton = React.createClass({
 		if (this.props.searchText) {
 			return (
 				<div>
-					<LinkContainer to={{ pathname: "AddNewGroup", state: { user: this.state.user } }} disabled={disabled}>
-						<button className="btn btn-warning shelterResult AddNewGroupButton">Add New Group</button>
+					<LinkContainer to={{ pathname: "AddNewGroup" }} disabled={disabled}>
+						<button className="btn btn-warning shelterResult AddNewGroupButton">
+							Add New Group
+						</button>
 					</LinkContainer>
 					{disabledDiv}
 				</div>
@@ -51,31 +46,27 @@ var AddNewGroupButton = React.createClass({
 });
 
 var SearchBox = React.createClass({
-	getInitialState: function () {
+	getInitialState: function() {
 		return {
 			results: {}
 		}
 	},
 
-	getResults: function (results) {
-		console.log("SearchBox:getResults:");
-		console.log(results);
+	getResults: function(results) {
 		this.setState({
 			results: results
 		});
 	},
 
-	shelterSearch: function () {
+	shelterSearch: function() {
 		var searchText = this.refs.shelterSearchInput.value;
 		DataServices.startStringSearch("groups", "name", searchText, this.getResults);
 	},
 
-	render: function () {
-		console.log("SearchBox::render, results:");
-		console.log(this.state.results);
+	render: function() {
 		return (
 			<div className="SearchBox">
-				<h1>Search for a shelter, rescue or volunteer group to join</h1>
+				<h1>Search for a volunteer group</h1>
 				<div className="input-group searchInputBox">
 					<input type="text" className="form-control"
 						   ref="shelterSearchInput"
@@ -87,12 +78,13 @@ var SearchBox = React.createClass({
 					</span>
 				</div>
 				<div>
-					<h1>Can't find what you're looking for?
+					<br/>
+					<h1>Can't find what you're looking for?&nbsp;
 					<Link to="AddNewGroup">Add</Link> your own group!
 					</h1>
 				</div>
-				<ShelterSearchResults results={this.state.results} user={this.state.user}/>
-				<AddNewGroupButton user={this.state.user} searchText={this.state.searchText}/>
+				<ShelterSearchResults results={this.state.results} />
+				<AddNewGroupButton searchText={this.state.searchText}/>
 			</div>
 		);
 	}
