@@ -1,41 +1,32 @@
 "use strict"
 
 var React = require("react");
-var Link = require("react-router").Link;
-var Volunteer = require("../../core/volunteer");
-var VolunteerGroup = require("../../core/volunteergroup");
-var FacebookLogin = require("../facebooklogin");
-var GroupInfoBox = require("../group/groupinfobox");
-var AddNewGroup = require("../group/addnewgroup");
-var SearchPage = require("../searchpage");
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
-var LoginActions = require("../../actions/loginactions");
-var UserGroupsTab = require("./usergroupstab");
-var UserActivityTab = require("./useractivitytab");
 var ReactBootstrap = require("react-bootstrap");
 var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
-var ReactRouterBootstrap = require("react-router-bootstrap");
+
+var BasicSettingsTab = require("./basicsettingstab");
+var PrivacySettingsTab = require("./privacysettingstab");
+
+var Volunteer = require("../../core/volunteer");
+var FacebookLogin = require("../facebooklogin");
+var LoginStore = require("../../stores/loginstore");
 
 var UserSettingsPage = React.createClass({
 	contextTypes: {
 		router: React.PropTypes.object.isRequired
 	},
 
-	getInitialState: function () {
-		var user = LoginStore.getUser();
+	getInitialState: function() {
 		return {
-			user: user
+			updated: false
 		}
 	},
 
-	updateSettings: function() {
-		this.state.user.name = this.refs.name.value;
-		this.state.user.displayName = this.refs.displayName.value;
-		this.state.email = this.refs.email.value;
-		this.state.user.update();
-		this.context.router.push("/profilePage");
+	settingsUpdated: function() {
+		this.setState({
+			updated: true
+		});
 	},
 
 	render: function () {
@@ -45,44 +36,25 @@ var UserSettingsPage = React.createClass({
 		if (!LoginStore.getUser() && !LoginStore.listenersAttached) {
 			this.context.router.push("/loginpage");
 		}
+		var header = this.state.updated ? "Settings Updated!" : "Settings";
 
-		if (this.state.user) {
-			var displayName = this.state.user.displayName ?
-				this.state.user.displayName : this.state.user.name;
+		if (LoginStore.user) {
 			return (
 				<div>
-					<h1>Settings</h1>
-					<br/>
-					<div className="input-group">
-						<span className="input-group-addon">Email: </span>
-						<input type="text"
-						   ref="email"
-						   className="form-control"
-						   defaultValue={this.state.user.email}/>
+					<div className="media padding">
+						<div className="media-body">
+						<h1>{header}</h1>
+						</div>
 					</div>
-					<div className="input-group">
-						<span className="input-group-addon">Name: </span>
-						<input type="text"
-							   ref="name"
-							   className="form-control"
-							   defaultValue={this.state.user.name}/>
-					</div>
-					<div className="input-group">
-						<span className="input-group-addon">Display Name: </span>
-						<input type="text"
-							   ref="displayName"
-							   className="form-control"
-							   defaultValue={displayName}/>
-					</div>
-					<p>* Supply a display name if you would like to protect your privacy</p>
-					<br/>
-					<div style={{textAlign: 'center'}}>
-						<button className="btn btn-info" onClick={this.updateSettings}>
-							Update
-						</button>
-						<FacebookLogin displayInline="true"/>
-
-					</div>
+					<Tabs defaultActiveKey={1}>
+						<Tab eventKey={1} title="Basic">
+							<BasicSettingsTab onChange={this.settingsUpdated}/>
+						</Tab>
+						<Tab eventKey={2} title="Privacy">
+							<PrivacySettingsTab onChange={this.settingsUpdated}/>
+						</Tab>
+					</Tabs>
+					<br/><br/>
 				</div>
 			);
 		} else {

@@ -17,7 +17,6 @@ var STATES = [
 
 var AddNewGroup = React.createClass({
 	getInitialState: function() {
-		console.log("AddNewGroup::getInitialState");
 		// for short hand.
 		var IFV = InputFieldValidation;
 		var inputFields = {
@@ -34,12 +33,8 @@ var AddNewGroup = React.createClass({
 			inputFields[field].ref = field;
 		}
 
-		var editMode = this.props.editMode ? this.props.editMode :
-			this.props.location  && this.props.location.state ?
-			this.props.location.state.editMode : null;
-		var group = this.props.group ? this.props.group :
-			this.props.location && this.props.location.state ?
-			this.props.location.state.group : null;
+		var editMode = Utils.FindPassedInProperty(this, 'editMode');
+		var group = Utils.FindPassedInProperty(this, 'group');
 
 		// If in edit mode, fill in field values.
 		if (editMode) {
@@ -82,9 +77,6 @@ var AddNewGroup = React.createClass({
 	},
 
 	insertGroupCallback: function(group, serverResponse) {
-		console.log("AddNewGroup::insertGroupCallback, group=");
-		console.log(group);
-
 		if (serverResponse.hasError) {
 			// Show error message to user.
 			this.setState({ errorMessage: serverResponse.errorMessage });
@@ -143,8 +135,7 @@ var AddNewGroup = React.createClass({
 	getDeleteGroupButton: function() {
 		if (!this.state.editMode) return null;
 		return (
-			<button className="btn btn-warning"
-					onClick={this.deleteGroup}>
+			<button className="btn btn-warning" onClick={this.deleteGroup}>
 				Delete
 			</button>
 		);
@@ -167,7 +158,7 @@ var AddNewGroup = React.createClass({
 				<div style={{textAlign: 'center'}}
 					 className="center-block">
 					<button className="btn btn-info"
-					onClick={this.addNewVolunteerGroup}>{buttonText}
+						onClick={this.addNewVolunteerGroup}>{buttonText}
 					</button>
 					{this.getDeleteGroupButton()}
 				</div>
