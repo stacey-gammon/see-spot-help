@@ -19,7 +19,6 @@ var MemberListItem = React.createClass({
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
 
 		return {
-			user: LoginStore.getUser(),
 			member: member,
 			group: group
 		};
@@ -98,7 +97,8 @@ var MemberListItem = React.createClass({
 
 	getActions: function () {
 		var group = VolunteerGroup.castObject(this.props.group);
-		if (group.getUserPermissions(this.state.user.id) == VolunteerGroup.PermissionsEnum.ADMIN) {
+		if (LoginStore.user &&
+			group.getUserPermissions(LoginStore.user.id) == VolunteerGroup.PermissionsEnum.ADMIN) {
 			return (
 				<div className="media-right">
 					{this.getApproveMembershipButton()}
@@ -111,15 +111,13 @@ var MemberListItem = React.createClass({
 	},
 
 	render: function () {
-		console.log("MemberListItem:render:");
 		var group = VolunteerGroup.castObject(this.props.group);
 		var memberPermission = group.getUserPermissions(this.props.member.id);
 
 		var className = "list-group-item memberListElement";
-		var userPermission = group.getUserPermissions(this.state.user.id);
-		// TODO: Give admins a way to view previously booted or denied members so they have a
-		// chance to re-add (but hide by default).
-
+		var userPermission = LoginStore.user ?
+			group.getUserPermissions(LoginStore.user.id) :
+			VolunteerGroup.PermissionsEnum.NONMEMBER;
 		if (memberPermission == VolunteerGroup.PermissionsEnum.NONMEMBER) return null;
 
 		if (memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ) {
@@ -132,18 +130,18 @@ var MemberListItem = React.createClass({
 		}
 
 		if (memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPPENDING) {
-		   if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN ||
-			   this.props.member.id == this.state.user.id) {
-			   className += " membershipPendingStyle";
-		   } else {
-			   // Regular members can't see members denied by the admin.
-			   return null;
-		   }
-	   }
+			if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN ||
+				(LoginStore.user && this.props.member.id == LoginStore.user.id)) {
+					className += " membershipPendingStyle";
+			} else {
+				// Regular members can't see members denied by the admin.
+				return null;
+			}
+		}
 
 		var extraInfo = memberPermission == VolunteerGroup.PermissionsEnum.ADMIN ? "(admin)" : "";
 		if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN ||
-			this.props.member.id == this.state.user.id) {
+			(LoginStore.user && this.props.member.id == LoginStore.user.id)) {
 			extraInfo = memberPermission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ?
 				"(membership pending)" :
 				memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ?
@@ -151,7 +149,7 @@ var MemberListItem = React.createClass({
 		}
 		return (
 			<a href="#" className={className}>
-				<LinkContainer to={{ pathname: "memberHomePage" ,
+				<LinkContainer to={{ pathname: "memberPage" ,
 					state: { member: this.props.member} }}>
 					<div className="media">
 						<div className="media-body">
