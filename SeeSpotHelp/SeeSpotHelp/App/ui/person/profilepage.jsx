@@ -30,7 +30,7 @@ var ProfilePage = React.createClass({
 		var state = {
 			user: LoginStore.getUser()
 		};
-		Utils.LoadOrStateState(state);
+		Utils.LoadOrSaveState(state);
 		return state;
 	},
 

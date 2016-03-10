@@ -31,7 +31,7 @@ var MemberPage = React.createClass({
 		var state = {
 			member: member
 		};
-		Utils.LoadOrStateState(state);
+		Utils.LoadOrSaveState(state);
 		return state;
 	},
 

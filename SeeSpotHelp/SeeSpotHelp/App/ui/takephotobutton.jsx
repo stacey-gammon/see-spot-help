@@ -58,7 +58,8 @@ var TakePhotoButton = React.createClass({
 	},
 
 	allowAction: function() {
-		return this.props.group.shouldAllowUserToEdit(this.state.user.id);
+		if (!LoginStore.user) return false;
+		return this.props.group.shouldAllowUserToEdit(LoginStore.user.id);
 	},
 
 	render: function () {

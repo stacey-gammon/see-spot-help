@@ -37,7 +37,7 @@ var GroupHomePage = React.createClass({
 			fromSearch: query && query.groupId
 		};
 
-		Utils.LoadOrStateState(state);
+		Utils.LoadOrSaveState(state);
 		return state;
 	},
 

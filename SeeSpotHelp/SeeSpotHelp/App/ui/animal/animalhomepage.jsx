@@ -1,6 +1,10 @@
 ﻿"use strict"
 
 var React = require('react');
+var ReactBootstrap = require("react-bootstrap");
+var Tab = ReactBootstrap.Tab;
+var Tabs = ReactBootstrap.Tabs;
+
 var LoginStore = require("../../stores/loginstore");
 
 var Utils = require("../../core/utils");
@@ -10,6 +14,7 @@ var AnimalActionsBox = require('./animalactionsbox');
 var AnimalPhotoReel = require("./animalphotoreel");
 var AnimalStore = require("../../stores/animalstore");
 var AnimalActivityList = require("./animalactivitylist");
+var AnimalScheduleTab = require("./animalscheduletab");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
@@ -18,14 +23,8 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 // about the specific animal.
 var AnimalHomePage = React.createClass({
 	getInitialState: function() {
-		var animal = this.props.location &&
-					 this.props.location.state &&
-					 this.props.location.state.animal ||
-					 this.props.animal;
-		var group = this.props.location &&
-					this.props.location.state &&
-					this.props.location.state.group ||
-					this.props.group;
+		var animal = Utils.FindPassedInProperty(this, 'animal');
+		var group = Utils.FindPassedInProperty(this, 'group');
 
 		if (animal && !(animal instanceof Animal)) {
 			animal = Animal.castObject(animal);
@@ -37,16 +36,21 @@ var AnimalHomePage = React.createClass({
 		var state = {
 			animal: animal,
 			group: group,
-			user: LoginStore.user
+			user: LoginStore.user,
+			key: 1
 		};
-		Utils.LoadOrStateState(state);
+
+		Utils.LoadOrSaveState(state);
 		return state;
 	},
 
 	shouldAllowUserToEdit: function () {
-		if (!this.state.user) return false;
-		var edit = this.state.group.shouldAllowUserToEdit(this.state.user.id);
-		return edit;
+		if (!LoginStore.user) return false;
+		return this.state.group.shouldAllowUserToEdit(LoginStore.user.id);
+	},
+
+	handleTabSelect: function(key) {
+		this.setState({key});
 	},
 
 	getEditIcon: function() {
@@ -54,7 +58,7 @@ var AnimalHomePage = React.createClass({
 		return (
 			<LinkContainer
 				to={{ pathname: "addAnimalPage",
-					state: { user: this.state.user,
+					state: { user: LoginStore.user,
 							 group: this.state.group,
 							 animal: this.state.animal,
 							 editMode: true } }}>
@@ -66,40 +70,44 @@ var AnimalHomePage = React.createClass({
 	},
 
 	render: function () {
+		if (!this.state.animal) return null;
 		var imageSrc = this.state.animal.getPhoto();
 		var animal = this.state.animal;
-		if (animal) {
-			return (
-				<div>
-					<div className="media">
-						<div className="media-left">
-							<img className="media-object"
-								 style={{margin: 5 + "px"}}
-								 src={imageSrc} />
-						</div>
-						<div className="media-body padding">
-							<h1 className="animalInfo">{animal.name}
-							{this.getEditIcon()}
-							</h1>
-							<h2 className="animalInfo">{animal.age} years old</h2>
-							<h2 className="animalInfo">{animal.breed}</h2>
-							<p className="animalInfo">{animal.description}</p>
-						</div>
+		return (
+			<div>
+				<div className="media">
+					<div className="media-left">
+						<img className="media-object"
+							 style={{margin: 5 + "px"}}
+							 src={imageSrc} />
 					</div>
-					<AnimalPhotoReel group={this.state.group}
-									 user={this.state.user} animal={animal} />
-					<AnimalActionsBox group={this.state.group}
-									  user={this.state.user}
-									  style={{margin: 10 + 'px'}}
-									  animal={animal}/>
-					<AnimalActivityList user={this.state.user}
-										group={this.state.group}
-										animal={animal} />
+					<div className="media-body padding">
+						<h1 className="animalInfo">{animal.name}
+						{this.getEditIcon()}
+						</h1>
+						<h2 className="animalInfo">{animal.age} years old</h2>
+						<h2 className="animalInfo">{animal.breed}</h2>
+						<p className="animalInfo">{animal.description}</p>
+					</div>
 				</div>
-			);
-		} else {
-			return (<div/>);
-		}
+				<AnimalPhotoReel group={this.state.group}
+								user={LoginStore.user} animal={animal} />
+				<AnimalActionsBox group={this.state.group}
+								user={LoginStore.user}
+								style={{margin: 10 + 'px'}}
+								animal={animal}/>
+							<Tabs activeKey={this.state.key} onSelect={this.handleTabSelect}>
+							<Tab eventKey={1} title="Activity">
+								<AnimalActivityList group={this.state.group} animal={animal}
+									user={LoginStore.user}/>
+							</Tab>
+							<Tab eventKey={2} title="Schedule">
+								<AnimalScheduleTab group={this.state.group} animal={animal}
+									user={LoginStore.user}/>
+							</Tab>
+						</Tabs>
+			</div>
+		);
 	}
 });
 

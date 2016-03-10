@@ -56,7 +56,6 @@ var AddNewGroup = React.createClass({
 	},
 
 	validateFields: function() {
-		console.log("AddNewGroup::validateFields");
 		var errorFound = false;
 		for (var key in this.state.fields) {
 			var field = this.state.fields[key];
