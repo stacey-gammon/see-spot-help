@@ -23,6 +23,7 @@ var ProfilePage = require("./person/profilepage");
 var MemberPage = require("./person/memberpage");
 var LoginPage = require("./loginpage");
 var PrivateBetaPage = require("./privatebetapage");
+var AddCalendarEvent = require("./addcalendarevent");
 var GroupAnimalsTab = require("./group/groupanimalstab");
 var GroupMembersTab = require("./group/groupmemberstab");
 var AddAnimalNote = require("./animal/addanimalnote");
@@ -109,6 +110,7 @@ var routes = (
 		<Route path="groupMembersTab" component={GroupMembersTab} />
 		<Route path="addAnimalNote" component={AddAnimalNote} />
 		<Route path="userSettingsPage" component={UserSettingsPage} />
+		<Route path="addCalendarEvent" component={AddCalendarEvent} />
 	</Router>
 );
 

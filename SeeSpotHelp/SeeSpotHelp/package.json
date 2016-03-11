@@ -60,6 +60,9 @@
     "webpack": "1.12.14",
 	"eslint-config-google": "*",
 	"eslint": "*",
-	"object-assign": "*"
+	"object-assign": "*",
+	"react-datepicker": "*",
+	 "style-loader": "*",
+	 "css-loader": "*"
   }
 }

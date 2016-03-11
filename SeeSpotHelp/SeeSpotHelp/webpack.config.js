@@ -22,7 +22,8 @@ module.exports = {
                 test: /\.jsx$/,
                 loaders: ['react-hot', 'babel'],
                 loader: 'jsx-loader?insertPragma=React.DOM&harmony'
-            }
+            },
+            { test: /\.css$/, loader: "style-loader!css-loader" }
         ]
     },
     resolve: {

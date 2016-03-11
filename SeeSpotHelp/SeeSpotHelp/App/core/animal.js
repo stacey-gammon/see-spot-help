@@ -16,7 +16,7 @@ var Animal = function(name, type, breed, age, status, photo, id, groupId) {
 
 	// Unfortunately, I don't know anyway to generate this dynamically.
 	this.classNameForSessionStorage = 'Animal';
-}
+};
 
 Animal.prototype.getPhoto = function() {
 	if (this.photo) return this.photo;
@@ -25,7 +25,7 @@ Animal.prototype.getPhoto = function() {
 		this.type.toLowerCase() == "dog" ?
 		"images/dog.jpg" :
 		"images/other.jpg";
-}
+};
 
 Animal.StatusEnum = Object.freeze(
 	{
@@ -51,12 +51,12 @@ Animal.prototype.copyFieldsFrom = function (other) {
 	for (var prop in other) {
 		this[prop] = other[prop];
 	}
-}
+};
 
 Animal.prototype.delete = function() {
 	var firebasePath = "groups/" + this.groupId + "/animals";
 	DataServices.RemoveFirebaseData(firebasePath + "/" + this.id);
-}
+};
 
 // Attempts to insert the current instance into the database as
 // a animal

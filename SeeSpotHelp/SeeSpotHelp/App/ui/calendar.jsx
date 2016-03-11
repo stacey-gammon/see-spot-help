@@ -1,11 +1,24 @@
 "user strict";
 
 var React = require("react");
+var Utils = require("../core/utils");
+var addCalendarEvent = require("./addcalendarevent");
 
 var Calendar = React.createClass({
+	getInitialState: function() {
+		var animal = Utils.FindPassedInProperty(this, 'animal');
+		return {
+			animal: animal
+		}
+	},
+
+	contextTypes: {
+		router: React.PropTypes.object.isRequired
+	},
+
 	componentDidMount: function() {
-		console.log("Component did mount");
 		const { calendar } = this.refs;
+		var outer = this;
 		$(calendar).fullCalendar({
 			header: {
 				left: 'prev,next today',
@@ -13,9 +26,16 @@ var Calendar = React.createClass({
 				right: 'month,agendaWeek,agendaDay'
 			},
 
-			dayClick: function() {
-
-			},
+			dayClick: function(date) {
+				this.context.router.push({
+					pathname: "addCalendarEvent",
+					state: {
+						group: this.state.group,
+						animal: this.state.animal,
+						startDate: date.format()
+					}
+				});
+			}.bind(this),
 
 			eventRender: function(event, element) {
 				$(element).addTouch();
