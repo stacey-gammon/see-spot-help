@@ -7,6 +7,8 @@ var InputField = require("../../core/inputfield");
 var InputFieldValidation = require("../../core/inputfieldvalidation");
 var TakePhotoButton = require("../takephotobutton");
 var LoginStore = require("../../stores/loginstore");
+var GroupStore = require("../../stores/groupstore");
+
 var Utils = require("../../core/utils");
 var GroupActions = require("../../actions/groupactions");
 
@@ -35,12 +37,9 @@ var AddAnimalPage = React.createClass({
 			inputFields[field].ref = field;
 		}
 
-		var editMode = this.props.editMode ? this.props.editMode :
-			this.props.location ? this.props.location.state.editMode : null;
-		var group = this.props.group ? this.props.group :
-			this.props.location ? this.props.location.state.group : null;
-		var animal = this.props.animal ? this.props.animal :
-			this.props.location ? this.props.location.state.animal : null;
+		var editMode = Utils.FindPassedInProperty(this, 'editMode');
+		var group = Utils.FindPassedInProperty(this, 'group');
+		var animal = Utils.FindPassedInProperty(this, 'animal');
 
 		// If in edit mode, fill in field values.
 		if (editMode) {
@@ -49,14 +48,33 @@ var AddAnimalPage = React.createClass({
 			}
 		}
 
-		return {
+		var state = {
 			errorMessage: null,
 			fields: inputFields,
-			user : LoginStore.getUser(),
 			group: group,
 			editMode: editMode,
 			animal: animal
 		};
+
+		Utils.LoadOrSaveState(state);
+		return state;
+	},
+
+	componentDidMount: function() {
+		LoginStore.addChangeListener(this.onChange);
+		GroupStore.addChangeListener(this.onChange);
+	},
+
+	componentWillUnmount: function() {
+		LoginStore.removeChangeListener(this.onChange);
+		GroupStore.removeChangeListener(this.onChange);
+	},
+
+	onChange: function() {
+		this.setState(
+			{
+				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
+			});
 	},
 
 	contextTypes: {
@@ -98,7 +116,7 @@ var AddAnimalPage = React.createClass({
 						state: {
 							group: this.state.group,
 							animal: this.state.animal,
-							user: this.state.user
+							user: LoginStore.getUser()
 						}
 					});
 			} else {
@@ -113,7 +131,7 @@ var AddAnimalPage = React.createClass({
 						state: {
 							group: this.state.group,
 							animal: this.state.animal,
-							user: this.state.user
+							user: LoginStore.getUser()
 						}
 					}
 				);
@@ -132,16 +150,13 @@ var AddAnimalPage = React.createClass({
 		var defaultValue = this.state.editMode ?
 			this.state.animal.type : "Dog";
 		return (
-			<div className="form-group">
-			  {inputField.getErrorLabel()}
-			  <select
+			<select
 				  defaultValue={defaultValue}
 				  className="form-control"
 				  style={{marginBottom: -11 + "px"}}
 				  id={inputField.ref} ref={inputField.ref}>
 				{options}
-			  </select>
-			</div>);
+			</select>);
 	},
 
 	createInputType: function (inputField) {
@@ -164,13 +179,14 @@ var AddAnimalPage = React.createClass({
 	},
 
 	createInputField: function (inputField) {
-		if (inputField.listItems) return this.createDropDown(inputField);
+		var inputBox = inputField.listItems ?
+			this.createDropDown(inputField) : this.createInputType(inputField);
 		return (
 			<div className={inputField.getFormGroupClassName()}>
 				{inputField.getErrorLabel()}
 				<div className="input-group">
 					<span className="input-group-addon">{inputField.getUserString()}</span>
-					{this.createInputType(inputField)}
+					{inputBox}
 				</div>
 				{inputField.getValidationSpan()}
 			</div>
@@ -185,7 +201,7 @@ var AddAnimalPage = React.createClass({
 					pathname: "GroupHomePage",
 					state: {
 						group: this.state.group,
-						user: this.state.user
+						user: LoginStore.getUser()
 					}
 				}
 			);
@@ -203,10 +219,7 @@ var AddAnimalPage = React.createClass({
 	},
 
 	render: function () {
-		console.log("AddAnimalPage: render");
-		if (this.state.user == null) {
-			throw "Non logged in user is attempting to add a new adoptable";
-		}
+		if (LoginStore.getUser() == null) return null;
 		var inputFields = [];
 		for (var key in this.state.fields) {
 			var field = this.state.fields[key];
@@ -224,7 +237,7 @@ var AddAnimalPage = React.createClass({
 				{this.state.errorMessage}
 				{inputFields}
 				<TakePhotoButton
-					user={this.state.user}
+					user={LoginStore.getUser()}
 					group={this.state.group}
 					animal={this.state.animal}/>
 				<div style={{textAlign: 'center'}}>

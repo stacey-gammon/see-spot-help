@@ -47,18 +47,16 @@ var TakePhotoButton = React.createClass({
 	},
 
 	loadPhoto: function() {
-		console.log("AnimalActionsBox::LoadPhoto");
-	   var file = this.refs.addPhotoFileInput.files[0];
-	   this.uploadFile(file);
+		var file = this.refs.addPhotoFileInput.files[0];
+		this.uploadFile(file);
    },
 
 	addPhoto: function() {
-		console.log("AnimalActionsBox::addPhoto");
 		this.refs.addPhotoFileInput.click();
 	},
 
 	allowAction: function() {
-		if (!LoginStore.user) return false;
+		if (!LoginStore.user || !this.props.group) return false;
 		return this.props.group.shouldAllowUserToEdit(LoginStore.user.id);
 	},
 

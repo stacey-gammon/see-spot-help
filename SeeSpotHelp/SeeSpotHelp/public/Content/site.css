@@ -13,6 +13,20 @@ h2 {
     letter-spacing: 1px;
 }
 
+.input-group-addon {
+    min-width:100px;// if you want width please write here //
+    text-align:left;
+}
+
+.input-group {
+	max-width: 600px;
+	margin: 5px auto;
+}
+
+.form-control {
+	max-width: 600px;
+}
+
 .PostTextArea {
     display: block !important;
 	width: 100%;
