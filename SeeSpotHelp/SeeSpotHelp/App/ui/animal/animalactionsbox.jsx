@@ -92,11 +92,6 @@ var AnimalActionsBox = React.createClass({
 						onClick={this.alertNotImplemented}>
 					Visit
 				</button>
-				<button className="btn btn-info padding"
-						disabled={!this.shouldAllowUserToEdit()}
-						onClick={this.alertNotImplemented}>
-					Schedule
-				</button>
 			</div>
 		);
 	}
