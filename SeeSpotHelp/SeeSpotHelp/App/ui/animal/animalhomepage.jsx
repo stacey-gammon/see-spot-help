@@ -90,15 +90,12 @@ var AnimalHomePage = React.createClass({
 						<p className="animalInfo">{animal.description}</p>
 					</div>
 				</div>
-				<AnimalPhotoReel group={this.state.group}
-								user={LoginStore.user} animal={animal} />
-				<AnimalActionsBox group={this.state.group}
-								user={LoginStore.user}
-								style={{margin: 10 + 'px'}}
-								animal={animal}/>
+				<AnimalPhotoReel group={this.state.group} animal={animal} />
+				<AnimalActionsBox group={this.state.group} style={{margin: 10 + 'px'}}
+					animal={animal}/>
 							<Tabs activeKey={this.state.key} onSelect={this.handleTabSelect}>
 							<Tab eventKey={1} title="Activity">
-								<AnimalActivityList group={this.state.group} animal={animal} />
+								<AnimalActivityList group={this.state.group} animal={animal}/>
 							</Tab>
 							<Tab eventKey={2} title="Schedule">
 								<AnimalScheduleTab group={this.state.group} animal={animal}/>

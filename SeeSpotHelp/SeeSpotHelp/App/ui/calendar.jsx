@@ -2,14 +2,25 @@
 
 var React = require("react");
 var Utils = require("../core/utils");
+var ScheduleStore = require("../stores/schedulestore");
+var AnimalStore = require("../stores/animalstore");
+var VolunteerStore = require("../stores/volunteerstore");
+var LoginStore = require("../stores/loginstore");
+
 var addCalendarEvent = require("./addcalendarevent");
 
 var Calendar = React.createClass({
 	getInitialState: function() {
 		var animal = Utils.FindPassedInProperty(this, 'animal');
-		return {
-			animal: animal
-		}
+		var group = Utils.FindPassedInProperty(this, 'group');
+
+		var state = {
+			animal: animal,
+			group: group,
+			events: this.getEvents(animal)
+		};
+		Utils.LoadOrSaveState(state);
+		return state;
 	},
 
 	contextTypes: {
@@ -17,14 +28,62 @@ var Calendar = React.createClass({
 	},
 
 	componentDidMount: function() {
-		const { calendar } = this.refs;
+		LoginStore.addChangeListener(this.onChange);
+		ScheduleStore.addChangeListener(this.onChange);
+
+		this.initializeCalendar();
+	},
+
+	componentWillUnmount: function() {
+		LoginStore.removeChangeListener(this.onChange);
+		ScheduleStore.removeChangeListener(this.onChange);
+	},
+
+	onChange: function() {
+		$('#calendar').fullCalendar('removeEvents');
+		$('#calendar').fullCalendar('addEventSource', this.getEvents(this.state.animal));
+	},
+
+	getEvents: function(animal) {
+		if (animal) {
+			var schedule = ScheduleStore.getScheduleByAnimalId(animal.id);
+			if (!schedule) return [];
+
+			// Dynamically generate the title in case the animal's or the user's name changes.
+			for (var i = 0; i < schedule.length; i++) {
+				var event = schedule[i];
+				event.title =
+					AnimalStore.getAnimalById(event.animalId, event.groupId).name + '/' +
+					VolunteerStore.getVolunteerById(event.userId).displayName;
+				event.allDay = !event.startTime && !event.endTime;
+			}
+			return schedule;
+		}
+	},
+
+	initializeCalendar: function() {
 		var outer = this;
-		$(calendar).fullCalendar({
+		$('#calendar').fullCalendar({
+			events: outer.getEvents(outer.state.animal),
+
 			header: {
 				left: 'prev,next today',
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
+
+			eventClick: function(event) {
+				this.context.router.push({
+					pathname: "addCalendarEvent",
+					state: {
+						group: this.state.group,
+						animal: this.state.animal,
+						editMode: true,
+						scheduleId: event.id,
+						startDate: event.start
+					}
+				});
+			}.bind(this),
 
 			dayClick: function(date) {
 				this.context.router.push({
@@ -35,11 +94,7 @@ var Calendar = React.createClass({
 						startDate: date.format()
 					}
 				});
-			}.bind(this),
-
-			eventRender: function(event, element) {
-				$(element).addTouch();
-			}
+			}.bind(this)
 		});
 	},
 
@@ -49,7 +104,7 @@ var Calendar = React.createClass({
 		// I can find that will be called after everything is display on a tab.
 		setTimeout(function() {
 			$('#calendar').fullCalendar('render');
-		}, 500);
+		}.bind(this), 300);
 	},
 
 	render: function() {

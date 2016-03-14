@@ -15,7 +15,6 @@ var AnimalActionsBox = React.createClass({
 	getInitialState: function() {
 		return {
 			walking: false,
-			user: LoginStore.getUser(),
 			animal: this.props.animal,
 			group: VolunteerGroup.castObject(this.props.group)
 		}
@@ -30,10 +29,7 @@ var AnimalActionsBox = React.createClass({
 	},
 
 	onChange: function () {
-		this.setState(
-			{
-				user: LoginStore.user
-			});
+		this.forceUpdate();
 	},
 
 	alertNotImplemented: function () {
@@ -72,8 +68,7 @@ var AnimalActionsBox = React.createClass({
 				<LinkContainer
 					disabled={!this.shouldAllowUserToEdit()}
 					to={{ pathname: "addAnimalNote",
-						state: { user: this.state.user,
-								 animal: this.props.animal,
+						state: { animal: this.props.animal,
 								 group: this.state.group,
 								 editMode: false } }}>
 					<button className="btn btn-info padding addAnimalNoteButton"
