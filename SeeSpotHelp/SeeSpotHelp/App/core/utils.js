@@ -44,10 +44,10 @@ Utils.GenerateClass = function(className) {
 // retrieved from session storage. Any that aren't are stored in session storage.
 Utils.LoadOrSaveState = function(state) {
 	for (var prop in state) {
-		if (state.hasOwnProperty(prop)) {
-			Utils.SaveStateProp(state, prop);
-		} else {
+		if (state[prop] === null) {
 			Utils.LoadStateProp(state, prop);
+		} else {
+			Utils.SaveStateProp(state, prop);
 		}
 	}
 }

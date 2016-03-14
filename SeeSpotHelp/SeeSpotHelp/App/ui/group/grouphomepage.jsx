@@ -38,6 +38,17 @@ var GroupHomePage = React.createClass({
 		};
 
 		Utils.LoadOrSaveState(state);
+
+		// If the user doesn't have any 'last looked at' group, and nothing has been set,
+		// see if we can grab one from the user.
+		if (!state.group && LoginStore.getUser()) {
+			var groups = GroupStore.getUsersMemberGroups(LoginStore.user);
+			if (groups && groups.length > 0) {
+				state.group = groups[0];
+				Utils.LoadOrSaveState(state);
+			}
+		}
+
 		return state;
 	},
 

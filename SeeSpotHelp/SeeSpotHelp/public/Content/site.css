@@ -105,7 +105,7 @@ h2 {
 	float: right;
 }
 
-.btn-warning {
+.btn-warning, btn-default {
 	margin: 3px;
 }
 

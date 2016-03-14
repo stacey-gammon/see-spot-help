@@ -40,7 +40,7 @@ class AnimalStore extends EventEmitter {
 
 	getAnimalById(animalId, groupId) {
 		if (!this.animals.hasOwnProperty(groupId)) {
-			downloadAnimals(groupId);
+			this.downloadAnimals(groupId);
 			return null;
 		}
 		for (var i = 0; i <  this.animals[groupId].length; i++) {
