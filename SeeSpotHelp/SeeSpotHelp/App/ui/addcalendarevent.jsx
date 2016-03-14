@@ -55,7 +55,7 @@ var AddCalendarEvent = React.createClass({
 		if (!errorFound) {
 			if (this.state.editMode) {
 				this.saveFieldsIntoSchedule(this.state.schedule);
-				this.state.animal.update();
+				this.state.schedule.update();
 				this.setState({
 					updated: true
 				});
