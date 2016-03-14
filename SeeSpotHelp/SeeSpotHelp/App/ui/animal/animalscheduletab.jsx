@@ -38,7 +38,8 @@ var AnimalScheduleTab = React.createClass({
 			<div>
 				{this.getLegend()}
 				<Calendar propToForceRefresh={this.state.refreshCalendar}
-					animal={this.props.animal}/>
+					animal={this.props.animal}
+					group={this.props.group} />
 			</div>
 		);
 	}

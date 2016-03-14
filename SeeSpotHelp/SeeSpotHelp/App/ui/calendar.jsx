@@ -73,6 +73,7 @@ var Calendar = React.createClass({
 			},
 
 			eventClick: function(event) {
+				if (!event) return false;
 				this.context.router.push({
 					pathname: "addCalendarEvent",
 					state: {
@@ -91,7 +92,8 @@ var Calendar = React.createClass({
 					state: {
 						group: this.state.group,
 						animal: this.state.animal,
-						startDate: date.format()
+						startDate: date.format(),
+						editMode: false
 					}
 				});
 			}.bind(this)
