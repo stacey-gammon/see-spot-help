@@ -37,7 +37,7 @@ var AnimalHomePage = React.createClass({
 			animal: animal,
 			group: group,
 			user: LoginStore.user,
-			key: 1
+			animalDefaultTabKey: null
 		};
 
 		Utils.LoadOrSaveState(state);
@@ -50,7 +50,12 @@ var AnimalHomePage = React.createClass({
 	},
 
 	handleTabSelect: function(key) {
-		this.setState({key});
+		this.setState({animalDefaultTabKey : key});
+		// We aren't supposed to manipulate state directly, but it doesn't yet have the newly
+		// selected tab that we want to save to local storage.
+		var stateDuplicate = this.state;
+		stateDuplicate.animalDefaultTabKey = key;
+		Utils.LoadOrSaveState(stateDuplicate);
 	},
 
 	getEditIcon: function() {
@@ -73,6 +78,7 @@ var AnimalHomePage = React.createClass({
 		if (!this.state.animal) return null;
 		var imageSrc = this.state.animal.getPhoto();
 		var animal = this.state.animal;
+		var defaultTabKey = this.state.animalDefaultTabKey ? this.state.animalDefaultTabKey : 1;
 		return (
 			<div>
 				<div className="media">
@@ -93,7 +99,7 @@ var AnimalHomePage = React.createClass({
 				<AnimalPhotoReel group={this.state.group} animal={animal} />
 				<AnimalActionsBox group={this.state.group} style={{margin: 10 + 'px'}}
 					animal={animal}/>
-							<Tabs activeKey={this.state.key} onSelect={this.handleTabSelect}>
+							<Tabs activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
 							<Tab eventKey={1} title="Activity">
 								<AnimalActivityList group={this.state.group} animal={animal}/>
 							</Tab>

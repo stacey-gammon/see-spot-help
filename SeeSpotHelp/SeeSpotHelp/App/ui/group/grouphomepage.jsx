@@ -34,7 +34,8 @@ var GroupHomePage = React.createClass({
 		var state = {
 			user: LoginStore.user,
 			group: group,
-			fromSearch: query && query.groupId
+			fromSearch: query && query.groupId,
+			groupDefaultTabKey: null
 		};
 
 		Utils.LoadOrSaveState(state);
@@ -123,8 +124,18 @@ var GroupHomePage = React.createClass({
 			});
 	},
 
+	handleTabSelect: function(key) {
+		this.setState({groupDefaultTabKey : key});
+		// We aren't supposed to manipulate state directly, but it doesn't yet have the newly
+		// selected tab that we want to save to local storage.
+		var stateDuplicate = this.state;
+		stateDuplicate.groupDefaultTabKey = key;
+		Utils.LoadOrSaveState(stateDuplicate);
+	},
+
 	render: function() {
 		if (this.state.group) {
+			var defaultTabKey = this.state.groupDefaultTabKey ? this.state.groupDefaultTabKey : 1;
 			var memberTitle = "Members (" + this.state.group.memberCount() + ")";
 			return (
 				<div>
@@ -140,7 +151,7 @@ var GroupHomePage = React.createClass({
 						</div>
 					</div>
 					<GroupActionsBox user={this.state.user} group={this.state.group} />
-					<Tabs defaultActiveKey={1}>
+					<Tabs activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
 						<Tab eventKey={1} title="Animals">
 							<GroupAnimalsTab group={this.state.group} user={this.state.user}/>
 						</Tab>
