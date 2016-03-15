@@ -2,11 +2,13 @@
 var Volunteer = require('./volunteer');
 var VolunteerGroup = require('./volunteergroup');
 var Animal = require('./animal');
+var Schedule = require('./schedule');
 
 var SessionStorageClasses = {};
 SessionStorageClasses['Volunteer'] = Volunteer;
 SessionStorageClasses['VolunteerGroup'] = VolunteerGroup;
 SessionStorageClasses['Animal'] = Animal;
+SessionStorageClasses['Schedule'] = Schedule;
 
 var Utils = function() { }
 
@@ -34,8 +36,6 @@ Utils.FindPassedInProperty = function(reactClass, property) {
 	}
 }
 
-// Code taken from
-// http://stackoverflow.com/questions/1366127/instantiate-a-javascript-object-using-a-string-to-define-the-class-name
 Utils.GenerateClass = function(className) {
 	return SessionStorageClasses[className];
 };

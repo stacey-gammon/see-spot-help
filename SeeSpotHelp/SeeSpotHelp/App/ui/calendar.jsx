@@ -6,6 +6,7 @@ var ScheduleStore = require("../stores/schedulestore");
 var AnimalStore = require("../stores/animalstore");
 var VolunteerStore = require("../stores/volunteerstore");
 var LoginStore = require("../stores/loginstore");
+var moment = require('moment');
 
 var addCalendarEvent = require("./addcalendarevent");
 
@@ -16,8 +17,7 @@ var Calendar = React.createClass({
 
 		var state = {
 			animal: animal,
-			group: group,
-			events: this.getEvents(animal)
+			group: group
 		};
 		Utils.LoadOrSaveState(state);
 		return state;
@@ -44,18 +44,26 @@ var Calendar = React.createClass({
 		$('#calendar').fullCalendar('addEventSource', this.getEvents(this.state.animal));
 	},
 
-	getEvents: function(animal) {
-		if (animal) {
-			var schedule = ScheduleStore.getScheduleByAnimalId(animal.id);
+	getEvents: function() {
+		if (this.state.animal) {
+			var schedule = ScheduleStore.getScheduleByAnimalId(this.state.animal.id);
 			if (!schedule) return [];
 
 			// Dynamically generate the title in case the animal's or the user's name changes.
 			for (var i = 0; i < schedule.length; i++) {
 				var event = schedule[i];
-				event.title =
-					AnimalStore.getAnimalById(event.animalId, event.groupId).name + '/' +
-					VolunteerStore.getVolunteerById(event.userId).displayName;
-				event.allDay = !event.startTime && !event.endTime;
+				if (!this.state.animal) {
+					event.title =
+						AnimalStore.getAnimalById(event.animalId, event.groupId).name + '/' +
+						VolunteerStore.getVolunteerById(event.userId).displayName;
+				} else {
+					event.title = VolunteerStore.getVolunteerById(event.userId).displayName;
+				}
+				event.start = moment(event.start);
+				event.allDay = event.end ? false : true;
+				if (event.end) {
+					event.end = moment(event.end);
+				}
 			}
 			return schedule;
 		}
@@ -81,7 +89,9 @@ var Calendar = React.createClass({
 						animal: this.state.animal,
 						editMode: true,
 						scheduleId: event.id,
-						startDate: event.start
+						startDate: moment(event.start).format('MM-DD-YYYY'),
+						startTime: moment(event.start).format('HH:mm'),
+						endTime: moment(event.end).format('HH:mm')
 					}
 				});
 			}.bind(this),
@@ -90,10 +100,11 @@ var Calendar = React.createClass({
 				this.context.router.push({
 					pathname: "addCalendarEvent",
 					state: {
+						editMode: false,
+						scheduleId: -1,  // Just avoid pulling schedule from local storage,
 						group: this.state.group,
 						animal: this.state.animal,
-						startDate: date.format(),
-						editMode: false
+						startDate: date.format('MM-DD-YYYY')
 					}
 				});
 			}.bind(this)

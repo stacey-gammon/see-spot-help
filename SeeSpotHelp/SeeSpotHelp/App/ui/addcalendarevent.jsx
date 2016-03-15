@@ -12,6 +12,8 @@ var ScheduleStore = require('../stores/schedulestore');
 var VolunteerStore = require('../stores/volunteerstore');
 var Schedule = require('../core/schedule');
 
+var TimePicker = require('bootstrap-timepicker/js/bootstrap-timepicker.js');
+require('bootstrap-timepicker/css/bootstrap-timepicker.css');
 require('react-datepicker/dist/react-datepicker.css');
 
 var AddCalendarEvent = React.createClass({
@@ -22,6 +24,8 @@ var AddCalendarEvent = React.createClass({
 		var scheduleId = Utils.FindPassedInProperty(this, 'scheduleId');
 		var schedule = ScheduleStore.getScheduleById(scheduleId);
 		var editMode = Utils.FindPassedInProperty(this, 'editMode');
+
+		if (scheduleId == -1) editMode = false;
 
 		var state = {
 			startDate: moment(startDate),
@@ -37,9 +41,12 @@ var AddCalendarEvent = React.createClass({
 	},
 
 	saveFieldsIntoSchedule: function(schedule) {
-		schedule.start = this.state.startDate.format();
-		schedule.startTime = this.refs.startTime.value;
-		schedule.endTime = this.refs.endTime.value;
+		if (this.refs.startTime && this.refs.endTime) {
+			schedule.start = this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.startTime.value;
+			schedule.end = this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.endTime.value;
+		} else {
+			schedule.start = this.state.startDate.format('MM-DD-YYYY');
+		}
 		schedule.description = this.refs.description.value;
 		schedule.userId = LoginStore.user.id;
 		schedule.groupId = this.state.group.id;
@@ -74,6 +81,29 @@ var AddCalendarEvent = React.createClass({
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
 		VolunteerStore.addChangeListener(this.onChange);
+
+		var defaultStartTime = this.state.editMode && this.state.schedule ?
+			this.state.schedule.startTime : false;
+		var defaultEndTime = this.state.editMode && this.state.schedule ?
+			this.state.schedule.endTime : false;
+		$('#startTime').timepicker({
+			minuteStep: 15,
+			showInputs: true,
+			template: 'modal',
+			modalBackdrop: true,
+			showSeconds: false,
+			showMeridian: true,
+			defaultTime: defaultStartTime
+		});
+		$('#endTime').timepicker({
+			minuteStep: 15,
+			showInputs: true,
+			template: 'modal',
+			modalBackdrop: true,
+			showSeconds: false,
+			showMeridian: true,
+			defaultTime: defaultEndTime
+		});
 	},
 
 	componentWillUnmount: function() {
@@ -183,21 +213,23 @@ var AddCalendarEvent = React.createClass({
 								className="form-control"
 								style={{display: 'inline-block', margin: '0px 3px', width: '300px'}}
 								id="datePicker"
+								ref="date"
 								disabled={disableEditing}
 								selected={this.state.startDate}
 								onChange={this.handleDateChange}
 								placeholderText="Start Date"/>
 					</div>
-					<div className="input-group">
+					<div className="input-group bootstrap-timepicker timepicker"
+						data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true"  >
 						<span className="input-group-addon">Start time:</span>
-						<input className="form-control" type='text'
+						<input className="form-control input-small" type='text'
 							disabled={disableEditing}
 							defaultValue={defaultStartTime} id='startTime' ref='startTime'/>
 					</div>
-					<div className="input-group">
+					<div className="input-group bootstrap-timepicker timepicker" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" >
 						<span className="input-group-addon">End time:</span>
 						<input type='text' disabled={disableEditing}
-							defaultValue={defaultEndTime} className="form-control"
+							defaultValue={defaultEndTime} className="form-control input-small"
 							id='endTime' ref='endTime'/>
 					</div>
 					<div className="input-group">

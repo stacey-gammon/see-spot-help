@@ -12,6 +12,9 @@ var Schedule = function() {
 	this.endTime = '';
 	this.id = '';
 	this.description = '';
+
+	// Unfortunately, I don't know anyway to generate this dynamically.
+	this.classNameForSessionStorage = 'Schedule';
 };
 
 Schedule.castObject = function (obj) {
