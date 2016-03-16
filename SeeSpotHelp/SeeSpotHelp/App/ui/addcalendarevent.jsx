@@ -54,6 +54,31 @@ var AddCalendarEvent = React.createClass({
 	},
 
 	validateFields: function() {
+		if ((this.refs.endTime.value && !this.refs.startTime.value) ||
+			(!this.refs.endTime.value && this.refs.startTime.value)) {
+			$('#startTimeDiv').addClass('has-error');
+			$('#endTimeDiv').addClass('has-error');
+			$('#error').html('Please enter both start and end time, or clear both.');
+			return true;
+		}
+
+		if (this.refs.endTime.value && this.refs.startTime.value) {
+			var startDate =
+				moment(this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.startTime.value);
+			var endDate =
+				moment(this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.endTime.value);
+
+			if (endDate.isBefore(startDate)) {
+				$('#startTimeDiv').addClass('has-error');
+				$('#endTimeDiv').addClass('has-error');
+				$('#error').html('Start time must be before end time.');
+				return true;
+			}
+		}
+
+		$('#startTimeDiv').removeClass('has-error');
+		$('#endTimeDiv').removeClass('has-error');
+		$('#error').html('');
 		return false;
 	},
 
@@ -89,7 +114,7 @@ var AddCalendarEvent = React.createClass({
 		$('#startTime').timepicker({
 			minuteStep: 15,
 			showInputs: true,
-			template: 'modal',
+			template: 'dropdown',
 			modalBackdrop: true,
 			showSeconds: false,
 			showMeridian: true,
@@ -98,12 +123,30 @@ var AddCalendarEvent = React.createClass({
 		$('#endTime').timepicker({
 			minuteStep: 15,
 			showInputs: true,
-			template: 'modal',
+			template: 'dropdown',
 			modalBackdrop: true,
 			showSeconds: false,
 			showMeridian: true,
 			defaultTime: defaultEndTime
 		});
+	},
+
+	clickedStartTime: function() {
+		var defaultStartTime = this.state.editMode && this.state.schedule ?
+			this.state.schedule.startTime : false;
+		if (defaultStartTime == '' && this.refs.startTime.value == '') {
+			$('#startTime').timepicker('setTime', '12:00pm');
+		}
+		$('#startTime').timepicker('showWidget');
+	},
+
+	clickedEndTime: function() {
+		var defaultEndTime = this.state.editMode && this.state.schedule ?
+			this.state.schedule.endTime : false;
+		if (defaultEndTime == '' && this.refs.endTime.value == '') {
+			$('#endTime').timepicker('setTime', '12:30pm');
+		}
+		$('#endTime').timepicker('showWidget');
 	},
 
 	componentWillUnmount: function() {
@@ -196,6 +239,7 @@ var AddCalendarEvent = React.createClass({
 				<h1>{header}</h1>
 				<br/>
 				<div style={{margin: '0 auto', maxWidth: '600px'}}>
+					<div id='error' className='has-error'></div>
 					<div className="input-group">
 						<span className="input-group-addon">Group:</span>
 						<input className="form-control" disabled value={this.state.group.name}
@@ -220,16 +264,20 @@ var AddCalendarEvent = React.createClass({
 								placeholderText="Start Date"/>
 					</div>
 					<div className="input-group bootstrap-timepicker timepicker"
+						 id="startTimeDiv"
 						data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true"  >
 						<span className="input-group-addon">Start time:</span>
 						<input className="form-control input-small" type='text'
 							disabled={disableEditing}
+							onClick={this.clickedStartTime}
 							defaultValue={defaultStartTime} id='startTime' ref='startTime'/>
 					</div>
-					<div className="input-group bootstrap-timepicker timepicker" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" >
+					<div className="input-group bootstrap-timepicker timepicker" id="endTimeDiv"
+						data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true">
 						<span className="input-group-addon">End time:</span>
 						<input type='text' disabled={disableEditing}
 							defaultValue={defaultEndTime} className="form-control input-small"
+							onClick={this.clickedEndTime}
 							id='endTime' ref='endTime'/>
 					</div>
 					<div className="input-group">
