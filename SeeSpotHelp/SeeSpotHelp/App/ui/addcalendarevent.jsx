@@ -109,6 +109,12 @@ var AddCalendarEvent = React.createClass({
 		GroupStore.addChangeListener(this.onChange);
 		VolunteerStore.addChangeListener(this.onChange);
 
+		var endTime = this.state.endTime;
+		if (endTime && !this.state.editMode && this.state.startTime == endTime) {
+			endTime = moment(endTime, 'hh:mm a').add(1, 'hours').format('hh:mm a');
+		}
+
+
 		$('#startTime').timepicker({
 			minuteStep: 15,
 			showInputs: true,
@@ -125,7 +131,7 @@ var AddCalendarEvent = React.createClass({
 			modalBackdrop: true,
 			showSeconds: false,
 			showMeridian: true,
-			defaultTime: this.state.endTime
+			defaultTime: endTime
 		});
 	},
 
