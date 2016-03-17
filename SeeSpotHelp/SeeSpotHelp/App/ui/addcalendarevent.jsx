@@ -24,17 +24,21 @@ var AddCalendarEvent = React.createClass({
 		var scheduleId = Utils.FindPassedInProperty(this, 'scheduleId');
 		var schedule = ScheduleStore.getScheduleById(scheduleId);
 		var editMode = Utils.FindPassedInProperty(this, 'editMode');
+		var startTime = Utils.FindPassedInProperty(this, 'startTime');
+		var endTime = Utils.FindPassedInProperty(this, 'endTime');
 
 		if (scheduleId == -1) editMode = false;
 
 		var state = {
-			startDate: moment(startDate),
+			startDate: moment(startDate, 'MM-DD-YYYY'),
 			group: group,
 			animal: animal,
 			schedule: schedule,
 			editMode: editMode,
 			updated: false,
-			added: false
+			added: false,
+			startTime: startTime,
+			endTime: endTime
 		}
 		Utils.LoadOrSaveState(state);
 		return state;
@@ -64,9 +68,11 @@ var AddCalendarEvent = React.createClass({
 
 		if (this.refs.endTime.value && this.refs.startTime.value) {
 			var startDate =
-				moment(this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.startTime.value);
+				moment(this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.startTime.value,
+					'MM-DD-YYYY hh:mm a');
 			var endDate =
-				moment(this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.endTime.value);
+				moment(this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.endTime.value,
+					'MM-DD-YYYY hh:mm a');
 
 			if (endDate.isBefore(startDate)) {
 				$('#startTimeDiv').addClass('has-error');
@@ -88,16 +94,12 @@ var AddCalendarEvent = React.createClass({
 			if (this.state.editMode) {
 				this.saveFieldsIntoSchedule(this.state.schedule);
 				this.state.schedule.update();
-				this.setState({
-					updated: true
-				});
+				this.context.router.goBack();
 			} else {
 				var schedule = new Schedule();
 				this.saveFieldsIntoSchedule(schedule);
 				schedule.insert();
-				this.setState({
-					added: true
-				});
+				this.context.router.goBack();
 			}
 		}
 	},
@@ -107,10 +109,6 @@ var AddCalendarEvent = React.createClass({
 		GroupStore.addChangeListener(this.onChange);
 		VolunteerStore.addChangeListener(this.onChange);
 
-		var defaultStartTime = this.state.editMode && this.state.schedule ?
-			this.state.schedule.startTime : false;
-		var defaultEndTime = this.state.editMode && this.state.schedule ?
-			this.state.schedule.endTime : false;
 		$('#startTime').timepicker({
 			minuteStep: 15,
 			showInputs: true,
@@ -118,7 +116,7 @@ var AddCalendarEvent = React.createClass({
 			modalBackdrop: true,
 			showSeconds: false,
 			showMeridian: true,
-			defaultTime: defaultStartTime
+			defaultTime: this.state.startTime
 		});
 		$('#endTime').timepicker({
 			minuteStep: 15,
@@ -127,13 +125,12 @@ var AddCalendarEvent = React.createClass({
 			modalBackdrop: true,
 			showSeconds: false,
 			showMeridian: true,
-			defaultTime: defaultEndTime
+			defaultTime: this.state.endTime
 		});
 	},
 
 	clickedStartTime: function() {
-		var defaultStartTime = this.state.editMode && this.state.schedule ?
-			this.state.schedule.startTime : false;
+		var defaultStartTime = this.state.startTime ? this.state.startTime : false;
 		if (defaultStartTime == '' && this.refs.startTime.value == '') {
 			$('#startTime').timepicker('setTime', '12:00pm');
 		}
@@ -141,8 +138,7 @@ var AddCalendarEvent = React.createClass({
 	},
 
 	clickedEndTime: function() {
-		var defaultEndTime = this.state.editMode && this.state.schedule ?
-			this.state.schedule.endTime : false;
+		var defaultEndTime = this.state.endTime ? this.state.endTime : false;
 		if (defaultEndTime == '' && this.refs.endTime.value == '') {
 			$('#endTime').timepicker('setTime', '12:30pm');
 		}
@@ -190,8 +186,7 @@ var AddCalendarEvent = React.createClass({
 	getDeleteButton: function() {
 		if (!this.state.editMode || this.getDisableEditing()) return null;
 		return (
-			<button className="btn btn-warning"
-					onClick={this.deleteSchedule}>
+			<button className="btn btn-warning" onClick={this.deleteSchedule}>
 				Delete
 			</button>
 		);
@@ -230,8 +225,8 @@ var AddCalendarEvent = React.createClass({
 		if (disableEditing) header = "Event";
 		if (this.state.editMode) buttonText = "Update";
 
-		var defaultStartTime = this.state.editMode ? this.state.schedule.startTime : '';
-		var defaultEndTime = this.state.editMode ? this.state.schedule.endTime : '';
+		var defaultStartTime = this.state.editMode ? this.state.startTime : '';
+		var defaultEndTime = this.state.editMode ? this.state.endTime : '';
 		var defaultDescription = this.state.editMode ? this.state.schedule.description : '';
 
 		return (

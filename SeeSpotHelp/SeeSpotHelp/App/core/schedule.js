@@ -3,13 +3,12 @@ var DataServices = require('./dataservices');
 
 var Schedule = function() {
 	this.start = '';
+	this.end = '';
 	this.title = '';
 	this.allDay = true;
 	this.userId = null;
 	this.animalId = null;
 	this.groupId = null;
-	this.startTime = '';
-	this.endTime = '';
 	this.id = '';
 	this.description = '';
 

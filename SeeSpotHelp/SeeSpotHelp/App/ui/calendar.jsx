@@ -17,7 +17,8 @@ var Calendar = React.createClass({
 
 		var state = {
 			animal: animal,
-			group: group
+			group: group,
+			defaultView: null
 		};
 		Utils.LoadOrSaveState(state);
 		return state;
@@ -30,6 +31,7 @@ var Calendar = React.createClass({
 	componentDidMount: function() {
 		LoginStore.addChangeListener(this.onChange);
 		ScheduleStore.addChangeListener(this.onChange);
+		VolunteerStore.addChangeListener(this.onChange);
 
 		this.initializeCalendar();
 	},
@@ -37,6 +39,7 @@ var Calendar = React.createClass({
 	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
 		ScheduleStore.removeChangeListener(this.onChange);
+		VolunteerStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function() {
@@ -52,12 +55,13 @@ var Calendar = React.createClass({
 			// Dynamically generate the title in case the animal's or the user's name changes.
 			for (var i = 0; i < schedule.length; i++) {
 				var event = schedule[i];
+				var volunteer = VolunteerStore.getVolunteerById(event.userId);
+				var name = volunteer ? volunteer.displayName : '';
 				if (!this.state.animal) {
 					event.title =
-						AnimalStore.getAnimalById(event.animalId, event.groupId).name + '/' +
-						VolunteerStore.getVolunteerById(event.userId).displayName;
+						AnimalStore.getAnimalById(event.animalId, event.groupId).name + '/' + name;
 				} else {
-					event.title = VolunteerStore.getVolunteerById(event.userId).displayName;
+					event.title = name;
 				}
 				event.start = moment(event.start);
 				event.allDay = event.end ? false : true;
@@ -71,8 +75,11 @@ var Calendar = React.createClass({
 
 	initializeCalendar: function() {
 		var outer = this;
+		var defaultView = this.state.defaultView ? this.state.defaultView : 'month';
 		$('#calendar').fullCalendar({
 			events: outer.getEvents(outer.state.animal),
+
+			defaultView: defaultView,
 
 			header: {
 				left: 'prev,next today',
@@ -90,8 +97,8 @@ var Calendar = React.createClass({
 						editMode: true,
 						scheduleId: event.id,
 						startDate: moment(event.start).format('MM-DD-YYYY'),
-						startTime: moment(event.start).format('HH:mm'),
-						endTime: moment(event.end).format('HH:mm')
+						startTime: moment(event.start).format('hh:mm a'),
+						endTime: moment(event.end).format('hh:mm a')
 					}
 				});
 			}.bind(this),
@@ -104,9 +111,18 @@ var Calendar = React.createClass({
 						scheduleId: -1,  // Just avoid pulling schedule from local storage,
 						group: this.state.group,
 						animal: this.state.animal,
-						startDate: date.format('MM-DD-YYYY')
+						startDate: date.format('MM-DD-YYYY'),
+						startTime: date.format('hh:mm a'),
+						endTime: date.format('hh:mm a')
 					}
 				});
+			}.bind(this),
+
+			viewRender: function(view) {
+				this.setState({ defaultView: view.name });
+				var stateDuplicate = this.state;
+				stateDuplicate.defaultView = view.name;
+				Utils.LoadOrSaveState(stateDuplicate);
 			}.bind(this)
 		});
 	},

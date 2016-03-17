@@ -77,9 +77,9 @@ class ScheduleStore extends EventEmitter {
 	scheduleDeleted(snapshot) {
 		var deletedSchedule = snapshot.val();
 		delete this.schedule[deletedSchedule.id];
-		for (var i = 0; i < this.scheduleIdsForAnimal[deletedSchedule.animalId]; i++) {
-			var animalSchedule = this.scheduleIdsForAnimal[deletedSchedule.animalId][i];
-			if (animalSchedule.id == deletedSchedule.id) {
+		for (var i = 0; i < this.scheduleIdsForAnimal[deletedSchedule.animalId].length; i++) {
+			var animalScheduleId = this.scheduleIdsForAnimal[deletedSchedule.animalId][i];
+			if (animalScheduleId == deletedSchedule.id) {
 				this.scheduleIdsForAnimal[deletedSchedule.animalId].splice(i, 1);
 				this.emitChange();
 				return;
@@ -112,12 +112,12 @@ class ScheduleStore extends EventEmitter {
 			"schedule",
 			"animalId",
 			animalId,
-			this.scheduleAdded.bind(this));
+			this.scheduleDeleted.bind(this));
 		DataServices.OnMatchingChildChanged(
 			"schedule",
 			"animalId",
 			animalId,
-			this.scheduleAdded.bind(this));
+			this.scheduleChanged.bind(this));
 	}
 
 	handleAction(action) {
