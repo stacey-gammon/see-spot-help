@@ -12,11 +12,13 @@ var addCalendarEvent = require("./addcalendarevent");
 
 var Calendar = React.createClass({
 	getInitialState: function() {
-		var animal = Utils.FindPassedInProperty(this, 'animal');
+		var animalId = Utils.FindPassedInProperty(this, 'animalId');
+		var memberId = Utils.FindPassedInProperty(this, 'memberId');
 		var group = Utils.FindPassedInProperty(this, 'group');
 
 		var state = {
-			animal: animal,
+			animalId: animalId,
+			memberId: memberId,
 			group: group,
 			defaultView: null
 		};
@@ -44,40 +46,50 @@ var Calendar = React.createClass({
 
 	onChange: function() {
 		$('#calendar').fullCalendar('removeEvents');
-		$('#calendar').fullCalendar('addEventSource', this.getEvents(this.state.animal));
+		$('#calendar').fullCalendar('addEventSource', this.getEvents());
 	},
 
 	getEvents: function() {
-		if (this.state.animal) {
-			var schedule = ScheduleStore.getScheduleByAnimalId(this.state.animal.id);
-			if (!schedule) return [];
-
-			// Dynamically generate the title in case the animal's or the user's name changes.
-			for (var i = 0; i < schedule.length; i++) {
-				var event = schedule[i];
-				var volunteer = VolunteerStore.getVolunteerById(event.userId);
-				var name = volunteer ? volunteer.displayName : '';
-				if (!this.state.animal) {
-					event.title =
-						AnimalStore.getAnimalById(event.animalId, event.groupId).name + '/' + name;
-				} else {
-					event.title = name;
-				}
-				event.start = moment(event.start);
-				event.allDay = event.end ? false : true;
-				if (event.end) {
-					event.end = moment(event.end);
-				}
-			}
-			return schedule;
+		var schedule;
+		if (this.state.animalId > 0) {
+			schedule = ScheduleStore.getScheduleByAnimalId(this.state.animalId);
+		} else if (this.state.group) {
+			schedule = ScheduleStore.getScheduleByGroup(this.state.group.id);
+		} else if (this.state.memberId) {
+			schedule = ScheduleStore.getScheduleByMember(this.state.memberId);
 		}
+
+		if (!schedule) return [];
+
+		// Dynamically generate the title in case the animal's or the user's name changes.
+		for (var i = 0; i < schedule.length; i++) {
+			var event = schedule[i];
+			var volunteer = VolunteerStore.getVolunteerById(event.userId);
+			var name = volunteer ? volunteer.displayName : '';
+			if (this.state.animalId < 0 && this.state.memberId < 0) {
+				event.title =
+					AnimalStore.getAnimalById(event.animalId, event.groupId).name + '/' + name;
+			} else if (this.state.memberId < 0){
+				event.title = name;
+			} else {
+				event.title = AnimalStore.getAnimalById(event.animalId, event.groupId).name;
+			}
+
+			event.start = moment(event.start);
+			event.allDay = !event.end || event.end == event.start ? true : false;
+			if (event.end) {
+				event.end = moment(event.end);
+			}
+		}
+		return schedule;
 	},
 
 	initializeCalendar: function() {
 		var outer = this;
+		var animal = AnimalStore.getAnimalById(this.state.animalId);
 		var defaultView = this.state.defaultView ? this.state.defaultView : 'month';
 		$('#calendar').fullCalendar({
-			events: outer.getEvents(outer.state.animal),
+			events: outer.getEvents(animal),
 
 			defaultView: defaultView,
 
@@ -93,7 +105,7 @@ var Calendar = React.createClass({
 					pathname: "addCalendarEvent",
 					state: {
 						group: this.state.group,
-						animal: this.state.animal,
+						animal: animal,
 						editMode: true,
 						scheduleId: event.id,
 						startDate: moment(event.start).format('MM-DD-YYYY'),
@@ -110,7 +122,7 @@ var Calendar = React.createClass({
 						editMode: false,
 						scheduleId: -1,  // Just avoid pulling schedule from local storage,
 						group: this.state.group,
-						animal: this.state.animal,
+						animal: animal,
 						startDate: date.format('MM-DD-YYYY'),
 						startTime: date.format('hh:mm a'),
 						endTime: date.format('hh:mm a')

@@ -109,11 +109,15 @@ var AddCalendarEvent = React.createClass({
 		GroupStore.addChangeListener(this.onChange);
 		VolunteerStore.addChangeListener(this.onChange);
 
+		// A day click defaults the time to 12 am, lets reset that to a full day event.
+		if (this.state.startTime == '12:00 am' && this.state.startTime == this.state.endTime) {
+			this.state.startTime = this.state.endTime = '';
+		}
+
 		var endTime = this.state.endTime;
 		if (endTime && !this.state.editMode && this.state.startTime == endTime) {
 			endTime = moment(endTime, 'hh:mm a').add(1, 'hours').format('hh:mm a');
 		}
-
 
 		$('#startTime').timepicker({
 			minuteStep: 15,

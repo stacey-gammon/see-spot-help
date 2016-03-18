@@ -12,6 +12,7 @@ var GroupMembersTab = require("./groupmemberstab");
 var GroupAnimalsTab = require("./groupanimalstab");
 var GroupActivityTab = require("./groupactivitytab");
 var GroupActionsBox = require("./groupactionsbox");
+var AnimalScheduleTab = require("../animal/animalscheduletab");
 /* eslint-enable no-unused-vars */
 
 var Utils = require("../../core/utils");
@@ -160,6 +161,9 @@ var GroupHomePage = React.createClass({
 						</Tab>
 						<Tab eventKey={3} title="Activity">
 							<GroupActivityTab group={this.state.group} user={this.state.user}/>
+						</Tab>
+						<Tab eventKey={4} title="Calendar">
+							<AnimalScheduleTab group={this.state.group} animalId="-1"/>
 						</Tab>
 					</Tabs>
 				</div>

@@ -11,6 +11,7 @@ var SearchPage = require("../searchpage");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
 var VolunteerStore = require("../../stores/volunteerstore");
+var AnimalScheduleTab = require("../animal/animalscheduletab");
 
 var LoginActions = require("../../actions/loginactions");
 var UserGroupsTab = require("./usergroupstab");
@@ -76,6 +77,9 @@ var MemberPage = React.createClass({
 						</Tab>
 						<Tab eventKey={2} title="Activity">
 							<UserActivityTab user={this.state.member}/>
+						</Tab>
+						<Tab eventKey={3} title="Calendar">
+							<AnimalScheduleTab memberId={this.state.member.id}/>
 						</Tab>
 					</Tabs>
 					<br/><br/>

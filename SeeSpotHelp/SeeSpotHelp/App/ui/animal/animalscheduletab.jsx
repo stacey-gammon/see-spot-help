@@ -25,9 +25,11 @@ var AnimalScheduleTab = React.createClass({
 	},
 
 	render: function() {
-		if (!this.props.group) return null;
-		if (!LoginStore.getUser() ||
-			!this.props.group.shouldAllowUserToEdit(LoginStore.user.id)) {
+		if (!this.props.group && this.props.memberId < 0) return null;
+
+		if (this.props.group &&
+			(!LoginStore.getUser() ||
+			 !this.props.group.shouldAllowUserToEdit(LoginStore.user.id))) {
 			return (
 				<div>
 					<h1>Only members can view or edit a schedule.</h1>
@@ -37,8 +39,10 @@ var AnimalScheduleTab = React.createClass({
 		return (
 			<div>
 				{this.getLegend()}
-				<Calendar propToForceRefresh={this.state.refreshCalendar}
-					animal={this.props.animal}
+				<Calendar
+					propToForceRefresh={this.state.refreshCalendar}
+					animalId={this.props.animalId}
+					memberId={this.props.memberId}
 					group={this.props.group} />
 			</div>
 		);

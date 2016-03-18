@@ -18,6 +18,8 @@ class ScheduleStore extends EventEmitter {
 			outer.handleAction(action);
 		});
 		this.scheduleIdsForAnimal = {};
+		this.scheduleIdsForGroup = {};
+		this.scheduleIdsForMember = {};
 		this.schedule = {};
 	}
 
@@ -44,6 +46,19 @@ class ScheduleStore extends EventEmitter {
 		}
 	}
 
+	getScheduleByGroup(groupId) {
+		var scheduleForGroup = [];
+		if (!this.scheduleIdsForGroup.hasOwnProperty(groupId)) {
+			this.downloadScheduleForGroup(groupId);
+			return null;
+		}
+		for (var i = 0; i < this.scheduleIdsForGroup[groupId].length; i++) {
+			scheduleForGroup.push(
+				this.schedule[this.scheduleIdsForGroup[groupId][i]]);
+		}
+		return scheduleForGroup;
+	}
+
 	getScheduleByAnimalId(animalId) {
 		console.log('ScheduleStore:getScheduleByAnimalId');
 		var scheduleForAnimal = [];
@@ -58,33 +73,54 @@ class ScheduleStore extends EventEmitter {
 		return scheduleForAnimal;
 	}
 
+	addScheduleIdToMapping(mapping, key, scheduleId) {
+		if (!mapping[key]) {
+			mapping[key] = [];
+		}
+		mapping[key].push(scheduleId);
+	}
+
 	scheduleAdded(snapshot) {
 		console.log('ScheduleStore:scheduleAdded');
 		if (snapshot.val()) {
 			var schedule = Schedule.castObject(snapshot.val());
 			// Wait for the subsequent update to set the id.
 			if (!schedule.id) return;
-			if (!this.scheduleIdsForAnimal[schedule.animalId]) {
-				this.scheduleIdsForAnimal[schedule.animalId] = [];
-			}
+			this.addScheduleIdToMapping(this.scheduleIdsForAnimal, schedule.animalId, schedule.id);
+			this.addScheduleIdToMapping(this.scheduleIdsForGroup, schedule.groupId, schedule.id);
+			this.addScheduleIdToMapping(this.scheduleIdsForMember, schedule.userId, schedule.id);
 			this.schedule[schedule.id] = schedule;
-			this.scheduleIdsForAnimal[schedule.animalId].push(schedule.id);
 
 			this.emitChange();
+		}
+	}
+
+	deleteScheduleFromMapping(mapping, key, deletedScheduleId) {
+		for (var i = 0; i < mapping[key].length; i++) {
+			var scheduleId = mapping[key][i];
+			if (scheduleId == deletedScheduleId) {
+				mapping[key].splice(i, 1);
+				return;
+			}
 		}
 	}
 
 	scheduleDeleted(snapshot) {
 		var deletedSchedule = snapshot.val();
 		delete this.schedule[deletedSchedule.id];
-		for (var i = 0; i < this.scheduleIdsForAnimal[deletedSchedule.animalId].length; i++) {
-			var animalScheduleId = this.scheduleIdsForAnimal[deletedSchedule.animalId][i];
-			if (animalScheduleId == deletedSchedule.id) {
-				this.scheduleIdsForAnimal[deletedSchedule.animalId].splice(i, 1);
-				this.emitChange();
-				return;
-			}
-		}
+		this.deleteScheduleFromMapping(
+			this.scheduleIdsForAnimal,
+			deletedSchedule.animalId,
+			deletedSchedule.id);
+		this.deleteScheduleFromMapping(
+			this.scheduleIdsForGroup,
+			deletedSchedule.groupId,
+			deletedSchedule.id);
+		this.deleteScheduleFromMapping(
+			this.scheduleIdsForMember,
+			deletedSchedule.userId,
+			deletedSchedule.id);
+		this.emitChange();
 	}
 
 	scheduleChanged(snapshot) {
@@ -97,27 +133,43 @@ class ScheduleStore extends EventEmitter {
 		}
 	}
 
-	downloadScheduleForAnimal(animalId) {
-		console.log('ScheduleStore:downloadScheduleForAnimal');
-		// So we don't try to download it again if there is no schedule (e.g. differentiate from
-		// null).
-		this.scheduleIdsForAnimal[animalId] = [];
-
+	downloadScheduleMatchingProperty(property, value) {
 		DataServices.OnMatchingChildAdded(
 			"schedule",
-			"animalId",
-			animalId,
+			property,
+			value,
 			this.scheduleAdded.bind(this));
 		DataServices.OnMatchingChildRemoved(
 			"schedule",
-			"animalId",
-			animalId,
+			property,
+			value,
 			this.scheduleDeleted.bind(this));
 		DataServices.OnMatchingChildChanged(
 			"schedule",
-			"animalId",
-			animalId,
+			property,
+			value,
 			this.scheduleChanged.bind(this));
+	}
+
+	downloadScheduleForAnimal(animalId) {
+		// So we don't try to download it again if there is no schedule (e.g. differentiate from
+		// null).
+		this.scheduleIdsForAnimal[animalId] = [];
+		this.downloadScheduleMatchingProperty('animalId', animalId);
+	}
+
+	downloadScheduleForGroup(groupId) {
+		// So we don't try to download it again if there is no schedule (e.g. differentiate from
+		// null).
+		this.scheduleIdsForGroup[groupId] = [];
+		this.downloadScheduleMatchingProperty('groupId', groupId);
+	}
+
+	downloadScheduleForMember(memberId) {
+		// So we don't try to download it again if there is no schedule (e.g. differentiate from
+		// null).
+		this.scheduleIdsForMember[memberId] = [];
+		this.downloadScheduleMatchingProperty('userId', memberId);
 	}
 
 	handleAction(action) {
