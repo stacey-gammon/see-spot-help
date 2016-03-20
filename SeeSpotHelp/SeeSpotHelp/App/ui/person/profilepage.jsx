@@ -52,6 +52,15 @@ var ProfilePage = React.createClass({
 			});
 	},
 
+	handleTabSelect: function(key) {
+		this.setState({profileDefaultTabKey : key});
+		// We aren't supposed to manipulate state directly, but it doesn't yet have the newly
+		// selected tab that we want to save to local storage.
+		var stateDuplicate = this.state;
+		stateDuplicate.groupDefaultTabKey = key;
+		Utils.LoadOrSaveState(stateDuplicate);
+	},
+
 	render: function () {
 		// There is no user and none is going to be downloaded, we must prompt them to log in.
 		// TODO: when we open the app up to the public, we must be able to handle non-logged in
@@ -59,6 +68,7 @@ var ProfilePage = React.createClass({
 		if (!LoginStore.getUser() && !LoginStore.listenersAttached) {
 			this.context.router.push("/loginpage");
 		}
+		var defaultKey = this.state.profileDefaultTabKey ? this.state.profileDefaultTabKey : 1;
 		if (this.state.user) {
 			var heading = "Hello, " + this.state.user.name;
 			return (
@@ -68,7 +78,7 @@ var ProfilePage = React.createClass({
 						<h1>{heading}</h1>
 						</div>
 					</div>
-					<Tabs defaultActiveKey={1}>
+					<Tabs activeKey={defaultKey} onSelect={this.handleTabSelect}>
 						<Tab eventKey={1} title="Groups">
 							<UserGroupsTab user={this.state.user}/>
 						</Tab>

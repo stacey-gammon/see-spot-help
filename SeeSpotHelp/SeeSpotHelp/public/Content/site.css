@@ -13,6 +13,11 @@ h2 {
     letter-spacing: 1px;
 }
 
+.calendar-container {
+	max-width: 600px;
+	margin: 0px auto;
+}
+
 .input-group-addon {
     min-width:100px;// if you want width please write here //
     text-align:left;

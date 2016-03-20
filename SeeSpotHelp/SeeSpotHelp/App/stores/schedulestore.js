@@ -46,6 +46,19 @@ class ScheduleStore extends EventEmitter {
 		}
 	}
 
+	getScheduleByMember(memberId) {
+		var scheduleForMember = [];
+		if (!this.scheduleIdsForMember.hasOwnProperty(memberId)) {
+			this.downloadScheduleForMember(memberId);
+			return null;
+		}
+		for (var i = 0; i < this.scheduleIdsForMember[memberId].length; i++) {
+			scheduleForMember.push(
+				this.schedule[this.scheduleIdsForMember[memberId][i]]);
+		}
+		return scheduleForMember;
+	}
+
 	getScheduleByGroup(groupId) {
 		var scheduleForGroup = [];
 		if (!this.scheduleIdsForGroup.hasOwnProperty(groupId)) {

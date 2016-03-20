@@ -59,11 +59,21 @@ var MemberPage = React.createClass({
 			});
 	},
 
+	handleTabSelect: function(key) {
+		this.setState({memberDefaultTabKey : key});
+		// We aren't supposed to manipulate state directly, but it doesn't yet have the newly
+		// selected tab that we want to save to local storage.
+		var stateDuplicate = this.state;
+		stateDuplicate.memberDefaultTabKey = key;
+		Utils.LoadOrSaveState(stateDuplicate);
+	},
+
 	render: function () {
 		if (!LoginStore.user || !this.state.member) return null;
 		var heading = this.state.member.displayName ?
 			this.state.member.displayName : this.state.member.name;
 		if (this.state.member) {
+			var defaultKey = this.state.memberDefaultTabKey ? this.state.memberDefaultTabKey : 1;
 			return (
 				<div>
 					<div className="media padding">
@@ -71,7 +81,7 @@ var MemberPage = React.createClass({
 						<h1>{heading}</h1>
 						</div>
 					</div>
-					<Tabs defaultActiveKey={1}>
+					<Tabs activeKey={defaultKey} onSelect={this.handleTabSelect}>
 						<Tab eventKey={1} title="Groups">
 							<UserGroupsTab user={this.state.member}/>
 						</Tab>

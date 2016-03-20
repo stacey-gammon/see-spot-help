@@ -30,6 +30,15 @@ var Calendar = React.createClass({
 		router: React.PropTypes.object.isRequired
 	},
 
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			group: nextProps.group,
+			memberId: nextProps.memberId,
+			animalId: nextProps.animalId
+		});
+		this.onChange();
+	},
+
 	componentDidMount: function() {
 		LoginStore.addChangeListener(this.onChange);
 		ScheduleStore.addChangeListener(this.onChange);
@@ -67,12 +76,15 @@ var Calendar = React.createClass({
 			var volunteer = VolunteerStore.getVolunteerById(event.userId);
 			var name = volunteer ? volunteer.displayName : '';
 			if (this.state.animalId < 0 && this.state.memberId < 0) {
-				event.title =
-					AnimalStore.getAnimalById(event.animalId, event.groupId).name + '/' + name;
+				var animal = AnimalStore.getAnimalById(event.animalId, event.groupId);
+				if (animal) {
+					event.title = animal.name + '/' + name;
+				}
 			} else if (this.state.memberId < 0){
 				event.title = name;
 			} else {
-				event.title = AnimalStore.getAnimalById(event.animalId, event.groupId).name;
+				var animal = AnimalStore.getAnimalById(event.animalId, event.groupId);
+				if (animal) { event.title = animal.name; }
 			}
 
 			event.start = moment(event.start);
@@ -151,7 +163,7 @@ var Calendar = React.createClass({
 	render: function() {
 		console.log("calendar:render");
 		return (
-			<div ref="calendar" id="calendar"></div>
+			<div className="calendar-container" ref="calendar" id="calendar"></div>
 		);
 	}
 
