@@ -226,6 +226,7 @@ var AddCalendarEvent = React.createClass({
 
 	render: function() {
 		if (!LoginStore.getUser() || !this.state.group ||
+			!this.state.animal ||
 			(this.state.editMode && !this.state.schedule)) return null;
 		var header = "Schedule an Event";
 		var buttonText = "Schedule";

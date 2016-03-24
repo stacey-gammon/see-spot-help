@@ -6,6 +6,7 @@ var ScheduleStore = require("../stores/schedulestore");
 var AnimalStore = require("../stores/animalstore");
 var VolunteerStore = require("../stores/volunteerstore");
 var LoginStore = require("../stores/loginstore");
+var GroupStore = require("../stores/groupstore");
 var moment = require('moment');
 
 var addCalendarEvent = require("./addcalendarevent");
@@ -20,6 +21,7 @@ var Calendar = React.createClass({
 			animalId: animalId,
 			memberId: memberId,
 			group: group,
+			colorByAnimal: true,
 			defaultView: null
 		};
 		Utils.LoadOrSaveState(state);
@@ -58,8 +60,27 @@ var Calendar = React.createClass({
 		$('#calendar').fullCalendar('addEventSource', this.getEvents());
 	},
 
+	getColorForVolunteer: function (volunteer, group) {
+		if (!volunteer.color) {
+			volunteer.color = group.GetColorForVolunteer();
+			volunteer.update();
+			group.update();
+		}
+		return volunteer.color;
+	},
+
+	getColorForAnimal: function (animal, group) {
+		if (!animal.color) {
+			animal.color = group.GetColorForAnimal();
+			animal.update();
+			group.update();
+		}
+		return animal.color;
+	},
+
 	getEvents: function() {
 		var schedule;
+
 		if (this.state.animalId > 0) {
 			schedule = ScheduleStore.getScheduleByAnimalId(this.state.animalId);
 		} else if (this.state.group) {
@@ -74,17 +95,30 @@ var Calendar = React.createClass({
 		for (var i = 0; i < schedule.length; i++) {
 			var event = schedule[i];
 			var volunteer = VolunteerStore.getVolunteerById(event.userId);
-			var name = volunteer ? volunteer.displayName : '';
-			if (this.state.animalId < 0 && this.state.memberId < 0) {
-				var animal = AnimalStore.getAnimalById(event.animalId, event.groupId);
-				if (animal) {
-					event.title = animal.name + '/' + name;
+			var animal = AnimalStore.getAnimalById(event.animalId, event.groupId);
+			var group = GroupStore.getGroupById(event.groupId);
+
+			// We'll have to wait for them to be downloaded.
+			if (!volunteer || !animal) return null;
+
+			var showingGroupCalendar = this.state.animalId < 0 && this.state.memberId < 0;
+
+			if (showingGroupCalendar) {
+				event.title = animal.name + '/' + name;
+				if (this.state.colorByAnimal) {
+					event.color = this.getColorForAnimal(animal, group);
+				} else {
+					event.color = this.getColorForVolunteer(volunteer, group);
 				}
 			} else if (this.state.memberId < 0){
+				// We are showing only an animals events, color by member.
+				event.color = this.getColorForVolunteer(volunteer, group);
 				event.title = name;
 			} else {
-				var animal = AnimalStore.getAnimalById(event.animalId, event.groupId);
-				if (animal) { event.title = animal.name; }
+				// We are on a member's tab, color by animal.  Colors might be the same if the user
+				// belongs to more than one group.
+				event.color = this.getColorForAnimal(animal, group);
+				event.title = animal.name;
 			}
 
 			event.start = moment(event.start);

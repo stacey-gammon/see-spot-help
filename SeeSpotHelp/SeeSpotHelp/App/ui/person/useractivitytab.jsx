@@ -20,9 +20,8 @@ var AnimalActivityItem = require("../animal/animalactivityitem");
 var UserActivityTab = React.createClass({
 	getInitialState: function () {
 		var group = Utils.FindPassedInProperty(this, 'group');
-		var user = Utils.FindPassedInProperty(this, 'user');
 		return {
-			user: user,
+			user: LoginStore.getUser(),
 			group: group
 		}
 	},
@@ -50,9 +49,10 @@ var UserActivityTab = React.createClass({
 	},
 
 	onChange: function () {
+		if (!LoginStore.getUser()) return;
 		this.setState(
 			{
-				user: VolunteerStore.getVolunteerById(this.state.user.id),
+				user: VolunteerStore.getVolunteerById(LoginStore.getUser().id),
 				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
 			});
 	},

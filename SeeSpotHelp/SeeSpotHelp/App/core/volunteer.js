@@ -41,8 +41,6 @@ Volunteer.LoadVolunteerWithFirebase = function (id, name, email, callback) {
 	console.log("Volunteer::LoadVolunteerWithFirebase");
 
 	var onSuccess = function (response) {
-		console.log("Loaded from Firebase successfully with response ");
-		console.log(response);
 		if (response) {
 			volunteer = Volunteer.castObject(response);
 		} else {

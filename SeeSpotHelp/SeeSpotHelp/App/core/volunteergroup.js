@@ -2,6 +2,8 @@
 
 var ServerResponse = require("./serverresponse");
 var DataServices = require('./dataservices');
+var EventColors = require('./colors');
+var Animal = require('./animal');
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
@@ -37,8 +39,41 @@ var VolunteerGroup = function(name, shelter, address, city, state, zipCode, id) 
 	this.userPermissionsMap = {};
 	this.animals = {};
 
+	this.availableMemberColors = new EventColors();
+	this.availableAnimalColors = new EventColors();
+
+	for (var prop in VolunteerGroup.CalendarColorsEnum) {
+		this.availableColors.push(VolunteerGroup.CalendarColorsEnum[prop]);
+	}
+
 	// Unfortunately, I don't know anyway to generate this dynamically.
 	this.classNameForSessionStorage = 'VolunteerGroup';
+};
+
+VolunteerGroup.FromJSON = function (json) {
+	var group = VolunteerGroup.castObject(json);
+	for (var animal in group.animals) {
+		group.animals[animal] = Object.assign(new Animal(), group.animals[animal]);
+	}
+	group.availableMemberColors = Object.assign(new EventColors(), group.availableMemberColors);
+	group.availableAnimalColors = Object.assign(new EventColors(), group.availableAnimalColors);
+	return group;
+};
+
+VolunteerGroup.prototype.RemoveAnimalColor = function(color) {
+	this.availableAnimalColors.RemoveColor(color);
+}
+
+VolunteerGroup.prototype.RemoveVolunteerColor = function(color) {
+	this.availableMemberColors.RemoveColor(color);
+}
+
+VolunteerGroup.prototype.GetColorForVolunteer = function () {
+	return this.availableMemberColors.GetAvailableColor();
+};
+
+VolunteerGroup.prototype.GetColorForAnimal = function () {
+	return this.availableAnimalColors.GetAvailableColor();
 };
 
 // Casts the given obj as a volunteer group.  Careful -
@@ -106,27 +141,6 @@ VolunteerGroup.prototype.updateFromInputFields = function (inputFields) {
 	this.zipCode = inputFields["zipCode"].value;
 };
 
-VolunteerGroup.getFakeGroups = function() {
-	var fakeGroups = {
-		"123": new VolunteerGroup(
-			"Friends of Saratoga County Humane Society",
-			"Saratoga County Humane Society",
-			"96 Broadway", "Saratoga Springs", "NY", "12866",
-			"123"),
-		"456": new VolunteerGroup(
-			"Friends of Newark AHS",
-			"Newark Humane Society",
-			"96 Street lane", "Newark", "NJ", "12345",
-			"456"),
-		"789": new VolunteerGroup(
-			"Dog Walkers at Halfway Hounds",
-			"Halfway Hounds",
-			"96 Street lane", "Park Ridge", "NJ", "12345",
-			"789")
-	};
-	return fakeGroups;
-};
-
 VolunteerGroup.search = function (searchText) {
 	var results = [];
 	var fakeGroups = VolunteerGroup.getFakeGroups();
@@ -188,7 +202,13 @@ VolunteerGroup.prototype.delete = function () {
 	DataServices.RemoveFirebaseData("groups/" + this.id, onComplete);
 }
 
-VolunteerGroup.prototype.insertWithFirebase = function (user, callback) {
+// Attempts to insert the current instance into the database as
+// a new volunteer group.
+// @param callback {Function(VolunteerGroup, ServerResponse) }
+//	 callback is expected to take as a first argument the potentially
+//	 inserted volunteer group (null on failure) and a server
+//	 response to hold error and success information.
+VolunteerGroup.prototype.insert = function (user, callback) {
 	console.log("VolunteerGroup.insertWithFirebase");
 
 	this.id = null;
@@ -200,110 +220,16 @@ VolunteerGroup.prototype.insertWithFirebase = function (user, callback) {
 	callback(this, new ServerResponse());
 };
 
-// Attempts to insert the current instance into the database as
-// a new volunteer group.
-// @param callback {Function(VolunteerGroup, ServerResponse) }
-//	 callback is expected to take as a first argument the potentially
-//	 inserted volunteer group (null on failure) and a server
-//	 response to hold error and success information.
-VolunteerGroup.prototype.insert = function (user, callback) {
-	console.log("VolunteerGroup::insert");
-
-	if (DataServices.useFirebase) {
-		return this.insertWithFirebase(user, callback);
-	}
-
-	var LoadedGroupWithData = function (response) {
-		console.log("VolunteerGroup::LoadedGroupWithData");
-		if (response.d.result) {
-			var loadedGroup = VolunteerGroup.castObject(response.d.volunteerGroup);
-			console.log("Calling callback function now:");
-
-			user.groups.push(updatedGroup);
-			callback(loadedGroup, new ServerResponse());
-		} else {
-			console.log("Volunteer::LoadVolunteerWithData: Error occurred");
-			callback(null, new ServerResponse(response.d));
-		}
-	};
-
-	//Invoked when the server has an error (just an example)
-	var FailedCallback = function (error) {
-		console.log("VolunteerGroup:Insert:FailedCallback");
-		var errorString = 'Message:==>' + error.responseText + '\n\n';
-		callback(null, new ServerResponse(errorString));
-	};
-
-	var ajax = new DataServices(LoadedGroupWithData,
-								FailedCallback);
-	ajax.CallJSONService(
-		"../../WebServices/VolunteerGroupServices.asmx",
-		"insert",
-		{
-			adminId: user.id,
-			name: this.name,
-			shelterName: this.shelter,
-			shelterAddress: this.address,
-			shelterState: this.state,
-			shelterCity: this.city,
-			shelterZip: this.zipCode
-		});
-};
-
-VolunteerGroup.prototype.updateWithFirebase = function (callback) {
-	console.log("VolunteerGroup.updateWithFirebase with:");
-	console.log(this);
-	DataServices.UpdateFirebaseData("groups/" + this.id, this);
-	callback(this, new ServerResponse());
-};
-
 // Attempts to update the current volunteer group into the database.
 // @param callback {Function(VolunteerGroup, ServerResponse) }
 //	 callback is expected to take as a first argument the potentially
 //	 updated volunteer group (null on failure) and a server
 //	 response to hold error and success information.
 VolunteerGroup.prototype.update = function (callback) {
-	console.log("VolunteerGroup::update");
-
-	if (DataServices.useFirebase) {
-		return this.updateWithFirebase(callback);
-	}
-
-
-	var UpdatedGroup = function (response) {
-		console.log("VolunteerGroup::UpdatedGroup");
-		if (response.d.result) {
-			var updatedGroup = VolunteerGroup.castObject(response.d.volunteerGroup);
-			console.log("Calling callback function now:");
-
-			//callback(updatedGroup, new ServerResponse());
-		} else {
-			console.log("Volunteer::LoadVolunteerWithData: Error occurred");
-			callback(null, new ServerResponse(response.d));
-		}
-	};
-
-	//Invoked when the server has an error (just an example)
-	var FailedCallback = function (error) {
-		console.log("VolunteerGroup:Insert:FailedCallback");
-		var errorString = 'Message:==>' + error.responseText + '\n\n';
-		callback(null, new ServerResponse(errorString));
-	};
-
-	var ajax = new DataServices(UpdatedGroup,
-								FailedCallback);
-	ajax.CallJSONService(
-		"../../WebServices/VolunteerGroupServices.asmx",
-		"update",
-		{
-			groupId: this.id,
-			name: this.name,
-			shelterName: this.shelter,
-			shelterAddress: this.address,
-			shelterState: this.state,
-			shelterCity: this.city,
-			shelterZip: this.zipCode
-		});
+	console.log("VolunteerGroup.updateWithFirebase with:");
+	console.log(this);
+	DataServices.UpdateFirebaseData("groups/" + this.id, this);
+	callback(this, new ServerResponse());
 };
 
 module.exports = VolunteerGroup;

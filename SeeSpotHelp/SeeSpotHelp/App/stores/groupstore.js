@@ -6,6 +6,7 @@ var VolunteerGroup = require('../core/volunteergroup');
 var Animal = require('../core/animal');
 var DataServices = require('../core/dataservices');
 var AnimalStore = require("../stores/animalstore");
+var VolunteerStore = require("../stores/volunteerstore");
 
 var EventEmitter = require('events').EventEmitter;
 
@@ -97,10 +98,7 @@ class GroupStore extends EventEmitter {
 			console.log("WARN: group loaded data is null");
 			return;
 		}
-		group = VolunteerGroup.castObject(group);
-		for (var animal in group.animals) {
-			group.animals[animal] = Animal.castObject(group.animals[animal]);
-		}
+		group = VolunteerGroup.FromJSON(group);
 		this.groups[group.id] = group;
 		this.emitChange();
 		this.loadedUserGroups = true;
@@ -154,6 +152,9 @@ class GroupStore extends EventEmitter {
 				var group = this.groups[animal.groupId];
 				if (group) {
 					group.animals[animal.id] = animal;
+					if (animal.color) {
+						group.RemoveAnimalColor(animal.color);
+					}
 					this.emitChange();
 				}
 				break;
@@ -164,6 +165,9 @@ class GroupStore extends EventEmitter {
 				break;
 			case ActionConstants.LOGIN_USER_SUCCESS:
 				this.loadGroupsForUser(action.user);
+				if (action.user.color) {
+					group.RemoveVolunteerColor(action.user.color);
+				}
 				break;
 			case ActionConstants.GROUP_DELETED:
 				console.log("GroupStore:handleaction: caught GROUP_DELETED");

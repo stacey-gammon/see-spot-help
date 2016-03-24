@@ -21,9 +21,9 @@ var Animal = function(name, type, breed, age, status, photo, id, groupId) {
 Animal.prototype.getPhoto = function() {
 	if (this.photo) return this.photo;
 	return this.type.toLowerCase() == "cat" ?
-		"images/cat.jpg" :
+		"images/cat.png" :
 		this.type.toLowerCase() == "dog" ?
-		"images/dog.jpg" :
+		"images/dog.png" :
 		"images/other.jpg";
 };
 
