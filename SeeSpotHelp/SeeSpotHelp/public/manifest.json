@@ -1,19 +1,22 @@
 ﻿{
-  "name": "The Shelter Helper",
-  "start_url": "index.html",
-  "display": "standalone",
-  "orientation": "portrait",
-  "splash_screens": [{
-       "src": "image/logo.png",
-       "sizes": "320x240"
-     },
-	 {
-       "src": "image/logo.png",
-       "sizes": "1334x750"
-     },
-	 {
-       "src": "image/logo.png",
-       "sizes": "1920x1080",
-       "density": 3
-     }],
+	"name": "The Shelter Helper",
+	"start_url": "index.html",
+	"display": "standalone",
+	"orientation": "portrait",
+	"icons": [
+		{
+			"src": "images/logo.png",
+			"sizes": "96x96",
+			"type": "image/png"
+		},
+		{
+		"src": "images/logo.png",
+		"sizes": "144x144",
+		"type": "image/png"
+		},
+		{
+		"src": "images/logo.png",
+		"sizes": "192x192",
+		"type": "image/png"
+		}]
 }
