@@ -23,34 +23,39 @@ var MyNavBar = React.createClass({
 		return (
 			<Navbar ref="mynavbar" className="navbar navbar-light bg-faded sh-navbar">
 				<Nav className="nav navbar-nav navbar-custom">
-						<NavItem className="nav-item" href="#groupHomePage">
-							<span className="glyphicon glyphicon-home nav-item" />
-						</NavItem>
-						<NavItem className="nav-item" href="#profilePage">
-							<span className="glyphicon glyphicon-user nav-item" />
-						</NavItem>
+					<NavItem className="nav-item" href="#groupHomePage">
+						<span className="glyphicon glyphicon-home nav-item" />
+					</NavItem>
+					<NavItem className="nav-item" href="#profilePage">
+						<span className="glyphicon glyphicon-user nav-item" />
+					</NavItem>
 					<NavItem className="nav-item" href="#searchPage">
 						<span className="glyphicon glyphicon-search nav-item" />
 					</NavItem>
-					</Nav>
-					<Nav pullRight>
-						<Dropdown componentClass="li">
-							<Dropdown.Toggle
-								className="dropdownToggleStyle"
-								hidden="true"
-								noCaret="true">
-								<button className="hamburgerDropdown">
-									<span className="glyphicon glyphicon-cog nav-item" />
-								</button>
-							</Dropdown.Toggle>
-							<Dropdown.Menu className="dropdownMenuStyle">
-								<LinkContainer  to={{ pathname: "userSettingsPage" }}>
-									<MenuItem className="dropdownMenuStyle"
-											  eventKey={3.1}>Settings</MenuItem>
-								</LinkContainer>
-							</Dropdown.Menu>
-					  </Dropdown>
-					</Nav>
+				</Nav>
+				<Nav className="nav navbar-nav logo-header" style={{display: 'inline-block'}}>
+					<NavItem className="nav-item">
+						<img src="images/logo.png"/>
+					</NavItem>
+				</Nav>
+				<Nav pullRight style={{display: 'inline-block'}}>
+					<Dropdown componentClass="li">
+						<Dropdown.Toggle
+							className="dropdownToggleStyle"
+							hidden="true"
+							noCaret="true">
+							<button className="hamburgerDropdown">
+								<span className="glyphicon glyphicon-cog nav-item" />
+							</button>
+						</Dropdown.Toggle>
+						<Dropdown.Menu className="dropdownMenuStyle">
+							<LinkContainer  to={{ pathname: "userSettingsPage" }}>
+								<MenuItem className="dropdownMenuStyle"
+										  eventKey={3.1}>Settings</MenuItem>
+							</LinkContainer>
+						</Dropdown.Menu>
+				  </Dropdown>
+				</Nav>
 			</Navbar>
 		);
 	}

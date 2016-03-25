@@ -163,7 +163,7 @@ var GroupHomePage = React.createClass({
 							<GroupActivityTab group={this.state.group} user={this.state.user}/>
 						</Tab>
 						<Tab eventKey={4} title="Calendar">
-							<AnimalScheduleTab group={this.state.group} animalId="-1"/>
+							<AnimalScheduleTab group={this.state.group} view="group"/>
 						</Tab>
 					</Tabs>
 				</div>

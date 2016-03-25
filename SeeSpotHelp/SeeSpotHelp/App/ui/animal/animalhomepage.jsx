@@ -103,8 +103,8 @@ var AnimalHomePage = React.createClass({
 							<Tab eventKey={1} title="Activity">
 								<AnimalActivityList group={this.state.group} animal={animal}/>
 							</Tab>
-							<Tab eventKey={2} title="Schedule">
-								<AnimalScheduleTab group={this.state.group} animalId={animal.id}/>
+							<Tab eventKey={2} title="Calendar">
+								<AnimalScheduleTab group={this.state.group} view="animal" animalId={animal.id}/>
 							</Tab>
 						</Tabs>
 			</div>

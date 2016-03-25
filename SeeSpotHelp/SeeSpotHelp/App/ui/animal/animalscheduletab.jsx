@@ -20,8 +20,9 @@ var AnimalScheduleTab = React.createClass({
 		return (<h1>Legend:</h1>);
 	},
 
-	componentWillReceiveProps: function() {
-		this.setState({refreshCalendar: true});
+	componentWillReceiveProps: function(nextProps) {
+		var props = $.extend(nextProps, {refreshCalendar : true});
+		this.setState(props);
 	},
 
 	render: function() {
@@ -43,6 +44,7 @@ var AnimalScheduleTab = React.createClass({
 					propToForceRefresh={this.state.refreshCalendar}
 					animalId={this.props.animalId}
 					memberId={this.props.memberId}
+					view={this.props.view}
 					group={this.props.group} />
 			</div>
 		);

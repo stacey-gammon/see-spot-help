@@ -89,7 +89,7 @@ var MemberPage = React.createClass({
 							<UserActivityTab user={this.state.member}/>
 						</Tab>
 						<Tab eventKey={3} title="Calendar">
-							<AnimalScheduleTab memberId={this.state.member.id}/>
+							<AnimalScheduleTab memberId={this.state.member.id} view="member"/>
 						</Tab>
 					</Tabs>
 					<br/><br/>

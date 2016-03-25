@@ -13,6 +13,23 @@ h2 {
     letter-spacing: 1px;
 }
 
+.logo-header {
+	display: inline-block !important;
+	margin: 0 auto !important;
+	height: 40px;
+	width: 130px;
+}
+
+.logo-header img {
+	height: 40px;
+	margin-left: 10px !important;
+	margin-top: -15px !important;
+	margin-bottom: 15px !important;
+	width: 130px;
+	margin: 0 auto;
+	display: inline-block;
+}
+
 .calendar-container {
 	max-width: 600px;
 	margin: 0px auto;
@@ -269,6 +286,10 @@ p {
   height: 100px;
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+.navbar-custom {
+    display: inline-block;
 }
 
 .navbar-custom>li {

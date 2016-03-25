@@ -86,7 +86,7 @@ var ProfilePage = React.createClass({
 							<UserActivityTab user={this.state.user}/>
 						</Tab>
 						<Tab eventKey={3} title="Calendar">
-							<AnimalScheduleTab memberId={this.state.user.id}/>
+							<AnimalScheduleTab memberId={this.state.user.id} view="member"/>
 						</Tab>
 					</Tabs>
 					<br/><br/>

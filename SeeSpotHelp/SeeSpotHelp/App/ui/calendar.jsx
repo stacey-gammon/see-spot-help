@@ -16,11 +16,13 @@ var Calendar = React.createClass({
 		var animalId = Utils.FindPassedInProperty(this, 'animalId');
 		var memberId = Utils.FindPassedInProperty(this, 'memberId');
 		var group = Utils.FindPassedInProperty(this, 'group');
+		var view = Utils.FindPassedInProperty(this, 'view');
 
 		var state = {
 			animalId: animalId,
 			memberId: memberId,
 			group: group,
+			view: view,
 			colorByAnimal: true,
 			defaultView: null
 		};
@@ -36,15 +38,21 @@ var Calendar = React.createClass({
 		this.setState({
 			group: nextProps.group,
 			memberId: nextProps.memberId,
+			view: nextProps.view,
 			animalId: nextProps.animalId
 		});
 		this.onChange();
 	},
 
 	componentDidMount: function() {
+		// TODO: We may only care about a subset of changes - for instance if the
+		// animal who's schedule that is currently showing gets deleted or downloaded.
+		// We can probably be more efficient here!
 		LoginStore.addChangeListener(this.onChange);
 		ScheduleStore.addChangeListener(this.onChange);
 		VolunteerStore.addChangeListener(this.onChange);
+		AnimalStore.addChangeListener(this.onChange);
+		GroupStore.addChangeListener(this.onChange);
 
 		this.initializeCalendar();
 	},
@@ -53,6 +61,8 @@ var Calendar = React.createClass({
 		LoginStore.removeChangeListener(this.onChange);
 		ScheduleStore.removeChangeListener(this.onChange);
 		VolunteerStore.removeChangeListener(this.onChange);
+		AnimalStore.removeChangeListener(this.onChange);
+		GroupStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function() {
@@ -81,11 +91,11 @@ var Calendar = React.createClass({
 	getEvents: function() {
 		var schedule;
 
-		if (this.state.animalId > 0) {
+		if (this.state.view == 'animal' && this.state.animalId) {
 			schedule = ScheduleStore.getScheduleByAnimalId(this.state.animalId);
-		} else if (this.state.group) {
+		} else if (this.state.view == 'group' && this.state.group) {
 			schedule = ScheduleStore.getScheduleByGroup(this.state.group.id);
-		} else if (this.state.memberId) {
+		} else if (this.state.view == 'member' && this.state.memberId) {
 			schedule = ScheduleStore.getScheduleByMember(this.state.memberId);
 		}
 
@@ -132,10 +142,9 @@ var Calendar = React.createClass({
 
 	initializeCalendar: function() {
 		var outer = this;
-		var animal = AnimalStore.getAnimalById(this.state.animalId);
 		var defaultView = this.state.defaultView ? this.state.defaultView : 'month';
 		$('#calendar').fullCalendar({
-			events: outer.getEvents(animal),
+			events: outer.getEvents(),
 
 			defaultView: defaultView,
 
@@ -151,7 +160,7 @@ var Calendar = React.createClass({
 					pathname: "addCalendarEvent",
 					state: {
 						group: this.state.group,
-						animal: animal,
+						animalId: this.state.animalId,
 						editMode: true,
 						scheduleId: event.id,
 						startDate: moment(event.start).format('MM-DD-YYYY'),

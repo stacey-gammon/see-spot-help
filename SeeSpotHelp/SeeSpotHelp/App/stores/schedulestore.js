@@ -33,7 +33,6 @@ class ScheduleStore extends EventEmitter {
 	}
 
 	emitChange() {
-		console.log('ScheduleStore:emitChange');
 		this.emit(CHANGE_EVENT);
 	}
 
@@ -73,7 +72,6 @@ class ScheduleStore extends EventEmitter {
 	}
 
 	getScheduleByAnimalId(animalId) {
-		console.log('ScheduleStore:getScheduleByAnimalId');
 		var scheduleForAnimal = [];
 		if (!this.scheduleIdsForAnimal.hasOwnProperty(animalId)) {
 			this.downloadScheduleForAnimal(animalId);

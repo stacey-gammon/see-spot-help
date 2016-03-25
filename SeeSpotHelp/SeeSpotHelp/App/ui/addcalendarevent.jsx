@@ -10,6 +10,7 @@ var LoginStore = require('../stores/loginstore');
 var GroupStore = require('../stores/groupstore');
 var ScheduleStore = require('../stores/schedulestore');
 var VolunteerStore = require('../stores/volunteerstore');
+var AnimalStore = require('../stores/animalstore');
 var Schedule = require('../core/schedule');
 
 var TimePicker = require('bootstrap-timepicker/js/bootstrap-timepicker.js');
@@ -20,7 +21,7 @@ var AddCalendarEvent = React.createClass({
 	getInitialState: function() {
 		var startDate = Utils.FindPassedInProperty(this, 'startDate');
 		var group = Utils.FindPassedInProperty(this, 'group');
-		var animal = Utils.FindPassedInProperty(this, 'animal');
+		var animalId = Utils.FindPassedInProperty(this, 'animalId');
 		var scheduleId = Utils.FindPassedInProperty(this, 'scheduleId');
 		var schedule = ScheduleStore.getScheduleById(scheduleId);
 		var editMode = Utils.FindPassedInProperty(this, 'editMode');
@@ -32,7 +33,7 @@ var AddCalendarEvent = React.createClass({
 		var state = {
 			startDate: moment(startDate, 'MM-DD-YYYY'),
 			group: group,
-			animal: animal,
+			animalId: animalId,
 			schedule: schedule,
 			editMode: editMode,
 			updated: false,
@@ -54,7 +55,7 @@ var AddCalendarEvent = React.createClass({
 		schedule.description = this.refs.description.value;
 		schedule.userId = LoginStore.user.id;
 		schedule.groupId = this.state.group.id;
-		schedule.animalId = this.state.animal.id;
+		schedule.animalId = this.state.animalId;
 	},
 
 	validateFields: function() {
@@ -181,7 +182,7 @@ var AddCalendarEvent = React.createClass({
 					pathname: "animalHomePage",
 					state: {
 						group: this.state.group,
-						animal: this.state.animal
+						animalId: this.state.animalId
 					}
 				}
 			);
@@ -226,7 +227,7 @@ var AddCalendarEvent = React.createClass({
 
 	render: function() {
 		if (!LoginStore.getUser() || !this.state.group ||
-			!this.state.animal ||
+			!this.state.animalId ||
 			(this.state.editMode && !this.state.schedule)) return null;
 		var header = "Schedule an Event";
 		var buttonText = "Schedule";
@@ -239,6 +240,10 @@ var AddCalendarEvent = React.createClass({
 		var defaultStartTime = this.state.editMode ? this.state.startTime : '';
 		var defaultEndTime = this.state.editMode ? this.state.endTime : '';
 		var defaultDescription = this.state.editMode ? this.state.schedule.description : '';
+
+		var animal = AnimalStore.getAnimalById(this.state.animalId);
+		// TODO: Will need to handle animal being null here and let the use select via dropdown.
+		if (!animal) return null;
 
 		return (
 			<div>

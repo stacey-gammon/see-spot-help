@@ -2,5 +2,18 @@
   "name": "The Shelter Helper",
   "start_url": "index.html",
   "display": "standalone",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "splash_screens": [{
+       "src": "image/logo.png",
+       "sizes": "320x240"
+     },
+	 {
+       "src": "image/logo.png",
+       "sizes": "1334x750"
+     },
+	 {
+       "src": "image/logo.png",
+       "sizes": "1920x1080",
+       "density": 3
+     }],
 }
