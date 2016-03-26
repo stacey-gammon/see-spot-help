@@ -54,11 +54,21 @@ var AddCalendarEvent = React.createClass({
 		}
 		schedule.description = this.refs.description.value;
 		schedule.userId = LoginStore.user.id;
-		schedule.groupId = this.state.group.id;
-		schedule.animalId = this.state.animalId;
+		schedule.groupId = this.getGroup().id;
+		schedule.animalId = this.getAnimal().id;
 	},
 
+	// Returns true if an error was found.
 	validateFields: function() {
+		if (!this.getGroup()) {
+			$('#error').html('Sorry, you need to join a group before you can add an event.');
+			return true;
+		}
+		if (!this.getAnimal()) {
+			$('#error').html('Sorry, you must select an animal to schedule an event.');
+			return true;
+		}
+
 		if ((this.refs.endTime.value && !this.refs.startTime.value) ||
 			(!this.refs.endTime.value && this.refs.startTime.value)) {
 			$('#startTimeDiv').addClass('has-error');
@@ -109,6 +119,7 @@ var AddCalendarEvent = React.createClass({
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
 		VolunteerStore.addChangeListener(this.onChange);
+		AnimalStore.addChangeListener(this.onChange);
 
 		// A day click defaults the time to 12 am, lets reset that to a full day event.
 		if (this.state.startTime == '12:00 am' && this.state.startTime == this.state.endTime) {
@@ -159,6 +170,7 @@ var AddCalendarEvent = React.createClass({
 	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
+		AnimalStore.removeChangeListener(this.onChange);
 		VolunteerStore.removeChangeListener(this.onChange);
 	},
 
@@ -204,6 +216,7 @@ var AddCalendarEvent = React.createClass({
 	},
 
 	getUserField: function() {
+		if (!this.state.schedule) return null;
 		if (this.getDisableEditing()) {
 			var member = VolunteerStore.getVolunteerById(this.state.schedule.userId);
 			if (!member) return null;
@@ -225,10 +238,118 @@ var AddCalendarEvent = React.createClass({
 		this.context.router.goBack();
 	},
 
+	getAnimal: function() {
+		if (this.state.animalId) {
+			if (!this.state.group) return null;
+			return AnimalStore.getAnimalById(this.state.animalId, this.state.group.id);
+		} else if (this.refs && this.refs.animalChoice) {
+			if (!this.getGroup()) return null;
+			return AnimalStore.getAnimalById(this.refs.animalChoice.value, this.getGroup().id);
+		} else {
+			return null;
+		}
+	},
+
+	createOptionElement: function (option) {
+		return (
+			<option value={option.id}>{option.name}</option>
+		);
+	},
+
+	createGroupDropDown: function () {
+		if (!LoginStore.getUser()) return null;
+		var groups = GroupStore.getUsersMemberGroups(LoginStore.getUser());
+		var options = groups.map(this.createOptionElement);
+		return (
+			<div className="form-group" style={{marginBottom: 2 + "px"}}>
+				<div className="input-group">
+					<span className="input-group-addon">Group:</span>
+					<select
+						  className="form-control"
+						  ref="groupChoice"
+						  onChange={this.fillAnimalDropDown}
+						  id="groupChoice">
+						{options}
+					</select>
+				</div>
+			</div>
+		);
+	},
+
+	getGroupInputField: function() {
+		if (this.state.group) {
+			return (
+				<div className="input-group">
+					<span className="input-group-addon">Group:</span>
+					<input className="form-control" disabled value={this.state.group.name}
+						type='text' id={this.state.group.id} ref='group'/>
+				</div>
+			);
+		} else {
+			return this.createGroupDropDown();
+		}
+	},
+
+	getGroup: function () {
+		var group = this.state.group;
+		if (!group && this.refs && this.refs.groupChoice) {
+			group = GroupStore.getGroupById(this.refs.groupChoice.value);
+		}
+		return group;
+	},
+
+	fillAnimalDropDown: function () {
+		var group = this.getGroup();
+		if (!group) return null;
+
+		$("#animalChoice").empty();
+		var options = [];
+		for (var animalId in group.animals) {
+			$('#animalChoice').append(
+				'<option value=' + animalId + '>' + group.animals[animalId].name + '</option>');
+		}
+
+	},
+
+	createAnimalDropDown: function () {
+		var group = this.getGroup();
+		if (!group) return null;
+
+		var options = [];
+		for (var animalId in group.animals) {
+			options.push(this.createOptionElement(group.animals[animalId]));
+		}
+		return (
+			<div className="form-group" style={{marginBottom: 2 + "px"}}>
+				<div className="input-group">
+					<span className="input-group-addon">Animal:</span>
+					<select
+						  className="form-control"
+						  ref="animalChoice"
+						  id="animalChoice">
+						{options}
+					</select>
+				</div>
+			</div>
+		);
+	},
+
+	getAnimalInputField: function() {
+		var animal = this.getAnimal();
+		if (animal) {
+			return (
+				<div className="input-group">
+					<span className="input-group-addon">Animal:</span>
+					<input className="form-control" disabled value={animal.name}
+						type='text' id='animal' ref='animal'/>
+				</div>
+			);
+		} else {
+			return this.createAnimalDropDown();
+		}
+	},
+
 	render: function() {
-		if (!LoginStore.getUser() || !this.state.group ||
-			!this.state.animalId ||
-			(this.state.editMode && !this.state.schedule)) return null;
 		var header = "Schedule an Event";
 		var buttonText = "Schedule";
 		if (this.state.updated) header = "Event successfully updated";
@@ -241,27 +362,15 @@ var AddCalendarEvent = React.createClass({
 		var defaultEndTime = this.state.editMode ? this.state.endTime : '';
 		var defaultDescription = this.state.editMode ? this.state.schedule.description : '';
 
-		var animal = AnimalStore.getAnimalById(this.state.animalId);
-		// TODO: Will need to handle animal being null here and let the use select via dropdown.
-		if (!animal) return null;
-
 		return (
 			<div>
 				<h1>{header}</h1>
 				<br/>
 				<div style={{margin: '0 auto', maxWidth: '600px'}}>
 					<div id='error' className='has-error'></div>
-					<div className="input-group">
-						<span className="input-group-addon">Group:</span>
-						<input className="form-control" disabled value={this.state.group.name}
-							type='text' id='group' ref='group'/>
-					</div>
+					{this.getGroupInputField()}
 					{this.getUserField()}
-					<div className="input-group">
-						<span className="input-group-addon">Animal:</span>
-						<input className="form-control" disabled value={this.state.animal.name}
-							type='text' id='animal' ref='animal'/>
-					</div>
+					{this.getAnimalInputField()}
 					<div className="input-group">
 						<span className="input-group-addon">Date:</span>
 							<DatePicker

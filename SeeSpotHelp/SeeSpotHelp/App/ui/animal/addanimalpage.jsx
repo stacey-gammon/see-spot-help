@@ -153,7 +153,6 @@ var AddAnimalPage = React.createClass({
 			<select
 				  defaultValue={defaultValue}
 				  className="form-control"
-				  style={{marginBottom: -11 + "px"}}
 				  id={inputField.ref} ref={inputField.ref}>
 				{options}
 			</select>);
@@ -182,7 +181,8 @@ var AddAnimalPage = React.createClass({
 		var inputBox = inputField.listItems ?
 			this.createDropDown(inputField) : this.createInputType(inputField);
 		return (
-			<div className={inputField.getFormGroupClassName()}>
+			<div className={inputField.getFormGroupClassName()}
+				style={{marginBottom: 2 + "px"}}>
 				{inputField.getErrorLabel()}
 				<div className="input-group">
 					<span className="input-group-addon">{inputField.getUserString()}</span>

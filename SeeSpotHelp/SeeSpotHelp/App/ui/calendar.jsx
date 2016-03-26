@@ -97,6 +97,8 @@ var Calendar = React.createClass({
 			schedule = ScheduleStore.getScheduleByGroup(this.state.group.id);
 		} else if (this.state.view == 'member' && this.state.memberId) {
 			schedule = ScheduleStore.getScheduleByMember(this.state.memberId);
+		} else if (this.state.view == 'profile' && LoginStore.getUser()) {
+			schedule = ScheduleStore.getScheduleByMember(LoginStore.getUser().id);
 		}
 
 		if (!schedule) return [];
@@ -171,13 +173,14 @@ var Calendar = React.createClass({
 			}.bind(this),
 
 			dayClick: function(date) {
+				if (this.state.view == "member") return;
 				this.context.router.push({
 					pathname: "addCalendarEvent",
 					state: {
 						editMode: false,
 						scheduleId: -1,  // Just avoid pulling schedule from local storage,
 						group: this.state.group,
-						animal: animal,
+						animalId: this.state.animalId,
 						startDate: date.format('MM-DD-YYYY'),
 						startTime: date.format('hh:mm a'),
 						endTime: date.format('hh:mm a')
