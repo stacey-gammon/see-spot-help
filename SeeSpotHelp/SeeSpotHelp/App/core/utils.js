@@ -89,6 +89,20 @@ Utils.getCalendarGlyphicon = function () {
 	);
 };
 
+Utils.getMembersGlyphicon = function (memberCount) {
+	var title = screen.width < 600 ? '' : 'Members';
+	var iconSize = screen.width < 600 ? '20px' : '15px';
+	var secondIconSize = screen.width < 600 ? '15px' : '10px';
+
+	return React.createElement("div", null,
+		React.createElement(
+			"span", { className: "glyphicon glyphicon-user", style: {fontSize: iconSize}}),
+		React.createElement(
+			"span", { className: "glyphicon glyphicon-user", style: {fontSize: secondIconSize, marginLeft: '-5px'}}),
+		' ' + title + ' (' + memberCount + ')'
+	);
+},
+
 Utils.getAnimalsTabIon = function () {
 	var title = screen.width < 600 ? '' : 'Animals';
 	var iconSize = screen.width < 600 ? '20px' : '15px';
