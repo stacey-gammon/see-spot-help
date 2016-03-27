@@ -89,6 +89,20 @@ Utils.getCalendarGlyphicon = function () {
 	);
 };
 
+Utils.getAnimalsTabIon = function () {
+	var title = screen.width < 600 ? '' : 'Animals';
+	var iconSize = screen.width < 600 ? '20px' : '15px';
+	return React.createElement("div", null,
+		React.createElement(
+			"img", { className: "glyphicon glyphicon-calendar",
+				src: "images/silhouettes.png",
+				style: {width: '30px', height: '20px'}
+			}
+		),
+		'  ' + title
+	);
+};
+
 Utils.getActivityGlyphicon = function () {
 	var title = screen.width < 600 ? '' : 'Activity';
 	var iconSize = screen.width < 600 ? '20px' : '15px';

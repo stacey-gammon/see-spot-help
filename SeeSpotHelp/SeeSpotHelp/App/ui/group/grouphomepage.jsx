@@ -164,7 +164,7 @@ var GroupHomePage = React.createClass({
 					</div>
 					<GroupActionsBox user={this.state.user} group={this.state.group} />
 					<Tabs activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
-						<Tab eventKey={1} title="Animals">
+						<Tab eventKey={1} title={Utils.getAnimalsTabIon()}>
 							<GroupAnimalsTab group={this.state.group} user={this.state.user}/>
 						</Tab>
 						<Tab eventKey={2} title={this.getMembersGlyphicon()}>

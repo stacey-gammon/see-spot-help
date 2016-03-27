@@ -46,7 +46,7 @@ var AddCalendarEvent = React.createClass({
 	},
 
 	saveFieldsIntoSchedule: function(schedule) {
-		if (this.refs.startTime && this.refs.endTime) {
+		if (this.refs.startTime.value && this.refs.endTime.value) {
 			schedule.start = this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.startTime.value;
 			schedule.end = this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.endTime.value;
 		} else {
@@ -336,7 +336,7 @@ var AddCalendarEvent = React.createClass({
 
 	getAnimalInputField: function() {
 		var animal = this.getAnimal();
-		if (animal) {
+		if (this.state.animalId) {
 			return (
 				<div className="input-group">
 					<span className="input-group-addon">Animal:</span>

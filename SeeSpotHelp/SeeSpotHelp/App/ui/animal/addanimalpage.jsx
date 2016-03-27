@@ -20,6 +20,7 @@ var AddAnimalPage = React.createClass({
 		var inputFields = {
 			"name": new InputField([IFV.validateNotEmpty]),
 			"type": new InputField([IFV.validateNotEmpty]),
+			"status": new InputField([IFV.validateNotEmpty]),
 			"breed": new InputField(),
 			"age": new InputField([IFV.validateNumber]),
 			"description": new InputField()
@@ -29,6 +30,10 @@ var AddAnimalPage = React.createClass({
 
 		inputFields["type"].setListItems([
 			"Dog", "Cat", "Other"
+		]);
+
+		inputFields["status"].setListItems([
+			"Adoptable", "Rescue Only", "Adopted", "Rescued", "PTS", "No long living"
 		]);
 
 		// Store the ref name on the input field without manually

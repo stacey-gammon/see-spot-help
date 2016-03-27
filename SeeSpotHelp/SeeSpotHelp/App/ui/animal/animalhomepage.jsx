@@ -73,11 +73,7 @@ var AnimalHomePage = React.createClass({
 			</LinkContainer>
 		);
 	},
-	getCalendarGlyphicon: function () {
-		return (
-			<span className="glyphicon glyphicon-calendar" style={{fontSize: '20px'}}/>
-		);
-	},
+
 	render: function () {
 		if (!this.state.animal) return null;
 		var imageSrc = this.state.animal.getPhoto();
@@ -96,6 +92,7 @@ var AnimalHomePage = React.createClass({
 						{this.getEditIcon()}
 						</h1>
 						<h2 className="animalInfo">{animal.age} years old</h2>
+						<h2 className="animalInfo">{animal.status}</h2>
 						<h2 className="animalInfo">{animal.breed}</h2>
 						<p className="animalInfo">{animal.description}</p>
 					</div>
