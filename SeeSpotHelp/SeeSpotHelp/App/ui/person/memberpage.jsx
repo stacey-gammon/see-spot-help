@@ -85,10 +85,10 @@ var MemberPage = React.createClass({
 						<Tab eventKey={1} title="Groups">
 							<UserGroupsTab user={this.state.member}/>
 						</Tab>
-						<Tab eventKey={2} title="Activity">
+						<Tab eventKey={2} title={Utils.getActivityGlyphicon()}>
 							<UserActivityTab user={this.state.member}/>
 						</Tab>
-						<Tab eventKey={3} title="Calendar">
+						<Tab eventKey={3} title={Utils.getCalendarGlyphicon()}>
 							<AnimalScheduleTab memberId={this.state.member.id} view="member"/>
 						</Tab>
 					</Tabs>

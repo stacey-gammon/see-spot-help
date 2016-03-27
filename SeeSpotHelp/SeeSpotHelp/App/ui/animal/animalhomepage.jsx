@@ -73,7 +73,11 @@ var AnimalHomePage = React.createClass({
 			</LinkContainer>
 		);
 	},
-
+	getCalendarGlyphicon: function () {
+		return (
+			<span className="glyphicon glyphicon-calendar" style={{fontSize: '20px'}}/>
+		);
+	},
 	render: function () {
 		if (!this.state.animal) return null;
 		var imageSrc = this.state.animal.getPhoto();
@@ -100,10 +104,10 @@ var AnimalHomePage = React.createClass({
 				<AnimalActionsBox group={this.state.group} style={{margin: 10 + 'px'}}
 					animal={animal}/>
 							<Tabs activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
-							<Tab eventKey={1} title="Activity">
+							<Tab eventKey={1} title={Utils.getActivityGlyphicon()}>
 								<AnimalActivityList group={this.state.group} animal={animal}/>
 							</Tab>
-							<Tab eventKey={2} title="Calendar">
+							<Tab eventKey={2} title={Utils.getCalendarGlyphicon()}>
 								<AnimalScheduleTab group={this.state.group} view="animal" animalId={animal.id}/>
 							</Tab>
 						</Tabs>

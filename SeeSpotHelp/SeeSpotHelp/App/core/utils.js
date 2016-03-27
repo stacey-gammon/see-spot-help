@@ -1,4 +1,4 @@
-
+var React = require('react');
 var Volunteer = require('./volunteer');
 var VolunteerGroup = require('./volunteergroup');
 var Animal = require('./animal');
@@ -77,5 +77,27 @@ Utils.LoadStateProp = function(state, prop) {
 		console.log("Failed to load property " + prop + " into state");
 	}
 }
+
+Utils.getCalendarGlyphicon = function () {
+	var title = screen.width < 600 ? '' : 'Calendar';
+	var iconSize = screen.width < 600 ? '20px' : '15px';
+	return React.createElement("div", null,
+		React.createElement(
+			"span", { className: "glyphicon glyphicon-calendar", style: {fontSize: iconSize}}
+		),
+		'  ' + title
+	);
+};
+
+Utils.getActivityGlyphicon = function () {
+	var title = screen.width < 600 ? '' : 'Activity';
+	var iconSize = screen.width < 600 ? '20px' : '15px';
+	return React.createElement("div", null,
+		React.createElement(
+			"span", { className: "glyphicon glyphicon-list", style: {fontSize: iconSize}}
+		),
+		'  ' + title
+	);
+};
 
 module.exports = Utils;

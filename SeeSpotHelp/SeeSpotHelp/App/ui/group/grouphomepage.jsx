@@ -134,6 +134,17 @@ var GroupHomePage = React.createClass({
 		Utils.LoadOrSaveState(stateDuplicate);
 	},
 
+	getMembersGlyphicon: function () {
+		return (
+			<div>
+			<span className="glyphicon glyphicon-user" style={{fontSize: '20px'}}/>
+			<span className="glyphicon glyphicon-user" style={{fontSize: '15px', marginLeft: '-5px'}}/>
+
+			&nbsp;({this.state.group.memberCount()})
+			</div>
+		);
+	},
+
 	render: function() {
 		if (this.state.group) {
 			var defaultTabKey = this.state.groupDefaultTabKey ? this.state.groupDefaultTabKey : 1;
@@ -156,13 +167,13 @@ var GroupHomePage = React.createClass({
 						<Tab eventKey={1} title="Animals">
 							<GroupAnimalsTab group={this.state.group} user={this.state.user}/>
 						</Tab>
-						<Tab eventKey={2} title={memberTitle}>
+						<Tab eventKey={2} title={this.getMembersGlyphicon()}>
 							<GroupMembersTab group={this.state.group} user={this.state.user}/>
 						</Tab>
-						<Tab eventKey={3} title="Activity">
+						<Tab eventKey={3} title={Utils.getActivityGlyphicon()}>
 							<GroupActivityTab group={this.state.group} user={this.state.user}/>
 						</Tab>
-						<Tab eventKey={4} title="Calendar">
+						<Tab eventKey={4} title={Utils.getCalendarGlyphicon()}>
 							<AnimalScheduleTab group={this.state.group} view="group"/>
 						</Tab>
 					</Tabs>
