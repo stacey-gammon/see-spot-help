@@ -18,6 +18,12 @@ var Animal = function(name, type, breed, age, status, photo, id, groupId) {
 	this.classNameForSessionStorage = 'Animal';
 };
 
+Animal.GetTypeOptions = function () {
+	return [
+		"Dog", "Cat", "Other"
+	];
+};
+
 Animal.prototype.getPhoto = function() {
 	if (this.photo) return this.photo;
 	return this.type.toLowerCase() == "cat" ?

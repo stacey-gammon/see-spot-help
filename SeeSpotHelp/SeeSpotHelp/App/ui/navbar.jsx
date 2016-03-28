@@ -39,11 +39,11 @@ var MyNavBar = React.createClass({
 					</NavItem>
 				</Nav>
 				<Nav pullRight style={{display: 'inline-block'}}>
-					<Dropdown componentClass="li">
+					<Dropdown componentClass="li" id="settingsMenu">
 						<Dropdown.Toggle
 							className="dropdownToggleStyle"
 							hidden="true"
-							noCaret="true">
+							noCaret={true}>
 							<button className="hamburgerDropdown">
 								<span className="glyphicon glyphicon-cog nav-item" />
 							</button>

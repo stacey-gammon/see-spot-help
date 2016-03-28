@@ -1,55 +1,29 @@
 ﻿"use strict";
 
 var React = require("react");
+var ReactBootstrap = require("react-bootstrap");
 var Link = require("react-router").Link;
+var Utils = require("../core/utils");
 var LinkContainer = require("react-router-bootstrap").LinkContainer;
 var ShelterSearchResults = require("./searchresults");
 var LoginStore = require("../stores/loginstore");
 var DataServices = require("../core/dataservices");
-
-var AddNewGroupButton = React.createClass({
-	getInitialState: function () {
-		return {}
-	},
-
-	componentDidMount: function () {
-		LoginStore.addChangeListener(this.onChange);
-	},
-
-	componentWillUnmount: function () {
-		LoginStore.removeChangeListener(this.onChange);
-	},
-
-	onChange: function () {
-		forceUpdate();
-	},
-
-	render: function() {
-		var disabled = !LoginStore.getUser();
-		var disabledDiv = "";
-		if (disabled) {
-			disabledDiv = (<div>*You must be logged in to add a new group</div>);
-		}
-		if (this.props.searchText) {
-			return (
-				<div>
-					<LinkContainer to={{ pathname: "AddNewGroup" }} disabled={disabled}>
-						<button className="btn btn-warning shelterResult AddNewGroupButton">
-							Add New Group
-						</button>
-					</LinkContainer>
-					{disabledDiv}
-				</div>
-			);
-		} else return (<div/>);
-	}
-});
+var DropdownMenu = ReactBootstrap.DropdownMenu;
+var ButtonGroup = ReactBootstrap.ButtonGroup;
+var DropdownButton = ReactBootstrap.DropdownButton;
+var Button = ReactBootstrap.Button;
+var MenuItem = ReactBootstrap.MenuItem;
 
 var SearchBox = React.createClass({
 	getInitialState: function() {
-		return {
-			results: {}
+		var state = {
+			results: {},
+			searchForValue: 'groups',
+			searchOnType: 'Name'
 		}
+
+		Utils.LoadOrSaveState(state);
+		return state;
 	},
 
 	getResults: function(results) {
@@ -59,23 +33,107 @@ var SearchBox = React.createClass({
 	},
 
 	shelterSearch: function() {
-		var searchText = this.refs.shelterSearchInput.value;
-		DataServices.startStringSearch("groups", "name", searchText, this.getResults);
+		var searchFor = this.state.searchForValue;
+		var searchOn = this.state.searchOnType.toLowerCase();
+		var searchText = this.refs.groupSearchInput.value;
+
+		DataServices.startStringSearch(searchFor, searchOn, searchText, this.getResults);
+	},
+
+	onSearchForChange: function () {
+		this.setState({searchForValue: this.refs.searchFor.value});
+	},
+
+	getSearchForDropDown: function () {
+		return (
+			<select defaultValue={this.state.searchForValue} className="form-control"
+					ref='searchFor' id='searchFor'
+					onChange={this.onSearchForChange}>
+				<option value='groups'>Volunteer Group</option>
+				<option value='animal'>Adoptable</option>
+			</select>
+		);
+	},
+
+	setSearchOnType: function (value) {
+		this.setState({searchOnType: value});
+	},
+
+	getSearchOnGroupDropDown: function (number) {
+		var id = "groupInput" + number;
+		var groupId = "groupSearchOn" + number;
+		return (
+			<div className="input-group" ref={groupId}>
+				<div className="input-group-btn">
+	  			  <DropdownButton title={this.state.searchOnType} id="bg-nested-dropdown">
+	  		        <MenuItem eventKey="1" onClick={this.setSearchOnType.bind(this, 'Name')}>Name</MenuItem>
+	  		        <MenuItem eventKey="2" onClick={this.setSearchOnType.bind(this, 'City')}>City</MenuItem>
+	  		        <MenuItem eventKey="2" onClick={this.setSearchOnType.bind(this, 'State')}>State</MenuItem>
+	  		      </DropdownButton>
+			  	</div>
+				<input type="text" style={{marginTop: '3px'}} className="form-control" ref="groupSearchInput"/>
+			</div>
+		);
+	},
+
+	createOption: function (option) {
+		return (
+			<option value={option}>{option}</option>
+		);
+	},
+
+	getAnimalTypeDropDown: function () {
+		var options = Animal.GetTypeOptions().map(this.createOption);
+		return (
+			<select defaultValue='name' className="form-control"
+					ref='animalTypeOption' id='animalTypeOption'>
+				{options}
+			</select>
+		);
+	},
+
+	getAnimalBreedInput: function () {
+		var options = Animal.GetTypeOptions().map(this.createOption);
+		return (
+			<div className="input-group">
+				<span className="input-group-addon">Breed</span>
+				<input type="text" className="form-control"
+					ref="animalBreed"/>
+			</div>
+		);
+	},
+
+	getSearchOnAnimalFields: function () {
+		return (
+			<div>
+				<span className="input-group-addon">Type</span>
+				<input type="text" className="form-control"
+					ref="shelterSearchInput"
+					placeholder="Search..."/>
+			</div>
+		);
+	},
+
+	getSearchOnFields: function () {
+		if (this.state.searchForValue == 'groups') {
+			return this.getSearchOnGroupDropDown();
+		} else {
+			return this.getSearchOnAnimalFields();
+		}
 	},
 
 	render: function() {
 		return (
 			<div className="SearchBox">
-				<h1>Search for a volunteer group</h1>
+				<div className="input-group">
+					<span className="input-group-addon">Search For</span>
+					{this.getSearchForDropDown()}
+				</div>
+				{this.getSearchOnFields()}
 				<div className="input-group searchInputBox">
-					<input type="text" className="form-control"
-						   ref="shelterSearchInput"
-						   placeholder="Search..."/>
-					<span className="input-group-btn">
-						<button type="button" className="btn btn-default"
-						   onClick={this.shelterSearch}>Go!
-						</button>
-					</span>
+					<button type="button" className="btn btn-default"
+						onClick={this.shelterSearch}>Go!
+					</button>
 				</div>
 				<div>
 					<br/>
@@ -84,7 +142,6 @@ var SearchBox = React.createClass({
 					</h1>
 				</div>
 				<ShelterSearchResults results={this.state.results} />
-				<AddNewGroupButton searchText={this.state.searchText}/>
 			</div>
 		);
 	}
