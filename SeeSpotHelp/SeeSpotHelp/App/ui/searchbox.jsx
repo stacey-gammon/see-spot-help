@@ -67,8 +67,10 @@ var SearchBox = React.createClass({
 				<div className="input-group-btn">
 	  			  <DropdownButton title={this.state.searchOnType} id="bg-nested-dropdown">
 	  		        <MenuItem eventKey="1" onClick={this.setSearchOnType.bind(this, 'Name')}>Name</MenuItem>
+	  		        <MenuItem eventKey="2" onClick={this.setSearchOnType.bind(this, 'shelterName')}>Shelter</MenuItem>
 	  		        <MenuItem eventKey="2" onClick={this.setSearchOnType.bind(this, 'City')}>City</MenuItem>
 	  		        <MenuItem eventKey="2" onClick={this.setSearchOnType.bind(this, 'State')}>State</MenuItem>
+	  		        <MenuItem eventKey="2" onClick={this.setSearchOnType.bind(this, 'zipCode')}>Zip Code</MenuItem>
 	  		      </DropdownButton>
 			  	</div>
 				<input type="text" style={{marginTop: '3px'}} className="form-control" ref="groupSearchInput"/>

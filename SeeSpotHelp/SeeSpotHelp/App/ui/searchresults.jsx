@@ -2,6 +2,7 @@
 var Router = require('react-router');
 var LinkContainer = require('react-router-bootstrap').LinkContainer;
 var LoginStore = require("../stores/loginstore");
+var GroupListItem = require("./group/grouplistitem");
 
 var ShelterSearchResults = React.createClass({
 	getInitialState: function () {
@@ -38,9 +39,7 @@ var ShelterSearchResults = React.createClass({
 
 	generateResult: function(result) {
 		return (
-			<button className="btn btn-info shelterResult" onClick={this.goToGroup.bind(this, result)}>
-				{result.name} - {result.shelterName} - {result.address}
-			</button>
+			<GroupListItem group={result} user={LoginStore.getUser()}/>
 		);
 	},
 
