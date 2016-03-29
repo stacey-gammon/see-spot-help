@@ -42,7 +42,7 @@ var AnimalActivityItem = React.createClass({
 							 animal: this.props.animal,
 							 activity: this.props.activity,
 							 group: this.props.group,
-							 editMode: true } }}>
+							 mode: 'edit' } }}>
 				<span style={{marginLeft: '10px'}} className="glyphicon glyphicon-edit">
 				</span>
 			</LinkContainer>

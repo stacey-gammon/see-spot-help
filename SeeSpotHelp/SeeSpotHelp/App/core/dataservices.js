@@ -124,7 +124,15 @@ DataServices.PushFirebaseData = function (path, value) {
 	console.log("DataServices:PushFirebaseData with value ");
 	console.log(value);
 	var ref = new Firebase(this.firebaseURL + "/" + path);
-	var newPath = ref.push(value);
+	var newPath = {};
+	var onComplete = function (err) {
+		if (err) {
+			console.log("error!: ", err);
+		} else {
+			DataServices.UpdateFirebaseData(path + "/" + newPath.key(), {id: newPath.key()});
+		}
+	}
+	var newPath = ref.push(value, onComplete);
 	value.id = newPath.key();
 	return value;
 };

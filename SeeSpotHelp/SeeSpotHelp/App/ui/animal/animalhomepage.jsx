@@ -66,7 +66,7 @@ var AnimalHomePage = React.createClass({
 					state: { user: LoginStore.user,
 							 group: this.state.group,
 							 animal: this.state.animal,
-							 editMode: true } }}>
+							 mode: 'edit' } }}>
 				<span style={{marginLeft: '10px'}}
 						className="glyphicon glyphicon-edit">
 				</span>

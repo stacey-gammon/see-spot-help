@@ -1,5 +1,6 @@
 var DataServices = require('./dataservices');
 var ServerResponse = require('./serverresponse');
+var Utils = require('./utils');
 
 // An animal that is currently being managed by a volunteer group.
 
@@ -22,6 +23,14 @@ Animal.GetTypeOptions = function () {
 	return [
 		"Dog", "Cat", "Other"
 	];
+};
+
+Animal.prototype.CopyGroupFields = function (group) {
+	// Add these fields for searching.
+	this.zipCode = Utils.MakeSearchable(group.zipCode);
+	this.shelter = Utils.MakeSearchable(group.shelter);
+	this.city = Utils.MakeSearchable(group.city);
+	this.state = Utils.MakeSearchable(group.state);
 };
 
 Animal.prototype.getPhoto = function() {
@@ -60,28 +69,25 @@ Animal.prototype.copyFieldsFrom = function (other) {
 };
 
 Animal.prototype.delete = function() {
-	var firebasePath = "groups/" + this.groupId + "/animals";
+	var firebasePath = "animals";
 	DataServices.RemoveFirebaseData(firebasePath + "/" + this.id);
 };
 
 // Attempts to insert the current instance into the database as
 // a animal
 Animal.prototype.insert = function (callback) {
-	var firebasePath = "groups/" + this.groupId + "/animals";
+	var firebasePath = "animals";
 
 	// Get rid of undefineds to make firebase happy.
 	this.id = null;
 	if (!this.photo) this.photo = null;
 
 	this.id = DataServices.PushFirebaseData(firebasePath, this).id;
-	console.log("resetting id on the animal, path = " + firebasePath + "/" + this.id);
 	DataServices.UpdateFirebaseData(firebasePath + "/" + this.id, { id: this.id });
 };
 
-// Attempts to update the Animal in the database.
 Animal.prototype.update = function () {
-	console.log("Animal.updateWithFirebase");
-	DataServices.UpdateFirebaseData("groups/" + this.groupId + "/animals/" + this.id, this);
+	DataServices.UpdateFirebaseData("animals/" + this.id, this);
 };
 
 module.exports = Animal;

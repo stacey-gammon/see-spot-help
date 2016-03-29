@@ -51,6 +51,14 @@ class AnimalStore extends EventEmitter {
 		return null;
 	}
 
+	getAnimalsByGroupId(groupId) {
+		if (!this.animals.hasOwnProperty(groupId)) {
+			this.downloadAnimals(groupId);
+			return null;
+		}
+		return this.animals[groupId];
+	}
+
 	animalAdded(snapshot) {
 		if (snapshot.val()) {
 			var animal = Animal.castObject(snapshot.val());
@@ -99,14 +107,20 @@ class AnimalStore extends EventEmitter {
 	}
 
 	downloadAnimals(groupId) {
-		DataServices.OnChildAdded(
-			"groups/" + groupId + "/animals",
+		DataServices.OnMatchingChildAdded(
+			"animals",
+			"groupId",
+			groupId,
 			this.animalAdded.bind(this));
-		DataServices.OnChildRemoved(
-			"groups/" + groupId + "/animals",
+		DataServices.OnMatchingChildRemoved(
+			"animals",
+			"groupId",
+			groupId,
 			this.animalDeleted.bind(this));
-		DataServices.OnChildChanged(
-			"groups/" + groupId + "/animals",
+		DataServices.OnMatchingChildChanged(
+			"animals",
+			"groupId",
+			groupId,
 			this.animalChanged.bind(this));
 	}
 

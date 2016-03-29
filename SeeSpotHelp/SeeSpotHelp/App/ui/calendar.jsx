@@ -163,7 +163,7 @@ var Calendar = React.createClass({
 					state: {
 						group: this.state.group,
 						animalId: this.state.animalId,
-						editMode: true,
+						mode: 'edit',
 						scheduleId: event.id,
 						startDate: moment(event.start).format('MM-DD-YYYY'),
 						startTime: moment(event.start).format('hh:mm a'),
@@ -177,7 +177,7 @@ var Calendar = React.createClass({
 				this.context.router.push({
 					pathname: "addCalendarEvent",
 					state: {
-						editMode: false,
+						mode: 'add',
 						scheduleId: -1,  // Just avoid pulling schedule from local storage,
 						group: this.state.group,
 						animalId: this.state.animalId,

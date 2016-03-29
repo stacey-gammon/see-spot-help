@@ -8,7 +8,7 @@ var GroupStore = require("../../stores/groupstore");
 
 var AddAnimalNote = React.createClass({
 	getInitialState: function() {
-		var editMode = Utils.FindPassedInProperty(this, "editMode");
+		var mode = Utils.FindPassedInProperty(this, "mode");
 		var animal = Utils.FindPassedInProperty(this, "animal");
 		var group = Utils.FindPassedInProperty(this, "group");
 		var activity = Utils.FindPassedInProperty(this, "activity");
@@ -17,7 +17,7 @@ var AddAnimalNote = React.createClass({
 		return {
 			user: user,
 			animal: animal,
-			editMode: editMode,
+			mode: mode,
 			group: group,
 			activity: activity
 		};
@@ -49,7 +49,7 @@ var AddAnimalNote = React.createClass({
 	},
 
 	submitNote: function() {
-		if (this.state.editMode) {
+		if (this.state.mode == 'edit') {
 			this.state.activity.note = this.refs.note.value;
 			this.state.activity.update();
 		} else {
@@ -85,9 +85,9 @@ var AddAnimalNote = React.createClass({
 
 	render: function() {
 		console.log("AddAnimalNote:render:");
-		var value = this.state.editMode ? this.state.activity.note : "";
-		var buttonText = this.state.editMode ? "Update" : "Post";
-		var headerText = this.state.editMode ?
+		var value = this.state.mode == 'edit' ? this.state.activity.note : "";
+		var buttonText = this.state.mode == 'edit' ? "Update" : "Post";
+		var headerText = this.state.mode == 'edit' ?
 			'Update your post about ' + this.state.animal.name :
 			'Make a post about ' + this.state.animal.name;
 		return (

@@ -53,6 +53,7 @@ var ProfilePage = React.createClass({
 	},
 
 	handleTabSelect: function(key) {
+		console.log("handleTabSelect: ", key);
 		this.setState({profileDefaultTabKey : key});
 		// We aren't supposed to manipulate state directly, but it doesn't yet have the newly
 		// selected tab that we want to save to local storage.
@@ -80,10 +81,10 @@ var ProfilePage = React.createClass({
 					</div>
 					<Tabs activeKey={defaultKey} onSelect={this.handleTabSelect}>
 						<Tab eventKey={1} title="Groups">
-							<UserGroupsTab user={this.state.user}/>
+							<UserGroupsTab user={LoginStore.user}/>
 						</Tab>
 						<Tab eventKey={2} title={Utils.getActivityGlyphicon()}>
-							<UserActivityTab user={this.state.user}/>
+							<UserActivityTab user={LoginStore.user}/>
 						</Tab>
 						<Tab eventKey={3} title={Utils.getCalendarGlyphicon()}>
 							<AnimalScheduleTab view="profile"/>

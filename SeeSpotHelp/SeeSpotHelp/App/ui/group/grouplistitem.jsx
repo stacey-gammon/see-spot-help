@@ -5,6 +5,7 @@ var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 var VolunteerGroup = require("../../core/volunteergroup");
+var Utils = require("../../core/utils");
 var Volunteer = require("../../core/volunteer");
 var ConstStrings = require("../../core/conststrings");
 var LoginStore = require("../../stores/loginstore");
@@ -14,7 +15,7 @@ var GroupStore = require("../../stores/groupstore");
 
 var GroupListItem = React.createClass({
 	getInitialState: function() {
-		var user = LoginStore.getUser();
+		var user = Utils.FindPassedInProperty(this, 'user') || LoginStore.getUser();
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
 		var permissions = user && group ? group.getUserPermissions(user.id) : null;
 
@@ -23,6 +24,12 @@ var GroupListItem = React.createClass({
 			group: group,
 			permissions: permissions
 		};
+	},
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			group: nextProps.group,
+			user: nextProps.user || LoginStore.getUser()
+		});
 	},
 
 	componentDidMount: function () {
@@ -49,6 +56,7 @@ var GroupListItem = React.createClass({
 
 	render: function () {
 		console.log("GroupListItem:render:");
+		if (!this.props.user) return null;
 		var group = VolunteerGroup.castObject(this.props.group);
 		console.log("group: ");
 		console.log(group);

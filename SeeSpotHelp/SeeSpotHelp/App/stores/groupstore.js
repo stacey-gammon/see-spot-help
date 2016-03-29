@@ -77,7 +77,6 @@ class GroupStore extends EventEmitter {
 		if (!user) return null;
 		var usersGroups = [];
 		for (var groupId in user.groups) {
-			console.log("getUsersMemberGroups:GroupId:", groupId);
 			if (!this.groups[groupId]) {
 				this.downloadGroup(groupId);
 				continue;

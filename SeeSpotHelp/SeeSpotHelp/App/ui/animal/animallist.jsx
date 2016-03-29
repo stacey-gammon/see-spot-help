@@ -3,12 +3,11 @@
 var React = require('react');
 var AnimalThumbnail = require('./animalthumbnail');
 var GroupStore = require("../../stores/groupstore");
+var AnimalStore = require("../../stores/animalstore");
 
 // A list of animals managed by the current volunteer group.
 var AnimalList = React.createClass({
 	generateAnimal: function (animal) {
-		console.log("generateAnimal, animal = ");
-		console.log(animal);
 		return (
 			<AnimalThumbnail animal={animal} user={this.props.user} group={this.props.group }/>
 		);
@@ -16,15 +15,14 @@ var AnimalList = React.createClass({
 
 	render: function () {
 		if (!this.props.group) return null;
-		var animals = [];
-		for (var key in this.props.group.animals) {
-			if (this.props.group.animals.hasOwnProperty(key)) {
-				animals.push(this.generateAnimal(this.props.group.animals[key]));
-			}
+		var animals = AnimalStore.getAnimalsByGroupId(this.props.group.id);
+		var animalsUiElements = [];
+		for (var i = 0; i < animals.length; i++) {
+			animalsUiElements.push(this.generateAnimal(animals[i]));
 		}
 		return (
 			<div className="list-group">
-				{animals}
+				{animalsUiElements}
 			</div>
 		);
 	}

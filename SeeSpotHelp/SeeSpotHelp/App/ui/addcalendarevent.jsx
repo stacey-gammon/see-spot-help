@@ -24,18 +24,18 @@ var AddCalendarEvent = React.createClass({
 		var animalId = Utils.FindPassedInProperty(this, 'animalId');
 		var scheduleId = Utils.FindPassedInProperty(this, 'scheduleId');
 		var schedule = ScheduleStore.getScheduleById(scheduleId);
-		var editMode = Utils.FindPassedInProperty(this, 'editMode');
+		var mode = Utils.FindPassedInProperty(this, 'mode');
 		var startTime = Utils.FindPassedInProperty(this, 'startTime');
 		var endTime = Utils.FindPassedInProperty(this, 'endTime');
 
-		if (scheduleId == -1) editMode = false;
+		if (scheduleId == -1) mode = 'add';
 
 		var state = {
 			startDate: moment(startDate, 'MM-DD-YYYY'),
 			group: group,
 			animalId: animalId,
 			schedule: schedule,
-			editMode: editMode,
+			mode: mode,
 			updated: false,
 			added: false,
 			startTime: startTime,
@@ -102,7 +102,7 @@ var AddCalendarEvent = React.createClass({
 	scheduleEvent: function() {
 		var errorFound = this.validateFields();
 		if (!errorFound) {
-			if (this.state.editMode) {
+			if (this.state.mode == 'edit') {
 				this.saveFieldsIntoSchedule(this.state.schedule);
 				this.state.schedule.update();
 				this.context.router.goBack();
@@ -127,7 +127,7 @@ var AddCalendarEvent = React.createClass({
 		}
 
 		var endTime = this.state.endTime;
-		if (endTime && !this.state.editMode && this.state.startTime == endTime) {
+		if (endTime && this.state.mode == 'add' && this.state.startTime == endTime) {
 			endTime = moment(endTime, 'hh:mm a').add(1, 'hours').format('hh:mm a');
 		}
 
@@ -207,7 +207,7 @@ var AddCalendarEvent = React.createClass({
 	},
 
 	getDeleteButton: function() {
-		if (!this.state.editMode || this.getDisableEditing()) return null;
+		if (this.state.mode == 'add' || this.getDisableEditing()) return null;
 		return (
 			<button className="btn btn-warning" onClick={this.deleteSchedule}>
 				Delete
@@ -356,11 +356,11 @@ var AddCalendarEvent = React.createClass({
 		if (this.state.added) header = "Event successsfully added";
 		var disableEditing = this.getDisableEditing();
 		if (disableEditing) header = "Event";
-		if (this.state.editMode) buttonText = "Update";
+		if (this.state.mode == 'edit') buttonText = "Update";
 
-		var defaultStartTime = this.state.editMode ? this.state.startTime : '';
-		var defaultEndTime = this.state.editMode ? this.state.endTime : '';
-		var defaultDescription = this.state.editMode ? this.state.schedule.description : '';
+		var defaultStartTime = this.state.mode == 'edit' ? this.state.startTime : '';
+		var defaultEndTime = this.state.mode == 'edit' ? this.state.endTime : '';
+		var defaultDescription = this.state.mode == 'edit' ? this.state.schedule.description : '';
 
 		return (
 			<div>

@@ -70,7 +70,7 @@ var AnimalActionsBox = React.createClass({
 					to={{ pathname: "addAnimalNote",
 						state: { animal: this.props.animal,
 								 group: this.state.group,
-								 editMode: false } }}>
+								 mode: 'add' } }}>
 					<button className="btn btn-info padding addAnimalNoteButton"
 							disabled={!this.shouldAllowUserToEdit()}>
 						Post

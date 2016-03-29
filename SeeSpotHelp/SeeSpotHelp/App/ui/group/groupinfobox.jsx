@@ -12,7 +12,7 @@ var GroupInfoBox = React.createClass({
 				pathname: "/addNewGroup",
 				state: {
 					group:  this.props.group,
-					editMode: true
+					mode: 'edit'
 				}
 			});
 	},

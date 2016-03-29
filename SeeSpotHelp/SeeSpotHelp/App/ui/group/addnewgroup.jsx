@@ -2,6 +2,7 @@
 
 var React = require("react");
 var ConstStrings = require("../../core/conststrings");
+var Utils = require("../../core/utils");
 var VolunteerGroup = require("../../core/volunteergroup");
 var InputField = require("../../core/inputfield");
 var InputFieldValidation = require("../../core/inputfieldvalidation");
@@ -33,11 +34,11 @@ var AddNewGroup = React.createClass({
 			inputFields[field].ref = field;
 		}
 
-		var editMode = Utils.FindPassedInProperty(this, 'editMode');
+		var mode = Utils.FindPassedInProperty(this, 'mode');
 		var group = Utils.FindPassedInProperty(this, 'group');
 
 		// If in edit mode, fill in field values.
-		if (editMode) {
+		if (mode == 'edit') {
 			for (var field in inputFields) {
 				inputFields[field].value = group[field];
 			}
@@ -47,7 +48,7 @@ var AddNewGroup = React.createClass({
 			fields: inputFields,
 			user : LoginStore.getUser(),
 			group: group,
-			editMode: editMode
+			mode: mode
 		};
 	},
 
@@ -94,7 +95,7 @@ var AddNewGroup = React.createClass({
 	addNewVolunteerGroup: function() {
 		var errorFound = this.validateFields();
 		if (!errorFound) {
-			if (this.state.editMode) {
+			if (this.state.mode == 'edit') {
 				this.state.group.updateFromInputFields(this.state.fields);
 				this.state.group.update(this.insertGroupCallback);
 			} else {
@@ -132,7 +133,7 @@ var AddNewGroup = React.createClass({
 	},
 
 	getDeleteGroupButton: function() {
-		if (!this.state.editMode) return null;
+		if (this.state.mode == 'add') return null;
 		return (
 			<button className="btn btn-warning" onClick={this.deleteGroup}>
 				Delete
@@ -149,7 +150,7 @@ var AddNewGroup = React.createClass({
 			var field = this.state.fields[key];
 			inputFields.push(this.createInputField(field));
 		}
-		var buttonText = this.state.editMode ? ConstStrings.Update : ConstStrings.Add;
+		var buttonText = this.state.mode == 'edit' ? ConstStrings.Update : ConstStrings.Add;
 		return (
 			<div>
 				{this.state.errorMessage}

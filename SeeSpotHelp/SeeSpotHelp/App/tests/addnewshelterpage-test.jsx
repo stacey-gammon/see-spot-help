@@ -128,7 +128,7 @@ describe("AddNewGroup", function () {
 		var group = new VolunteerGroup("My Group", "My Shelter", "123 Dog Lane", "Cat City", "NY", "12345", "5");
 		group.userPermissionsMap[123] = VolunteerGroup.PermissionsEnum.ADMIN;
 		var AddNewGroup = ReactTestUtils.renderIntoDocument(
-			<AddNewGroup group={group} editMode="true" />
+			<AddNewGroup group={group} mode="edit" />
 		);
 
 		var groupNameInput = ReactDOM.findDOMNode(AddNewGroup.refs.name);

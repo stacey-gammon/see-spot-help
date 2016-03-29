@@ -42,6 +42,13 @@ var UserGroupsTab = React.createClass({
 			});
 	},
 
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			group: nextProps.group,
+			user: nextProps.user
+		});
+	},
+
 	componentDidMount: function () {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
@@ -61,6 +68,7 @@ var UserGroupsTab = React.createClass({
 	},
 
 	getSearchOrAddText: function() {
+		if (!this.state.user) return null;
 		if (this.state.user.id != LoginStore.user.id) return null;
 		return (
 			<h1>
@@ -72,7 +80,7 @@ var UserGroupsTab = React.createClass({
 	},
 
 	getGroups: function() {
-		if (!this.state.user) return null;
+		if (!LoginStore.getUser()) return null;
 		if (this.state.groups.length == 0 &&
 			(!LoginStore.user ||
 			this.state.user.id != LoginStore.user.id)) {
@@ -100,11 +108,13 @@ var UserGroupsTab = React.createClass({
 				</div>
 			);
 		} else {
+			console.log("nothing!");
 			return <div></div>
 		}
 	},
 
 	render: function () {
+		console.log("usergroupstab.render");
 		return (
 			<div className="list-group">
 				{this.getGroups()}

@@ -3,6 +3,7 @@ var Router = require('react-router');
 var LinkContainer = require('react-router-bootstrap').LinkContainer;
 var LoginStore = require("../stores/loginstore");
 var GroupListItem = require("./group/grouplistitem");
+var AnimalThumbnail = require("./animal/animalthumbnail");
 
 var ShelterSearchResults = React.createClass({
 	getInitialState: function () {
@@ -29,18 +30,16 @@ var ShelterSearchResults = React.createClass({
 		router: React.PropTypes.object.isRequired
 	},
 
-	goToGroup: function(group) {
-		console.log("Going to home page for group " + group.id);
-		sessionStorage.setItem("defaultGroup", JSON.stringify(group));
-		this.context.router.push({ pathname: "/GroupHomePage",
-								   query: { groupId: group.id },
-								   state: { defaultGroup: group, user: this.state.user } });
-	},
-
 	generateResult: function(result) {
-		return (
-			<GroupListItem group={result} user={LoginStore.getUser()}/>
-		);
+		if (this.props.searchForValue == 'groups') {
+			return (
+				<GroupListItem group={result} user={LoginStore.getUser()}/>
+			);
+		} else {
+			return (
+				<AnmimalThumbnail animal={result} user={LoginStore.getUser()}/>
+			);
+		}
 	},
 
 	getLoggedInUser: function() {

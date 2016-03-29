@@ -14,7 +14,6 @@ var GroupActions = require("../../actions/groupactions");
 
 var AddAnimalPage = React.createClass({
 	getInitialState: function () {
-		console.log("AddAnimalPage::getInitialState");
 		// for short hand.
 		var IFV = InputFieldValidation;
 		var inputFields = {
@@ -42,12 +41,12 @@ var AddAnimalPage = React.createClass({
 			inputFields[field].ref = field;
 		}
 
-		var editMode = Utils.FindPassedInProperty(this, 'editMode');
+		var mode = Utils.FindPassedInProperty(this, 'mode');
 		var group = Utils.FindPassedInProperty(this, 'group');
 		var animal = Utils.FindPassedInProperty(this, 'animal');
 
 		// If in edit mode, fill in field values.
-		if (editMode) {
+		if (mode == 'edit') {
 			for (var field in inputFields) {
 				inputFields[field].value = animal[field];
 			}
@@ -57,7 +56,7 @@ var AddAnimalPage = React.createClass({
 			errorMessage: null,
 			fields: inputFields,
 			group: group,
-			editMode: editMode,
+			mode: mode,
 			animal: animal
 		};
 
@@ -111,8 +110,9 @@ var AddAnimalPage = React.createClass({
 		console.log("AddAnimalPage:addNewAnimal");
 		var errorFound = this.validateFields();
 		if (!errorFound) {
-			if (this.state.editMode) {
+			if (this.state.mode == 'edit') {
 				Utils.CopyInputFieldsIntoObject(this.state.fields, this.state.animal);
+				this.state.animal.CopyGroupFields(this.state.group);
 				this.state.animal.update();
 				GroupActions.animalUpdated(this.state.group, this.state.animal);
 				this.context.router.push(
@@ -128,6 +128,7 @@ var AddAnimalPage = React.createClass({
 				var animal = new Animal();
 				animal.groupId = this.state.group.id;
 				Utils.CopyInputFieldsIntoObject(this.state.fields, animal);
+				animal.CopyGroupFields(this.state.group);
 				animal.insert();
 				GroupActions.newAnimalAdded(this.state.group, animal);
 				this.context.router.push(
@@ -152,7 +153,7 @@ var AddAnimalPage = React.createClass({
 
 	createDropDown: function (inputField) {
 		var options = inputField.listItems.map(this.createTypeOption);
-		var defaultValue = this.state.editMode ?
+		var defaultValue = this.state.mode == 'edit' ?
 			this.state.animal.type : "Dog";
 		return (
 			<select
@@ -214,7 +215,7 @@ var AddAnimalPage = React.createClass({
 	},
 
 	getDeleteButton: function() {
-		if (!this.state.editMode) return null;
+		if (this.state.mode == 'add') return null;
 		return (
 			<button className="btn btn-warning"
 					onClick={this.deleteAnimal}>
@@ -230,8 +231,8 @@ var AddAnimalPage = React.createClass({
 			var field = this.state.fields[key];
 			inputFields.push(this.createInputField(field));
 		}
-		var buttonText = this.state.editMode ? ConstStrings.Update : ConstStrings.Add;
-		var heading = this.state.editMode ?
+		var buttonText = this.state.mode == 'edit' ? ConstStrings.Update : ConstStrings.Add;
+		var heading = this.state.mode == 'edit' ?
 			"Edit " + this.state.animal.name :
 			"Add a new adoptable!"
 		return (

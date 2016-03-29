@@ -89,6 +89,10 @@ Utils.getCalendarGlyphicon = function () {
 	);
 };
 
+Utils.MakeSearchable = function (field) {
+	return field.toLowerCase().replace(/\W/g, '');
+}
+
 Utils.getMembersGlyphicon = function (memberCount) {
 	var title = screen.width < 600 ? '' : 'Members';
 	var iconSize = screen.width < 600 ? '20px' : '15px';
