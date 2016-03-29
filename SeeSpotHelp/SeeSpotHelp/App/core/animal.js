@@ -1,6 +1,6 @@
 var DataServices = require('./dataservices');
 var ServerResponse = require('./serverresponse');
-var Utils = require('./utils');
+var StringUtils = require('./stringutils');
 
 // An animal that is currently being managed by a volunteer group.
 
@@ -27,10 +27,10 @@ Animal.GetTypeOptions = function () {
 
 Animal.prototype.CopyGroupFields = function (group) {
 	// Add these fields for searching.
-	this.zipCode = Utils.MakeSearchable(group.zipCode);
-	this.shelter = Utils.MakeSearchable(group.shelter);
-	this.city = Utils.MakeSearchable(group.city);
-	this.state = Utils.MakeSearchable(group.state);
+	this.zipCode = StringUtils.MakeSearchable(group.zipCode);
+	this.shelter = StringUtils.MakeSearchable(group.shelter);
+	this.city = StringUtils.MakeSearchable(group.city);
+	this.state = StringUtils.MakeSearchable(group.state);
 };
 
 Animal.prototype.getPhoto = function() {

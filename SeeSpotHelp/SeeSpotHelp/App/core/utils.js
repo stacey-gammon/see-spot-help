@@ -63,18 +63,9 @@ Utils.LoadStateProp = function(state, prop) {
 			var ClassName = Utils.GenerateClass(state[prop].classNameForSessionStorage);
 			var instance = new ClassName();
 			state[prop] = Object.assign(instance, state[prop]);
-
-			// Special handling for VolunteerGroup which has nested Animal objects which also need
-			// to be casted
-			if (state[prop].classNameForSessionStorage == 'VolunteerGroup') {
-				var group = state[prop];
-				for (var animalId in group.animals) {
-					group.animals[animalId] = Animal.castObject(group.animals[animalId]);
-				}
-			}
 		}
 	} catch (error) {
-		console.log("Failed to load property " + prop + " into state");
+		console.log("Failed to load property " + prop + " into state: ", error);
 	}
 }
 

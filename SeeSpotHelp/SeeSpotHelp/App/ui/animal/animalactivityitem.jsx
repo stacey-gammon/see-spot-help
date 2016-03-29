@@ -10,6 +10,7 @@ var ConstStrings = require("../../core/conststrings");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
 var VolunteerStore = require("../../stores/volunteerstore");
+var AnimalStore = require("../../stores/animalstore");
 var AnimalActivityStore = require("../../stores/animalactivitystore");
 var AnimalNote = require("../../core/animalnote");
 var AnimalActions = require("../../actions/animalactions");
@@ -74,13 +75,7 @@ var AnimalActivityItem = React.createClass({
 
 	getAnimalNameHeader: function() {
 		if (this.props.showAnimalInfo && this.props.group) {
-			var animal = this.props.group.animals[this.props.activity.animalId];
-			if (!animal) {
-				console.log("WARN: no animal with id " + this.props.activity.animalId +
-					" in group " + this.props.group.name);
-			}
-			var animalName =
-				this.props.group.animals[this.props.activity.animalId].name;
+			var animalName = this.props.animal.name;
 			return (
 				<h4>{animalName}</h4>
 			);
