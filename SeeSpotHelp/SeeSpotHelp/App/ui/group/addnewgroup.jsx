@@ -37,6 +37,10 @@ var AddNewGroup = React.createClass({
 		var mode = Utils.FindPassedInProperty(this, 'mode');
 		var group = Utils.FindPassedInProperty(this, 'group');
 
+		if (!mode) {
+			mode = 'add';
+		}
+
 		// If in edit mode, fill in field values.
 		if (mode == 'edit') {
 			for (var field in inputFields) {
@@ -98,6 +102,7 @@ var AddNewGroup = React.createClass({
 			if (this.state.mode == 'edit') {
 				this.state.group.updateFromInputFields(this.state.fields);
 				this.state.group.update(this.insertGroupCallback);
+				GroupActions.groupUpdated(group);
 			} else {
 				var group = VolunteerGroup.createFromInputFields(
 					this.state.fields,

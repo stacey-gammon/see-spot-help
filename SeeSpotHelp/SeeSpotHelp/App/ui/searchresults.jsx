@@ -4,6 +4,7 @@ var LinkContainer = require('react-router-bootstrap').LinkContainer;
 var LoginStore = require("../stores/loginstore");
 var GroupListItem = require("./group/grouplistitem");
 var AnimalThumbnail = require("./animal/animalthumbnail");
+var Animal = require("../core/animal");
 
 var ShelterSearchResults = React.createClass({
 	getInitialState: function () {
@@ -36,8 +37,9 @@ var ShelterSearchResults = React.createClass({
 				<GroupListItem group={result} user={LoginStore.getUser()}/>
 			);
 		} else {
+			result = Animal.castObject(result);
 			return (
-				<AnmimalThumbnail animal={result} user={LoginStore.getUser()}/>
+				<AnimalThumbnail animal={result} user={LoginStore.getUser()}/>
 			);
 		}
 	},

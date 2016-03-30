@@ -28,7 +28,7 @@ var AddCalendarEvent = React.createClass({
 		var startTime = Utils.FindPassedInProperty(this, 'startTime');
 		var endTime = Utils.FindPassedInProperty(this, 'endTime');
 
-		if (scheduleId == -1) mode = 'add';
+		if (scheduleId == -1 || !mode) mode = 'add';
 
 		var state = {
 			startDate: moment(startDate, 'MM-DD-YYYY'),

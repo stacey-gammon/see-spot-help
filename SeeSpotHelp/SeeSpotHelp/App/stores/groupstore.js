@@ -17,7 +17,6 @@ class GroupStore extends EventEmitter {
 		super();
 		var outer = this;
 		this.dispatchToken = Dispatcher.register(function (action) {
-			console.log("GroupStore:Dispatcher:register");
 			outer.handleAction(action);
 		});
 		this.groups = {};

@@ -45,6 +45,7 @@ var AddAnimalPage = React.createClass({
 		var group = Utils.FindPassedInProperty(this, 'group');
 		var animal = Utils.FindPassedInProperty(this, 'animal');
 
+		if (!mode) mode = 'add';
 		// If in edit mode, fill in field values.
 		if (mode == 'edit') {
 			for (var field in inputFields) {

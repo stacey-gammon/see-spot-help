@@ -12,10 +12,22 @@ var AnimalList = React.createClass({
 			<AnimalThumbnail animal={animal} user={this.props.user} group={this.props.group }/>
 		);
 	},
+	componentDidMount: function () {
+		AnimalStore.addChangeListener(this.onChange);
+	},
+
+	componentWillUnmount: function () {
+		AnimalStore.removeChangeListener(this.onChange);
+	},
+
+	onChange: function () {
+		this.forceUpdate();
+	},
 
 	render: function () {
 		if (!this.props.group) return null;
 		var animals = AnimalStore.getAnimalsByGroupId(this.props.group.id);
+		if (!animals) return null;
 		var animalsUiElements = [];
 		for (var i = 0; i < animals.length; i++) {
 			animalsUiElements.push(this.generateAnimal(animals[i]));

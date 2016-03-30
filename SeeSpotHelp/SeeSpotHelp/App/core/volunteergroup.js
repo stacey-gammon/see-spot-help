@@ -226,8 +226,6 @@ VolunteerGroup.prototype.insert = function (user, callback) {
 //	 updated volunteer group (null on failure) and a server
 //	 response to hold error and success information.
 VolunteerGroup.prototype.update = function (callback) {
-	console.log("VolunteerGroup.updateWithFirebase with:");
-	console.log(this);
 	DataServices.UpdateFirebaseData("groups/" + this.id, this);
 	callback(this, new ServerResponse());
 };

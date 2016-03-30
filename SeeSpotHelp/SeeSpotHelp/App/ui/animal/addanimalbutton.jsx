@@ -61,7 +61,9 @@ var AddAnimalButton = React.createClass({
 			<div className='center-block' style={{textAlign: 'center'}}>
 			<LinkContainer
 				to={{pathname: "addAnimalPage",
-					state: {user: this.state.user, group: this.state.group}}}>
+					state: {user: this.state.user,
+							group: this.state.group,
+							mode: 'add'}}}>
 				<button className="btn btn-info AddAnimalButton padding">
 					Add Animal
 				</button>

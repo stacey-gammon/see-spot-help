@@ -93,10 +93,10 @@ class AnimalStore extends EventEmitter {
 
 	animalChanged(snapshot) {
 		var changedAnimal = Animal.castObject(snapshot.val());
-		var activities = this.animals[changedAnimal.groupId];
-		for (var i = 0; i < this.animals.length; i++) {
-			if (this.animals[i].id == changedAnimal.id) {
-				this.animals[i] = changedAnimal;
+		var animals = this.animals[changedAnimal.groupId];
+		for (var i = 0; i < animals.length; i++) {
+			if (animals[i].id == changedAnimal.id) {
+				animals[i] = changedAnimal;
 				AnimalActions.animalChanged(changedAnimal);
 				this.emitChange();
 				return;
@@ -124,10 +124,23 @@ class AnimalStore extends EventEmitter {
 			this.animalChanged.bind(this));
 	}
 
+	updateAnimalInfo(group) {
+		console.log("updating animal info to match groups");
+		var animals = this.animals[group.id];
+		for (var i = 0; i < animals.length; i++) {
+			animals[i].CopyGroupFields(group);
+			animals[i].update();
+		}
+		this.emitChange();
+	}
+
 	handleAction(action) {
 		switch (action.type) {
-			default:
+			case ActionConstants.GROUP_UPDATED:
+				tthis.updateAnimalInfo(action.group);
 				break;
+		default:
+			break;
 		}
 	}
 }

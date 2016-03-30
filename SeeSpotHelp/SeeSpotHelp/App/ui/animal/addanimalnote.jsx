@@ -14,6 +14,8 @@ var AddAnimalNote = React.createClass({
 		var activity = Utils.FindPassedInProperty(this, "activity");
 		var user = LoginStore.getUser();
 
+		if (!mode) mode = 'add';
+
 		return {
 			user: user,
 			animal: animal,
