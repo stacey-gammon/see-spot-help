@@ -27,6 +27,8 @@ var AddCalendarEvent = React.createClass({
 		var mode = Utils.FindPassedInProperty(this, 'mode');
 		var startTime = Utils.FindPassedInProperty(this, 'startTime');
 		var endTime = Utils.FindPassedInProperty(this, 'endTime');
+		var allowAnimalChange = Utils.FindPassedInProperty(this, 'allowAnimalChange');
+		var allowGroupChange = Utils.FindPassedInProperty(this, 'allowGroupChange');
 
 		if (scheduleId == -1 || !mode) mode = 'add';
 
@@ -39,7 +41,9 @@ var AddCalendarEvent = React.createClass({
 			updated: false,
 			added: false,
 			startTime: startTime,
-			endTime: endTime
+			endTime: endTime,
+			allowAnimalChange: allowAnimalChange,
+			allowGroupChange: allowGroupChange
 		}
 		Utils.LoadOrSaveState(state);
 		return state;
@@ -304,9 +308,11 @@ var AddCalendarEvent = React.createClass({
 
 		$("#animalChoice").empty();
 		var options = [];
-		for (var animalId in group.animals) {
+		var animals = AnimalStore.getAnimalsByGroupId(group.id);
+		if (!animals) return null;
+		for (var i = 0; i < animals.length; i++) {
 			$('#animalChoice').append(
-				'<option value=' + animalId + '>' + group.animals[animalId].name + '</option>');
+				'<option value=' + animals[i].id + '>' + animals[i].name + '</option>');
 		}
 
 	},
