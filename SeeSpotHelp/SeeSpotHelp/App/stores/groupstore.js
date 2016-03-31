@@ -111,7 +111,6 @@ class GroupStore extends EventEmitter {
 		}
 		var dataServices = new DataServices(this.groupDownloaded.bind(this), null);
 		dataServices.GetFirebaseData("groups/" + groupId, true);
-		AnimalStore.downloadAnimals(groupId);
 	}
 
 	loadGroupsForUser(user) {

@@ -55,6 +55,7 @@ class AnimalStore extends EventEmitter {
 	}
 
 	getAnimalsByGroupId(groupId) {
+		console.log('getAnimalByGroupId: ', groupId);
 		if (!this.animals.hasOwnProperty(groupId)) {
 			// Prevent downloading twice.
 			this.animals[groupId] = [];

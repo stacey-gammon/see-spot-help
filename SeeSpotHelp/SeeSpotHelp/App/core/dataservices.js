@@ -67,14 +67,10 @@ DataServices.GetChildData = function(path, child, value, onSuccess, listen) {
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	if (listen) {
 		ref.orderByChild(child).equalTo(value).on("child_added", function (snapshot) {
-			console.log("DataServices.GetChildData: Successfully called " + path);
-			console.log(snapshot.val());
 			onSuccess(snapshot);
 		});
 	} else {
 		ref.orderByChild(child).equalTo(value).once("value", function (snapshot) {
-			console.log("DataServices.GetChildData: Successfully called " + path);
-			console.log(snapshot.val());
 			onSuccess(snapshot);
 		});
 	}
@@ -98,8 +94,6 @@ DataServices.prototype.GetFirebaseData = function(path, listen) {
 		});
 	} else {
 		ref.once("value", function (snapshot) {
-			console.log("DataServices.GetFirebaseData: Successfully called " + path);
-			console.log(snapshot.val());
 			outer.onSuccess(snapshot.val());
 		}, function (errorObject) {
 			console.log("The read failed: " + errorObject.code);
