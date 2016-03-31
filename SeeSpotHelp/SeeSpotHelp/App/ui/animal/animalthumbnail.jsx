@@ -47,7 +47,7 @@ var AnimalThumbnail = React.createClass({
 							   state: { user: this.props.user, group: this.props.group, animal: this.props.animal} }}>
 					<div className="media">
 						<div className="media-left">
-							<img className="media-object" src={imageSrc} />
+							<img className="media-object" src={imageSrc} height="100px" width="100px"/>
 						</div>
 						<div className="media-body">
 							<h4 className="media-heading">{this.props.animal.name}</h4>
