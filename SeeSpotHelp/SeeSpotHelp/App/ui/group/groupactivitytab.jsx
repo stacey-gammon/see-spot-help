@@ -11,6 +11,7 @@ var Volunteer = require("../../core/volunteer");
 var VolunteerGroup = require("../../core/volunteergroup");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
+var AnimalStore = require("../../stores/animalstore");
 var AnimalActivityStore = require("../../stores/animalactivitystore");
 var DataServices = require("../../core/dataservices");
 var AddAnimalButton = require("../animal/addanimalbutton");
@@ -38,6 +39,7 @@ var GroupActivityTab = React.createClass({
 		AnimalActivityStore.addChangeListener(this.onChange);
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
+		AnimalStore.addChangeListener(this.onChange);
 	},
 
 	componentWillMount: function () {
@@ -47,6 +49,7 @@ var GroupActivityTab = React.createClass({
 		AnimalActivityStore.removeChangeListener(this.onChange);
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
+		AnimalStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function () {
@@ -68,8 +71,11 @@ var GroupActivityTab = React.createClass({
 	render: function () {
 		if (!this.state.group) return null;
 		var notes = [];
-		for (var key in this.state.group.animals) {
-			var animal = this.state.group.animals[key];
+		var animals = AnimalStore.getAnimalsByGroupId(this.state.group.id);
+		if (!animals) return null;
+
+		for (var i = 0; i < animals.length; i++) {
+			var animal = animals[i];
 			notes = notes.concat(
 				AnimalActivityStore.getActivityByAnimalId(animal.id));
 		}

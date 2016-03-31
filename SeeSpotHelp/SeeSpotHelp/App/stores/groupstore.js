@@ -149,7 +149,6 @@ class GroupStore extends EventEmitter {
 				var animal = action.animal;
 				var group = this.groups[animal.groupId];
 				if (group) {
-					group.animals[animal.id] = animal;
 					if (animal.color) {
 						group.RemoveAnimalColor(animal.color);
 					}
@@ -158,7 +157,6 @@ class GroupStore extends EventEmitter {
 				break;
 			case ActionConstants.ANIMAL_DELETED:
 				var deletedAnimal = action.animal;
-				delete this.groups[deletedAnimal.groupId].animals[deletedAnimal.id];
 				this.emitChange();
 				break;
 			case ActionConstants.LOGIN_USER_SUCCESS:

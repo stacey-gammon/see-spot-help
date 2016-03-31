@@ -177,7 +177,9 @@ var SearchBox = React.createClass({
 					<Link to="AddNewGroup">Add</Link> your own group!
 					</h1>
 				</div>
-				<ShelterSearchResults results={this.state.results} type={this.state.searchForValue}/>
+				<ShelterSearchResults searchForValue={this.state.searchForValue}
+					results={this.state.results}
+					type={this.state.searchForValue}/>
 			</div>
 		);
 	}

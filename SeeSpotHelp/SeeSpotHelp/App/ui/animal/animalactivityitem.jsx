@@ -74,7 +74,7 @@ var AnimalActivityItem = React.createClass({
 	},
 
 	getAnimalNameHeader: function() {
-		if (this.props.showAnimalInfo && this.props.group) {
+		if (this.props.showAnimalInfo && this.props.group && this.props.animal) {
 			var animalName = this.props.animal.name;
 			return (
 				<h4>{animalName}</h4>

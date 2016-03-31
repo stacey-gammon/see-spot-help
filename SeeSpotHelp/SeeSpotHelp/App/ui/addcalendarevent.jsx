@@ -322,8 +322,10 @@ var AddCalendarEvent = React.createClass({
 		if (!group) return null;
 
 		var options = [];
-		for (var animalId in group.animals) {
-			options.push(this.createOptionElement(group.animals[animalId]));
+		var animals = AnimalStore.getAnimalsByGroupId(group.id);
+		if (!animals) return null;
+		for (var i = 0; i < animals.length; i++) {
+			options.push(this.createOptionElement(animals[i]));
 		}
 		return (
 			<div className="form-group" style={{marginBottom: 2 + "px"}}>

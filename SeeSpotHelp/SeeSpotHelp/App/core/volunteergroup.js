@@ -52,9 +52,6 @@ var VolunteerGroup = function(name, shelter, address, city, state, zipCode, id) 
 
 VolunteerGroup.FromJSON = function (json) {
 	var group = VolunteerGroup.castObject(json);
-	for (var animal in group.animals) {
-		group.animals[animal] = Object.assign(new Animal(), group.animals[animal]);
-	}
 	group.availableMemberColors = Object.assign(new EventColors(), group.availableMemberColors);
 	group.availableAnimalColors = Object.assign(new EventColors(), group.availableAnimalColors);
 	return group;
