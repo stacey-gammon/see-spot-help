@@ -1,7 +1,7 @@
 ﻿"use strict"
 
 var React = require("react");
-var AjaxServices = require("../core/dataservices");
+var DataServices = require("../core/dataservices");
 var LoginStore = require("../stores/loginstore");
 
 var TakePhotoButton = React.createClass({
@@ -35,15 +35,18 @@ var TakePhotoButton = React.createClass({
 	},
 
 	uploadFile: function (file) {
-		console.log("AnimalActionsBox::uploadFile");
-		var ajax = new AjaxServices(this.uploadSucceeded,
-									this.uploadFailed);
-		console.log("file = ");
-		console.log(file);
-		ajax.callFileUploadService(
-			"../../WebServices/imageServices.asmx",
-			"saveImageFile",
-			file);
+		var reader = new FileReader();
+		reader.onload = (function(theFile) {
+			return function(e) {
+				var filePayload = e.target.result;
+				// Generate a location that can't be guessed using the file's contents and a random number
+				var hash = CryptoJS.SHA256(Math.random() + CryptoJS.SHA256(filePayload));
+				DataServices.SetFirebaseData("photos/" + hash + '/filePayload', filePayload);
+				this.props.animal.photoIds.push('' + hash + '');
+				this.props.animal.update();
+			}.bind(this);
+		}.bind(this))(file);
+		reader.readAsDataURL(file);
 	},
 
 	loadPhoto: function() {
@@ -61,7 +64,6 @@ var TakePhotoButton = React.createClass({
 	},
 
 	render: function () {
-		console.log("TakePhotoButton::render");
 		return (
 			<div className="takePhotoButton" >
 				<button className="btn btn-info padding"

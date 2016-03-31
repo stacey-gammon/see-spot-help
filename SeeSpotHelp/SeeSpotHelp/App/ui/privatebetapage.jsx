@@ -12,7 +12,6 @@ var SearchPage = require("./searchpage");
 var LoginStore = require("../stores/loginstore");
 var DataServices = require("../core/dataservices");
 
-
 var PrivateBetaPage = React.createClass({
 	getInitialState: function () {
 		return {

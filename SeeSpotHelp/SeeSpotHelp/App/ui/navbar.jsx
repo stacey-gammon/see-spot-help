@@ -13,12 +13,6 @@ var Glyphicon = ReactBootstrap.Glyphicon;
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 var MyNavBar = React.createClass({
-	getInitialState: function() {
-		return {
-			user: LoginStore.getUser()
-		}
-	},
-
 	render: function() {
 		return (
 			<Navbar ref="mynavbar" className="navbar navbar-light bg-faded sh-navbar">

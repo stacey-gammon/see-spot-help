@@ -3,11 +3,17 @@
 var React = require("react");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
+var DataServices = require('../../core/dataservices');
 
 // A small representation of an animal to be displayed in the animal
 // list. Clicking on the thumbnail will direct the user to the chosen
 // animals home page.
 var AnimalThumbnail = React.createClass({
+	getInitialState: function() {
+		return {
+			imageSrc: null
+		}
+	},
 
 	contextTypes: {
 		router: React.PropTypes.object.isRequired
@@ -25,8 +31,16 @@ var AnimalThumbnail = React.createClass({
 			});
 	},
 
+	loadAnimalPhoto: function (data) {
+		this.setState({imageSrc: data});
+	},
+
 	render: function () {
-		var imageSrc = this.props.animal.getPhoto();
+		var imageSrc = this.state.imageSrc || this.props.animal.getPhoto();
+		if (!this.state.imageSrc && this.props.animal.photoIds.length > 0) {
+			new DataServices(this.loadAnimalPhoto).GetFirebaseData(
+				'photos/' + this.props.animal.photoIds[0] + '/filePayload');
+		}
 		return (
 			<a href="#" className="list-group-item animalListElement">
 				<LinkContainer to={{ pathname: "animalHomePage" ,
