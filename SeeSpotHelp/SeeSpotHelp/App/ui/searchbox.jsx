@@ -158,7 +158,21 @@ var SearchBox = React.createClass({
 		}
 	},
 
+	getAddGroupHelpText: function () {
+		if (this.state.searchForValue != 'groups') return null;
+		return (
+			<div className="smallHelpText"
+				style={{marginTop: '-19px', marginLeft: '5px', marginBottom: '5px'}}>Can't find what you're looking for?&nbsp;
+			<Link to="AddNewGroup">Add</Link> your own group!
+			</div>
+		);
+	},
+
 	render: function() {
+		var noResultsFoundText = '';
+		if (this.state.searchForValue && !this.state.results) {
+			noResultsFoundText = 'Sorry, no results found.';
+		}
 		return (
 			<div className="SearchBox">
 				<div className="input-group">
@@ -171,12 +185,9 @@ var SearchBox = React.createClass({
 						onClick={this.shelterSearch}>Go!
 					</button>
 				</div>
-				<div>
-					<br/>
-					<h1>Can't find what you're looking for?&nbsp;
-					<Link to="AddNewGroup">Add</Link> your own group!
-					</h1>
-				</div>
+				<hr/>
+					{this.getAddGroupHelpText()}
+					{noResultsFoundText}
 				<ShelterSearchResults searchForValue={this.state.searchForValue}
 					results={this.state.results}
 					type={this.state.searchForValue}/>

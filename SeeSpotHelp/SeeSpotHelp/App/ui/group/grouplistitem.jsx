@@ -55,16 +55,13 @@ var GroupListItem = React.createClass({
 	},
 
 	render: function () {
-		console.log("GroupListItem:render:");
 		if (!this.props.user) return null;
 		var group = VolunteerGroup.castObject(this.props.group);
-		console.log("group: ");
-		console.log(group);
 		var permission = group.getUserPermissions(this.props.user.id);
 		var headerText = permission == VolunteerGroup.PermissionsEnum.ADMIN ?
-			"Admin" : permission == VolunteerGroup.PermissionsEnum.MEMBER ?
-			"Member" : permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ?
-			"Membership Pending" : "";
+			"(Admin)" : permission == VolunteerGroup.PermissionsEnum.MEMBER ?
+			"(Member)" : permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ?
+			"(Membership Pending)" : "";
 		return (
 			<a className="list-group-item groupListElement">
 				<LinkContainer to={{ pathname: "GroupHomePage" ,
@@ -72,7 +69,7 @@ var GroupListItem = React.createClass({
 					<div className="media">
 						<div className="media-body">
 							<h1>{this.props.group.name}</h1>
-							<h2>({headerText})</h2>
+							<h2>{headerText}</h2>
 							<h2>{this.props.group.shelter}</h2>
 							<h2>{this.props.group.address}</h2>
 							<h2>{this.props.group.city}, {this.props.group.state} {this.props.group.zipCode}</h2>
