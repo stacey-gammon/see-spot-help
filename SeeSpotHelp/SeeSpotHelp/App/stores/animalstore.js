@@ -39,6 +39,7 @@ class AnimalStore extends EventEmitter {
 	}
 
 	getAnimalById(animalId, groupId) {
+		console.log('getAnimalById: ', animalId);
 		if (!this.animals.hasOwnProperty(groupId)) {
 			// Prevent downloading twice.
 			this.animals[groupId] = [];
@@ -55,6 +56,8 @@ class AnimalStore extends EventEmitter {
 
 	getAnimalsByGroupId(groupId) {
 		if (!this.animals.hasOwnProperty(groupId)) {
+			// Prevent downloading twice.
+			this.animals[groupId] = [];
 			this.downloadAnimals(groupId);
 			return null;
 		}
@@ -109,6 +112,7 @@ class AnimalStore extends EventEmitter {
 	}
 
 	downloadAnimals(groupId) {
+		console.log('downloadAnimals for : ', groupId);
 		DataServices.OnMatchingChildAdded(
 			"animals",
 			"groupId",
