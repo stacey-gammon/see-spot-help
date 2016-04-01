@@ -11,15 +11,16 @@ LoginService.logout = function () {
 	LoginActions.userLoggedOut();
 }
 
-LoginService.loginWithFirebaseFacebook = function() {
+LoginService.loginWithFirebaseFacebook = function(onSuccess, onError) {
 	var ref = new Firebase("https://shining-torch-1432.firebaseio.com");
 	ref.authWithOAuthPopup("facebook", function (error, authData) {
 		if (error) {
 			console.log("Login Failed!", error);
 			LoginActions.userLogInFailed(new Error("No facebook user found"));
+			if (onError) onError();
 		} else {
 			console.log("Authenticated successfully with payload:", authData);
-
+			if (onSuccess) onSuccess();
 			Volunteer.LoadVolunteer(
 				authData.uid, authData.facebook.displayName, null, LoginActions.userLoggedIn);
 		}

@@ -37,8 +37,8 @@ Volunteer.castObject = function (obj) {
 	return volunteer;
 };
 
-Volunteer.LoadVolunteerWithFirebase = function (id, name, email, callback) {
-	console.log("Volunteer::LoadVolunteerWithFirebase");
+Volunteer.LoadVolunteer = function (id, name, email, callback) {
+	console.log("Volunteer::LoadVolunteer");
 
 	var onSuccess = function (response) {
 		if (response) {
@@ -56,68 +56,6 @@ Volunteer.LoadVolunteerWithFirebase = function (id, name, email, callback) {
 
 	var dataServices = new DataServices(onSuccess, onFailure);
 	dataServices.GetFirebaseData("users/" + id);
-}
-
-// Using this.id, attempt to load the volunteer from the
-// database.  If no such volunteer exists, AddNewVolunteer
-// will be called with some basic defaults supplied by
-// facebook.
-Volunteer.LoadVolunteer = function (id, name, email, callback) {
-	if (DataServices.useFirebase) {
-		Volunteer.LoadVolunteerWithFirebase(id, name, email, callback);
-		return;
-	}
-
-	console.log("Volunteer::LoadVolunteer");
-	if (jQuery.isEmptyObject(name)) { name = ""; }
-	if (jQuery.isEmptyObject(email)) { email = ""; }
-
-	var LoadedVolunteerWithData = function (response) {
-		console.log("Volunteer::LoadVolunteerWithData");
-		if (response.d.result) {
-			var loadedVolunteer = Volunteer.castObject(response.d.volunteerData);
-			console.log("Volunteer data:");
-			console.log(response.d.volunteerData);
-			console.log("Calling callback function now:");
-			callback(loadedVolunteer);
-			// TODO: Change so all callbacks look something like this:
-			// callback(loadedVolunteer, new ServerResponse(Success));
-		} else {
-			console.log("Volunteer::LoadVolunteerWithData: Error occurred");
-			ShowErrorMessage(response.d);
-		}
-	};
-
-	//Invoked when the server has an error (just an example)
-	var FailedCallback = function (error) {
-		console.log("Volunteer::FailedCallback");
-		var errorString = '';
-		errorString += 'Message:==>' + error.responseText + '\n\n';
-
-		// TODO: Change so callbacks look something like this:
-		// outer.callback(null, new ServerResponse(Failed));
-		alert(errorString);
-	};
-
-	var ajax = new DataServices(LoadedVolunteerWithData,
-								FailedCallback);
-	ajax.CallJSONService(
-		"../../WebServices/volunteerServices.asmx",
-		"getVolunteer",
-		{ anID: id, name: name, email: email });
-};
-
-function ShowErrorMessage(serverResponse) {
-
-	var msg = '';
-
-	for (i = 0; i < serverResponse.messages.length; i++) {
-		if (serverResponse.messages[i] != null) {
-			msg += serverResponse.messages[i] + '\n\r';
-		}
-	}
-
-	alert(msg);
 }
 
 // Returns the default volunteer group this volunteer belongs to,

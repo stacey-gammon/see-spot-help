@@ -9,7 +9,7 @@ var FacebookLogin = React.createClass({
 		if (LoginStore.getUser()) {
 			LoginService.logout();
 		} else {
-			LoginService.loginWithFacebook();
+			LoginStore.authenticate();
 		}
 	},
 
@@ -18,8 +18,8 @@ var FacebookLogin = React.createClass({
 		if (this.props.displayInline) {
 			style = {display: 'inline-block'};
 		}
-		var text = LoginStore.user ? "Log out" : "Log in";
-		var className = LoginStore.user ? "btn btn-default" : "btn btn-info";
+		var text = LoginStore.getUser() ? "Log out" : "Log in";
+		var className = LoginStore.getUser() ? "btn btn-default" : "btn btn-info";
 		return (
 			<div style={style} className="text-center">
 				<button className={className} onClick={this.loginAction}>

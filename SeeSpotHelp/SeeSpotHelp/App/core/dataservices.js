@@ -20,6 +20,11 @@ DataServices.startStringSearch = function (path, child, searchText, onSuccess) {
 		});
 };
 
+DataServices.GetAuthData = function () {
+	var authref = new Firebase(this.firebaseURL);
+	return authref.getAuth();
+};
+
 DataServices.OnMatchingChildRemoved = function(path, child, value, onSuccess) {
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	ref.orderByChild(child).equalTo(value).on("child_removed", function (snapshot) {
@@ -117,12 +122,15 @@ DataServices.RemoveFirebaseData = function (path, callback) {
 DataServices.PushFirebaseData = function (path, value) {
 	console.log("DataServices:PushFirebaseData with value ");
 	console.log(value);
+
 	var ref = new Firebase(this.firebaseURL + "/" + path);
 	var newPath = {};
 	var onComplete = function (err) {
+		console.log('pushing new data completed with ', err);
 		if (err) {
 			console.log("error!: ", err);
 		} else {
+			console.log('updating ' + path + "/" + newPath.key() + ' with id val');
 			DataServices.UpdateFirebaseData(path + "/" + newPath.key(), {id: newPath.key()});
 		}
 	}
@@ -133,8 +141,21 @@ DataServices.PushFirebaseData = function (path, value) {
 
 DataServices.UpdateFirebaseData = function (path, value) {
 	console.log("DataServices:UpdateFirebaseData");
+
+	var authref = new Firebase(this.firebaseURL);
+	var authData = authref.getAuth();
+	if (authData) {
+	  console.log("User " + authData.uid + " is logged in with " + authData.provider);
+	} else {
+	  console.log("User is logged out");
+	}
+
 	var ref = new Firebase(this.firebaseURL + "/" + path);
-	var newPath = ref.update(value);
+	var onComplete = function (err) {
+
+		console.log('UpdateFirebaseData to set ' + path + ' equal to ' + value + ' completed with ', err);
+	}
+	var newPath = ref.update(value, onComplete);
 	return value;
 };
 

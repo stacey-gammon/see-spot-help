@@ -6,6 +6,7 @@ var Volunteer = require('../core/volunteer');
 var LoginActions = require("../actions/loginactions");
 var VolunteerGroup = require('../core/volunteergroup');
 var DataServices = require('../core/dataservices');
+var LoginService = require('../core/loginservice');
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");
@@ -25,6 +26,17 @@ class LoginStore extends EventEmitter {
 		});
 		var users = {};
 		var listenersAttached = false;
+		var authenticated = this.checkAuthenticated();
+	}
+
+	checkAuthenticated() {
+		var authData = DataServices.GetAuthData();
+		if (authData) {
+			this.authenticated = true;
+			console.log("User " + authData.uid + " is logged in with " + authData.provider);
+		} else {
+			this.authenticated = false;
+		}
 	}
 
 	addChangeListener(callback, changeEvent) {
@@ -42,8 +54,19 @@ class LoginStore extends EventEmitter {
 		return !!this.user;
 	}
 
+	authenticate() {
+		var onSuccess = function() {
+			this.authenticated = true;
+			this.emitChange();
+		}.bind(this);
+		var onError = function() {
+			this.authenticated = false;
+			this.emitChange();
+		}.bind(this);
+		LoginService.loginWithFirebaseFacebook(onSuccess, onError);
+	}
+
 	onUserDownloaded(user) {
-		console.log("LoginStore:onUserDownloaded: ", user);
 		this.user = Volunteer.castObject(user);
 		this.emitChange();
 	}
@@ -54,12 +77,14 @@ class LoginStore extends EventEmitter {
 		if (!this.user && !this.listenersAttached) {
 			var user = JSON.parse(localStorage.getItem("user"));
 			if (user) {
+				if (!this.authenticated) this.authenticate();
 				this.listenersAttached = true;
 				new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
 					"users/" + user.id, true);
 			}
 		}
-		return this.user;
+
+		return this.authenticated ? this.user : null;
 	}
 
 	emitChange(changeEvent) {

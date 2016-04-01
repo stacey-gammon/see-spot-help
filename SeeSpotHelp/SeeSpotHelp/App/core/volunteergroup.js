@@ -210,7 +210,7 @@ VolunteerGroup.prototype.insert = function (user, callback) {
 
 	this.id = null;
 	this.id = DataServices.PushFirebaseData("groups", this).id;
-	DataServices.UpdateFirebaseData("groups/" + this.id, { id: this.id });
+	//DataServices.UpdateFirebaseData("groups/" + this.id, { id: this.id });
 
 	user.groups[this.id] = VolunteerGroup.PermissionsEnum.ADMIN;
 	DataServices.UpdateFirebaseData("users/" + user.id + "/groups", user.groups);
