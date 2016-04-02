@@ -18,13 +18,20 @@ var LoginPage = React.createClass({
 			return;
 		}
 
-		if (LoginStore.isAuthenticated() && LoginStore.getUser()) {
+		if (LoginStore.isAuthenticated()) {
+			delete sessionStorage.authenticating;
+		}
+
+		if (LoginStore.isAuthenticated() &&
+			LoginStore.getUser() &&
+			LoginStore.getUser().inBeta) {
 			this.context.router.push("/profilePage");
 
 		// Don't use the getUser version as that may automatically try to authenticate us and we
 		// want to avoid a loop if authentication fails for some reason.
-		} else if (LoginStore.isAuthenticated() && LoginStore.user
-			&& LoginStore.user.inBeta) {
+		} else if (LoginStore.isAuthenticated() &&
+			LoginStore.user
+			&& !LoginStore.user.inBeta) {
 			this.context.router.push("/enterBetaCode");
 		}
 	},

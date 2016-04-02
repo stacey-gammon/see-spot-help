@@ -56,6 +56,9 @@ var ProfilePage = React.createClass({
 	},
 
 	onChange: function () {
+		if (!LoginStore.getUser() && !LoginStore.listenersAttached) {
+			this.context.router.push("/privatebetapage");
+		}
 		this.setState(
 			{
 				user: LoginStore.getUser()
@@ -73,35 +76,30 @@ var ProfilePage = React.createClass({
 	},
 
 	render: function () {
+		if (!LoginStore.getUser()) return null;
 		var defaultKey = this.state.profileDefaultTabKey ? this.state.profileDefaultTabKey : 1;
-		if (LoginStore.getUser()) {
-			var heading = "Hello, " + LoginStore.getUser().name;
-			return (
-				<div>
-					<div className="media padding">
-						<div className="media-body">
-						<h1>{heading}</h1>
-						</div>
+		var heading = "Hello, " + LoginStore.getUser().name;
+		return (
+			<div>
+				<div className="media padding">
+					<div className="media-body">
+					<h1>{heading}</h1>
 					</div>
-					<Tabs activeKey={defaultKey} onSelect={this.handleTabSelect}>
-						<Tab eventKey={1} title="Groups">
-							<UserGroupsTab user={LoginStore.getUser()}/>
-						</Tab>
-						<Tab eventKey={2} title={Utils.getActivityGlyphicon()}>
-							<UserActivityTab user={LoginStore.getUser()}/>
-						</Tab>
-						<Tab eventKey={3} title={Utils.getCalendarGlyphicon()}>
-							<AnimalScheduleTab view="profile"/>
-						</Tab>
-					</Tabs>
-					<br/><br/>
 				</div>
-			);
-		} else {
-			return (
-				<LoginPage/>
-			);
-		}
+				<Tabs activeKey={defaultKey} onSelect={this.handleTabSelect}>
+					<Tab eventKey={1} title="Groups">
+						<UserGroupsTab user={LoginStore.getUser()}/>
+					</Tab>
+					<Tab eventKey={2} title={Utils.getActivityGlyphicon()}>
+						<UserActivityTab user={LoginStore.getUser()}/>
+					</Tab>
+					<Tab eventKey={3} title={Utils.getCalendarGlyphicon()}>
+						<AnimalScheduleTab view="profile"/>
+					</Tab>
+				</Tabs>
+				<br/><br/>
+			</div>
+		);
 	}
 });
 

@@ -6,8 +6,15 @@ var LoginService = require("../core/loginservice");
 
 var FacebookLogin = React.createClass({
 	getInitialState: function () {
+		var message = null;
+		if (sessionStorage.authenticating) {
+			if (!LoginStore.isAuthenticated) {
+				message = "Something went wrong.";
+			}
+			delete sessionStorage.authenticating;
+		}
 		return {
-			message: null,
+			message: message,
 			error: false
 		};
 	},
@@ -30,6 +37,7 @@ var FacebookLogin = React.createClass({
 				this.setState({message: "There was an error signing in with facebook.", error: true});
 			}.bind(this);
 
+			sessionStorage.authenticating = true;
 			LoginStore.authenticate(onSuccess, onError);
 		}
 	},
