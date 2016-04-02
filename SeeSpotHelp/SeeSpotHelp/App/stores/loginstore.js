@@ -26,9 +26,27 @@ class LoginStore extends EventEmitter {
 		});
 		var users = {};
 		var listenersAttached = false;
+
+		var ref = new Firebase(DataServices.firebaseURL);
+		ref.onAuth(this.authDataChanged);
+
 		this.checkAuthenticated();
 		this.userInBeta = false;
 		this.isAuthenticating = false;
+	}
+
+	authDataChanged(authData) {
+		console.log('LoginStore.authDataChanged');
+		if (authData) {
+			console.log("User " + authData.uid + " is logged in with " + authData.provider);
+			// Load the new user associated with the login.
+			new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
+				"users/" + authData.uid, true);
+		} else {
+			console.log("User is logged out");
+			this.user = null;
+			sessionStorage.clear();
+		}
 	}
 
 	checkAuthenticated() {
@@ -55,18 +73,6 @@ class LoginStore extends EventEmitter {
 
 	isLoggedIn() {
 		return !!this.user;
-	}
-
-	authenticateWithUsernameAndPassword(email, password) {
-		var onSuccess = function (authData) {
-			Volunteer.LoadVolunteer(
-				authData.uid, "anon", email, LoginActions.userLoggedIn);
-			this.authenticated = true;
-		}.bind(this);
-		var onError = function () {
-			this.authenticated = false;
-		}.bind(this);
-		DataServices.AuthenticateWithEmailAndPassword(email, password, onSuccess, onError);
 	}
 
 	authenticate(onSuccess, onError) {
