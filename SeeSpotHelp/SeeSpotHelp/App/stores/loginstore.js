@@ -44,8 +44,9 @@ class LoginStore extends EventEmitter {
 				"users/" + authData.uid, true);
 		} else {
 			console.log("User is logged out");
-			this.user = null;
+			if (this) this.user = null;
 			sessionStorage.clear();
+			localStorage.clear();
 		}
 	}
 
@@ -78,7 +79,7 @@ class LoginStore extends EventEmitter {
 	authenticate(onSuccess, onError) {
 		// Don't make duplicate calls for authenticating.
 		if (sessionStorage.authenticating) return;
-		sessionStorage.authentication = true;
+		sessionStorage.authenticating = true;
 		var myOnSuccess = function() {
 			this.authenticated = true;
 			this.emitChange();
