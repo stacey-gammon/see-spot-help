@@ -32,10 +32,10 @@ class LoginStore extends EventEmitter {
 
 		this.checkAuthenticated();
 		this.userInBeta = false;
-		this.isAuthenticating = false;
 	}
 
 	authDataChanged(authData) {
+		delete sessionStorage.authentication;
 		console.log('LoginStore.authDataChanged');
 		if (authData) {
 			console.log("User " + authData.uid + " is logged in with " + authData.provider);
@@ -77,18 +77,16 @@ class LoginStore extends EventEmitter {
 
 	authenticate(onSuccess, onError) {
 		// Don't make duplicate calls for authenticating.
-		if (this.isAuthenticating) return;
-		this.isAuthenticating = true;
+		if (sessionStorage.authenticating) return;
+		sessionStorage.authentication = true;
 		var myOnSuccess = function() {
 			this.authenticated = true;
-			this.isAuthenticating = false;
 			this.emitChange();
 			if (onSuccess) onSuccess();
 
 		}.bind(this);
 		var myOnError = function() {
 			this.authenticated = false;
-			this.isAuthenticating = false;
 			this.emitChange();
 			if (onError) onError();
 		}.bind(this);
@@ -134,7 +132,7 @@ class LoginStore extends EventEmitter {
 			if (user) {
 				this.listenersAttached = true;
 
-				if (!this.isAuthenticated() && !this.isAuthenticating) {
+				if (!this.isAuthenticated() && !sessionStorage.authenticating) {
 					this.authenticate(onAuthenticated);
 				} else {
 					onAuthenticated();
