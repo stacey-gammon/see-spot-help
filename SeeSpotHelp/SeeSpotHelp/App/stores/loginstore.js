@@ -90,6 +90,15 @@ class LoginStore extends EventEmitter {
 	}
 
 	onUserDownloaded(user) {
+		// We are authenticated but no user exists for us, insert a new user.
+		if (this.isAuthenticated && user == null) {
+			var authData = this.checkAuthenticated();
+			Volunteer.LoadVolunteer(
+				authData.uid,
+				authData.facebook.displayName,
+				authData.facebook.email,
+				LoginActions.userLoggedIn);
+		}
 		this.user = Volunteer.castObject(user);
 		this.emitChange();
 	}
