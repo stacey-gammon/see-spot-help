@@ -13,6 +13,8 @@ LoginService.logout = function () {
 
 LoginService.loginWithFirebaseFacebook = function(onSuccess, onError) {
 	var ref = new Firebase("https://shining-torch-1432.firebaseio.com");
+	// See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes/26416696#26416696
+	sessionStorage.reloadRaceBug = true;
 	ref.authWithOAuthRedirect("facebook", function (error, authData) {
 		if (error) {
 			console.log("Login Failed!", error);

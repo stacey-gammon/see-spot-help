@@ -114,7 +114,7 @@ class LoginStore extends EventEmitter {
 			if (user) {
 				this.listenersAttached = true;
 
-				if (!this.isAuthenticated()) {
+				if (!this.isAuthenticated() && !this.isAuthenticating) {
 					this.authenticate(onAuthenticated);
 				} else {
 					onAuthenticated();
