@@ -26,8 +26,9 @@ class LoginStore extends EventEmitter {
 		});
 		var users = {};
 		var listenersAttached = false;
-		this.authenticated = this.checkAuthenticated();
+		this.checkAuthenticated();
 		this.userInBeta = false;
+		this.isAuthenticating = false;
 	}
 
 	checkAuthenticated() {
@@ -67,21 +68,36 @@ class LoginStore extends EventEmitter {
 		DataServices.AuthenticateWithEmailAndPassword(email, password, onSuccess, onError);
 	}
 
-	authenticate() {
-		var onSuccess = function() {
+	authenticate(onSuccess, onError) {
+		// Don't make duplicate calls for authenticating.
+		if (this.isAuthenticating) return;
+		this.isAuthenticating = true;
+		var myOnSuccess = function() {
 			this.authenticated = true;
+			this.isAuthenticating = false;
 			this.emitChange();
+			if (onSuccess) onSuccess();
+
 		}.bind(this);
-		var onError = function() {
+		var myOnError = function() {
 			this.authenticated = false;
+			this.isAuthenticating = false;
 			this.emitChange();
+			if (onError) onError();
 		}.bind(this);
-		LoginService.loginWithFirebaseFacebook(onSuccess, onError);
+		LoginService.loginWithFirebaseFacebook(myOnSuccess, myOnError);
 	}
 
 	onUserDownloaded(user) {
 		this.user = Volunteer.castObject(user);
 		this.emitChange();
+	}
+
+	isAuthenticated() {
+		if (this.authenticated === undefined) {
+			this.checkAuthenticated();
+		}
+		return this.authenticated;
 	}
 
 	// In case of a hard refresh, always attempt to re-grab the user data from local
@@ -90,14 +106,22 @@ class LoginStore extends EventEmitter {
 		if (!this.user && !this.listenersAttached) {
 			var user = JSON.parse(localStorage.getItem("user"));
 			if (user) {
-				if (!this.authenticated) this.authenticate();
 				this.listenersAttached = true;
-				new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
-					"users/" + user.id, true);
+
+				var onAuthenticated = function () {
+					new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
+						"users/" + user.id, true);
+				}.bind(this);
+
+				if (!this.isAuthenticated()) {
+					this.authenticate(onAuthenticated);
+				} else {
+					onAuthenticated();
+				}
 			}
 		}
 
-		return this.authenticated ? this.user : null;
+		return this.isAuthenticated() ? this.user : null;
 	}
 
 	emitChange(changeEvent) {

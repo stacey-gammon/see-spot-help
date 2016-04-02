@@ -232,7 +232,9 @@ DataServices.prototype.onSuccess = function (response) {
 DataServices.prototype.onFailure = function (response) {
 	console.log("DataServices::OnFailure, response:");
 	console.log(response);
-	this.failureCallback(response);
+	if (this.failureCallback) {
+		this.failureCallback(response);
+	}
 };
 
 module.exports = DataServices;

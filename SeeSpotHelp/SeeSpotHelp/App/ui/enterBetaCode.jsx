@@ -37,9 +37,11 @@ var EnterBetaCode = React.createClass({
 			var invitesLeft = parseInt(data);
 			if (invitesLeft > 0) {
 				LoginStore.getUser().inBeta = true;
+				LoginStore.getUser().betaCode = betaCode;
 				LoginStore.getUser().update();
 				invitesLeft -= 1;
 				DataServices.SetFirebaseData('inviteCodes/' + betaCode, invitesLeft);
+				this.context.router.push("/profilePage");
 			} else {
 				this.setState({error: true});
 			}
@@ -53,8 +55,8 @@ var EnterBetaCode = React.createClass({
 	getErrorText: function () {
 		if (this.state.error) {
 			return (
-				<div>
-					Please try again or go <a link='/privateBetaPage'>go here to request a new invite</a>
+				<div className="alert alert-danger">
+					<strong>Invalid Code</strong>
 				</div>
 			);
 		} else {
@@ -72,6 +74,11 @@ var EnterBetaCode = React.createClass({
 						<input type='text' ref='betaCode'/><br/>
 						<button className="btn btn-info" onClick={this.submitBetaCode}>Submit</button>
 					</div>
+					<br/>
+					<br/>
+					<p>
+						Don't have an invite code? <a link='/privateBetaPage'>Request one!</a>
+					</p>
 				</div>
 		);
 	}

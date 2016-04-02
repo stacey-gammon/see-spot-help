@@ -35,12 +35,22 @@ var ProfilePage = React.createClass({
 		return state;
 	},
 
+	componentWillMount: function () {
+		// There is no user and none is going to be downloaded, we must prompt them to log in.
+		// TODO: when we open the app up to the public, we must be able to handle non-logged in
+		// users.
+		if (!LoginStore.getUser() && !LoginStore.listenersAttached) {
+			this.context.router.push("/privatebetapage");
+		}
+	},
+
 	componentDidMount: function () {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function () {
+		console.log('Profile page unmounted');
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
 	},
@@ -63,16 +73,9 @@ var ProfilePage = React.createClass({
 	},
 
 	render: function () {
-		// There is no user and none is going to be downloaded, we must prompt them to log in.
-		// TODO: when we open the app up to the public, we must be able to handle non-logged in
-		// users.
-		if (!LoginStore.getUser() && !LoginStore.listenersAttached) {
-			this.context.router.push("/privatebetapage");
-			return;
-		}
 		var defaultKey = this.state.profileDefaultTabKey ? this.state.profileDefaultTabKey : 1;
-		if (this.state.user) {
-			var heading = "Hello, " + this.state.user.name;
+		if (LoginStore.getUser()) {
+			var heading = "Hello, " + LoginStore.getUser().name;
 			return (
 				<div>
 					<div className="media padding">
@@ -82,10 +85,10 @@ var ProfilePage = React.createClass({
 					</div>
 					<Tabs activeKey={defaultKey} onSelect={this.handleTabSelect}>
 						<Tab eventKey={1} title="Groups">
-							<UserGroupsTab user={LoginStore.user}/>
+							<UserGroupsTab user={LoginStore.getUser()}/>
 						</Tab>
 						<Tab eventKey={2} title={Utils.getActivityGlyphicon()}>
-							<UserActivityTab user={LoginStore.user}/>
+							<UserActivityTab user={LoginStore.getUser()}/>
 						</Tab>
 						<Tab eventKey={3} title={Utils.getCalendarGlyphicon()}>
 							<AnimalScheduleTab view="profile"/>

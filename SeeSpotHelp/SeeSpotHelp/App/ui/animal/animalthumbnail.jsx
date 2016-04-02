@@ -19,18 +19,6 @@ var AnimalThumbnail = React.createClass({
 		router: React.PropTypes.object.isRequired
 	},
 
-	loadAnimalHomePage: function() {
-		this.context.router.push(
-			{
-				pathname: "animalHomePage",
-				state: {
-					group: this.props.group,
-					user: this.props.user,
-					animal: this.props.animal
-				}
-			});
-	},
-
 	loadAnimalPhoto: function (data) {
 		this.setState({imageSrc: data});
 	},

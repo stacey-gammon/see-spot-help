@@ -33,7 +33,8 @@ var AnimalActivityItem = React.createClass({
 	},
 
 	getEditActionButton: function() {
-		if (this.props.activity.userId != this.state.user.id) {
+		if (!this.state.user ||
+			this.props.activity.userId != this.state.user.id) {
 			return null;
 		}
 		return (
@@ -60,6 +61,7 @@ var AnimalActivityItem = React.createClass({
 	},
 
 	getActions: function () {
+		if (!this.state.user) return null;
 		if (this.props.activity.userId == this.state.user.id ||
 			this.props.group.getUserPermissions(this.state.user.id) ==
 				   VolunteerGroup.PermissionsEnum.ADMIN) {

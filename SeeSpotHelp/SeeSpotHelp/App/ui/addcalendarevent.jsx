@@ -344,6 +344,7 @@ var AddCalendarEvent = React.createClass({
 
 	getAnimalInputField: function() {
 		var animal = this.getAnimal();
+		if (!animal) return null;
 		if (this.state.animalId) {
 			return (
 				<div className="input-group">

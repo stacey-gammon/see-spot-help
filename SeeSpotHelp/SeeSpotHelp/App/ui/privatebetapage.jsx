@@ -1,8 +1,20 @@
 ﻿"use strict"
 
 var React = require("react");
+var LoginStore = require("../stores/loginstore");
 
 var PrivateBetaPage = React.createClass({
+
+	componentWillMount: function () {
+		if (LoginStore.user && LoginStore.user.inBeta) {
+			this.context.router.push('/profilePage');
+		}
+	},
+
+	contextTypes: {
+		router: React.PropTypes.object.isRequired
+	},
+
 	getSignupForm: function () {
 		return (
 			<div>

@@ -5,10 +5,16 @@ var LoginStore = require("../stores/loginstore");
 var LoginService = require("../core/loginservice");
 
 var FacebookLogin = React.createClass({
+	contextTypes: {
+		router: React.PropTypes.object.isRequired
+	},
+
 	loginAction: function () {
 		if (LoginStore.getUser()) {
 			LoginService.logout();
+			this.context.router.push('/loginpage');
 		} else {
+			console.log('authenticating from FacebookLogin');
 			LoginStore.authenticate();
 		}
 	},

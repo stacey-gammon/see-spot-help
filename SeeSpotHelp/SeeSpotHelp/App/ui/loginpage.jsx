@@ -21,7 +21,8 @@ var LoginPage = React.createClass({
 
 	onChange: function () {
 		if (LoginStore.getUser() && LoginStore.getUser().inBeta) {
-			this.context.router.push("/profilePage");
+			this.context.router.goBack();
+//			this.context.router.push("/profilePage");
 		} else if (LoginStore.getUser()) {
 			this.context.router.push("/enterBetaCode");
 		}
