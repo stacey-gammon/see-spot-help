@@ -35,7 +35,7 @@ class LoginStore extends EventEmitter {
 	}
 
 	authDataChanged(authData) {
-		delete sessionStorage.authentication;
+		delete sessionStorage.authenticating;
 		console.log('LoginStore.authDataChanged');
 		if (authData) {
 			console.log("User " + authData.uid + " is logged in with " + authData.provider);
