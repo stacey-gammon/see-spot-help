@@ -119,9 +119,10 @@ class LoginStore extends EventEmitter {
 			var user = JSON.parse(localStorage.getItem("user"));
 
 			var onAuthenticated = function () {
+				var authData = this.checkAuthenticated();
 				console.log('LoginStore.getUser.onAuthenticated');
 				new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
-					"users/" + user.id, true);
+					"users/" + authData.uid, true);
 			}.bind(this);
 
 			if (user) {
