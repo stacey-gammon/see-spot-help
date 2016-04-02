@@ -67,7 +67,8 @@ var ProfilePage = React.createClass({
 		// TODO: when we open the app up to the public, we must be able to handle non-logged in
 		// users.
 		if (!LoginStore.getUser() && !LoginStore.listenersAttached) {
-			this.context.router.push("/loginpage");
+			this.context.router.push("/privatebetapage");
+			return;
 		}
 		var defaultKey = this.state.profileDefaultTabKey ? this.state.profileDefaultTabKey : 1;
 		if (this.state.user) {

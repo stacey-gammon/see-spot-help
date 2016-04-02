@@ -20,6 +20,22 @@ DataServices.startStringSearch = function (path, child, searchText, onSuccess) {
 		});
 };
 
+DataServices.AuthenticateWithEmailAndPassword = function (email, password, onSuccess, onFailure) {
+	var ref = new Firebase(this.firebaseURL);
+	ref.authWithPassword({
+	  email    : email,
+	  password : password
+  }, function(error, authData) {
+	  if (error) {
+		console.log("Error creating user:", error);
+		onFailure();
+	  } else {
+		console.log("Successfully created user account with uid:", authData.uid);
+		onSuccess(authData);
+	  }
+	});
+};
+
 DataServices.GetAuthData = function () {
 	var authref = new Firebase(this.firebaseURL);
 	return authref.getAuth();

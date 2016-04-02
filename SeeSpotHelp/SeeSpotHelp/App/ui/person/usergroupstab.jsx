@@ -17,6 +17,7 @@ var DataServices = require("../../core/dataservices");
 var AddAnimalButton = require("../animal/addanimalbutton");
 var AnimalActivityItem = require("../animal/animalactivityitem");
 var GroupListItem = require("../group/grouplistitem");
+var Intro = require("../intro");
 
 var UserGroupsTab = React.createClass({
 	getInitialState: function () {
@@ -89,13 +90,7 @@ var UserGroupsTab = React.createClass({
 				);
 		} else if (this.state.groups.length == 0) {
 			return (
-				<div>
-					<h1>You are not part of any volunteer groups.  To get started&nbsp;
-					<Link to="searchPage">search</Link>
-					&nbsp;for a group to join, or&nbsp;
-					<Link to="addNewGroup">add</Link> a new one.
-					</h1>
-				</div>
+				<Intro />
 			);
 		} else if (this.state.groups.length) {
 			var groups = this.state.groups.map(this.getGroupElement);

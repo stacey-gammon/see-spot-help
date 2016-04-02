@@ -18,7 +18,7 @@ var FacebookLogin = React.createClass({
 		if (this.props.displayInline) {
 			style = {display: 'inline-block'};
 		}
-		var text = LoginStore.getUser() ? "Log out" : "Log in";
+		var text = LoginStore.getUser() ? "Log out" : "Log in with facebook";
 		var className = LoginStore.getUser() ? "btn btn-default" : "btn btn-info";
 		return (
 			<div style={style} className="text-center">

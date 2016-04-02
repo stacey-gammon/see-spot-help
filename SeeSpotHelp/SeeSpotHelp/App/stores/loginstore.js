@@ -54,6 +54,18 @@ class LoginStore extends EventEmitter {
 		return !!this.user;
 	}
 
+	authenticateWithUsernameAndPassword(email, password) {
+		var onSuccess = function (authData) {
+			Volunteer.LoadVolunteer(
+				authData.uid, "anon", email, LoginActions.userLoggedIn);
+			this.authenticated = true;
+		}.bind(this);
+		var onError = function () {
+			this.authenticated = false;
+		}.bind(this);
+		DataServices.AuthenticateWithEmailAndPassword(email, password, onSuccess, onError);
+	}
+
 	authenticate() {
 		var onSuccess = function() {
 			this.authenticated = true;

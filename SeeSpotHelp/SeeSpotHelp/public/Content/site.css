@@ -4,6 +4,7 @@
     font-weight: bold;
     margin: 2px;
     letter-spacing: 1px;
+	line-height: 21px;
 }
 
 h2 {
@@ -11,6 +12,16 @@ h2 {
     text-align: center;
     margin: 2px;
     letter-spacing: 1px;
+}
+
+.email {
+	width: 100% !important;
+	  max-width: 600px;
+	  margin: 5 auto !important;
+}
+
+.button {
+	margin: 5 auto !important;
 }
 
 .logo-header {
@@ -187,6 +198,7 @@ p {
     border: 0px solid #000000;
 
 	border: 0px solid #C1DAD6;
+	  max-width: 600px;
 }
 
 .groupListElement {
@@ -217,6 +229,7 @@ p {
     -moz-border-radius: 10px 10px 10px 10px;
     -webkit-border-radius: 10px 10px 10px 10px;
     border: 0px solid #000000;
+	  max-width: 600px;
 }
 
 .animalListElement:hover {
@@ -232,10 +245,42 @@ p {
   margin: 0 auto;
 }
 
+.betaIntroDiv {
+	max-width: 700px;
+	margin: 0 auto;
+	color: #495864;
+}
+
+.betaPageBold1, .betaPageBold2, .betaPageBold3 {
+	/* font-weight: bold; */
+	/* color: #B7AFA3; */
+	font-size: 1.2em;
+	line-height: 29px;
+	text-align: left;
+	margin-left: 50px;
+	display: none;
+}
+
+.betaPageBold2 {
+	/* letter-spacing: 1.6px; */
+}
+.betaPageBold3 {
+    /* letter-spacing: 2.0px; */
+}
+
+.developedForText {
+	color: white;
+}
 
 .privateBetaPage {
     padding: 20px;
-    margin: 20px;
+	margin: 20px 5px 10px 5px;
+	background-color: #C1DAD6;
+   	color: #495864;
+    border-radius: 25px;
+	font-size: 1.1em;
+	line-height: 1.5em;
+	border: 3px solid #B7AFA3;
 }
 
 .loginPage {

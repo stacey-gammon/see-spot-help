@@ -24,13 +24,9 @@ var LoginPage = React.createClass({
 	},
 
 	render: function () {
-		console.log("LoginPage::render");
-		return (<div className="loginPage" style={{margin: '0 auto', maxWidth: '600px'}}>
-					<h1>Get started with The Shelter Helper!</h1>
-					<br/>
-					<p style={{textAlign: 'center'}}><a href="#searchpage">Search Adotpables</a></p>
-					<p style={{textAlign: 'center'}}><a href="#searchpage">Search Volunteer Groups</a></p>
-					<p style={{textAlign: 'center'}}>or Login to create your own!</p>
+		return (<div className="loginPage text-center" style={{margin: '0 auto', maxWidth: '600px', textAlign: 'center'}}>
+
+					<img src="images/logo.png" height="70px"/>
 					<div style={{textAlign: 'center', width: '300px', margin: '0 auto'}}>
 						<FacebookLogin/>
 					</div>
