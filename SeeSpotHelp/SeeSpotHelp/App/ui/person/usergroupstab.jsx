@@ -72,11 +72,12 @@ var UserGroupsTab = React.createClass({
 		if (!this.state.user) return null;
 		if (this.state.user.id != LoginStore.user.id) return null;
 		return (
-			<h1>
-			<Link to="searchPage">Search</Link>
-				&nbsp;for a new group to join, or&nbsp;
-			<Link to="addNewGroup">add</Link> your own!
-			</h1>
+			<div className="text-center">
+			<p>
+			<Link to="searchPage">Search for a group</Link>&nbsp;|&nbsp;
+			<Link to="addNewGroup">Add a new group</Link>
+			</p>
+			</div>
 		);
 	},
 
