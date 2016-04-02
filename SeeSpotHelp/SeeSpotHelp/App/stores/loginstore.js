@@ -79,7 +79,7 @@ class LoginStore extends EventEmitter {
 	authenticate(onSuccess, onError) {
 		// Don't make duplicate calls for authenticating.
 		if (sessionStorage.authenticating) return;
-		sessionStorage.authentication = true;
+		sessionStorage.authenticating = true;
 		var myOnSuccess = function() {
 			this.authenticated = true;
 			this.emitChange();
