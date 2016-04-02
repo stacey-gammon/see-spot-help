@@ -15,18 +15,18 @@ var LoginPage = React.createClass({
 		router: React.PropTypes.object.isRequired
 	},
 
-	componentWillMount: function () {
-		console.log('LoginPage.componentWillMount');
+	checkAuthentication: function () {
+		console.log('LoginPage.checkAuthentication');
 		if (LoginStore.isAuthenticated()) {
 			delete sessionStorage.authenticating;
 			console.log('LoginPage.componentWillMount: authenticated!');
 		} else {
 			if (sessionStorage.reloadRaceBug) {
-			    delete sessionStorage.reloadRaceBug;
+				delete sessionStorage.reloadRaceBug;
 				this.setState({loading: true});
-			    setTimeout(function() {
-			        location.reload();
-			    }, 2000)
+				setTimeout(function() {
+					this.checkAuthentication();
+				}.bind(this), 2000)
 				return;
 			}
 		}
@@ -43,6 +43,10 @@ var LoginPage = React.createClass({
 			!LoginStore.getUser().inBeta) {
 			this.context.router.push("/enterBetaCode");
 		}
+	},
+
+	componentWillMount: function () {
+		this.checkAuthentication();
 	},
 
 	componentDidMount: function() {
@@ -70,7 +74,7 @@ var LoginPage = React.createClass({
 		if (this.state.loading) {
 			return (
 				<div className="text-center">
-					<h1>Loggin in...</h1>
+					<h1>Logging in...</h1>
 				</div>
 			);
 		} else {
