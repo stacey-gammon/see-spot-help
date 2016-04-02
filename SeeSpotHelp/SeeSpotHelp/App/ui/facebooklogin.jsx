@@ -5,6 +5,14 @@ var LoginStore = require("../stores/loginstore");
 var LoginService = require("../core/loginservice");
 
 var FacebookLogin = React.createClass({
+	getInitialState: function () {
+		return {
+			message: null,
+			error: false
+		};
+	},
+
+
 	contextTypes: {
 		router: React.PropTypes.object.isRequired
 	},
@@ -15,7 +23,27 @@ var FacebookLogin = React.createClass({
 			this.context.router.push('/loginpage');
 		} else {
 			console.log('authenticating from FacebookLogin');
-			LoginStore.authenticate();
+			var onSuccess = function () {
+				this.setState({message: "Successfully logged in with facebook.", error: false});
+			}.bind(this);
+			var onError = function (error) {
+				this.setState({message: "There was an error signing in with facebook.", error: true});
+			}.bind(this);
+
+			LoginStore.authenticate(onSuccess, onError);
+		}
+	},
+
+	getMessage: function () {
+		if (this.state.message) {
+			var messageStyle = this.state.error ? "alert alert-danger" : "alert alert-success";
+			return (
+				<div className={messageStyle}>
+					{this.state.message}
+				</div>
+			);
+		} else {
+			return null;
 		}
 	},
 
@@ -28,6 +56,7 @@ var FacebookLogin = React.createClass({
 		var className = LoginStore.getUser() ? "btn btn-default" : "btn btn-info";
 		return (
 			<div style={style} className="text-center">
+				{this.getMessage()}
 				<button className={className} onClick={this.loginAction}>
 					{text}
 				</button>

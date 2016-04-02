@@ -96,7 +96,7 @@ var UserGroupsTab = React.createClass({
 		} else if (this.state.groups.length) {
 			var groups = this.state.groups.map(this.getGroupElement);
 			return (
-				<div>
+				<div className="text-center">
 					{groups}
 					<div>
 						{this.getSearchOrAddText()}

@@ -36,6 +36,7 @@ class LoginStore extends EventEmitter {
 		if (authData) {
 			this.authenticated = true;
 			console.log("User " + authData.uid + " is logged in with " + authData.provider);
+			return authData;
 		} else {
 			this.authenticated = false;
 		}
@@ -105,18 +106,26 @@ class LoginStore extends EventEmitter {
 	getUser() {
 		if (!this.user && !this.listenersAttached) {
 			var user = JSON.parse(localStorage.getItem("user"));
+
+			var onAuthenticated = function () {
+				new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
+					"users/" + user.id, true);
+			}.bind(this);
 			if (user) {
 				this.listenersAttached = true;
-
-				var onAuthenticated = function () {
-					new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
-						"users/" + user.id, true);
-				}.bind(this);
 
 				if (!this.isAuthenticated()) {
 					this.authenticate(onAuthenticated);
 				} else {
 					onAuthenticated();
+				}
+			} else {
+				// The authentication causes a page refresh, so we may not have a user but be
+				// authenticated anyway.
+				var authData = this.checkAuthenticated();
+				if (this.authenticated) {
+					new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
+						"users/" + authData.uid, true);
 				}
 			}
 		}

@@ -13,7 +13,7 @@ LoginService.logout = function () {
 
 LoginService.loginWithFirebaseFacebook = function(onSuccess, onError) {
 	var ref = new Firebase("https://shining-torch-1432.firebaseio.com");
-	ref.authWithOAuthPopup("facebook", function (error, authData) {
+	ref.authWithOAuthRedirect("facebook", function (error, authData) {
 		if (error) {
 			console.log("Login Failed!", error);
 			LoginActions.userLogInFailed(new Error("No facebook user found"));

@@ -202,6 +202,11 @@ p {
 	  max-width: 600px;
 }
 
+.groupList {
+	max-width: 600px;
+	margin: 5 auto;
+}
+
 .groupListElement {
     padding: 10px;
     margin: 10px;

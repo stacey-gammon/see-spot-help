@@ -35,7 +35,7 @@ var SearchBox = React.createClass({
 
 	shelterSearch: function() {
 		var searchFor = this.state.searchForValue;
-		const stringToGroupAttribute = {
+		var stringToGroupAttribute = {
 			'zip code': 'zipCode'
 		};
 		var searchOn = this.state.searchOnType.toLowerCase();
