@@ -83,8 +83,8 @@ var UserGroupsTab = React.createClass({
 	getGroups: function() {
 		if (!LoginStore.getUser()) return null;
 		if (this.state.groups.length == 0 &&
-			(!LoginStore.user ||
-			this.state.user.id != LoginStore.user.id)) {
+			(!LoginStore.getUser() ||
+			 (this.state.user && this.state.user.id != LoginStore.getUser().id))) {
 				return (
 					<div>This user does not currently belong to any groups.</div>
 				);

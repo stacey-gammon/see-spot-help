@@ -20,13 +20,17 @@ var LoginPage = React.createClass({
 	},
 
 	onChange: function () {
-		this.context.router.push("/profilePage");
+		if (LoginStore.getUser() && LoginStore.getUser().inBeta) {
+			this.context.router.push("/profilePage");
+		} else if (LoginStore.getUser()) {
+			this.context.router.push("/enterBetaCode");
+		}
 	},
 
 	render: function () {
 		return (<div className="loginPage text-center" style={{margin: '0 auto', maxWidth: '600px', textAlign: 'center'}}>
-
 					<img src="images/logo.png" height="70px"/>
+					<br/>
 					<div style={{textAlign: 'center', width: '300px', margin: '0 auto'}}>
 						<FacebookLogin/>
 					</div>

@@ -26,7 +26,8 @@ class LoginStore extends EventEmitter {
 		});
 		var users = {};
 		var listenersAttached = false;
-		var authenticated = this.checkAuthenticated();
+		this.authenticated = this.checkAuthenticated();
+		this.userInBeta = false;
 	}
 
 	checkAuthenticated() {

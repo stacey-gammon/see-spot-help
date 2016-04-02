@@ -3,6 +3,7 @@
 
 var VolunteerGroup = require('./volunteergroup');
 var DataServices = require('./dataservices');
+var ServerResponse = require('./serverresponse');
 var Firebase = require("firebase");
 
 var Volunteer = function(name, email, id) {

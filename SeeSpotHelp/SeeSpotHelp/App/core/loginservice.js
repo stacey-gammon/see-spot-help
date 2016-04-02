@@ -22,8 +22,13 @@ LoginService.loginWithFirebaseFacebook = function(onSuccess, onError) {
 			console.log("Authenticated successfully with payload:", authData);
 			if (onSuccess) onSuccess();
 			Volunteer.LoadVolunteer(
-				authData.uid, authData.facebook.displayName, null, LoginActions.userLoggedIn);
+				authData.uid,
+				authData.facebook.displayName,
+				authData.facebook.email,
+				LoginActions.userLoggedIn);
 		}
+	}, {
+		scope: "email"
 	});
 };
 
