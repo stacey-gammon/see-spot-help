@@ -95,9 +95,7 @@ class LoginStore extends EventEmitter {
 	}
 
 	isAuthenticated() {
-		if (this.authenticated === undefined) {
-			this.checkAuthenticated();
-		}
+		this.checkAuthenticated();
 		return this.authenticated;
 	}
 

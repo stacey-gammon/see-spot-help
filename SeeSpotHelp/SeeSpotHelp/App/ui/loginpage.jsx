@@ -10,9 +10,21 @@ var LoginPage = React.createClass({
 	},
 
 	componentWillMount: function () {
-		if (LoginStore.getUser() && LoginStore.getUser().inBeta) {
+		if (sessionStorage.reloadRaceBug) {
+		    delete sessionStorage.reloadRaceBug;
+		    setTimeout(function() {
+		        location.reload();
+		    }, 1000)
+			return;
+		}
+
+		if (LoginStore.isAuthenticated() && LoginStore.getUser()) {
 			this.context.router.push("/profilePage");
-		} else if (LoginStore.getUser()) {
+
+		// Don't use the getUser version as that may automatically try to authenticate us and we
+		// want to avoid a loop if authentication fails for some reason.
+		} else if (LoginStore.isAuthenticated() && LoginStore.user
+			&& LoginStore.user.inBeta) {
 			this.context.router.push("/enterBetaCode");
 		}
 	},
@@ -28,9 +40,11 @@ var LoginPage = React.createClass({
 	},
 
 	onChange: function () {
-		if (LoginStore.getUser() && LoginStore.getUser().inBeta) {
+		// Avoid getUser calls to eliminate the potential for authenticate loops as it will
+		// cause a getUser.
+		if (LoginStore.user && LoginStore.user.inBeta) {
 			this.context.router.push("/profilePage");
-		} else if (LoginStore.getUser()) {
+		} else if (LoginStore.user) {
 			this.context.router.push("/enterBetaCode");
 		}
 	},
