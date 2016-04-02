@@ -16,9 +16,10 @@ var LoginPage = React.createClass({
 	},
 
 	componentWillMount: function () {
-
+		console.log('LoginPage.componentWillMount');
 		if (LoginStore.isAuthenticated()) {
 			delete sessionStorage.authenticating;
+			console.log('LoginPage.componentWillMount: authenticated!');
 		} else {
 			if (sessionStorage.reloadRaceBug) {
 			    delete sessionStorage.reloadRaceBug;
@@ -45,9 +46,7 @@ var LoginPage = React.createClass({
 	},
 
 	componentDidMount: function() {
-		LoginStore.addChangeListener(
-			this.onChange,
-			LoginStore.ChangeEventEnum.LOGGED_IN);
+		LoginStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function () {
@@ -55,12 +54,15 @@ var LoginPage = React.createClass({
 	},
 
 	onChange: function () {
+		console.log('LoginPage.onChange');
 		// Avoid getUser calls to eliminate the potential for authenticate loops as it will
 		// cause a getUser.
 		if (LoginStore.user && LoginStore.user.inBeta) {
 			this.context.router.push("/profilePage");
 		} else if (LoginStore.user) {
 			this.context.router.push("/enterBetaCode");
+		} else {
+			console.log('LoginPage.onChange: user is null');
 		}
 	},
 
@@ -76,14 +78,24 @@ var LoginPage = React.createClass({
 		}
 	},
 
+	getLoginButton: function () {
+		if (this.state.loading) {
+			return null;
+		} else {
+			return (
+				<div style={{textAlign: 'center', width: '300px', margin: '0 auto'}}>
+					<FacebookLogin/>
+				</div>
+			);
+		}
+	},
+
 	render: function () {
 		return (<div className="loginPage text-center" style={{margin: '0 auto', maxWidth: '600px', textAlign: 'center'}}>
 					<img src="images/logo.png" height="70px"/>
 						{this.getLoadingText()}
 					<br/>
-					<div style={{textAlign: 'center', width: '300px', margin: '0 auto'}}>
-						<FacebookLogin/>
-					</div>
+					{this.getLoginButton()}
 				</div>
 		);
 	}

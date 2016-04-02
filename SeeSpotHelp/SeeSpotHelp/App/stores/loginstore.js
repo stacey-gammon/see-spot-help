@@ -90,9 +90,11 @@ class LoginStore extends EventEmitter {
 	}
 
 	onUserDownloaded(user) {
+		console.log('onUserDownloaded', user);
 		// We are authenticated but no user exists for us, insert a new user.
 		if (this.isAuthenticated && user == null) {
 			var authData = this.checkAuthenticated();
+			console.log('Loading volunteer with auth data');
 			Volunteer.LoadVolunteer(
 				authData.uid,
 				authData.facebook.displayName,
@@ -111,13 +113,17 @@ class LoginStore extends EventEmitter {
 	// In case of a hard refresh, always attempt to re-grab the user data from local
 	// storage if it doesn't exist.
 	getUser() {
+		console.log('LoginStore.getUser, auth? ' + this.authenticated);
 		if (!this.user && !this.listenersAttached) {
+			console.log('LoginStore.getUser: no user object');
 			var user = JSON.parse(localStorage.getItem("user"));
 
 			var onAuthenticated = function () {
+				console.log('LoginStore.getUser.onAuthenticated');
 				new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
 					"users/" + user.id, true);
 			}.bind(this);
+
 			if (user) {
 				this.listenersAttached = true;
 
@@ -131,6 +137,7 @@ class LoginStore extends EventEmitter {
 				// authenticated anyway.
 				var authData = this.checkAuthenticated();
 				if (this.authenticated) {
+					this.listenersAttached = true;
 					new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
 						"users/" + authData.uid, true);
 				}
