@@ -144,7 +144,7 @@ class AnimalStore extends EventEmitter {
 	handleAction(action) {
 		switch (action.type) {
 			case ActionConstants.GROUP_UPDATED:
-				tthis.updateAnimalInfo(action.group);
+				this.updateAnimalInfo(action.group);
 				break;
 		default:
 			break;
