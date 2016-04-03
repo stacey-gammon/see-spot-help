@@ -31,14 +31,16 @@ var FacebookLogin = React.createClass({
 		}
 		var className = LoginStore.getUser() ? "btn btn-default " : "btn btn-info has-spinner";
 
+		var spinnerClassName = "fa fa-spinner ";
 		if (LoginStore.isAuthenticating()) {
+			spinnerClassName += " fa-spin";
 			className += " active";
 		}
 
 		return (
 			<div style={style} className="text-center">
 				<button className={className} onClick={this.loginAction}>
-    				<span className="spinner"><i className="fa fa-spinner"></i></span>
+    				<span className="spinner"><i className={spinnerClassName}></i></span>
 					{text}
 				</button>
 			</div>

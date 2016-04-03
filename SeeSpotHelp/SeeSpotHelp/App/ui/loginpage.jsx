@@ -21,16 +21,16 @@ var LoginPage = React.createClass({
 
 		if (LoginStore.isAuthenticated()) {
 			delete sessionStorage.loginPageUserAuthenticating;
-			console.log('LoginPage.componentWillMount: authenticated!');
+			console.log('LoginPage.checkAuthentication: authenticated!');
 		} else if (LoginStore.isAuthenticating()) {
 			this.setState({loading: true});
 			return;
 		} else if (sessionStorage.loginPageUserAuthenticating) {
+			console.log('LoginPage.checkAuthentication: errors authenticating');
 			delete sessionStorage.loginPageUserAuthenticating;
 			// The user initiated a login but LoginStore completed without success, report
 			// an error.
-			this.setState({error: true,
-						  message: "Login failed"});
+			this.setState({loading: false, error: true, message: "Login failed"});
 			return;
 		}
 
@@ -91,16 +91,12 @@ var LoginPage = React.createClass({
 	},
 
 	getLoginButton: function () {
-		// if (this.state.loading) {
-		// 	return null;
-		// } else {
-			return (
-				<div style={{textAlign: 'center', width: '300px', margin: '0 auto'}}>
-					{this.getMessage()}
-					<FacebookLogin/>
-				</div>
-			);
-		//}
+		return (
+			<div style={{textAlign: 'center', width: '300px', margin: '0 auto'}}>
+				{this.getMessage()}
+				<FacebookLogin />
+			</div>
+		);
 	},
 
 	render: function () {

@@ -71,14 +71,13 @@ class LoginStore extends EventEmitter {
 			return authData;
 		}
 
-		if (retry && retry >= 3) {
+		if (retry && retry >= 4) {
 			console.log('checkAuthenticatedWithRetries: unsuccessful');
 			// No auth data on the third try, give up and set user as logged out.
 			delete sessionStorage.loginStoreAuthenticating;
+			delete sessionStorage.user;
 			this.authError = true;
 			this.user = null;
-			sessionStorage.clear();
-			localStorage.clear();
 			this.emitChange();
 			return null;
 		}
