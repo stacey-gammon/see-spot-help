@@ -35,6 +35,7 @@ class LoginStore extends EventEmitter {
 	}
 
 	authDataChanged(authData) {
+		if (!this) return;
 		delete sessionStorage.loginStoreAuthenticating;
 		console.log('LoginStore.authDataChanged');
 		if (authData) {
@@ -44,7 +45,7 @@ class LoginStore extends EventEmitter {
 				"users/" + authData.uid, true);
 		} else {
 			console.log("User is logged out");
-			if (this) this.user = null;
+			this.user = null;
 			sessionStorage.clear();
 			localStorage.clear();
 		}
