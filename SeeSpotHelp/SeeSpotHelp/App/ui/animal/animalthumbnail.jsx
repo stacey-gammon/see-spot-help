@@ -4,6 +4,7 @@ var React = require("react");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 var DataServices = require('../../core/dataservices');
+var PhotoStore = require('../../stores/photostore');
 
 // A small representation of an animal to be displayed in the animal
 // list. Clicking on the thumbnail will direct the user to the chosen
@@ -19,16 +20,21 @@ var AnimalThumbnail = React.createClass({
 		router: React.PropTypes.object.isRequired
 	},
 
-	loadAnimalPhoto: function (data) {
-		this.setState({imageSrc: data});
+	componentDidMount: function() {
+		PhotoStore.addChangeListener(this.onChange);
+	},
+
+	componentWillUnmount: function() {
+		PhotoStore.removeChangeListener(this.onChange);
+	},
+
+	onChange: function () {
+		this.forceUpdate();
 	},
 
 	render: function () {
-		var imageSrc = this.state.imageSrc || this.props.animal.getPhoto();
-		if (!this.state.imageSrc && this.props.animal.photoIds.length > 0) {
-			new DataServices(this.loadAnimalPhoto).GetFirebaseData(
-				'photos/' + this.props.animal.photoIds[0] + '/filePayload');
-		}
+		var photos = PhotoStore.getPhotosByAnimalId(this.props.animal.id);
+		var imageSrc = photos && photos.length > 0 ? photos[0].src : this.props.animal.getPhoto();
 		return (
 			<a href="#" className="list-group-item animalListElement">
 				<LinkContainer to={{ pathname: "animalHomePage" ,

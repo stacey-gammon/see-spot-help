@@ -13,6 +13,7 @@ var VolunteerGroup = require("../../core/volunteergroup");
 var AnimalActionsBox = require('./animalactionsbox');
 var AnimalPhotoReel = require("./animalphotoreel");
 var AnimalStore = require("../../stores/animalstore");
+var PhotoStore = require("../../stores/photostore");
 var AnimalActivityList = require("./animalactivitylist");
 var AnimalScheduleTab = require("./animalscheduletab");
 var ReactRouterBootstrap = require('react-router-bootstrap');
@@ -42,6 +43,19 @@ var AnimalHomePage = React.createClass({
 
 		Utils.LoadOrSaveState(state);
 		return state;
+	},
+	componentDidMount: function() {
+		LoginStore.addChangeListener(this.onChange);
+		PhotoStore.addChangeListener(this.onChange);
+	},
+
+	componentWillUnmount: function() {
+		LoginStore.removeChangeListener(this.onChange);
+		PhotoStore.removeChangeListener(this.onChange);
+	},
+
+	onChange: function () {
+		this.forceUpdate();
 	},
 
 	shouldAllowUserToEdit: function () {
@@ -76,7 +90,9 @@ var AnimalHomePage = React.createClass({
 
 	render: function () {
 		if (!this.state.animal) return null;
-		var imageSrc = this.state.animal.getPhoto();
+		var photos = PhotoStore.getPhotosByAnimalId(this.state.animal.id);
+		var imageSrc = photos && photos.length > 0 ? photos[0].src : this.state.animal.getPhoto();
+
 		var animal = this.state.animal;
 		var defaultTabKey = this.state.animalDefaultTabKey ? this.state.animalDefaultTabKey : 1;
 		return (
@@ -85,6 +101,7 @@ var AnimalHomePage = React.createClass({
 					<div className="media-left">
 						<img className="media-object"
 							 style={{margin: 5 + "px"}}
+							 height="100px" width="100px"
 							 src={imageSrc} />
 					</div>
 					<div className="media-body padding">

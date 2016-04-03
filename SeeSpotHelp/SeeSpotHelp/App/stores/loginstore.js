@@ -168,7 +168,12 @@ class LoginStore extends EventEmitter {
 	getUser() {
 		if (!this.user && !this.listenersAttached) {
 			console.log('LoginStore.getUser: no user object');
-			var user = JSON.parse(sessionStorage.getItem("user"));
+			var user = null;
+			try {
+				user = JSON.parse(sessionStorage.getItem("user"));
+			} catch (error) {
+				console.log('Failed to parse user value ' + sessionStorage.getItem("user"));
+			}
 			if (user) {
 				if (!this.authenticated && !sessionStorage.loginStoreAuthenticating) {
 					this.authenticate();

@@ -2,6 +2,7 @@
 
 var React = require("react");
 var DataServices = require("../core/dataservices");
+var Photo = require("../core/photo");
 var LoginStore = require("../stores/loginstore");
 
 var TakePhotoButton = React.createClass({
@@ -41,7 +42,14 @@ var TakePhotoButton = React.createClass({
 				var filePayload = e.target.result;
 				// Generate a location that can't be guessed using the file's contents and a random number
 				var hash = CryptoJS.SHA256(Math.random() + CryptoJS.SHA256(filePayload));
-				DataServices.SetFirebaseData("photos/" + hash + '/filePayload', filePayload);
+				var photo = new Photo();
+				photo.id = hash;
+				photo.src = filePayload;
+				photo.animalId = this.props.animal.id;
+				photo.groupId = this.props.animal.groupId;
+				photo.userId = LoginStore.getUser().id;
+				photo.insert();
+
 				this.props.animal.photoIds.push('' + hash + '');
 				this.props.animal.update();
 			}.bind(this);
