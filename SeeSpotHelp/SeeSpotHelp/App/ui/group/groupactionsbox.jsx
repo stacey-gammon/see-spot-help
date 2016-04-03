@@ -58,7 +58,7 @@ var GroupActionsBox = React.createClass({
 			group.requestToJoin(user);
 			this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
 		}
-		GroupActions.groupUpdated(this);
+		GroupActions.groupUpdated(this.state.group);
 	},
 
 	getRequestToJoinButton: function () {

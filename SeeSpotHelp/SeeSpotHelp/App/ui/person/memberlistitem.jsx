@@ -50,13 +50,13 @@ var MemberListItem = React.createClass({
 
 	approveMembership: function () {
 		this.state.group.updateMembership(this.props.member, VolunteerGroup.PermissionsEnum.MEMBER);
-		GroupActions.groupUpdated(this);
+		GroupActions.groupUpdated(this.state.group);
 	},
 
 	denyMembership: function () {
 		this.state.group.updateMembership(
 			this.props.member, VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED);
-		GroupActions.groupUpdated(this);
+		GroupActions.groupUpdated(this.state.group);
 	},
 
 	getApproveMembershipButton: function() {

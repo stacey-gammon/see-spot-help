@@ -102,7 +102,7 @@ var AddNewGroup = React.createClass({
 			if (this.state.mode == 'edit') {
 				this.state.group.updateFromInputFields(this.state.fields);
 				this.state.group.update(this.insertGroupCallback);
-				GroupActions.groupUpdated(group);
+				GroupActions.groupUpdated(this.state.group);
 			} else {
 				var group = VolunteerGroup.createFromInputFields(
 					this.state.fields,
