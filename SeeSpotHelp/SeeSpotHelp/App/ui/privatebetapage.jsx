@@ -20,7 +20,7 @@ var PrivateBetaPage = React.createClass({
 			<div>
 				<div id="mc_embed_signup">
 
-					<form action="//staceygammonpetphotography.us4.list-manage.com/subscribe/post?u=4a8ec322013131b3a2b0b83d1&amp;id=b567aa5e0c" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
+					<form action="//theshelterhelper.us13.list-manage.com/subscribe/post?u=5074dc4e420d8c33932915cee&amp;id=9a2b83d89e" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
 						<div id="mc_embed_signup_scroll">
 							<input type="text" width="100%" name="EMAIL" className="email" id="mce-EMAIL" placeholder="email address" required/>
 							<div style={{position: 'absolute', left: '-5000px'}} aria-hidden="true">

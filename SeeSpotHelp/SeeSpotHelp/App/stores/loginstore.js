@@ -62,6 +62,7 @@ class LoginStore extends EventEmitter {
 	// See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes for
 	// the bug we are trying to work around here.
 	checkAuthenticatedWithRetries(retry) {
+		console.log('checkAuthenticatedWithRetries: ' + retry);
 		var authData = this.checkAuthenticated();
 		if (authData) {
 			delete sessionStorage.loginStoreAuthenticating;
@@ -71,6 +72,7 @@ class LoginStore extends EventEmitter {
 		}
 
 		if (retry && retry >= 3) {
+			console.log('checkAuthenticatedWithRetries: unsuccessful');
 			// No auth data on the third try, give up and set user as logged out.
 			delete sessionStorage.loginStoreAuthenticating;
 			this.authError = true;
@@ -165,7 +167,6 @@ class LoginStore extends EventEmitter {
 	// In case of a hard refresh, always attempt to re-grab the user data from local
 	// storage if it doesn't exist.
 	getUser() {
-		console.log('LoginStore.getUser, auth? ' + this.authenticated);
 		if (!this.user && !this.listenersAttached) {
 			console.log('LoginStore.getUser: no user object');
 			var user = JSON.parse(sessionStorage.getItem("user"));

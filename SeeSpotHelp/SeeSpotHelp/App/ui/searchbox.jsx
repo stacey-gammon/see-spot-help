@@ -63,7 +63,8 @@ var SearchBox = React.createClass({
 
 	getSearchForDropDown: function () {
 		return (
-			<select defaultValue={this.state.searchForValue} className="form-control"
+			<select defaultValue={this.state.searchForValue}
+					className="form-control"
 					ref='searchFor' id='searchFor'
 					onChange={this.onSearchForChange}>
 				<option value='groups'>Volunteer Group</option>
