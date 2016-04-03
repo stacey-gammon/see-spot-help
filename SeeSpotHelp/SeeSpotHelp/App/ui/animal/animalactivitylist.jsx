@@ -45,8 +45,11 @@ var AnimalActivityList = React.createClass({
 		for (var i = 0; i < notes.length; i++) {
 			displayNotes.push(this.generateAnimalNote(notes[i]));
 		}
+		var text = notes && notes.length > 0 ? '' :
+			"No activity posted yet.";
 		return (
 			<div className="list-group">
+				{text}
 				{displayNotes}
 			</div>
 		);

@@ -64,7 +64,7 @@ var AddAnimalButton = React.createClass({
 					state: {user: this.state.user,
 							group: this.state.group,
 							mode: 'add'}}}>
-				<button className="btn btn-info AddAnimalButton padding">
+				<button className="btn btn-info addAnimalButton padding">
 					Add Animal
 				</button>
 			</LinkContainer>

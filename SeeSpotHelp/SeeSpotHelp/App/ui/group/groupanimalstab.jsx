@@ -59,6 +59,7 @@ var GroupAnimalsTab = React.createClass({
 		return (
 			<div className="shelterAnimalsTab">
 				<AddAnimalButton group={this.state.group} user={this.state.user}/>
+				<br/><br/>
 				<AnimalList group={this.state.group} user={this.state.user}/>
 			</div>
 		);

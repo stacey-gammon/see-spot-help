@@ -8,6 +8,7 @@ var VolunteerGroup = require("../../core/volunteergroup");
 var Volunteer = require("../../core/volunteer");
 var ConstStrings = require("../../core/conststrings");
 var LoginStore = require("../../stores/loginstore");
+var GroupActions = require("../../actions/groupactions");
 var LeaveGroupButton = require("./leavegroupbutton");
 
 var GroupActionsBox = React.createClass({
