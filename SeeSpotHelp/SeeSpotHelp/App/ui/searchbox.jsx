@@ -56,7 +56,8 @@ var SearchBox = React.createClass({
 		}
 		this.setState({
 			searchForValue: this.refs.searchFor.value,
-			searchOnType: searchOnType
+			searchOnType: searchOnType,
+			results: []
 		});
 	},
 
@@ -72,7 +73,7 @@ var SearchBox = React.createClass({
 	},
 
 	setSearchOnType: function (value) {
-		this.setState({searchOnType: value});
+		this.setState({searchOnType: value, results: []});
 	},
 
 	getSearchOnGroupDropDown: function (number) {

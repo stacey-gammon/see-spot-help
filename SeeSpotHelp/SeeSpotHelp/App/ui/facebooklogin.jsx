@@ -26,6 +26,9 @@ var FacebookLogin = React.createClass({
 			style = {display: 'inline-block'};
 		}
 		var text = LoginStore.getUser() ? "Log out" : "Log in with facebook";
+		if (!LoginStore.getUser() && LoginStore.isAuthenticating()) {
+			text = "Logging in with facebook";
+		}
 		var className = LoginStore.getUser() ? "btn btn-default " : "btn btn-info has-spinner";
 
 		if (LoginStore.isAuthenticating()) {

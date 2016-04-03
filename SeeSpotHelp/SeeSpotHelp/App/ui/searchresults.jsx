@@ -44,10 +44,6 @@ var ShelterSearchResults = React.createClass({
 		}
 	},
 
-	getLoggedInUser: function() {
-
-	},
-
 	render: function () {
 		var items = [];
 		for (var groupId in this.props.results) {
