@@ -14,6 +14,12 @@ h2 {
     letter-spacing: 1px;
 }
 
+.addAnimalNoteButton {
+    float: right;
+	display: block;
+    margin: 0 0 10px 10px;
+}
+
 .email {
 	width: 100% !important;
 	  max-width: 600px;

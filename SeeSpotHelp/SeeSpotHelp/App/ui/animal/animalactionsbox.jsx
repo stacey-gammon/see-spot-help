@@ -58,6 +58,25 @@ var AnimalActionsBox = React.createClass({
 		return edit;
 	},
 
+	// Currently not called bc they are not implemented yet.
+	getWalkAndVisitButtons: function () {
+		return (
+			<div>
+			<button className="btn btn-info padding walkAnimalButton"
+					id="walkButton"
+					disabled={!this.shouldAllowUserToEdit()}
+					onClick={this.walkFunction}>
+				Walk
+			</button>
+			<button className="btn btn-info padding"
+					disabled={!this.shouldAllowUserToEdit()}
+					onClick={this.alertNotImplemented}>
+				Visit
+			</button>
+			</div>
+		);
+	},
+
 	render: function () {
 		console.log("AnimalActionsBox::render with groupo::");
 		console.log(this.state.group);
@@ -73,20 +92,9 @@ var AnimalActionsBox = React.createClass({
 								 mode: 'add' } }}>
 					<button className="btn btn-info padding addAnimalNoteButton"
 							disabled={!this.shouldAllowUserToEdit()}>
-						Post
+						Add a comment
 					</button>
 				</LinkContainer>
-				<button className="btn btn-info padding walkAnimalButton"
-						id="walkButton"
-						disabled={!this.shouldAllowUserToEdit()}
-						onClick={this.walkFunction}>
-					Walk
-				</button>
-				<button className="btn btn-info padding"
-						disabled={!this.shouldAllowUserToEdit()}
-						onClick={this.alertNotImplemented}>
-					Visit
-				</button>
 			</div>
 		);
 	}
