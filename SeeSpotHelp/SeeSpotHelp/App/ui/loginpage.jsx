@@ -7,7 +7,8 @@ var LoginStore = require("../stores/loginstore");
 var LoginPage = React.createClass({
 	getInitialState: function () {
 		return {
-			loading: false
+			loading: false,
+			error: false
 		}
 	},
 
@@ -17,18 +18,20 @@ var LoginPage = React.createClass({
 
 	checkAuthentication: function () {
 		console.log('LoginPage.checkAuthentication');
+
 		if (LoginStore.isAuthenticated()) {
-			delete sessionStorage.authenticating;
+			delete sessionStorage.loginPageUserAuthenticating;
 			console.log('LoginPage.componentWillMount: authenticated!');
-		} else {
-			if (sessionStorage.reloadRaceBug) {
-				delete sessionStorage.reloadRaceBug;
-				this.setState({loading: true});
-				setTimeout(function() {
-					this.checkAuthentication();
-				}.bind(this), 2000)
-				return;
-			}
+		} else if (LoginStore.isAuthenticating()) {
+			this.setState({loading: true});
+			return;
+		} else if (sessionStorage.loginPageUserAuthenticating) {
+			delete sessionStorage.loginPageUserAuthenticating;
+			// The user initiated a login but LoginStore completed without success, report
+			// an error.
+			this.setState({error: true,
+						  message: "Login failed"});
+			return;
 		}
 
 		if (LoginStore.isAuthenticated() &&
@@ -59,15 +62,7 @@ var LoginPage = React.createClass({
 
 	onChange: function () {
 		console.log('LoginPage.onChange');
-		// Avoid getUser calls to eliminate the potential for authenticate loops as it will
-		// cause a getUser.
-		if (LoginStore.user && LoginStore.user.inBeta) {
-			this.context.router.push("/profilePage");
-		} else if (LoginStore.user) {
-			this.context.router.push("/enterBetaCode");
-		} else {
-			console.log('LoginPage.onChange: user is null');
-		}
+		this.checkAuthentication();
 	},
 
 	getLoadingText: function () {
@@ -82,16 +77,30 @@ var LoginPage = React.createClass({
 		}
 	},
 
-	getLoginButton: function () {
-		if (this.state.loading) {
-			return null;
+	getMessage: function () {
+		if (this.state.message) {
+			var messageStyle = this.state.error ? "alert alert-danger" : "alert alert-success";
+			return (
+				<div className={messageStyle}>
+					{this.state.message}
+				</div>
+			);
 		} else {
+			return null;
+		}
+	},
+
+	getLoginButton: function () {
+		// if (this.state.loading) {
+		// 	return null;
+		// } else {
 			return (
 				<div style={{textAlign: 'center', width: '300px', margin: '0 auto'}}>
+					{this.getMessage()}
 					<FacebookLogin/>
 				</div>
 			);
-		}
+		//}
 	},
 
 	render: function () {

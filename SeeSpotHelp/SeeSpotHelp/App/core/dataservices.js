@@ -36,6 +36,21 @@ DataServices.AuthenticateWithEmailAndPassword = function (email, password, onSuc
 	});
 };
 
+DataServices.LogOut = function () {
+	var ref = new Firebase(this.firebaseURL);
+	ref.unauth();
+};
+
+DataServices.LoginWithFacebookRedirect = function () {
+	var ref = new Firebase(this.firebaseURL);
+	ref.authWithOAuthRedirect(
+		"facebook",
+		// This function does nothing because of the redirect, it will never be called.
+		function (error, authData) {},
+		{ scope: "email" }
+	);
+};
+
 DataServices.GetAuthData = function () {
 	var authref = new Firebase(this.firebaseURL);
 	return authref.getAuth();
