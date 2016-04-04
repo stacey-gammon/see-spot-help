@@ -169,12 +169,35 @@ VolunteerGroup.prototype.getUserPermissions = function (userId) {
 
 VolunteerGroup.prototype.requestToJoin = function (user) {
 	this.updateMembership(user, VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP);
+
+	var adminIds = [];
+	for (var userId in this.userPermissionsMap) {
+		if (this.userPermissionsMap[userId] == VolunteerGroup.PermissionsEnum.ADMIN) {
+			DataServices.PushFirebaseData('emails/tasks',
+				{
+					eventType: 'NEW_REQUEST_PENDING',
+					memberName: user.name,
+					groupId: this.id,
+					adminId: userId
+				 });
+		}
+	}
+}
+
+VolunteerGroup.prototype.approveMembership = function(user) {
+	this.updateMembership(user, VolunteerGroup.PermissionsEnum.MEMBER);
+	DataServices.PushFirebaseData('emails/tasks',
+		{
+			eventType: 'REQUEST_APPROVED',
+			userEmail: user.email,
+			groupName: this.name
+		 });
 }
 
 VolunteerGroup.prototype.updateMembership = function (user, membershipType) {
 	this.userPermissionsMap[user.id] = membershipType;
-	DataServices.SetFirebaseData("groups/" + this.id + "/userPermissionsMap",
-								 this.userPermissionsMap);
+	DataServices.SetFirebaseData("groups/" + this.id + "/userPermissionsMap/" + user.id,
+								 membershipType);
 
 	if (membershipType == VolunteerGroup.PermissionsEnum.NONMEMBER) {
 		delete user.groups[this.id];

@@ -49,7 +49,7 @@ var MemberListItem = React.createClass({
 	},
 
 	approveMembership: function () {
-		this.state.group.updateMembership(this.props.member, VolunteerGroup.PermissionsEnum.MEMBER);
+		this.state.group.approveMembership(this.props.member);
 		GroupActions.groupUpdated(this.state.group);
 	},
 
