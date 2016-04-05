@@ -2,6 +2,7 @@ var Queue = require('firebase-queue'),
     Firebase = require('firebase');
 
 var nodemailer = require('nodemailer');
+var sendgrid = require('sendgrid')('theshelterhelper', 'alm0stfamous');
 
 // create reusable transporter object using the default SMTP transport
 var transporter = nodemailer.createTransport('smtps://stacey%40theshelterhelper.com:alm0stfamous@smtp.gmail.com');
@@ -73,6 +74,7 @@ function SendMemberRequestPendingEmail(adminEmail) {
 
 	var mailOptions = {
 	    from: 'stacey@theshelterhelper.com', // sender address
+		fromname: 'The Shelter Helper',
 	    to: adminEmail, // list of receivers
 	    subject: 'Member requests pending at The Shelter Helper', // Subject line
 	    text: 'A new member request is pending for your volunteer group at The Shelter Helper.  ' +
@@ -83,12 +85,17 @@ function SendMemberRequestPendingEmail(adminEmail) {
 		'tab on your group to approve or deny!') // html body
 	};
 
-	// send mail with defined transport object
-	transporter.sendMail(mailOptions, function(error, info){
-	    if(error){
-	        return console.log(error);
-	    }
-	    console.log('Message sent: ' + info.response);
+	var email = new sendgrid.Email(mailOptions);
+	email.setFilters({
+		'clicktrack': {
+			'settings': {
+				'enable': 1
+			}
+		}
+	});
+	sendgrid.send(email, function(err, json){
+		if(err) { return console.error(err); }
+		console.log(json);
 	});
 }
 
@@ -98,8 +105,9 @@ function SendMemberRequestApprovedEmail(email, groupName) {
 
 	var mailOptions = {
 	    from: 'stacey@theshelterhelper.com', // sender address
+		fromname: 'The Shelter Helper',
 	    to: email, // list of receivers
-	    subject: 'Your request to join a volunteer group was approved', // Subject line
+	    subject: 'Your request was approved', // Subject line
 	    text: 'Your recent request to join a volunteer group at The Shelter Helper was approved. ' +
 			' Go to http://theshelterhelper.com/ to view your new group!  Congrats!', // plaintext body
 	    html: htmlMessageCode.replace('%%MESSAGE_HERE%%',
@@ -108,16 +116,22 @@ function SendMemberRequestApprovedEmail(email, groupName) {
 			'Congrats!') // html body
 	};
 
-	// send mail with defined transport object
-	transporter.sendMail(mailOptions, function(error, info){
-	    if(error){
-	        return console.log(error);
-	    }
-	    console.log('Message sent: ' + info.response);
+	var email = new sendgrid.Email(mailOptions);
+	email.setFilters({
+		'clicktrack': {
+			'settings': {
+				'enable': 1
+			}
+		}
+	});
+	sendgrid.send(email, function(err, json){
+		if(err) { return console.error(err); }
+		console.log(json);
 	});
 }
 
 function DoWork() {
+
 	var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
 
 	  // Read and process task data

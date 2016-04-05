@@ -45,7 +45,7 @@ var UserGroupsTab = React.createClass({
 
 	componentWillReceiveProps: function(nextProps) {
 		this.setState({
-			group: nextProps.group,
+			group:  GroupStore.getUsersMemberGroups(nextProps.user),
 			user: nextProps.user
 		});
 	},

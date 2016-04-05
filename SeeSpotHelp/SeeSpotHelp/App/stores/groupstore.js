@@ -19,6 +19,7 @@ class GroupStore extends EventEmitter {
 		this.dispatchToken = Dispatcher.register(function (action) {
 			outer.handleAction(action);
 		});
+		this.groupsByUserId = {};
 		this.groups = {};
 		this.loadedUserGroups = false;
 	}
@@ -74,21 +75,16 @@ class GroupStore extends EventEmitter {
 
 	getUsersMemberGroups(user) {
 		if (!user) return null;
-		var usersGroups = [];
-		for (var groupId in user.groups) {
-			if (!this.groups[groupId]) {
-				this.downloadGroup(groupId);
-				continue;
-			}
-			if (user.id in this.groups[groupId].userPermissionsMap &&
-				this.groups[groupId].userPermissionsMap[user.id] !=
-					VolunteerGroup.PermissionsEnum.NONMEMBER &&
-				this.groups[groupId].userPermissionsMap[user.id] !=
-					VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
-				usersGroups.push(this.groups[groupId]);
-			}
+		var groupsForUser = [];
+		if (!this.groupsByUserId.hasOwnProperty(user.id)) {
+			this.loadGroupsForUser(user);
+			return null;
 		}
-		return usersGroups;
+		for (var i = 0; i < this.groupsByUserId[user.id].length; i++) {
+			groupsForUser.push(
+				this.schedule[this.groupsByUserId[user.id][i]]);
+		}
+		return groupsForUser;
 	}
 
 	groupDownloaded(group) {
