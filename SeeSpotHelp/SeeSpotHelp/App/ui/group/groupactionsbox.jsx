@@ -8,6 +8,7 @@ var VolunteerGroup = require("../../core/volunteergroup");
 var Volunteer = require("../../core/volunteer");
 var ConstStrings = require("../../core/conststrings");
 var LoginStore = require("../../stores/loginstore");
+var PermissionsStore = require("../../stores/permissionsstore");
 var GroupActions = require("../../actions/groupactions");
 var LeaveGroupButton = require("./leavegroupbutton");
 
@@ -16,63 +17,76 @@ var GroupActionsBox = React.createClass({
 		var user = LoginStore.getUser();
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
 
+		var permission = user && group ? PermissionsStore.getPermission(user.id, group.id) : null;
+
 		return {
 			user: user,
-			group: group
+			group: group,
+			permission: permission
 		};
 	},
 
 	componentWillReceiveProps: function(nextProps) {
+		var permission = this.state.user && nextProps.group ?
+			PermissionsStore.getPermission(this.state.user.id, nextProps.group.id) : null;
+
 		this.setState({
-			group: nextProps.group
+			group: nextProps.group,
+			permission: permission
 		});
 	},
 
 	componentDidMount: function () {
 		LoginStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function () {
 		LoginStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function () {
+		var permission = LoginStore.user && this.state.group ?
+			PermissionsStore.getPermission(LoginStore.user.id, this.state.group.id) : null;
 		this.setState(
 			{
-				user: LoginStore.user
+				user: LoginStore.user,
+				permission: permission
 			});
 	},
 
 	requestToJoin: function () {
-		if (!this.state.group || !this.state.user) {
+		if (!this.state.group || !this.state.user || !this.state.permission) {
 			throw "Attempting to join group when user or group is undefined or null";
 		}
 
-		var permissions = this.state.group.getUserPermissions(this.state.user.id);
+		var permission = this.state.permission;
 		var group = VolunteerGroup.castObject(this.state.group);
 		var user = Volunteer.castObject(this.state.user);
-		var pending = permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
-		if (pending) {
-			this.state.group.updateMembership(user, VolunteerGroup.PermissionsEnum.NONMEMBER);
+
+		if (permission.pending()) {
+			permission.permission = VolunteerGroup.PermissionsEnum.NONMEMBER;
+			permission.update();
 			this.refs.requestToJoinButton.innerHTML = ConstStrings.RequestToJoin;
 		} else {
-			group.requestToJoin(user);
+			permission.permission = VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
+			permission.update();
 			this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
 		}
 		GroupActions.groupUpdated(this.state.group);
 	},
 
 	getRequestToJoinButton: function () {
-		console.log("RequestToJoinButton:render, permissions = " + this.state.permissions);
+		console.log("RequestToJoinButton:render, permissions = " + this.state.permission);
 		if (!this.state.user) return null;
 
-		var permissions = this.state.group.getUserPermissions(this.state.user.id);
-		var pending = permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
-
-		if (permissions != VolunteerGroup.PermissionsEnum.NONMEMBER && !pending) {
+		if (this.state.permission.inGroup()) {
 			return null;
 		}
-		var text = pending ? ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
+		var text = this.state.permission.pending() ?
+			ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
+
 		return (
 			<button className="btn btn-warning requestToJoinButton buttonPadding"
 					ref="requestToJoinButton"

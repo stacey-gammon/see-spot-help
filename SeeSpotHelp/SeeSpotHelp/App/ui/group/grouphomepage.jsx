@@ -19,23 +19,22 @@ var Utils = require("../../core/utils");
 var VolunteerGroup = require("../../core/volunteergroup");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
+var PermissionsStore = require("../../stores/permissionsstore");
 
 var GroupHomePage = React.createClass({
 	getInitialState: function() {
-		var query = this.props.location ? this.props.location.query : null;
-		var group = null;
-		if (query && query.groupId) {
-			group = GroupStore.getGroupById(query.groupId);
-		} else {
-			group = Utils.FindPassedInProperty(this, 'group');
-			// Force refresh via groupstore
-			group = group ? GroupStore.getGroupById(group.id) : null;
-		}
+		var group = Utils.FindPassedInProperty(this, 'group');
+		if (group) group = VolunteerGroup.castObject(group);
+
+		var isSearchResult = Utils.FindPassedInProperty(this, 'isSearchResult');
+
+		// Undefined will mess up LoadOrSaveState so make sure we explicitly have false.
+		isSearchResult = isSearchResult ? true : false;
 
 		var state = {
 			user: LoginStore.user,
 			group: group,
-			fromSearch: query && query.groupId,
+			fromSearch: isSearchResult,
 			groupDefaultTabKey: null
 		};
 
@@ -44,7 +43,7 @@ var GroupHomePage = React.createClass({
 		// If the user doesn't have any 'last looked at' group, and nothing has been set,
 		// see if we can grab one from the user.
 		if (!state.group && LoginStore.getUser()) {
-			var groups = GroupStore.getUsersMemberGroups(LoginStore.user);
+			var groups = GroupStore.getGroupsByUser(LoginStore.user);
 			if (groups && groups.length > 0) {
 				state.group = groups[0];
 				Utils.LoadOrSaveState(state);
@@ -62,7 +61,9 @@ var GroupHomePage = React.createClass({
 
 	getPreviousButton: function() {
 		if (this.state.fromSearch || !this.state.user) return null;
-		var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
+		var usersGroups = GroupStore.getGroupsByUser(this.state.user);
+		if (!usersGroups) return null;
+
 		var previousGroup = null;
 		for (var i = 0; i < usersGroups.length; i++) {
 			if (usersGroups[i].id == this.state.group.id) {
@@ -82,7 +83,9 @@ var GroupHomePage = React.createClass({
 
 	getNextButton: function() {
 		if (this.state.fromSearch || !this.state.user) return null;
-		var usersGroups = GroupStore.getUsersMemberGroups(this.state.user);
+		var usersGroups = GroupStore.getGroupsByUser(this.state.user);
+		if (!usersGroups) return null;
+
 		var nextGroup = null;
 		var groupFound = false;
 		for (var i = 0; i < usersGroups.length; i++) {
@@ -107,6 +110,7 @@ var GroupHomePage = React.createClass({
 	componentDidMount: function() {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
 	},
 
 	componentWillMount: function() {
@@ -115,6 +119,7 @@ var GroupHomePage = React.createClass({
 	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function() {

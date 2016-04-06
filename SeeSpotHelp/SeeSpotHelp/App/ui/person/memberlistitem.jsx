@@ -12,28 +12,33 @@ var GroupInfoBox = require("../../ui/group/groupinfobox");
 var GroupStore = require("../../stores/groupstore");
 var GroupActions = require("../../actions/groupactions");
 var VolunteerStore = require("../../stores/volunteerstore");
+var PermissionsStore = require("../../stores/permissionsstore");
 
 var MemberListItem = React.createClass({
 	getInitialState: function() {
 		var member = this.props.member
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-
+		var permission = member && group ?
+			PermissionsStore.getPermission(member.id, group.id) : null;
 		return {
 			member: member,
-			group: group
+			group: group,
+			permission: permission
 		};
 	},
 
 	componentDidMount: function () {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
-		VolunteerStore.removeChangeListener(this.onChange);
+		VolunteerStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function () {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
 		VolunteerStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function () {
@@ -41,29 +46,34 @@ var MemberListItem = React.createClass({
 			GroupStore.getGroupById(this.state.group.id) : null;
 		var member = this.props.member ?
 			VolunteerStore.getVolunteerById(this.props.member.id) : null;
+		var permission = member && group ?
+			PermissionsStore.getPermission(member.id, group.id) : null;
 		this.setState(
 			{
 				member: member,
-				group: group
+				group: group,
+				permission: permission
 			});
 	},
 
 	approveMembership: function () {
-		this.state.group.approveMembership(this.props.member);
-		GroupActions.groupUpdated(this.state.group);
+		this.state.permission.setMember();
+		this.state.permission.update();
+		DataServices.PushFirebaseData('emails/tasks',
+			{
+				eventType: 'REQUEST_APPROVED',
+				userEmail: this.state.member.email,
+				groupName: this.state.group.name
+			 });
 	},
 
 	denyMembership: function () {
-		this.state.group.updateMembership(
-			this.props.member, VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED);
-		GroupActions.groupUpdated(this.state.group);
+		this.state.permission.setDenied();
+		this.state.permission.update();
 	},
 
 	getApproveMembershipButton: function() {
-		var group = VolunteerGroup.castObject(this.props.group);
-		var permission = group.getUserPermissions(this.props.member.id);
-		var text = permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ? "Approve" :
-			permission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ? "Re-approve" : "";
+		var text = this.state.permission.pending() ? "Approve" : "";
 		if (text != "") {
 			return (
 				<div>
@@ -78,16 +88,13 @@ var MemberListItem = React.createClass({
 	},
 
 	getBootMembershipButton: function() {
-		var group = VolunteerGroup.castObject(this.props.group);
-		var permission = group.getUserPermissions(this.props.member.id);
-		if (permission == VolunteerGroup.PermissionsEnum.NONMEMBER) return null;
+		if (!this.state.permission || this.state.permission.notInGroup()) return null;
 
-		var text = permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ? "Deny" : "Ban";
-		if (permission != VolunteerGroup.PermissionsEnum.ADMIN &&
-			permission != VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
+		var text = this.state.permission.pending() ? "Deny" : "Ban";
+		if (this.state.permission.pending() || this.state.permission.member()) {
 			return (
 				<div>
-				<button className="btn btn-warning" onClick={this.denyMembership }>{text}</button>
+				<button className="btn btn-warning" onClick={this.denyMembership}>{text}</button>
 				</div>
 			);
 		} else {
@@ -97,31 +104,30 @@ var MemberListItem = React.createClass({
 
 	getActions: function () {
 		var group = VolunteerGroup.castObject(this.props.group);
-		if (LoginStore.user &&
-			group.getUserPermissions(LoginStore.user.id) == VolunteerGroup.PermissionsEnum.ADMIN) {
-			return (
-				<div className="media-right">
-					{this.getApproveMembershipButton()}
-					{this.getBootMembershipButton()}
-				</div>
-			);
-		} else {
-			return null;
-		}
+		if (!LoginStore.user) return null
+
+		var userPermission = PermissionsStore.getPermission(LoginStore.user.id, group.id);
+		if (!userPermission || !userPermission.admin()) return null;
+
+		return (
+			<div className="media-right">
+				{this.getApproveMembershipButton()}
+				{this.getBootMembershipButton()}
+			</div>
+		);
 	},
 
 	render: function () {
 		var group = VolunteerGroup.castObject(this.props.group);
-		var memberPermission = group.getUserPermissions(this.props.member.id);
+		var memberPermission = this.state.permission;
+		var userPermission = PermissionsStore.getPermission(LoginStore.user.id, group.id);
+
+		if (!userPermission || !memberPermission || memberPermission.notInGroup()) return null;
 
 		var className = "list-group-item memberListElement";
-		var userPermission = LoginStore.user ?
-			group.getUserPermissions(LoginStore.user.id) :
-			VolunteerGroup.PermissionsEnum.NONMEMBER;
-		if (memberPermission == VolunteerGroup.PermissionsEnum.NONMEMBER) return null;
 
-		if (memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ) {
-			if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN) {
+		if (memberPermission.denied()) {
+			if (userPermission.admin()) {
 				className += " membershipRevokedStyle";
 			} else {
 				// Regular members can't see members denied by the admin.
@@ -129,22 +135,22 @@ var MemberListItem = React.createClass({
 			}
 		}
 
-		if (memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPPENDING) {
-			if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN ||
+		if (memberPermission.pending()) {
+			if (userPermission.admin() ||
 				(LoginStore.user && this.props.member.id == LoginStore.user.id)) {
 					className += " membershipPendingStyle";
 			} else {
-				// Regular members can't see members denied by the admin.
+				// Regular members can't see members pending.
 				return null;
 			}
 		}
 
-		var extraInfo = memberPermission == VolunteerGroup.PermissionsEnum.ADMIN ? "(admin)" : "";
-		if (userPermission == VolunteerGroup.PermissionsEnum.ADMIN ||
+		var extraInfo = memberPermission.admin() ? "(admin)" : "";
+		if (userPermission.admin() ||
 			(LoginStore.user && this.props.member.id == LoginStore.user.id)) {
-			extraInfo = memberPermission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ?
+			extraInfo = memberPermission.pending() ?
 				"(membership pending)" :
-				memberPermission == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED ?
+				memberPermission.denied() ?
 				"(membership denied)" : extraInfo;
 		}
 		return (

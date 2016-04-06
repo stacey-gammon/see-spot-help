@@ -117,6 +117,17 @@ DataServices.DetachListener = function(path, callback) {
 	ref.off("value", callback);
 }
 
+DataServices.DownloadData = function(path, onSuccess) {
+	var ref = new Firebase(this.firebaseURL + "/" + path);
+	ref.on("value", function (snapshot) {
+			onSuccess(snapshot);
+		}, function (errorObject) {
+			console.log("The read failed: " + errorObject.code);
+			outer.onFailure(errorObject);
+		}
+	);
+};
+
 DataServices.prototype.GetFirebaseData = function(path, listen) {
 	console.log("DataServices:GetFirebaseData for url " + path);
 	var ref = new Firebase(this.firebaseURL + "/" + path);

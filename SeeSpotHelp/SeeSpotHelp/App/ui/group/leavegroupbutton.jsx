@@ -7,38 +7,45 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 var VolunteerGroup = require("../../core/volunteergroup");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
+var PermissionsStore = require("../../stores/permissionsstore");
 
 var LeaveGroupButton = React.createClass({
 	getInitialState: function() {
 		var user = LoginStore.getUser();
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-		var permissions = user && group ? group.getUserPermissions(user.id) : null;
+		var permission = user && group ?
+			PermissionsStore.getPermission(user.id, group.id) : null;
 
 		return {
 			user: user,
 			group: group,
-			permissions: permissions
+			permission: permission
 		};
 	},
 
 	componentDidMount: function () {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function () {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function () {
 		var user = LoginStore.getUser();
 		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
+		var permission = user && group ?
+			PermissionsStore.getPermission(user.id, group.id) : null;
+
 		this.setState(
 			{
 				user: user,
 				group: group,
-				permissions: user && group ? group.getUserPermissions(user.id) : null
+				permission: permission
 			});
 	},
 
@@ -46,12 +53,14 @@ var LeaveGroupButton = React.createClass({
 		// This is a hack because a parent LinkContainer element is
 		// redirecting the user to another page.
 		event.stopPropagation();
-		this.state.group.updateMembership(
-			this.state.user, VolunteerGroup.PermissionsEnum.NONMEMBER);
+
+		this.state.permission.leave();
+		this.state.permission.update();
 	},
 
 	getLeaveGroupButton: function () {
-		if (this.state.permissions != VolunteerGroup.PermissionsEnum.MEMBER) {
+		// TODO: will have to let admins leave at some point.
+		if (!this.state.permission || !this.state.permission.member()) {
 			return null;
 		}
 		return (

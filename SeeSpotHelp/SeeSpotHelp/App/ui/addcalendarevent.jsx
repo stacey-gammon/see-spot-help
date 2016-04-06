@@ -11,6 +11,7 @@ var GroupStore = require('../stores/groupstore');
 var ScheduleStore = require('../stores/schedulestore');
 var VolunteerStore = require('../stores/volunteerstore');
 var AnimalStore = require('../stores/animalstore');
+var PermissionsStore = require("../stores/permissionsstore");
 var Schedule = require('../core/schedule');
 
 var TimePicker = require('bootstrap-timepicker/js/bootstrap-timepicker.js');
@@ -121,6 +122,7 @@ var AddCalendarEvent = React.createClass({
 
 	componentDidMount: function() {
 		LoginStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
 		VolunteerStore.addChangeListener(this.onChange);
 		AnimalStore.addChangeListener(this.onChange);
@@ -173,6 +175,7 @@ var AddCalendarEvent = React.createClass({
 
 	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
 		AnimalStore.removeChangeListener(this.onChange);
 		VolunteerStore.removeChangeListener(this.onChange);
@@ -262,7 +265,7 @@ var AddCalendarEvent = React.createClass({
 
 	createGroupDropDown: function () {
 		if (!LoginStore.getUser()) return null;
-		var groups = GroupStore.getUsersMemberGroups(LoginStore.getUser());
+		var groups = GroupStore.getGroupsByUser(LoginStore.getUser());
 		var options = groups.map(this.createOptionElement);
 		return (
 			<div className="form-group" style={{marginBottom: 2 + "px"}}>

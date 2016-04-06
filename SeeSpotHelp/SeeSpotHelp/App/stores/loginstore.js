@@ -8,7 +8,7 @@ var VolunteerGroup = require('../core/volunteergroup');
 var DataServices = require('../core/dataservices');
 var LoginService = require('../core/loginservice');
 
-var EventEmitter = require('events').EventEmitter;
+var BaseStore = require('./basestore');
 var assign = require("object-assign");
 
 var ChangeEventEnum = {
@@ -16,7 +16,7 @@ var ChangeEventEnum = {
 	LOGGED_IN: 'LOGGED_IN'
 };
 
-class LoginStore extends EventEmitter {
+class LoginStore extends BaseStore {
 	constructor() {
 		super();
 		this.ChangeEventEnum = ChangeEventEnum;

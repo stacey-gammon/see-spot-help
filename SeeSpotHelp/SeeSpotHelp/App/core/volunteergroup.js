@@ -4,6 +4,7 @@ var ServerResponse = require("./serverresponse");
 var DataServices = require('./dataservices');
 var EventColors = require('./colors');
 var Animal = require('./animal');
+var Permission = require('./permission');
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
@@ -92,14 +93,7 @@ VolunteerGroup.prototype.copyFieldsFrom = function (other) {
 }
 
 VolunteerGroup.prototype.memberCount = function () {
-	var count = 0;
-	for (var memberId in this.userPermissionsMap) {
-		if (this.userPermissionsMap[memberId] == VolunteerGroup.PermissionsEnum.ADMIN ||
-			this.userPermissionsMap[memberId] == VolunteerGroup.PermissionsEnum.MEMBER) {
-			count++;
-		}
-	}
-	return count;
+	return 'fixme';
 }
 
 VolunteerGroup.PermissionsEnum = Object.freeze(
@@ -167,46 +161,6 @@ VolunteerGroup.prototype.getUserPermissions = function (userId) {
 	}
 };
 
-VolunteerGroup.prototype.requestToJoin = function (user) {
-	this.updateMembership(user, VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP);
-
-	var adminIds = [];
-	for (var userId in this.userPermissionsMap) {
-		if (this.userPermissionsMap[userId] == VolunteerGroup.PermissionsEnum.ADMIN) {
-			DataServices.PushFirebaseData('emails/tasks',
-				{
-					eventType: 'NEW_REQUEST_PENDING',
-					memberName: user.name,
-					groupId: this.id,
-					adminId: userId
-				 });
-		}
-	}
-}
-
-VolunteerGroup.prototype.approveMembership = function(user) {
-	this.updateMembership(user, VolunteerGroup.PermissionsEnum.MEMBER);
-	DataServices.PushFirebaseData('emails/tasks',
-		{
-			eventType: 'REQUEST_APPROVED',
-			userEmail: user.email,
-			groupName: this.name
-		 });
-}
-
-VolunteerGroup.prototype.updateMembership = function (user, membershipType) {
-	this.userPermissionsMap[user.id] = membershipType;
-	DataServices.SetFirebaseData("groups/" + this.id + "/userPermissionsMap/" + user.id,
-								 membershipType);
-
-	if (membershipType == VolunteerGroup.PermissionsEnum.NONMEMBER) {
-		delete user.groups[this.id];
-	} else {
-		user.groups[this.id] = membershipType;
-	}
-	DataServices.SetFirebaseData("users/" + user.id + "/groups", user.groups);
-}
-
 VolunteerGroup.prototype.delete = function () {
 	console.log("VolunteerGroup.delete");
 	var outer = this;
@@ -233,10 +187,10 @@ VolunteerGroup.prototype.insert = function (user, callback) {
 
 	this.id = null;
 	this.id = DataServices.PushFirebaseData("groups", this).id;
-	//DataServices.UpdateFirebaseData("groups/" + this.id, { id: this.id });
 
-	user.groups[this.id] = VolunteerGroup.PermissionsEnum.ADMIN;
-	DataServices.UpdateFirebaseData("users/" + user.id + "/groups", user.groups);
+	DataServices.PushFirebaseData(
+		'permissions',
+		Permission.CreateAdminPermission(user.id, this.id));
 	callback(this, new ServerResponse());
 };
 

@@ -5,36 +5,19 @@ var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
 var Animal = require('../core/animal');
 var DataServices = require('../core/dataservices');
-var AnimalStore = require("../stores/animalstore");
 var VolunteerStore = require("../stores/volunteerstore");
+var PermissionsStore = require("../stores/permissionsstore");
 
-var EventEmitter = require('events').EventEmitter;
+var BaseStore = require('./basestore');
 
-var CHANGE_EVENT = "change";
-
-class GroupStore extends EventEmitter {
+class GroupStore extends BaseStore {
 	constructor() {
 		super();
 		var outer = this;
 		this.dispatchToken = Dispatcher.register(function (action) {
 			outer.handleAction(action);
 		});
-		this.groupsByUserId = {};
 		this.groups = {};
-		this.loadedUserGroups = false;
-	}
-
-	loadedUserGroups() {
-		return this.loadedUserGroups;
-	}
-
-	addChangeListener(callback) {
-		this.on(CHANGE_EVENT, callback);
-	}
-
-	// @param {function} callback
-	removeChangeListener(callback) {
-		this.removeListener(CHANGE_EVENT, callback);
 	}
 
 	getPreviousGroup(groupId) {
@@ -63,72 +46,103 @@ class GroupStore extends EventEmitter {
 
 	getGroupById(groupId) {
 		if (!this.groups.hasOwnProperty(groupId)) {
+			this.groups[groupId] = null;
 			console.log("group requested that hasn't been downloaded.  Downloading now...");
 			this.downloadGroup(groupId);
 		}
 		return this.groups[groupId];
 	}
 
-	emitChange() {
-		this.emit(CHANGE_EVENT);
-	}
-
-	getUsersMemberGroups(user) {
+	getGroupsByUser(user) {
 		if (!user) return null;
 		var groupsForUser = [];
-		if (!this.groupsByUserId.hasOwnProperty(user.id)) {
-			this.loadGroupsForUser(user);
-			return null;
-		}
-		for (var i = 0; i < this.groupsByUserId[user.id].length; i++) {
-			groupsForUser.push(
-				this.schedule[this.groupsByUserId[user.id][i]]);
+		var permissions = PermissionsStore.getPermissionsByUserId(user.id);
+		if (!permissions) return null;
+
+		for (var i = 0; i < permissions.length; i++) {
+			if (permissions[i].inGroup() || permissions[i].pending()) {
+				var group = this.groups[permissions[i].groupId];
+				if (!group) {
+					this.downloadGroup(permissions[i].groupId);
+				} else {
+					groupsForUser.push(this.groups[permissions[i].groupId]);
+				}
+			}
 		}
 		return groupsForUser;
 	}
 
-	groupDownloaded(group) {
-		if (!group) {
+	groupDownloaded(snapshot) {
+		if (!snapshot.val()) {
 			console.log("WARN: group loaded data is null");
 			return;
 		}
-		group = VolunteerGroup.FromJSON(group);
+		var group = VolunteerGroup.FromJSON(snapshot.val());
 		this.groups[group.id] = group;
 		this.emitChange();
-		this.loadedUserGroups = true;
+	}
+
+	groupAdded(snapshot) {
+		if (snapshot.val()) {
+			var group = VolunteerGroup.castObject(snapshot.val());
+			// Wait for the subsequent update to set the id.
+			if (!group.id) return;
+			if (!this.groupsByUserId[group.userId]) {
+				this.groupsByUserId[group.userId] = [];
+			}
+			this.groupsByUserId[group.userId].push(group.id);
+			this.groups[group.id] = group;
+
+			this.emitChange();
+		}
+	}
+
+	groupDeleted(snapshot) {
+		var deletedGroup = snapshot.val();
+		delete this.groups[deletedGroup.id];
+		var userId = deletedGroup.userId;
+		for (var i = 0; i < this.groupsByUserId[userId].length; i++) {
+			var groupId = this.groupsByUserId[userId][i];
+			if (groupId == deletedGroup.id) {
+				this.groupsByUserId[userId].splice(i, 1);
+
+				this.emitChange();
+				return;
+			}
+		}
+	}
+
+	groupChanged(snapshot) {
+		var changedGroup = Group.castObject(snapshot.val());
+		if (this.groups.hasOwnProperty(changedGroup.id)) {
+			this.groups[changedGroup.id] = changedGroup;
+			this.emitChange();
+		} else {
+			// Must have been an update to a newly added animal id.
+			this.groupAdded(snapshot);
+		}
+	}
+
+	downloadGroupsForUser(userId) {
+		DataServices.OnMatchingChildAdded(
+			'groups',
+			'userId',
+			userId,
+			this.groupAdded.bind(this));
+		DataServices.OnMatchingChildRemoved(
+			'groups',
+			'userId',
+			userId,
+			this.groupDeleted.bind(this));
+		DataServices.OnMatchingChildChanged(
+			'groups',
+			'userId',
+			userId,
+			this.groupChanged.bind(this));
 	}
 
 	downloadGroup(groupId) {
-		// Already a download requested, skip.
-		if (this.groups.hasOwnProperty(groupId)) {
-			return;
-		} else {
-			this.groups[groupId] = null;
-		}
-		var dataServices = new DataServices(this.groupDownloaded.bind(this), null);
-		dataServices.GetFirebaseData("groups/" + groupId, true);
-	}
-
-	loadGroupsForUser(user) {
-		var outer = this;
-		var onSuccess = function (groups) {
-			console.log("Loaded users groups: ");
-			console.log(groups);
-
-			var userInGroups = false;
-			for (var groupId in groups) {
-				outer.downloadGroup(groupId);
-				userInGroups = false;
-			}
-
-			if (!userInGroups) {
-				outer.loadedUserGroups = true;
-				outer.emitChange();
-			}
-		};
-
-		var dataServices = new DataServices(onSuccess, null);
-		dataServices.GetFirebaseData("users/" + user.id + "/groups");
+		DataServices.DownloadData('groups/' + groupId, this.groupDownloaded.bind(this));
 	}
 
 	handleAction(action) {
@@ -155,10 +169,6 @@ class GroupStore extends EventEmitter {
 				this.emitChange();
 				break;
 			case ActionConstants.LOGIN_USER_SUCCESS:
-				this.loadGroupsForUser(action.user);
-				if (action.user.color) {
-					group.RemoveVolunteerColor(action.user.color);
-				}
 				break;
 			case ActionConstants.GROUP_DELETED:
 				console.log("GroupStore:handleaction: caught GROUP_DELETED");

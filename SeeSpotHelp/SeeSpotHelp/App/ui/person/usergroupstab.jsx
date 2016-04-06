@@ -11,6 +11,7 @@ var Volunteer = require("../../core/volunteer");
 var VolunteerGroup = require("../../core/volunteergroup");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
+var PermissionsStore = require("../../stores/permissionsstore");
 var VolunteerStore = require("../../stores/volunteerstore");
 var AnimalActivityStore = require("../../stores/animalactivitystore");
 var DataServices = require("../../core/dataservices");
@@ -22,7 +23,7 @@ var Intro = require("../intro");
 var UserGroupsTab = React.createClass({
 	getInitialState: function () {
 		var user = Utils.FindPassedInProperty(this, 'user') || LoginStore.user;
-		var groups = user ? GroupStore.getUsersMemberGroups(user) : [];
+		var groups = user ? GroupStore.getGroupsByUser(user) : [];
 		return {
 			user: user,
 			groups: groups
@@ -39,13 +40,13 @@ var UserGroupsTab = React.createClass({
 		this.setState(
 			{
 				user: user,
-				groups: GroupStore.getUsersMemberGroups(LoginStore.user)
+				groups: GroupStore.getGroupsByUser(LoginStore.user)
 			});
 	},
 
 	componentWillReceiveProps: function(nextProps) {
 		this.setState({
-			group:  GroupStore.getUsersMemberGroups(nextProps.user),
+			group:  GroupStore.getGroupsByUser(nextProps.user),
 			user: nextProps.user
 		});
 	},
@@ -54,12 +55,14 @@ var UserGroupsTab = React.createClass({
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
 		VolunteerStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function () {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
 		VolunteerStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	getGroupElement: function(group) {
@@ -82,7 +85,7 @@ var UserGroupsTab = React.createClass({
 	},
 
 	getGroups: function() {
-		if (!LoginStore.getUser()) return null;
+		if (!LoginStore.getUser() || !this.state.groups) return null;
 		if (this.state.groups.length == 0 &&
 			(!LoginStore.getUser() ||
 			 (this.state.user && this.state.user.id != LoginStore.getUser().id))) {
