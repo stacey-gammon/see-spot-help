@@ -123,10 +123,14 @@ var GroupHomePage = React.createClass({
 	},
 
 	onChange: function() {
+		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
+
+		// We triggered a download, we'll get back here again once it's complete, with fresh data.
+		if (!group && this.state.group) group = this.state.group;
 		this.setState(
 			{
 				user: LoginStore.user,
-				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
+				group: group
 			});
 	},
 
