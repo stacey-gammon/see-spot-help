@@ -33,7 +33,7 @@ var AnimalList = React.createClass({
 			animalsUiElements.push(this.generateAnimal(animals[i]));
 		}
 		return (
-			<div className="list-group">
+			<div className="groupList">
 				{animalsUiElements}
 			</div>
 		);
