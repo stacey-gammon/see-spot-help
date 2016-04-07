@@ -191,6 +191,7 @@ VolunteerGroup.prototype.insert = function (user, callback) {
 	DataServices.PushFirebaseData(
 		'permissions',
 		Permission.CreateAdminPermission(user.id, this.id));
+	DataServices.UpdateFirebaseData("groups/" + this.id, { id: this.id });
 	callback(this, new ServerResponse());
 };
 

@@ -92,6 +92,7 @@ Permission.prototype.delete = function() {
 
 Permission.prototype.insert = function () {
 	this.id = DataServices.PushFirebaseData(this.baseFirebasePath, this).id;
+	DataServices.UpdateFirebaseData(this.baseFirebasePath + this.id, { id: this.id });
 };
 
 Permission.prototype.update = function () {

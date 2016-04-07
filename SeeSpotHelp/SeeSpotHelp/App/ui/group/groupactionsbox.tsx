@@ -7,6 +7,7 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 var VolunteerGroup = require("../../core/volunteergroup");
 var Volunteer = require("../../core/volunteer");
 var ConstStrings = require("../../core/conststrings");
+var DataServices = require("../../core/dataservices");
 var LoginStore = require("../../stores/loginstore");
 var PermissionsStore = require("../../stores/permissionsstore");
 var GroupActions = require("../../actions/groupactions");
@@ -72,6 +73,12 @@ var GroupActionsBox = React.createClass({
 		} else {
 			permission.permission = VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
 			permission.update();
+			DataServices.PushFirebaseData('emails/tasks',
+				{
+					eventType: 'NEW_REQUEST_PENDING',
+					adminId: this.state.user.id,
+					groupName: this.state.group.name
+				 });
 			this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
 		}
 		GroupActions.groupUpdated(this.state.group);
