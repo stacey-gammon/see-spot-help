@@ -4,90 +4,92 @@ var StringUtils = require('./stringutils');
 
 // An animal that is currently being managed by a volunteer group.
 
-var Animal = function(name, type, breed, age, status, photo, id, groupId) {
-	this.name = name;
-	this.type = type;
-	this.breed = breed;
-	this.age = age;
-	this.status = status ? status : Animal.StatusEnum.ADOPTABLE;
-	this.photo = photo ? photo : null;
-	this.id = id ? id : null;
-	this.groupId = groupId;
-	this.photoIds = [];
+class Animal {
 
-	// Unfortunately, I don't know anyway to generate this dynamically.
-	this.classNameForSessionStorage = 'Animal';
-};
+	public name: string;
+	public type: string;
+	public breed: string;
+	public age: number;
+	public status: number = Animal.StatusEnum.ADOPTABLE;
+	public id: string;
+	public groupId: string;
+	public classNameForSessionStorage: string = 'Animal';
 
-Animal.GetTypeOptions = function () {
-	return [
-		"Dog", "Cat", "Other"
-	];
-};
+	// Only used for searching:
+	public zipCode: string;
+	public shelter: string;
+	public city: string;
+	public state: string;
+	public firebasePath: string = "animals/";
 
-Animal.prototype.CopyGroupFields = function (group) {
-	// Add these fields for searching.
-	this.zipCode = StringUtils.MakeSearchable(group.zipCode);
-	this.shelter = StringUtils.MakeSearchable(group.shelter);
-	this.city = StringUtils.MakeSearchable(group.city);
-	this.state = StringUtils.MakeSearchable(group.state);
-};
+	public static StatusEnum = Object.freeze(
+		{
+			ADOPTABLE: 0,  // Animal is currently up for adoption.
+			RESCUEONLY: 1,  // Animal can be adopted to rescue groups only.
+			MEDICAL: 2,  // Animal is not up for adoption due to medical reasons.
+			ADOPTED: 3,  // Animal has been adopted, YAY!
+			PTS: 4,  // Animal has been put to sleep. :*(
+			NLL: 5,  // Animal is No Longer Living due to other reasons.  Can be
+			// used instead of PTS if people would prefer not to specify,
+			// or if animal died of other causes.
+			OTHER: 6 // In case I'm missing any other circumstances...
+		}
+	)
 
-Animal.prototype.getPhoto = function() {
-	if (this.photo) return this.photo;
-	return this.type.toLowerCase() == "cat" ?
-		"images/cat.png" :
-		this.type.toLowerCase() == "dog" ?
-		"images/dog.png" :
-		"images/other.jpg";
-};
+	constructor() { }
 
-Animal.StatusEnum = Object.freeze(
-	{
-		ADOPTABLE: 0,  // Animal is currently up for adoption.
-		RESCUEONLY: 1,  // Animal can be adopted to rescue groups only.
-		MEDICAL: 2,  // Animal is not up for adoption due to medical reasons.
-		ADOPTED: 3,  // Animal has been adopted, YAY!
-		PTS: 4,  // Animal has been put to sleep. :*(
-		NLL: 5,  // Animal is No Longer Living due to other reasons.  Can be
-		// used instead of PTS if people would prefer not to specify,
-		// or if animal died of other causes.
-		OTHER: 6 // In case I'm missing any other circumstances...
+	public static GetTypeOptions() {
+		return [
+			"Dog", "Cat", "Other"
+		];
 	}
-);
 
-Animal.castObject = function (obj) {
-	var animal = new Animal();
-	animal.copyFieldsFrom(obj);
-	return animal;
-};
-
-Animal.prototype.copyFieldsFrom = function (other) {
-	for (var prop in other) {
-		this[prop] = other[prop];
+	CopyGroupFields(group) {
+		// Add these fields for searching.
+		this.zipCode = StringUtils.MakeSearchable(group.zipCode);
+		this.shelter = StringUtils.MakeSearchable(group.shelter);
+		this.city = StringUtils.MakeSearchable(group.city);
+		this.state = StringUtils.MakeSearchable(group.state);
 	}
-};
 
-Animal.prototype.delete = function() {
-	var firebasePath = "animals";
-	DataServices.RemoveFirebaseData(firebasePath + "/" + this.id);
-};
+	getDefaultPhoto() {
+		if (this.type.toLowerCase() == 'cat') {
+			return 'images/cat.png';
+		} else if (this.type.toLowerCase() == 'dog') {
+			return 'images/dog.png'
+		} else {
+			return 'images/other.jpg';
+		}
+	}
 
-// Attempts to insert the current instance into the database as
-// a animal
-Animal.prototype.insert = function (callback) {
-	var firebasePath = "animals";
+	public static castObject(obj) {
+		var animal = new Animal();
+		animal.copyFieldsFrom(obj);
+		return animal;
+	}
 
-	// Get rid of undefineds to make firebase happy.
-	this.id = null;
-	if (!this.photo) this.photo = null;
+	copyFieldsFrom(other) {
+		for (var prop in other) {
+			this[prop] = other[prop];
+		}
+	}
 
-	this.id = DataServices.PushFirebaseData(firebasePath, this).id;
-	DataServices.UpdateFirebaseData(firebasePath + "/" + this.id, { id: this.id });
-};
+	delete() {
+		DataServices.RemoveFirebaseData(this.firebasePath + this.id);
+	}
 
-Animal.prototype.update = function () {
-	DataServices.UpdateFirebaseData("animals/" + this.id, this);
-};
+	// Attempts to insert the current instance into the database as
+	// a animal
+	insert(callback) {
+		// Get rid of undefineds to make firebase happy.
+		this.id = null;
+		this.id = DataServices.PushFirebaseData(this.firebasePath, this).id;
+		DataServices.UpdateFirebaseData(this.firebasePath + this.id, { id: this.id });
+	}
 
-module.exports = Animal;
+	update() {
+		DataServices.UpdateFirebaseData(this.firebasePath + this.id, this);
+	}
+}
+
+export = Animal;

@@ -3,9 +3,9 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-    context: path.join(__dirname, 'App'),
+    context: path.join(__dirname, ''),
     entry: [
-        './ui/home.jsx'
+        './Output/ui/home.js'
         ],
     output: {
         path: path.join(__dirname, 'public/Built'),
@@ -15,6 +15,7 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin()
     ],
+  	devtool: 'source-map',
     module: {
         loaders: [
             {

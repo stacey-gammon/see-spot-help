@@ -3,67 +3,32 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
 var gulp = require('gulp');
-var named = require('vinyl-named');
-var webpack = require('webpack');
-var webpackStream = require('webpack-stream');
-var uglify = require('gulp-uglify');
+var ts = require('gulp-typescript');
+var webpack = require('webpack-stream');
+//var webpackStream = require('webpack-stream');
+// var uglify = require('gulp-uglify');
+var gulp = require('gulp');
+var watch = require('gulp-watch');
 
-var OUTPUT_DIR = 'Resources/';
-
-gulp.task('default', ['build']);
-gulp.task('build', ['build-react-dev', 'build-deps-prod']);
-
-gulp.task('build-react-dev', function() {
-	return gulp.src('Resources/react.js')
-		.pipe(webpackStream({
-			output: {
-				filename: 'react.generated.js',
-				libraryTarget: 'this'
-			},
-			plugins: [
-				new webpack.DefinePlugin({
-					'process.env.NODE_ENV': '"development"'
-				}),
-				new webpack.optimize.OccurenceOrderPlugin(),
-				new webpack.optimize.DedupePlugin()
-			]
-		}))
-		.pipe(gulp.dest(OUTPUT_DIR));
+gulp.task('webpack', ['transpile'], function() {
+	return gulp.src('./Output/ui/home.js')
+      .pipe(webpack(require('./webpack.config.js')))
+      .pipe(gulp.dest('public/Built'));
 });
 
-gulp.task('build-deps-prod', function () {
-	return gulp.src(['Resources/react.js', 'Resources/babel.js'])
-		.pipe(named())
-		.pipe(webpackStream({
-			module: {
-				loaders: [
-					{
-						exclude: /node_modules/,
-						test: /\.js$/,
-						loader: 'babel',
-						query: {
-							presets: ['es2015', 'stage-0']
-						}
-					},
-				]
-			},
-			output: {
-				filename: '[name].generated.min.js',
-				libraryTarget: 'this'
-			},
-			plugins: [
-				new webpack.DefinePlugin({
-					'process.env.NODE_ENV': '"production"'
-				}),
-				new webpack.optimize.OccurenceOrderPlugin(),
-				new webpack.optimize.DedupePlugin()
-			]
+gulp.task('transpile', function() {
+	var paths = ['typings/main.d.ts', 'App/**/*.ts', 'App/**/*.tsx'];
+	return gulp.src(paths)
+		.pipe(ts({
+			noImplicitAny: false,
+			jsx: 'react'
 		}))
-		.pipe(uglify())
-		.pipe(gulp.dest(OUTPUT_DIR));
+		.pipe(gulp.dest('Output'));
 });
+
+gulp.task('default', ['transpile', 'webpack']);
