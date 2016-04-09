@@ -3,7 +3,7 @@
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var Schedule = require('../core/schedule');
-var DataServices = require('../core/dataservices');
+import DataServices = require('../core/dataservices');
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");

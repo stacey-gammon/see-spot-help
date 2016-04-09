@@ -1,7 +1,7 @@
 ﻿"use strict"
 
 var React = require("react");
-var DataServices = require("../core/dataservices");
+import DataServices = require('../core/dataservices');
 var Photo = require("../core/photo");
 var LoginStore = require("../stores/loginstore");
 

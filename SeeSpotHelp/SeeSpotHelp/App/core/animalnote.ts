@@ -1,5 +1,5 @@
 
-var DataServices = require('./dataservices');
+import DataServices = require('./dataservices');
 var dateFormat = require('dateformat');
 import DatabaseObject = require('./databaseobject');
 

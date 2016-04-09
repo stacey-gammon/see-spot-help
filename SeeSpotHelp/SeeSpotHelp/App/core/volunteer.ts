@@ -2,7 +2,7 @@
 // managed by facebook login and authentication.
 
 var VolunteerGroup = require('./volunteergroup');
-var DataServices = require('./dataservices');
+import DataServices = require('./dataservices');
 var ServerResponse = require('./serverresponse');
 var Firebase = require("firebase");
 

@@ -4,7 +4,7 @@ var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
 var Photo = require("../core/photo");
-var DataServices = require('../core/dataservices');
+import DataServices = require('../core/dataservices');
 var AnimalActions = require('../actions/animalactions');
 var Firebase = require("firebase");
 

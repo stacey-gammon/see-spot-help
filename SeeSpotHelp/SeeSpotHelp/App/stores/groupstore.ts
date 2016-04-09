@@ -5,7 +5,7 @@ var ActionConstants = require('../constants/actionconstants');
 //import { VolunteerGroup } from '../core/volunteergroup';
 import VolunteerGroup = require('../core/volunteergroup');
 var Animal = require('../core/animal');
-var DataServices = require('../core/dataservices');
+import DataServices = require('../core/dataservices');
 var VolunteerStore = require("../stores/volunteerstore");
 var PermissionsStore = require("../stores/permissionsstore");
 import { DatabaseObject } from '../core/databaseobject';

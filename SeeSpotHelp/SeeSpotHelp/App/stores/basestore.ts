@@ -2,7 +2,7 @@
 
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
-var DataServices = require('../core/dataservices');
+import DataServices = require('../core/dataservices');
 import Events = require('events');
 import DatabaseObject = require('../core/databaseobject');
 

@@ -1,4 +1,4 @@
-var DataServices = require('./dataservices');
+import DataServices = require('./dataservices');
 import DatabaseObject = require('./databaseobject');
 
 enum PermissionsEnum {

@@ -4,11 +4,12 @@ var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var Volunteer = require('../core/volunteer');
 var LoginActions = require("../actions/loginactions");
-var VolunteerGroup = require('../core/volunteergroup');
-var DataServices = require('../core/dataservices');
+import VolunteerGroup = require('../core/volunteergroup');
+import DataServices = require('../core/dataservices');
 var LoginService = require('../core/loginservice');
+import DatabaseObject = require('../core/databaseobject');
 
-var BaseStore = require('./basestore');
+import BaseStore = require('./basestore');
 var assign = require("object-assign");
 
 var ChangeEventEnum = {
@@ -17,6 +18,7 @@ var ChangeEventEnum = {
 };
 
 class LoginStore extends BaseStore {
+	public databaseObject: DatabaseObject = new Volunteer();
 	constructor() {
 		super();
 		this.ChangeEventEnum = ChangeEventEnum;
@@ -27,7 +29,7 @@ class LoginStore extends BaseStore {
 		var users = {};
 		var listenersAttached = false;
 
-		var ref = new Firebase(DataServices.firebaseURL);
+		var ref = new Firebase(DataServices.FirebaseURL);
 		ref.onAuth(this.authDataChanged);
 
 		this.checkAuthenticated();

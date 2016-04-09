@@ -1,4 +1,4 @@
-var DataServices = require('./dataservices');
+import DataServices = require('./dataservices');
 import Utils = require('./utils');
 
 abstract class DatabaseObject {

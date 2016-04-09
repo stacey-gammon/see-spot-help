@@ -2,7 +2,7 @@
 
 var React = require("react");
 var LoginStore = require("../stores/loginstore");
-var DataServices = require("../core/dataservices");
+import DataServices = require('../core/dataservices');
 
 var EnterBetaCode = React.createClass({
 	getInitialState: function () {

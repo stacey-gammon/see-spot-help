@@ -1,4 +1,4 @@
-var DataServices = require('./dataservices');
+import DataServices = require('./dataservices');
 var ServerResponse = require('./serverresponse');
 var StringUtils = require('./stringutils');
 

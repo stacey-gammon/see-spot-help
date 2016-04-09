@@ -5,7 +5,7 @@ var ActionConstants = require('../constants/actionconstants');
 var VolunteerGroup = require('../core/volunteergroup');
 var Volunteer = require('../core/volunteer');
 var LoginActions = require("../actions/loginactions");
-var DataServices = require("../core/dataservices");
+import DataServices = require('../core/dataservices');
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require("object-assign");

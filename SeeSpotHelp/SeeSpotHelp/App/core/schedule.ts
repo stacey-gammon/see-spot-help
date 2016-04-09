@@ -1,5 +1,5 @@
 
-var DataServices = require('./dataservices');
+import DataServices = require('./dataservices');
 
 var Schedule = function() {
 	this.start = '';

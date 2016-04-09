@@ -1,7 +1,7 @@
 ﻿"use strict"
 
 var ServerResponse = require("./serverresponse");
-var DataServices = require('./dataservices');
+import DataServices = require('./dataservices');
 var EventColors = require('./colors');
 var Animal = require('./animal');
 import Permission = require('./permission');
@@ -46,7 +46,7 @@ class VolunteerGroup extends DatabaseObject {
 			this.availableMemberColors.push(VolunteerGroup.CalendarColorsEnum[prop]);
 		}
 	}
-	
+
 	createInstance() { return new VolunteerGroup(); }
 
 	public static FromJSON(json) {
