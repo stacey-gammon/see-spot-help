@@ -123,9 +123,6 @@ abstract class BaseStore extends EventEmitter {
 	}
 
 	downloadItem(id) {
-		if (this.storage.hasOwnProperty(id) {
-			return this.storage
-		}
 		DataServices.DownloadData(
 			this.firebasePath + '/' + id,
 			this.itemDownloaded.bind(this, id));
