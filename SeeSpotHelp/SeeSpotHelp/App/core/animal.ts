@@ -1,17 +1,17 @@
 var DataServices = require('./dataservices');
 var ServerResponse = require('./serverresponse');
 var StringUtils = require('./stringutils');
+import { DatabaseObject } from './databaseobject';
 
 // An animal that is currently being managed by a volunteer group.
 
-class Animal {
+class Animal extends DatabaseObject {
 
 	public name: string;
 	public type: string;
 	public breed: string;
 	public age: number;
 	public status: number = Animal.StatusEnum.ADOPTABLE;
-	public id: string;
 	public groupId: string;
 	public classNameForSessionStorage: string = 'Animal';
 
@@ -36,7 +36,9 @@ class Animal {
 		}
 	)
 
-	constructor() { }
+	constructor() {
+		super();
+	}
 
 	public static GetTypeOptions() {
 		return [
@@ -72,23 +74,6 @@ class Animal {
 		for (var prop in other) {
 			this[prop] = other[prop];
 		}
-	}
-
-	delete() {
-		DataServices.RemoveFirebaseData(this.firebasePath + this.id);
-	}
-
-	// Attempts to insert the current instance into the database as
-	// a animal
-	insert(callback) {
-		// Get rid of undefineds to make firebase happy.
-		this.id = null;
-		this.id = DataServices.PushFirebaseData(this.firebasePath, this).id;
-		DataServices.UpdateFirebaseData(this.firebasePath + this.id, { id: this.id });
-	}
-
-	update() {
-		DataServices.UpdateFirebaseData(this.firebasePath + this.id, this);
 	}
 }
 

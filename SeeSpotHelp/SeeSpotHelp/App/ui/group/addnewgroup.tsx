@@ -107,7 +107,7 @@ var AddNewGroup = React.createClass({
 				var group = VolunteerGroup.createFromInputFields(
 					this.state.fields,
 					this.state.user.id);
-				group.insert(this.state.user, this.insertGroupCallback);
+				group.insertWithCallback(this.state.user, this.insertGroupCallback);
 			}
 		}
 	},

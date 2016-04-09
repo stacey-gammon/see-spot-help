@@ -91,7 +91,7 @@ var AnimalHomePage = React.createClass({
 	render: function () {
 		if (!this.state.animal) return null;
 		var photos = PhotoStore.getPhotosByAnimalId(this.state.animal.id);
-		var imageSrc = photos && photos.length > 0 ? photos[0].src : this.state.animal.getPhoto();
+		var imageSrc = photos && photos.length > 0 ? photos[0].src : this.state.animal.getDefaultPhoto();
 
 		var animal = this.state.animal;
 		var defaultTabKey = this.state.animalDefaultTabKey ? this.state.animalDefaultTabKey : 1;
