@@ -1,8 +1,7 @@
 
 var DataServices = require('./dataservices');
 var dateFormat = require('dateformat');
-import { DatabaseObject } from './databaseobject';
-
+import DatabaseObject = require('./databaseobject');
 
 class AnimalNote extends DatabaseObject {
 	public note: string;
@@ -15,6 +14,8 @@ class AnimalNote extends DatabaseObject {
 	constructor() {
 		super();
 	}
+
+	createInstance() { return new AnimalNote(); }
 
 	getDateForDisplay() {
 		return dateFormat(new Date(this.timestamp), "mm/dd/yy, h:MM TT");

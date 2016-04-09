@@ -4,7 +4,7 @@ var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var DataServices = require('../core/dataservices');
 import Events = require('events');
-import { DatabaseObject } from '../core/databaseobject';
+import DatabaseObject = require('../core/databaseobject');
 
 var EventEmitter = Events.EventEmitter;
 var CHANGE_EVENT = "change";
@@ -57,6 +57,16 @@ abstract class BaseStore extends EventEmitter {
 		mapping[key].push(id);
 	}
 
+	itemDownloaded(id: string, snapshot) {
+		if (snapshot && snapshot.val() && !this.storage.hasOwnProperty[id]) {
+			this.itemAdded(snapshot);
+		} else if (snapshot && snapshot.val()) {
+			this.itemChanged(snapshot);
+		} else {
+			this.itemDeletedWithId(id);
+		}
+	}
+
 	itemAdded(snapshot) {
 		if (snapshot.val()) {
 			var casted = this.databaseObject.castObject(snapshot.val());
@@ -74,11 +84,15 @@ abstract class BaseStore extends EventEmitter {
 
 	itemDeleted(snapshot) {
 		var deletedObject = <DatabaseObject>snapshot.val();
-		delete this.storage[deletedObject.id];
+		this.itemDeletedWithId(deletedObject.id);
+	}
+
+	itemDeletedWithId(id) {
+		this.storage[id] = null;
 
 		for (var prop in this.storageMappings) {
 			this.deleteFromMapping(
-				this.storageMappings[prop], deletedObject[prop], deletedObject.id);
+				this.storageMappings[prop], deletedObject[prop], id);
 		}
 	}
 
@@ -109,7 +123,12 @@ abstract class BaseStore extends EventEmitter {
 	}
 
 	downloadItem(id) {
-		this.downloadFromMapping('id', id);
+		if (this.storage.hasOwnProperty(id) {
+			return this.storage
+		}
+		DataServices.DownloadData(
+			this.firebasePath + '/' + id,
+			this.itemDownloaded.bind(this, id));
 	}
 
 	downloadFromMapping(property, propertyValue) {

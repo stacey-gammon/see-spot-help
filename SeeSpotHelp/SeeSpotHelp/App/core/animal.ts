@@ -1,7 +1,7 @@
 var DataServices = require('./dataservices');
 var ServerResponse = require('./serverresponse');
 var StringUtils = require('./stringutils');
-import { DatabaseObject } from './databaseobject';
+import DatabaseObject = require('./databaseobject');
 
 // An animal that is currently being managed by a volunteer group.
 
@@ -39,6 +39,8 @@ class Animal extends DatabaseObject {
 	constructor() {
 		super();
 	}
+
+	createInstance() { return new Animal(); }
 
 	public static GetTypeOptions() {
 		return [

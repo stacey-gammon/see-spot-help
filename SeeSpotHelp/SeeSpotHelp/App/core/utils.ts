@@ -3,12 +3,16 @@ var Volunteer = require('./volunteer');
 var VolunteerGroup = require('./volunteergroup');
 var Animal = require('./animal');
 var Schedule = require('./schedule');
+import Permission = require('./permission');
+var Photo = require('./photo');
 
 var SessionStorageClasses = {};
 SessionStorageClasses['Volunteer'] = Volunteer;
 SessionStorageClasses['VolunteerGroup'] = VolunteerGroup;
 SessionStorageClasses['Animal'] = Animal;
 SessionStorageClasses['Schedule'] = Schedule;
+SessionStorageClasses['Permission'] = Permission;
+SessionStorageClasses['Photo'] = Photo;
 
 var Utils = function() { }
 

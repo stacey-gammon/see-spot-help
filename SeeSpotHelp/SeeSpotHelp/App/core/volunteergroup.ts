@@ -4,8 +4,8 @@ var ServerResponse = require("./serverresponse");
 var DataServices = require('./dataservices');
 var EventColors = require('./colors');
 var Animal = require('./animal');
-var Permission = require('./permission');
-import { DatabaseObject } from './databaseobject';
+import Permission = require('./permission');
+import DatabaseObject = require('./databaseobject');
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
@@ -46,6 +46,8 @@ class VolunteerGroup extends DatabaseObject {
 			this.availableMemberColors.push(VolunteerGroup.CalendarColorsEnum[prop]);
 		}
 	}
+	
+	createInstance() { return new VolunteerGroup(); }
 
 	public static FromJSON(json) {
 		var group = VolunteerGroup.castObject(json);

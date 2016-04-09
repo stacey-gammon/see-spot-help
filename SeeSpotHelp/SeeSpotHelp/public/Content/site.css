@@ -293,7 +293,8 @@ p {
 
 .privateBetaPage {
     padding: 20px;
-	margin: 20px 5px 10px 5px;
+	height: 95%;
+	margin: 20px 10px 20px 10px;
 	background-color: #C1DAD6;
    	color: #495864;
     border-radius: 25px;

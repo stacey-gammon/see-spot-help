@@ -1,6 +1,7 @@
 var DataServices = require('./dataservices');
+import Utils = require('./utils');
 
-export abstract class DatabaseObject {
+abstract class DatabaseObject {
 	public timestamp: number = Date.now();
 	public id: string;
 	public abstract classNameForSessionStorage;
@@ -12,17 +13,22 @@ export abstract class DatabaseObject {
 
 	constructor() { }
 
+	abstract createInstance();
+
 	castObject(from) {
-		var obj = new this.classNameForSessionStorage();
+		var obj = this.createInstance();
 		obj.copyFieldsFrom(from);
 		return obj;
 	}
 
 	public static GetPathToMapping(firebasePath: string, property: string, value: string|number) {
-		return property +
-			firebasePath.charAt(0).toUpperCase() +
-			firebasePath.slice(1) +
-			value + '/';
+		return firebasePath +
+			'By' +
+			property.charAt(0).toUpperCase() +
+			property.slice(1) +
+			'/' +
+			value +
+			'/';
 	}
 
 	// Returns a path to the mapping for a particular unique property on this element. For instance
@@ -50,3 +56,5 @@ export abstract class DatabaseObject {
 		DataServices.RemoveFirebaseData(this.firebasePath + this.id);
 	}
 }
+
+export = DatabaseObject;

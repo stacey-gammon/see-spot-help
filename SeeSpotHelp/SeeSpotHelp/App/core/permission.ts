@@ -1,5 +1,5 @@
 var DataServices = require('./dataservices');
-import { DatabaseObject } from './databaseobject';
+import DatabaseObject = require('./databaseobject');
 
 enum PermissionsEnum {
 	MEMBER = 0,
@@ -25,6 +25,8 @@ class Permission extends DatabaseObject {
 		this.mappingProperties.push('userId');
 		this.mappingProperties.push('groupId');
 	}
+
+	createInstance() { return new Permission('', '', PermissionsEnum.NONMEMBER); }
 
 	public static CreateAdminPermission(userId, groupId) {
 		return new Permission(userId, groupId, PermissionsEnum.ADMIN);
