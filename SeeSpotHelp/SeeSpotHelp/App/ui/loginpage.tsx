@@ -20,14 +20,13 @@ var LoginPage = React.createClass({
 		console.log('LoginPage.checkAuthentication');
 
 		if (LoginStore.isAuthenticated()) {
-			delete sessionStorage.loginPageUserAuthenticating;
+			sessionStorage.setItem('loginPageUserAuthenticating', null);
 			console.log('LoginPage.checkAuthentication: authenticated!');
 		} else if (LoginStore.isAuthenticating()) {
 			this.setState({loading: true});
 			return;
-		} else if (sessionStorage.loginPageUserAuthenticating) {
-			console.log('LoginPage.checkAuthentication: errors authenticating');
-			delete sessionStorage.loginPageUserAuthenticating;
+		} else if (sessionStorage.getItem('loginPageUserAuthenticating')) {
+			sessionStorage.setItem('loginPageUserAuthenticating', null);
 			// The user initiated a login but LoginStore completed without success, report
 			// an error.
 			this.setState({loading: false, error: true, message: "Login failed"});

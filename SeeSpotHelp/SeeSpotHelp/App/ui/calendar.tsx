@@ -2,12 +2,12 @@
 
 var React = require("react");
 var Utils = require("../core/utils");
-var ScheduleStore = require("../stores/schedulestore");
-var AnimalStore = require("../stores/animalstore");
-var VolunteerStore = require("../stores/volunteerstore");
-var LoginStore = require("../stores/loginstore");
-var GroupStore = require("../stores/groupstore");
-var moment = require('moment');
+import ScheduleStore = require("../stores/schedulestore");
+import AnimalStore = require("../stores/animalstore");
+import VolunteerStore = require("../stores/volunteerstore");
+import LoginStore = require("../stores/loginstore");
+import GroupStore = require("../stores/groupstore");
+import moment = require('moment');
 
 var addCalendarEvent = require("./addcalendarevent");
 

@@ -1,11 +1,11 @@
 ﻿"use strict"
 
 var React = require("react");
-var ConstStrings = require("../../core/conststrings");
+import ConstStrings = require("../../core/conststrings");
 var Utils = require("../../core/utils");
 var VolunteerGroup = require("../../core/volunteergroup");
-var InputField = require("../../core/inputfield");
-var InputFieldValidation = require("../../core/inputfieldvalidation");
+import InputField = require("../../core/inputfield");
+import InputFieldValidation = require("../../core/inputfieldvalidation");
 var LoginStore = require("../../stores/loginstore");
 var GroupActions = require("../../actions/groupactions");
 
@@ -80,20 +80,15 @@ var AddNewGroup = React.createClass({
 		return errorFound;
 	},
 
-	insertGroupCallback: function(group, serverResponse) {
-		if (serverResponse.hasError) {
-			// Show error message to user.
-			this.setState({ errorMessage: serverResponse.errorMessage });
-		} else {
-			GroupActions.newGroupAdded(group);
-			this.context.router.push(
-				{
-					pathname: "GroupHomePage",
-					state: {
-						group:  group
-					}
-				});
-		}
+	insertGroupCallback: function(group) {
+		GroupActions.newGroupAdded(group);
+		this.context.router.push(
+			{
+				pathname: "GroupHomePage",
+				state: {
+					group:  group
+				}
+			});
 	},
 
 	addNewVolunteerGroup: function() {
@@ -101,13 +96,15 @@ var AddNewGroup = React.createClass({
 		if (!errorFound) {
 			if (this.state.mode == 'edit') {
 				this.state.group.updateFromInputFields(this.state.fields);
-				this.state.group.update(this.insertGroupCallback);
+				this.state.group.update();
+				this.insertGroupCallback(this.state.group);
 				GroupActions.groupUpdated(this.state.group);
 			} else {
 				var group = VolunteerGroup.createFromInputFields(
 					this.state.fields,
 					this.state.user.id);
-				group.insertWithCallback(this.state.user, this.insertGroupCallback);
+				group.insert(this.state.user);
+				this.insertGroupCallback(group);
 			}
 		}
 	},

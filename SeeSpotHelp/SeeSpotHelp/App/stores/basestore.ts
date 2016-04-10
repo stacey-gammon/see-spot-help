@@ -15,6 +15,8 @@ abstract class BaseStore extends EventEmitter {
 	protected abstract databaseObject: DatabaseObject;
 	protected storageMappings: Object = {};
 	protected firebasePath: string;
+	protected errorMessage: string;
+	protected hasError: boolean = false;
 
 	constructor() {
 		super();
@@ -38,6 +40,14 @@ abstract class BaseStore extends EventEmitter {
 
 	emitChange() {
 		this.emit(CHANGE_EVENT);
+	}
+
+	getItemById(id) {
+		if (!this.storage.hasOwnProperty(id)) {
+			this.storage[id] = null;
+			this.downloadItem(id);
+		}
+		return this.storage[id];
 	}
 
 	deleteFromMapping(mapping, key, deletedId) {
@@ -123,37 +133,37 @@ abstract class BaseStore extends EventEmitter {
 		return items;
 	}
 
+	errorOccurred(errorObject) {
+		if (errorObject) {
+			this.errorMessage = errorObject.message;
+			this.hasError = true;
+			this.emitChange();
+		}
+	}
+
+	resetErrorInfo() {
+		this.errorMessage = '';
+		this.hasError = false;
+	}
+
 	downloadItem(id) {
+		this.resetErrorInfo();
 		DataServices.DownloadData(
 			this.firebasePath + '/' + id,
-			this.itemDownloaded.bind(this, id));
+			this.itemDownloaded.bind(this, id),
+			this.errorOccurred.bind(this));
 	}
 
 	downloadFromMapping(property, propertyValue) {
-		var path = DatabaseObject.GetPathToMapping(this.firebasePath, property, propertyValue);
+		this.resetErrorInfo();
+		var path = DatabaseObject.GetPathToMapping(
+			this.firebasePath,
+			property,
+			propertyValue);
 
 		DataServices.OnChildAdded(path, this.itemAdded.bind(this));
 		DataServices.OnChildChanged(path, this.itemChanged.bind(this));
 		DataServices.OnChildRemoved(path, this.itemDeleted.bind(this));
-	}
-
-	downloadItemsWithMatchingProperty(
-			firebasePath, property, value, onAdded, onDeleted, onChanged) {
-		DataServices.OnMatchingChildAdded(
-			firebasePath,
-			property,
-			value,
-			onAdded.bind(this));
-		DataServices.OnMatchingChildRemoved(
-			firebasePath,
-			property,
-			value,
-			onDeleted.bind(this));
-		DataServices.OnMatchingChildChanged(
-			firebasePath,
-			property,
-			value,
-			onChanged.bind(this));
 	}
 }
 

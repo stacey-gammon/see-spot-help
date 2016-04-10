@@ -20,7 +20,7 @@ class Animal extends DatabaseObject {
 	public shelter: string;
 	public city: string;
 	public state: string;
-	public firebasePath: string = "animals/";
+	public firebasePath: string = "animals";
 
 	public static StatusEnum = Object.freeze(
 		{
@@ -38,6 +38,9 @@ class Animal extends DatabaseObject {
 
 	constructor() {
 		super();
+		this.mappingProperties.push('userId');
+		this.mappingProperties.push('groupId');
+		this.mappingProperties.push('animalId');
 	}
 
 	createInstance() { return new Animal(); }
@@ -63,18 +66,6 @@ class Animal extends DatabaseObject {
 			return 'images/dog.png'
 		} else {
 			return 'images/other.jpg';
-		}
-	}
-
-	public static castObject(obj) {
-		var animal = new Animal();
-		animal.copyFieldsFrom(obj);
-		return animal;
-	}
-
-	copyFieldsFrom(other) {
-		for (var prop in other) {
-			this[prop] = other[prop];
 		}
 	}
 }

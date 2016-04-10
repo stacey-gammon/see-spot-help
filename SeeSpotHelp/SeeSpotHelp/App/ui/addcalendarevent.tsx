@@ -6,13 +6,15 @@ var Router = require("react-router");
 var Utils = require("../core/utils");
 var DatePicker = require('react-datepicker');
 var moment = require('moment');
-var LoginStore = require('../stores/loginstore');
-var GroupStore = require('../stores/groupstore');
-var ScheduleStore = require('../stores/schedulestore');
-var VolunteerStore = require('../stores/volunteerstore');
-var AnimalStore = require('../stores/animalstore');
-var PermissionsStore = require("../stores/permissionsstore");
-var Schedule = require('../core/schedule');
+
+import $ = require("jquery");
+import LoginStore = require('../stores/loginstore');
+import GroupStore = require('../stores/groupstore');
+import ScheduleStore = require('../stores/schedulestore');
+import VolunteerStore = require('../stores/volunteerstore');
+import AnimalStore = require('../stores/animalstore');
+import PermissionsStore = require("../stores/permissionsstore");
+import Schedule = require('../core/schedule');
 
 var TimePicker = require('bootstrap-timepicker/js/bootstrap-timepicker.js');
 require('bootstrap-timepicker/css/bootstrap-timepicker.css');
@@ -58,7 +60,7 @@ var AddCalendarEvent = React.createClass({
 			schedule.start = this.state.startDate.format('MM-DD-YYYY');
 		}
 		schedule.description = this.refs.description.value;
-		schedule.userId = LoginStore.user.id;
+		schedule.userId = LoginStore.getUser().id;
 		schedule.groupId = this.getGroup().id;
 		schedule.animalId = this.getAnimal().id;
 	},
@@ -209,8 +211,8 @@ var AddCalendarEvent = React.createClass({
 	},
 
 	getDisableEditing: function() {
-		return !LoginStore.user ||
-			(this.state.schedule && this.state.schedule.userId != LoginStore.user.id);
+		return !LoginStore.getUser() ||
+			(this.state.schedule && this.state.schedule.userId != LoginStore.getUser().id);
 	},
 
 	getDeleteButton: function() {

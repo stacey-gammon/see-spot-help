@@ -1,5 +1,7 @@
 {
   "ambientDependencies": {
+    "bluebird": "registry:dt/bluebird#2.0.0+20160319051630",
+    "firebase": "registry:dt/firebase#2.4.1+20160316155526",
     "node": "registry:dt/node#4.0.0+20160330064709",
     "require": "registry:dt/require#2.1.20+20160316155526"
   }

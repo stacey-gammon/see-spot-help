@@ -48,8 +48,8 @@ var GroupActionsBox = React.createClass({
 	},
 
 	onChange: function () {
-		var permission = LoginStore.user && this.state.group ?
-			PermissionsStore.getPermission(LoginStore.user.id, this.state.group.id) : null;
+		var permission = LoginStore.getUser() && this.state.group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, this.state.group.id) : null;
 		this.setState(
 			{
 				user: LoginStore.user,
@@ -63,8 +63,8 @@ var GroupActionsBox = React.createClass({
 		}
 
 		var permission = this.state.permission;
-		var group = VolunteerGroup.castObject(this.state.group);
-		var user = Volunteer.castObject(this.state.user);
+		var group = new VolunteerGroup().castObject(this.state.group);
+		var user = new Volunteer().castObject(this.state.user);
 
 		if (permission.pending()) {
 			permission.permission = VolunteerGroup.PermissionsEnum.NONMEMBER;

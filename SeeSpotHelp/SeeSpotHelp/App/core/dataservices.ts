@@ -1,4 +1,7 @@
-﻿// A helpful class filled with functions for validating various
+
+import Firebase = require('firebase');
+
+// A helpful class filled with functions for validating various
 // input fields.
 class DataServices {
 	public static FirebaseURL = "https://shining-torch-1432.firebaseio.com/";
@@ -13,8 +16,14 @@ class DataServices {
 		this.failureCallback = failureCallback;
 	}
 
-	startStringSearch(path, child, searchText, onSuccess) {
-		var ref = new Firebase(this.firebaseURL + "/" + path);
+	public static GetNewPushKey(path): string {
+		var ref = new Firebase(this.FirebaseURL);
+		var newPostRef = ref.child(path).push();
+		return newPostRef.key();
+	}
+
+	public static StartStringSearch(path, child, searchText, onSuccess) {
+		var ref = new Firebase(this.FirebaseURL + "/" + path);
 		ref.orderByChild(child).startAt(searchText).endAt(searchText + "\uf8ff").on("value",
 			function (snapshot) {
 				onSuccess(snapshot.val());
@@ -47,7 +56,7 @@ class DataServices {
 		ref.authWithOAuthRedirect(
 			"facebook",
 			// This function does nothing because of the redirect, it will never be called.
-			function (error, authData) {},
+			function (error) {},
 			{ scope: "email" }
 		);
 	}
@@ -117,12 +126,13 @@ class DataServices {
 		ref.off("value", callback);
 	}
 
-	public static DownloadData(path, onSuccess) {
+	public static DownloadData(path, onSuccess, onError?) {
 		var ref = new Firebase(DataServices.FirebaseURL + "/" + path);
 		ref.on("value", function (snapshot) {
 				onSuccess(snapshot);
 			}, function (errorObject) {
 				console.log("The read failed: " + errorObject.code);
+				if (onError) onError(errorObject);
 			}
 		);
 	}
@@ -153,14 +163,14 @@ class DataServices {
 		ref.set(value);
 	};
 
-	public static RemoveFirebaseData(path, callback) {
+	public static RemoveFirebaseData(path, callback?) {
 		var ref = new Firebase(DataServices.FirebaseURL + "/" + path);
 		ref.remove(callback);
 	}
 
 	public static PushFirebaseData(path, value) {
 		var ref = new Firebase(DataServices.FirebaseURL + "/" + path);
-		var newPath = {};
+		var newPath = { 'key': null };
 		var onComplete = function (err) {
 			console.log('pushing new data completed with ', err);
 			if (err) {
@@ -170,9 +180,15 @@ class DataServices {
 				DataServices.UpdateFirebaseData(path + "/" + newPath.key(), {id: newPath.key()});
 			}
 		}
-		var newPath = ref.push(value, onComplete);
+		// Override the default typing, this should work correctly.
+		var newPath = ref.push(value, onComplete) as { 'key': any };
 		value.id = newPath.key();
 		return value;
+	}
+
+	public static UpdateMultiple(updates) {
+		var ref = new Firebase(DataServices.FirebaseURL);
+		ref.update(updates);
 	}
 
 	public static UpdateFirebaseData(path, value) {

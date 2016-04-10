@@ -1,11 +1,10 @@
 'use strict';
 
-var Permission = require('../core/permission');
+import Permission = require('../core/permission');
 import BaseStore = require('./basestore');
-import { DatabaseObject } from '../core/databaseobject';
 
 class PermissionsStore extends BaseStore {
-	protected databaseObject: DatabaseObject = new Permission();
+	protected databaseObject: Permission = new Permission('', '');
 
 	constructor() {
 		super();

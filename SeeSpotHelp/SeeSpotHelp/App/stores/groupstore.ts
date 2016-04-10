@@ -8,7 +8,7 @@ var Animal = require('../core/animal');
 import DataServices = require('../core/dataservices');
 var VolunteerStore = require("../stores/volunteerstore");
 var PermissionsStore = require("../stores/permissionsstore");
-import { DatabaseObject } from '../core/databaseobject';
+import DatabaseObject = require('../core/databaseobject');
 
 import BaseStore = require('./basestore');
 
@@ -26,12 +26,7 @@ class GroupStore extends BaseStore {
 	}
 
 	getGroupById(groupId) {
-		if (!this.storage.hasOwnProperty(groupId)) {
-			this.storage[groupId] = null;
-			console.log("group requested that hasn't been downloaded.  Downloading now...");
-			this.downloadItem(groupId);
-		}
-		return this.storage[groupId];
+		return this.getItemById(groupId);
 	}
 
 	getGroupsByUser(user) {

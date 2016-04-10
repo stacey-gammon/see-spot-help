@@ -20,4 +20,4 @@ var ConstStrings = {
 	Status: "Status"
 };
 
-module.exports = ConstStrings;
+export = ConstStrings;

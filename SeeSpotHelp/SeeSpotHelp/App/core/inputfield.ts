@@ -80,4 +80,4 @@ InputField.prototype.getFormGroupClassName = function () {
 	return formName;
 };
 
-module.exports = InputField;
+export = InputField;

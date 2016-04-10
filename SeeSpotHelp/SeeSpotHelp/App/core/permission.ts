@@ -13,14 +13,14 @@ class Permission extends DatabaseObject {
 	public userId: string;
 	public groupId: string;
 	public permission: PermissionsEnum = PermissionsEnum.NONMEMBER;
-	public firebasePath: string = 'permissions/';
+	public firebasePath: string = 'permissions';
 	public classNameForSessionStorage: string = 'Permission';
 
-	constructor(userId: string, groupId: string, permission: PermissionsEnum) {
+	constructor(userId: string, groupId: string, permission?: PermissionsEnum) {
 		super();
 		this.userId = userId;
 		this.groupId = groupId;
-		this.permission = permission;
+		this.permission = permission ? permission : PermissionsEnum.NONMEMBER;
 
 		this.mappingProperties.push('userId');
 		this.mappingProperties.push('groupId');
@@ -86,18 +86,24 @@ class Permission extends DatabaseObject {
 		return this.permission == PermissionsEnum.ADMIN;
 	}
 
-	public static castObject(obj) {
-		var permission = new Permission('', '', PermissionsEnum.NONMEMBER);
-		for (var prop in obj) permission[prop] = obj[prop];
-		return permission;
-	}
-
 	update() {
 		if (this.permission == PermissionsEnum.NONMEMBER) {
 			this.delete();
 		} else {
 			super.update();
 		}
+	}
+
+	// Permissions have to be set up a little differently in firebase as they are accessed via
+	// security rules so can't have the dynamic permission id in the path when looking up
+	// group or user permissions.
+	getPathToMapping(propertyName: string): string {
+		var id = propertyName == 'userId' ? this.groupId : this.userId;
+		return DatabaseObject.GetPathToMapping(
+			this.firebasePath,
+			propertyName,
+			this[propertyName],
+			id);
 	}
 }
 

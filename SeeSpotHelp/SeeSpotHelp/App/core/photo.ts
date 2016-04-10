@@ -1,38 +1,24 @@
-import DataServices = require('./dataservices');
-var ServerResponse = require('./serverresponse');
-var StringUtils = require('./stringutils');
 
-var Photo = function() {
-	this.src = '';
-	this.id = '';
-	this.userId = '';
-	this.groupId = '';
-	this.userId = '';
-	this.comment = '';
+import DatabaseObject = require('./databaseobject');
 
-	// Unfortunately, I don't know anyway to generate this dynamically.
-	this.classNameForSessionStorage = 'Photo';
-};
+class Photo extends DatabaseObject {
+	public src: string;
+	public comment: string;
+	public userId: string;
+	public groupId: string;
+	public classNameForSessionStorage: string = 'Photo';
+	public firebasePath: string = 'photos';
 
-Photo.castObject = function (obj) {
-	var photo = new Photo();
-	for (var prop in obj) photo[prop] = obj[prop];
-	return photo;
-};
+	constructor() {
+		super();
 
-Photo.prototype.delete = function() {
-	var firebasePath = "photos/";
-	DataServices.RemoveFirebaseData(firebasePath + "/" + this.id);
-};
+		this.mappingProperties.push('userId');
+		this.mappingProperties.push('groupId');
+		this.mappingProperties.push('animalId');
+	}
 
-Photo.prototype.insert = function () {
-	var firebasePath = "photos/";
-	this.id = DataServices.PushFirebaseData(firebasePath, this).id;
-	DataServices.UpdateFirebaseData(firebasePath + "/" + this.id, { id: this.id });
-};
+	createInstance() { return new Photo(); }
 
-Photo.prototype.update = function () {
-	DataServices.UpdateFirebaseData("photos/" + this.id, this);
-};
+}
 
-module.exports = Photo;
+export = Photo;

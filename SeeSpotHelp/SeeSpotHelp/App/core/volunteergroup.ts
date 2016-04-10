@@ -2,8 +2,8 @@
 
 var ServerResponse = require("./serverresponse");
 import DataServices = require('./dataservices');
-var EventColors = require('./colors');
-var Animal = require('./animal');
+import Color = require('./colors');
+import Animal = require('./animal');
 import Permission = require('./permission');
 import DatabaseObject = require('./databaseobject');
 
@@ -34,42 +34,44 @@ class VolunteerGroup extends DatabaseObject {
 	public zipCode: string;
 	// Unfortunately, I don't know anyway to generate this dynamically.
 	public classNameForSessionStorage = 'VolunteerGroup';
-	public firebasePath = 'groups/';
+	public firebasePath = 'groups';
 	public userPermissionsMap: Object = {};
-	public availableMemberColors: EventColors = new EventColors();
-	public availableAnimalColors: EventColors = new EventColors();
+	public availableMemberColors: Color = new Color();
+	public availableAnimalColors: Color = new Color();
 
 	constructor() {
 		super();
 
-		for (var prop in VolunteerGroup.CalendarColorsEnum) {
-			this.availableMemberColors.push(VolunteerGroup.CalendarColorsEnum[prop]);
-		}
+		// for (var prop in VolunteerGroup.CalendarColorsEnum) {
+		// 	this.availableMemberColors.push(VolunteerGroup.CalendarColorsEnum[prop]);
+		// }
 	}
 
 	createInstance() { return new VolunteerGroup(); }
 
 	public static FromJSON(json) {
 		var group = VolunteerGroup.castObject(json);
-		group.availableMemberColors = Object.assign(new EventColors(), group.availableMemberColors);
-		group.availableAnimalColors = Object.assign(new EventColors(), group.availableAnimalColors);
+		group.availableMemberColors = Object.assign(new Color(), group.availableMemberColors);
+		group.availableAnimalColors = Object.assign(new Color(), group.availableAnimalColors);
 		return group;
 	}
 
 	RemoveAnimalColor(color) {
-		this.availableAnimalColors.RemoveColor(color);
+		//this.availableAnimalColors.RemoveColor(color);
 	}
 
 	RemoveVolunteerColor(color) {
-		this.availableMemberColors.RemoveColor(color);
+		//this.availableMemberColors.RemoveColor(color);
 	}
 
 	GetColorForVolunteer() {
-		return this.availableMemberColors.GetAvailableColor();
+		return Color.GetAvailableColor();
+		//return this.availableMemberColors.GetAvailableColor();
 	}
 
 	GetColorForAnimal() {
-		return this.availableAnimalColors.GetAvailableColor();
+		return Color.GetAvailableColor();
+		//return this.availableAnimalColors.GetAvailableColor();
 	}
 
 	// Casts the given obj as a volunteer group.  Careful -
@@ -155,21 +157,12 @@ class VolunteerGroup extends DatabaseObject {
 	//	 callback is expected to take as a first argument the potentially
 	//	 inserted volunteer group (null on failure) and a server
 	//	 response to hold error and success information.
-	insertWithCallback(user, callback) {
-		this.insert();
+	insert(user?) {
+		var inserts = this.getInserts();
 		var permission = Permission.CreateAdminPermission(user.id, this.id);
-		permission.insert();
-		callback(this, new ServerResponse());
-	}
+		Object.assign(inserts, permission.getInserts());
 
-	// Attempts to update the current volunteer group into the database.
-	// @param callback {Function(VolunteerGroup, ServerResponse) }
-	//	 callback is expected to take as a first argument the potentially
-	//	 updated volunteer group (null on failure) and a server
-	//	 response to hold error and success information.
-	update(callback) {
-		super.update();
-		callback(this, new ServerResponse());
+		DataServices.UpdateMultiple(inserts);
 	}
 }
 

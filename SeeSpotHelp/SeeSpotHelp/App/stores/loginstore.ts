@@ -2,54 +2,51 @@
 
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
-var Volunteer = require('../core/volunteer');
 var LoginActions = require("../actions/loginactions");
+
+import Volunteer = require('../core/volunteer');
 import VolunteerGroup = require('../core/volunteergroup');
 import DataServices = require('../core/dataservices');
-var LoginService = require('../core/loginservice');
 import DatabaseObject = require('../core/databaseobject');
-
 import BaseStore = require('./basestore');
-var assign = require("object-assign");
 
-var ChangeEventEnum = {
-	ANY: 'ANY',
-	LOGGED_IN: 'LOGGED_IN'
+enum ChangeEventEnum {
+	ANY,
+	LOGGED_IN
 };
 
 class LoginStore extends BaseStore {
-	public databaseObject: DatabaseObject = new Volunteer();
+	protected databaseObject: DatabaseObject = new Volunteer('', '', '');
+	private userInBeta: boolean = false;
+	private userDownloading: boolean = false;
+	private user: Volunteer;
+	private authenticated: boolean = false;
+	private dispatchToken;
+
 	constructor() {
 		super();
-		this.ChangeEventEnum = ChangeEventEnum;
-		var outer = this;
+		this.Init();
 		this.dispatchToken = Dispatcher.register(function (action) {
-			outer.handleAction(action);
-		});
-		var users = {};
-		var listenersAttached = false;
+			this.handleAction(action);
+		}.bind(this));
 
-		var ref = new Firebase(DataServices.FirebaseURL);
-		ref.onAuth(this.authDataChanged);
+		new Firebase(DataServices.FirebaseURL).onAuth(this.authDataChanged);
 
 		this.checkAuthenticated();
-		this.userInBeta = false;
-		this.authError = null;
-
 		if (this.isAuthenticating()) {
 			this.checkAuthenticatedWithRetries(0);
 		}
 	}
 
 	isAuthenticating() {
-		return sessionStorage.loginStoreAuthenticating;
+		return sessionStorage.getItem('loginStoreAuthenticating');
 	}
 
 	authDataChanged(authData) {
 		if (!this) return;
 		console.log('LoginStore.authDataChanged');
 		if (authData) {
-			delete sessionStorage.loginStoreAuthenticating;
+			sessionStorage.setItem('loginStoreAuthenticating', null);
 			console.log("User " + authData.uid + " is logged in with " + authData.provider);
 			// Load the new user associated with the login.
 			new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
@@ -67,8 +64,7 @@ class LoginStore extends BaseStore {
 		console.log('checkAuthenticatedWithRetries: ' + retry);
 		var authData = this.checkAuthenticated();
 		if (authData) {
-			delete sessionStorage.loginStoreAuthenticating;
-			this.authError = false;
+			sessionStorage.setItem('loginStoreAuthenticating', null);
 			this.emitChange();
 			return authData;
 		}
@@ -76,9 +72,8 @@ class LoginStore extends BaseStore {
 		if (retry && retry >= 4) {
 			console.log('checkAuthenticatedWithRetries: unsuccessful');
 			// No auth data on the third try, give up and set user as logged out.
-			delete sessionStorage.loginStoreAuthenticating;
-			delete sessionStorage.user;
-			this.authError = true;
+			sessionStorage.setItem('loginStoreAuthenticating', null);
+			sessionStorage.setItem('user', null);
 			this.user = null;
 			this.emitChange();
 			return null;
@@ -103,15 +98,15 @@ class LoginStore extends BaseStore {
 		}
 	}
 
-	addChangeListener(callback, changeEvent) {
+	addChangeListener(callback, changeEvent? : ChangeEventEnum) {
 		if (!changeEvent) changeEvent = ChangeEventEnum.ANY;
-		this.on(changeEvent, callback);
+		this.on(changeEvent.toString(), callback);
 	}
 
 	// @param {function} callback
-	removeChangeListener(callback, changeEvent) {
+	removeChangeListener(callback, changeEvent? : ChangeEventEnum) {
 		if (!changeEvent) changeEvent = ChangeEventEnum.ANY;
-		this.removeListener(changeEvent, callback);
+		this.removeListener(changeEvent.toString(), callback);
 	}
 
 	isLoggedIn() {
@@ -125,8 +120,8 @@ class LoginStore extends BaseStore {
 		// authenticated.
 		// See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes for
 		// some subtle issues around this process.
-		if (sessionStorage.loginStoreAuthenticating) return;
-		sessionStorage.loginStoreAuthenticating = true;
+		if (sessionStorage.getItem('loginStoreAuthenticating')) return;
+		sessionStorage.setItem('loginStoreAuthenticating', 'true');
 		DataServices.LoginWithFacebookRedirect();
 	}
 
@@ -138,7 +133,6 @@ class LoginStore extends BaseStore {
 				this.onUserDownloaded.bind(this));
 		}
 		this.user = null;
-		this.error = null;
 		sessionStorage.clear();
 		localStorage.clear();
 		LoginActions.userLoggedOut();
@@ -146,17 +140,16 @@ class LoginStore extends BaseStore {
 
 	onUserDownloaded(user) {
 		console.log('onUserDownloaded', user);
-		var authData = this.checkAuthenticated();
+		var authData = this.checkAuthenticated() as any;
 		// We are authenticated but no user exists for us, insert a new user.
 		if (authData && user == null) {
-			console.log('Loading volunteer with auth data');
 			Volunteer.LoadVolunteer(
 				authData.uid,
 				authData.facebook.displayName,
 				authData.facebook.email,
 				LoginActions.userLoggedIn);
 		}
-		this.user = Volunteer.castObject(user);
+		this.user = this.databaseObject.castObject(user);
 		this.emitChange();
 	}
 
@@ -168,7 +161,7 @@ class LoginStore extends BaseStore {
 	// In case of a hard refresh, always attempt to re-grab the user data from local
 	// storage if it doesn't exist.
 	getUser() {
-		if (!this.user && !this.listenersAttached) {
+		if (!this.user && !this.userDownloading) {
 			console.log('LoginStore.getUser: no user object');
 			var user = null;
 			try {
@@ -177,10 +170,10 @@ class LoginStore extends BaseStore {
 				console.log('Failed to parse user value ' + sessionStorage.getItem("user"));
 			}
 			if (user) {
-				if (!this.authenticated && !sessionStorage.loginStoreAuthenticating) {
+				if (!this.authenticated && !sessionStorage.getItem('loginStoreAuthenticating')) {
 					this.authenticate();
 				} else {
-					this.listenersAttached = true;
+					this.userDownloading = true;
 					new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
 							"users/" + user.id, true);
 				}
@@ -189,7 +182,7 @@ class LoginStore extends BaseStore {
 				// authenticated anyway.
 				var authData = this.checkAuthenticated();
 				if (this.authenticated) {
-					this.listenersAttached = true;
+					this.userDownloading = true;
 					new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
 						"users/" + authData.uid, true);
 				}
@@ -199,10 +192,10 @@ class LoginStore extends BaseStore {
 		return this.authenticated ? this.user : null;
 	}
 
-	emitChange(changeEvent) {
-		this.emit(ChangeEventEnum.ANY);
+	emitChange(changeEvent? : ChangeEventEnum) {
+		this.emit(ChangeEventEnum.ANY.toString());
 		if (changeEvent) {
-			this.emit(changeEvent);
+			this.emit(changeEvent.toString());
 		}
 	}
 
@@ -211,30 +204,15 @@ class LoginStore extends BaseStore {
 			case ActionConstants.LOGIN_USER_SUCCESS:
 				this.user = action.user;
 				sessionStorage.setItem("user", JSON.stringify(this.user));
-				this.error = null;
 				this.emitChange(ChangeEventEnum.LOGGED_IN);
 				break;
 
 			case ActionConstants.LOGIN_USER_ERROR:
-				this.error = action.error;
 				this.emitChange();
 				break;
 
 			case ActionConstants.LOGOUT_USER:
 				console.log("LoginStore:handleAction:LOGOUT_USER");
-				// DataServices.DetachListener(
-				// 	"users/" + this.user.id,
-				// 	this.onUserDownloaded.bind(this));
-				// this.user = null;
-				// this.error = null;
-				// sessionStorage.setItem("user", null);
-				this.emitChange();
-				break;
-
-			case ActionConstants.NEW_GROUP_ADDED:
-			console.log("LoginStore:handleAction: Caught NEW_GROUP_ADDED");
-				this.user.groups[action.group.id] =
-					VolunteerGroup.PermissionsEnum.ADMIN;
 				this.emitChange();
 				break;
 
@@ -244,4 +222,4 @@ class LoginStore extends BaseStore {
 	}
 };
 
-module.exports = new LoginStore();
+export = new LoginStore();

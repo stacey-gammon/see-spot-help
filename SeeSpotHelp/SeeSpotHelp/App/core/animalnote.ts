@@ -1,6 +1,6 @@
 
 import DataServices = require('./dataservices');
-var dateFormat = require('dateformat');
+import dateFormat = require('dateformat');
 import DatabaseObject = require('./databaseobject');
 
 class AnimalNote extends DatabaseObject {
@@ -9,10 +9,13 @@ class AnimalNote extends DatabaseObject {
 	public animalId: string;
 	public groupId: string;
 	public classNameForSessionStorage: string = 'AnimalNote';
-	public firebasePath: string = 'notes/';
+	public firebasePath: string = 'notes';
 
 	constructor() {
 		super();
+		this.mappingProperties.push('userId');
+		this.mappingProperties.push('groupId');
+		this.mappingProperties.push('animalId');
 	}
 
 	createInstance() { return new AnimalNote(); }
@@ -23,12 +26,6 @@ class AnimalNote extends DatabaseObject {
 
 	toDisplayString() {
 		return this.note;
-	}
-
-	public static castObject(obj) {
-		var group = new AnimalNote();
-		group = Object.assign(group, obj);
-		return group;
 	}
 }
 

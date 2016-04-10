@@ -2,10 +2,11 @@
 
 var React = require('react');
 
+import $ = require('jquery');
 var Utils = require("../../core/utils");
-var Animal = require("../../core/animal");
-var VolunteerGroup = require("../../core/volunteergroup");
-var LoginStore = require("../../stores/loginstore");
+import Animal = require("../../core/animal");
+import VolunteerGroup = require("../../core/volunteergroup");
+import LoginStore = require("../../stores/loginstore");
 var Calendar = require("../calendar");
 var GroupActionsBox = require('../group/groupactionsbox');
 
@@ -30,7 +31,7 @@ var AnimalScheduleTab = React.createClass({
 
 		if (this.props.group &&
 			(!LoginStore.getUser() ||
-			 !this.props.group.shouldAllowUserToEdit(LoginStore.user.id))) {
+			 !this.props.group.shouldAllowUserToEdit(LoginStore.getUser().id))) {
 			return (
 				<div>
 					<h1>Only members can view or edit a schedule.</h1>

@@ -6,7 +6,7 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 var VolunteerGroup = require("../../core/volunteergroup");
 var Volunteer = require("../../core/volunteer");
-var ConstStrings = require("../../core/conststrings");
+import ConstStrings = require("../../core/conststrings");
 var LoginStore = require("../../stores/loginstore");
 var GroupInfoBox = require("../../ui/group/groupinfobox");
 var GroupStore = require("../../stores/groupstore");
@@ -104,9 +104,9 @@ var MemberListItem = React.createClass({
 
 	getActions: function () {
 		var group = VolunteerGroup.castObject(this.props.group);
-		if (!LoginStore.user) return null
+		if (!LoginStore.getUser()) return null;
 
-		var userPermission = PermissionsStore.getPermission(LoginStore.user.id, group.id);
+		var userPermission = PermissionsStore.getPermission(LoginStore.getUser().id, group.id);
 		if (!userPermission || !userPermission.admin()) return null;
 
 		return (
@@ -118,9 +118,17 @@ var MemberListItem = React.createClass({
 	},
 
 	render: function () {
+		if (PermissionsStore.hasError || LoginStore.hasError) {
+			var message = PermissionsStore.errorMessage || LoginStore.errorMessage;
+			return (
+				<div className='alert alert-danger'> {message} </div>
+			);
+		}
+		if (!LoginStore.getUser()) return null;
+
 		var group = VolunteerGroup.castObject(this.props.group);
 		var memberPermission = this.state.permission;
-		var userPermission = PermissionsStore.getPermission(LoginStore.user.id, group.id);
+		var userPermission = PermissionsStore.getPermission(LoginStore.getUser().id, group.id);
 
 		if (!userPermission || !memberPermission || memberPermission.notInGroup()) return null;
 

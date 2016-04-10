@@ -48,4 +48,4 @@ var GroupActions = {
 	},
 };
 
-module.exports = GroupActions;
+export = GroupActions;

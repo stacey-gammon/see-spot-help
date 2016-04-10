@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "babel-relay-plugin": "^0.6.3",
+    "bluebird": "^3.3.4",
     "bootstrap": "^3.0.0",
     "bootstrap-timepicker": "^0.5.2",
     "connect": "2.4.2",

@@ -1,40 +1,27 @@
 
-import DataServices = require('./dataservices');
+import DatabaseObject = require('./databaseobject');
 
-var Schedule = function() {
-	this.start = '';
-	this.end = '';
-	this.title = '';
-	this.allDay = true;
-	this.userId = null;
-	this.animalId = null;
-	this.groupId = null;
-	this.id = '';
-	this.description = '';
+class Schedule extends DatabaseObject {
+	public start: string;
+	public end: string;
+	public title: string;
+	public allDay: boolean = false;
+	public description: string;
+	public userId: string;
+	public animalId: string;
+	public groupId: string;
+	public classNameForSessionStorage: string = 'Schedule';
+	public firebasePath: string = 'schedule';
 
-	// Unfortunately, I don't know anyway to generate this dynamically.
-	this.classNameForSessionStorage = 'Schedule';
-};
+	constructor() {
+		super();
 
-Schedule.castObject = function (obj) {
-	var schedule = new Schedule();
-	for (var prop in obj) schedule[prop] = obj[prop];
-	return schedule;
-};
+		this.mappingProperties.push('userId');
+		this.mappingProperties.push('groupId');
+		this.mappingProperties.push('animalId');
+	}
 
-Schedule.prototype.delete = function() {
-	var firebasePath = "schedule/";
-	DataServices.RemoveFirebaseData(firebasePath + "/" + this.id);
-};
+	createInstance(): Schedule { return new Schedule(); }
+}
 
-Schedule.prototype.insert = function () {
-	var firebasePath = "schedule/";
-	this.id = DataServices.PushFirebaseData(firebasePath, this).id;
-	DataServices.UpdateFirebaseData(firebasePath + "/" + this.id, { id: this.id });
-};
-
-Schedule.prototype.update = function () {
-	DataServices.UpdateFirebaseData("schedule/" + this.id, this);
-};
-
-module.exports = Schedule;
+export = Schedule;

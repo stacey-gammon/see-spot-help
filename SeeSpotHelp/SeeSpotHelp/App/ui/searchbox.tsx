@@ -44,7 +44,7 @@ var SearchBox = React.createClass({
 		}
 		var searchText = this.refs.groupSearchInput.value;
 
-		DataServices.startStringSearch(searchFor, searchOn, searchText, this.getResults);
+		DataServices.StartStringSearch(searchFor, searchOn, searchText, this.getResults);
 	},
 
 	onSearchForChange: function () {

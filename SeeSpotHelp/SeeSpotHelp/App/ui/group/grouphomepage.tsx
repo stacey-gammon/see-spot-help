@@ -144,6 +144,15 @@ var GroupHomePage = React.createClass({
 	},
 
 	render: function() {
+		if (PermissionsStore.hasError || LoginStore.hasError || GroupStore.hasError) {
+			var message = PermissionsStore.errorMessage ||
+				LoginStore.errorMessage ||
+				GroupStore.errorMessage;
+			return (
+				<div className='alert alert-danger'> {message} </div>
+			);
+		}
+
 		if (this.state.group) {
 			var defaultTabKey = this.state.groupDefaultTabKey ? this.state.groupDefaultTabKey : 1;
 			var memberTitle = "Members (" + this.state.group.memberCount() + ")";

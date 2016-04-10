@@ -33,7 +33,7 @@ var UserSettingsPage = React.createClass({
 		// There is no user and none is going to be downloaded, we must prompt them to log in.
 		// TODO: when we open the app up to the public, we must be able to handle non-logged in
 		// users.
-		if (!LoginStore.getUser() && !LoginStore.listenersAttached) {
+		if (!LoginStore.getUser() && !LoginStore.userDownloading) {
 			this.context.router.push("/loginpage");
 		}
 		var header = this.state.updated ? "Settings Updated!" : "Settings";
