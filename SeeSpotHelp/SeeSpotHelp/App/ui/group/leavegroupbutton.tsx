@@ -73,7 +73,6 @@ var LeaveGroupButton = React.createClass({
 	},
 
 	render: function () {
-		console.log("LeaveGroupButton:render:");
 		return (
 			<div>
 				{this.getLeaveGroupButton()}

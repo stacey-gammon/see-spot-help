@@ -207,7 +207,6 @@ var Calendar = React.createClass({
 	},
 
 	render: function() {
-		console.log("calendar:render");
 		return (
 			<div className="calendar-container" ref="calendar" id="calendar"></div>
 		);

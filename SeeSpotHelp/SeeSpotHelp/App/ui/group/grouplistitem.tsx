@@ -19,20 +19,26 @@ var GroupListItem = React.createClass({
 	getInitialState: function() {
 		var user = Utils.FindPassedInProperty(this, 'user') || LoginStore.getUser();
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-		var permissions = LoginStore.getUser() && group ?
+		var permission = LoginStore.getUser() && group ?
 			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
 			Permission.CreateNonMemberPermission();
 
 		return {
 			user: user,
 			group: group,
-			permissions: permissions
+			permission: permission
 		};
 	},
 	componentWillReceiveProps: function(nextProps) {
+
+		var permission = LoginStore.getUser() && nextProps.group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, nextProps.group.id) :
+			Permission.CreateNonMemberPermission();
+
 		this.setState({
 			group: nextProps.group,
-			user: nextProps.user || LoginStore.getUser()
+			user: nextProps.user || LoginStore.getUser(),
+			permission: permission
 		});
 	},
 
@@ -51,14 +57,14 @@ var GroupListItem = React.createClass({
 	onChange: function () {
 		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
 		var user = LoginStore.getUser();
-		var permissions = LoginStore.getUser() && group ?
+		var permission = LoginStore.getUser() && group ?
 			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
 			Permission.CreateNonMemberPermission();
 		this.setState(
 			{
 				user: user,
 				group: group,
-				permissions: permissions
+				permission: permission
 			});
 	},
 

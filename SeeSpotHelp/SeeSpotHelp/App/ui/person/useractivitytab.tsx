@@ -70,12 +70,15 @@ var UserActivityTab = React.createClass({
 		);
 	},
 
+	getLoading() {
+		return (<div> Loading... </div>);
+	},
+
 	render: function () {
-		if (!this.state.user) return (
-			<div>Loading...</div>
-		);
+		if (!this.state.user) { return this.getLoading(); }
 		var notes =
 			AnimalActivityStore.getActivityByUserId(this.state.user.id);
+		if (!notes) { return this.getLoading(); }
 
 		var displayNotes = [];
 		for (var i = 0; i < notes.length; i++) {

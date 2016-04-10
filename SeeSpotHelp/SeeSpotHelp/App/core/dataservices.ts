@@ -40,7 +40,6 @@ class DataServices {
 			console.log("Error creating user:", error);
 			onFailure();
 		  } else {
-			console.log("Successfully created user account with uid:", authData.uid);
 			onSuccess(authData);
 		  }
 		});

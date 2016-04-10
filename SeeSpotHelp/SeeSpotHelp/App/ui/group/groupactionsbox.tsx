@@ -88,7 +88,6 @@ var GroupActionsBox = React.createClass({
 	},
 
 	getRequestToJoinButton: function () {
-		console.log("RequestToJoinButton:render, permissions = " + this.state.permission);
 		if (!this.state.user) return null;
 
 		if (this.state.permission.inGroup()) {
@@ -107,7 +106,6 @@ var GroupActionsBox = React.createClass({
 	},
 
 	render: function () {
-		console.log("GroupActionsBox:render:");
 		return (
 			<div className="GroupActionsBox">
 				{this.getRequestToJoinButton()}

@@ -76,7 +76,6 @@ var AddAnimalButton = React.createClass({
 	},
 
 	render: function() {
-		console.log("AddAnimalButton:render:");
 		return (
 			<div>
 				{this.getAddAnimalButton()}

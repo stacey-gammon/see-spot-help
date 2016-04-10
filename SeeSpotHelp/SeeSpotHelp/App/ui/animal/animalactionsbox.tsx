@@ -86,8 +86,6 @@ var AnimalActionsBox = React.createClass({
 	},
 
 	render: function () {
-		console.log("AnimalActionsBox::render with groupo::");
-		console.log(this.state.group);
 		var walkFunction = this.state.walking ? this.endWalk : this.startWalk;
 		var walkText = this.state.walking ? "End walk" : "Walk";
 		return (

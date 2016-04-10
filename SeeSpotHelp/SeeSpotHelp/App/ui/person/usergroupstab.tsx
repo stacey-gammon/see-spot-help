@@ -67,7 +67,9 @@ var UserGroupsTab = React.createClass({
 
 	getGroupElement: function(group) {
 		return (
-			<GroupListItem user={this.state.user} group={group}/>
+			<GroupListItem
+				user={this.state.user}
+				group={group}/>
 		);
 	},
 
@@ -113,7 +115,6 @@ var UserGroupsTab = React.createClass({
 	},
 
 	render: function () {
-		console.log("usergroupstab.render");
 		return (
 			<div className="list-group">
 				{this.getGroups()}
