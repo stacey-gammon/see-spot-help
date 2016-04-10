@@ -2,7 +2,7 @@
 
 var Dispatcher = require('../dispatcher/dispatcher');
 var ActionConstants = require('../constants/actionconstants');
-var LoginStore = require("../stores/loginstore");
+import LoginStore from '../stores/loginstore';
 
 var GroupActions = {
 	newGroupAdded: function (group) {

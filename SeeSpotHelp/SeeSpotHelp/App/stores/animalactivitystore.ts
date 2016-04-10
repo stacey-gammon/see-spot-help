@@ -1,7 +1,7 @@
 'use strict';
 
-import AnimalNote = require('../core/animalnote');
-import BaseStore = require('./basestore');
+import AnimalNote from '../core/animalnote';
+import BaseStore from './basestore';
 
 class AnimalActivityStore extends BaseStore {
 	protected databaseObject: AnimalNote = new AnimalNote();
@@ -28,4 +28,4 @@ class AnimalActivityStore extends BaseStore {
 	}
 };
 
-export = new AnimalActivityStore();
+export default new AnimalActivityStore();

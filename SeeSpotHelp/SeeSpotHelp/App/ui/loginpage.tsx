@@ -2,7 +2,7 @@
 
 var React = require("react");
 var FacebookLogin = require("./facebooklogin");
-var LoginStore = require("../stores/loginstore");
+import LoginStore from '../stores/loginstore';
 
 var LoginPage = React.createClass({
 	getInitialState: function () {

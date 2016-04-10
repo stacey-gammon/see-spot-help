@@ -3,12 +3,12 @@
 var React = require("react");
 var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
-import VolunteerGroup = require("../../core/volunteergroup");
-import Volunteer = require("../../core/volunteer");
-import Permission = require("../../core/permission");
-import LoginStore = require("../../stores/loginstore");
-import GroupStore = require("../../stores/groupstore");
-import PermissionsStore = require("../../stores/permissionsstore");
+import VolunteerGroup from '../../core/volunteergroup';
+import Volunteer from '../../core/volunteer';
+import Permission from '../../core/permission';
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
+import PermissionsStore from '../../stores/permissionsstore';
 
 var AddAnimalButton = React.createClass({
 	getInitialState: function() {

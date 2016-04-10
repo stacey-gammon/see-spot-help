@@ -2,11 +2,11 @@
 
 var React = require('react');
 
-import LoginStore = require("../../stores/loginstore");
-import GroupStore = require("../../stores/groupstore");
-import PermissionsStore = require("../../stores/permissionsstore");
-import VolunteerGroup = require("../../core/volunteergroup");
-import Permission = require("../../core/permission");
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
+import PermissionsStore from '../../stores/permissionsstore';
+import VolunteerGroup from '../../core/volunteergroup';
+import Permission from '../../core/permission';
 
 var GroupInfoBox = React.createClass({
 	getInitialState: function() {

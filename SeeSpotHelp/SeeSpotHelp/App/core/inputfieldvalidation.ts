@@ -1,6 +1,6 @@
 ﻿// A helpful class filled with static functions for validating various
 // input fields.
-class InputFieldValidation {
+export default class InputFieldValidation {
 
 	// Makes sure the given input field is does not contain an empty value.
 	// Updates inputField based on success or failure.
@@ -32,5 +32,3 @@ class InputFieldValidation {
 		}
 	}
 }
-
-export = InputFieldValidation;

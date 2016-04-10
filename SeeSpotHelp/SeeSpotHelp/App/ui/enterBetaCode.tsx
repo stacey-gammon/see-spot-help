@@ -1,8 +1,8 @@
 "use strict"
 
 var React = require("react");
-var LoginStore = require("../stores/loginstore");
-import DataServices = require('../core/dataservices');
+import LoginStore from '../stores/loginstore';
+import DataServices from '../core/dataservices';
 
 var EnterBetaCode = React.createClass({
 	getInitialState: function () {
@@ -16,13 +16,11 @@ var EnterBetaCode = React.createClass({
 	},
 
 	componentDidMount: function() {
-		LoginStore.addChangeListener(
-			this.onChange,
-			LoginStore.ChangeEventEnum.LOGGED_IN);
+		LoginStore.addLoggedInChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function () {
-		LoginStore.removeChangeListener(this.onChange);
+		LoginStore.removedLoggedInChangeListener(this.onChange);
 	},
 
 	onChange: function () {
@@ -49,7 +47,7 @@ var EnterBetaCode = React.createClass({
 		var onError = function () {
 			this.setState({error: true});
 		}.bind(this);
-		new DataServices(onSuccess, onError).GetFirebaseData('inviteCodes/' + betaCode);
+		DataServices.DownloadData('inviteCodes/' + betaCode, onSuccess, onError);
 	},
 
 	getErrorText: function () {

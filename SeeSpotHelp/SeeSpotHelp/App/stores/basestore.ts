@@ -2,9 +2,10 @@
 
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
-import DataServices = require('../core/dataservices');
 import Events = require('events');
-import DatabaseObject = require('../core/databaseobject');
+
+import DataServices from '../core/dataservices';
+import DatabaseObject from '../core/databaseobject';
 
 var EventEmitter = Events.EventEmitter;
 var CHANGE_EVENT = "change";
@@ -12,7 +13,7 @@ var CHANGE_EVENT = "change";
 abstract class BaseStore extends EventEmitter {
 	protected storage: Object = {};
 	// A blank representation of the item this store contains:
-	protected abstract databaseObject: DatabaseObject;
+	protected databaseObject: DatabaseObject;
 	protected storageMappings: Object = {};
 	protected firebasePath: string;
 	public errorMessage: string;
@@ -167,4 +168,4 @@ abstract class BaseStore extends EventEmitter {
 	}
 }
 
-export = BaseStore;
+export default BaseStore;

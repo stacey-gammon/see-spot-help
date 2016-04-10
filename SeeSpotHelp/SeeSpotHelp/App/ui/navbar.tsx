@@ -1,7 +1,7 @@
 ﻿var React = require('react');
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var ReactBootstrap = require('react-bootstrap');
-var LoginStore = require("../stores/loginstore");
+import LoginStore from '../stores/loginstore';
 
 var Navbar = ReactBootstrap.Navbar;
 var Nav = ReactBootstrap.Nav;

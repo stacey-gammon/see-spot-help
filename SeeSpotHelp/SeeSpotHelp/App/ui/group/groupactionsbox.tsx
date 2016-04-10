@@ -4,15 +4,16 @@ var React = require("react");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-import VolunteerGroup = require("../../core/volunteergroup");
-import Volunteer = require("../../core/volunteer");
-import ConstStrings = require("../../core/conststrings");
-import DataServices = require("../../core/dataservices");
-import Permission = require("../../core/permission");
-import LoginStore = require("../../stores/loginstore");
-import PermissionsStore = require("../../stores/permissionsstore");
-import GroupActions = require("../../actions/groupactions");
 var LeaveGroupButton = require("./leavegroupbutton");
+
+import VolunteerGroup from '../../core/volunteergroup';
+import Volunteer from '../../core/volunteer';
+import ConstStrings from '../../core/conststrings';
+import DataServices from '../../core/dataservices';
+import Permission from '../../core/permission';
+import LoginStore from '../../stores/loginstore';
+import PermissionsStore from '../../stores/permissionsstore';
+var GroupActions = require("../../actions/groupactions");
 
 var GroupActionsBox = React.createClass({
 	getInitialState: function() {

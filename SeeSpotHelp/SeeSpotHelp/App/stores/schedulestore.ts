@@ -1,7 +1,7 @@
 'use strict';
 
-import Schedule = require('../core/schedule');
-import BaseStore = require('./basestore');
+import Schedule from '../core/schedule';
+import BaseStore from './basestore';
 
 class ScheduleStore extends BaseStore {
 	protected databaseObject: Schedule = new Schedule();
@@ -28,4 +28,4 @@ class ScheduleStore extends BaseStore {
 	}
 }
 
-export = new ScheduleStore();
+export default new ScheduleStore();

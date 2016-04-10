@@ -1,7 +1,7 @@
 ﻿'use strict';
 
-import Volunteer = require('../core/volunteer');
-import BaseStore = require('./basestore');
+import Volunteer from '../core/volunteer';
+import BaseStore from './basestore';
 
 class VolunteerStore extends BaseStore {
 	protected databaseObject: Volunteer = new Volunteer('', '', '');
@@ -16,4 +16,4 @@ class VolunteerStore extends BaseStore {
 	}
 };
 
-export = new VolunteerStore();
+export default new VolunteerStore();

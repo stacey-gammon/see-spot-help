@@ -2,9 +2,9 @@
 
 var React = require("react");
 var Link = require("react-router").Link;
-var Volunteer = require("../../core/volunteer");
+import Volunteer from '../../core/volunteer';
 var FacebookLogin = require("../facebooklogin");
-var LoginStore = require("../../stores/loginstore");
+import LoginStore from '../../stores/loginstore';
 
 var PrivacySettingsTab = React.createClass({
 	getInitialState: function() {
@@ -21,9 +21,9 @@ var PrivacySettingsTab = React.createClass({
 			if (selected.length > 0) {
 			    selectedVal = selected.val();
 			}
-			LoginStore.user[privacyOptions[i].id] = selectedVal;
+			LoginStore.getUser()[privacyOptions[i].id] = selectedVal;
 		}
-		LoginStore.user.update();
+		LoginStore.getUser().update();
 		this.props.onChange();
 	},
 
@@ -32,15 +32,15 @@ var PrivacySettingsTab = React.createClass({
 			<div data-toggle="buttons" style={{margin: '10px 5px 3px 5px'}}>
 				<p>{option.displayName}</p>
 				<input type="radio" name={option.id} value='public'
-					defaultChecked={!LoginStore.user[option.id] || LoginStore.user[option.id] == 'public'}
+					defaultChecked={!LoginStore.getUser()[option.id] || LoginStore.getUser()[option.id] == 'public'}
 					style={{margin: '5px 5px 5px 5px'}}/>
 				Public
 				<input type="radio" name={option.id} value='group'
-					defaultChecked={LoginStore.user[option.id] == 'group'}
+					defaultChecked={LoginStore.getUser()[option.id] == 'group'}
 					style={{margin: '5px 5px 5px 15px'}}/>
 				Group members
 				<input type="radio" name={option.id} value='me'
-					defaultChecked={LoginStore.user[option.id] == 'me'}
+					defaultChecked={LoginStore.getUser()[option.id] == 'me'}
 					style={{margin: '5px 5px 5px 15px'}}/>
 				Only me
 			</div>
@@ -57,9 +57,9 @@ var PrivacySettingsTab = React.createClass({
 	},
 
 	render: function () {
-		if (!LoginStore.user) return null;
-		var displayName = LoginStore.user.displayName ?
-			LoginStore.user.displayName : LoginStore.user.name;
+		if (!LoginStore.getUser()) return null;
+		var displayName = LoginStore.getUser().displayName ?
+			LoginStore.getUser().displayName : LoginStore.getUser().name;
 		var privacyElements = this.getPrivacyOptions().map(this.createPrivacyOptions);
 		return (
 			<div>

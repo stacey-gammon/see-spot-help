@@ -4,11 +4,11 @@ var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var LoginActions = require("../actions/loginactions");
 
-import Volunteer = require('../core/volunteer');
-import VolunteerGroup = require('../core/volunteergroup');
-import DataServices = require('../core/dataservices');
-import DatabaseObject = require('../core/databaseobject');
-import BaseStore = require('./basestore');
+import Volunteer from '../core/volunteer';
+import VolunteerGroup from '../core/volunteergroup';
+import DataServices from '../core/dataservices';
+import DatabaseObject from '../core/databaseobject';
+import BaseStore from './basestore';
 
 enum ChangeEventEnum {
 	ANY,
@@ -18,10 +18,10 @@ enum ChangeEventEnum {
 class LoginStore extends BaseStore {
 	protected databaseObject: DatabaseObject = new Volunteer('', '', '');
 	private userInBeta: boolean = false;
-	private userDownloading: boolean = false;
 	private user: Volunteer;
 	private authenticated: boolean = false;
 	private dispatchToken;
+	public userDownloading: boolean = false;
 
 	constructor() {
 		super();
@@ -96,6 +96,13 @@ class LoginStore extends BaseStore {
 		} else {
 			this.authenticated = false;
 		}
+	}
+
+	addLoggedInChangeListener(callback) {
+		this.addChangeListener(callback, ChangeEventEnum.LOGGED_IN);
+	}
+	removedLoggedInChangeListener(callback) {
+		this.removeChangeListener(callback, ChangeEventEnum.LOGGED_IN);
 	}
 
 	addChangeListener(callback, changeEvent? : ChangeEventEnum) {
@@ -222,4 +229,4 @@ class LoginStore extends BaseStore {
 	}
 };
 
-export = new LoginStore();
+export default new LoginStore();

@@ -18,4 +18,4 @@ var ActionConstants = Object.freeze(
 	}
 );
 
-module.exports = ActionConstants;
+export = ActionConstants;

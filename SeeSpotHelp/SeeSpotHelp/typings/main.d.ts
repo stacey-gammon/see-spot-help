@@ -1,6 +1,7 @@
 /// <reference path="custom.d.ts" />
 /// <reference path="main/ambient/bluebird/index.d.ts" />
 /// <reference path="main/ambient/cryptojs/index.d.ts" />
+/// <reference path="main/ambient/date.format/index.d.ts" />
 /// <reference path="main/ambient/fbsdk/index.d.ts" />
 /// <reference path="main/ambient/firebase/index.d.ts" />
 /// <reference path="main/ambient/fullcalendar/index.d.ts" />

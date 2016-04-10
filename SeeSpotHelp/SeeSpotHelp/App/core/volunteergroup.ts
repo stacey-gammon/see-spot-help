@@ -1,11 +1,11 @@
 ﻿"use strict"
 
 var ServerResponse = require("./serverresponse");
-import DataServices = require('./dataservices');
-import Color = require('./colors');
-import Animal = require('./animal');
-import Permission = require('./permission');
-import DatabaseObject = require('./databaseobject');
+import DataServices from './dataservices';
+import Color from './colors';
+import Animal from './animal';
+import Permission from './permission';
+import DatabaseObject from './databaseobject';
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
@@ -25,7 +25,7 @@ import DatabaseObject = require('./databaseobject');
 // @param state {string} The state the shelter belongs in.
 // @param zipCode {string} The zip code the shelter resides in.
 // @param id {string} the id of the group.
-class VolunteerGroup extends DatabaseObject {
+export default class VolunteerGroup extends DatabaseObject {
 	public name: string;
 	public shelter: string;
 	public address: string;
@@ -145,5 +145,3 @@ class VolunteerGroup extends DatabaseObject {
 		DataServices.UpdateMultiple(inserts);
 	}
 }
-
-export = VolunteerGroup;

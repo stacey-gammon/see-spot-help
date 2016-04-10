@@ -1,5 +1,5 @@
-import DataServices = require('./dataservices');
-import DatabaseObject = require('./databaseobject');
+import DataServices from './dataservices';
+import DatabaseObject from './databaseobject';
 
 enum PermissionsEnum {
 	MEMBER = 0,
@@ -9,7 +9,7 @@ enum PermissionsEnum {
 	MEMBERSHIPDENIED = 4
 }
 
-class Permission extends DatabaseObject {
+export default class Permission extends DatabaseObject {
 	public userId: string;
 	public groupId: string;
 	public permission: PermissionsEnum = PermissionsEnum.NONMEMBER;
@@ -106,5 +106,3 @@ class Permission extends DatabaseObject {
 			id);
 	}
 }
-
-export = Permission;

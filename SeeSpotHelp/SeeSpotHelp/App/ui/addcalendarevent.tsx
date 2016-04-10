@@ -2,19 +2,19 @@
 
 var React = require("react");
 var Router = require("react-router");
-
-var Utils = require("../core/utils");
 var DatePicker = require('react-datepicker');
 var moment = require('moment');
 
 import $ = require("jquery");
-import LoginStore = require('../stores/loginstore');
-import GroupStore = require('../stores/groupstore');
-import ScheduleStore = require('../stores/schedulestore');
-import VolunteerStore = require('../stores/volunteerstore');
-import AnimalStore = require('../stores/animalstore');
-import PermissionsStore = require("../stores/permissionsstore");
-import Schedule = require('../core/schedule');
+
+import Utils from '../core/utils';
+import LoginStore from '../stores/loginstore';
+import GroupStore from '../stores/groupstore';
+import ScheduleStore from '../stores/schedulestore';
+import VolunteerStore from '../stores/volunteerstore';
+import AnimalStore from '../stores/animalstore';
+import PermissionsStore from '../stores/permissionsstore';
+import Schedule from '../core/schedule';
 
 var TimePicker = require('bootstrap-timepicker/js/bootstrap-timepicker.js');
 require('bootstrap-timepicker/css/bootstrap-timepicker.css');
@@ -250,10 +250,10 @@ var AddCalendarEvent = React.createClass({
 	getAnimal: function() {
 		if (this.state.animalId) {
 			if (!this.state.group) return null;
-			return AnimalStore.getAnimalById(this.state.animalId, this.state.group.id);
+			return AnimalStore.getAnimalById(this.state.animalId);
 		} else if (this.refs && this.refs.animalChoice) {
 			if (!this.getGroup()) return null;
-			return AnimalStore.getAnimalById(this.refs.animalChoice.value, this.getGroup().id);
+			return AnimalStore.getAnimalById(this.refs.animalChoice.value);
 		} else {
 			return null;
 		}

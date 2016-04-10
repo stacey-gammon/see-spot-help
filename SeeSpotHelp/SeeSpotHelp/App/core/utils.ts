@@ -1,10 +1,11 @@
 var React = require('react');
-var Volunteer = require('./volunteer');
-var VolunteerGroup = require('./volunteergroup');
-var Animal = require('./animal');
-var Schedule = require('./schedule');
-import Permission = require('./permission');
-var Photo = require('./photo');
+
+import Volunteer from './volunteer';
+import VolunteerGroup from './volunteergroup';
+import Animal from './animal';
+import Schedule from './schedule';
+import Permission from './permission';
+import Photo from './photo';
 
 var SessionStorageClasses = {};
 SessionStorageClasses['Volunteer'] = Volunteer;
@@ -14,7 +15,7 @@ SessionStorageClasses['Schedule'] = Schedule;
 SessionStorageClasses['Permission'] = Permission;
 SessionStorageClasses['Photo'] = Photo;
 
-class Utils {
+export default class Utils {
 
 	public static CopyInputFieldsIntoObject(inputFields, object) {
 		for (var fieldName in inputFields) {
@@ -123,5 +124,3 @@ class Utils {
 		);
 	}
 }
-
-export = Utils;

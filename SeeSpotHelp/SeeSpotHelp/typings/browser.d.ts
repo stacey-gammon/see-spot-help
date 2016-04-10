@@ -1,5 +1,6 @@
 /// <reference path="browser/ambient/bluebird/index.d.ts" />
 /// <reference path="browser/ambient/cryptojs/index.d.ts" />
+/// <reference path="browser/ambient/date.format/index.d.ts" />
 /// <reference path="browser/ambient/fbsdk/index.d.ts" />
 /// <reference path="browser/ambient/firebase/index.d.ts" />
 /// <reference path="browser/ambient/fullcalendar/index.d.ts" />

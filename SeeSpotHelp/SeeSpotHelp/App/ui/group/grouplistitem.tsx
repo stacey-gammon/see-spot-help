@@ -3,17 +3,17 @@
 var React = require("react");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
-
-import VolunteerGroup = require("../../core/volunteergroup");
-import Utils = require("../../core/utils");
-import Volunteer = require("../../core/volunteer");
-import ConstStrings = require("../../core/conststrings");
-import Permission = require("../../core/permission");
-import LoginStore = require("../../stores/loginstore");
-import GroupStore = require("../../stores/groupstore");
-import PermissionsStore = require("../../stores/permissionsstore");
 var GroupInfoBox = require("./groupinfobox");
 var LeaveGroupButton = require("./leavegroupbutton");
+
+import VolunteerGroup from '../../core/volunteergroup';
+import Utils from '../../core/utils';
+import Volunteer from '../../core/volunteer';
+import ConstStrings from '../../core/conststrings';
+import Permission from '../../core/permission';
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
+import PermissionsStore from '../../stores/permissionsstore';
 
 var GroupListItem = React.createClass({
 	getInitialState: function() {

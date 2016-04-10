@@ -7,10 +7,10 @@ var Tabs = ReactBootstrap.Tabs;
 
 var BasicSettingsTab = require("./basicsettingstab");
 var PrivacySettingsTab = require("./privacysettingstab");
-
-var Volunteer = require("../../core/volunteer");
 var FacebookLogin = require("../facebooklogin");
-var LoginStore = require("../../stores/loginstore");
+
+import Volunteer from '../../core/volunteer';
+import LoginStore from '../../stores/loginstore';
 
 var UserSettingsPage = React.createClass({
 	contextTypes: {
@@ -38,7 +38,7 @@ var UserSettingsPage = React.createClass({
 		}
 		var header = this.state.updated ? "Settings Updated!" : "Settings";
 
-		if (LoginStore.user) {
+		if (LoginStore.getUser()) {
 			return (
 				<div>
 					<div className="media padding">

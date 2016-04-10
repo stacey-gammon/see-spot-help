@@ -1,7 +1,7 @@
 'use strict';
 
-import Photo = require('../core/photo');
-import BaseStore = require('./basestore');
+import Photo from '../core/photo';
+import BaseStore from './basestore';
 
 class PhotoStore extends BaseStore {
 	protected databaseObject: Photo = new Photo();
@@ -20,4 +20,4 @@ class PhotoStore extends BaseStore {
 	}
 }
 
-export = new PhotoStore();
+export default new PhotoStore();

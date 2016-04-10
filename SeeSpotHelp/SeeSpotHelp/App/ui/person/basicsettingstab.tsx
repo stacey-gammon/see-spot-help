@@ -2,9 +2,10 @@
 
 var React = require("react");
 var Link = require("react-router").Link;
-var Volunteer = require("../../core/volunteer");
 var FacebookLogin = require("../facebooklogin");
-var LoginStore = require("../../stores/loginstore");
+
+import LoginStore from '../../stores/loginstore';
+import Volunteer from '../../core/volunteer';
 
 var BasicSettingsTab = React.createClass({
 	contextTypes: {
@@ -18,17 +19,17 @@ var BasicSettingsTab = React.createClass({
 	},
 
 	updateSettings: function() {
-		LoginStore.user.name = this.refs.name.value;
-		LoginStore.user.displayName = this.refs.displayName.value;
-		LoginStore.email = this.refs.email.value;
-		LoginStore.user.update();
+		LoginStore.getUser().name = this.refs.name.value;
+		LoginStore.getUser().displayName = this.refs.displayName.value;
+		LoginStore.getUser().email = this.refs.email.value;
+		LoginStore.getUser().update();
 		this.props.onChange();
 	},
 
 	render: function () {
-		if (!LoginStore.user) return null;
-		var displayName = LoginStore.user.displayName ?
-			LoginStore.user.displayName : LoginStore.user.name;
+		if (!LoginStore.getUser()) return null;
+		var displayName = LoginStore.getUser().displayName ?
+			LoginStore.getUser().displayName : LoginStore.getUser().name;
 		return (
 			<div>
 				<br/>
@@ -37,14 +38,14 @@ var BasicSettingsTab = React.createClass({
 					<input type="text"
 					   ref="email"
 					   className="form-control"
-					   defaultValue={LoginStore.user.email}/>
+					   defaultValue={LoginStore.getUser().email}/>
 				</div>
 				<div className="input-group">
 					<span className="input-group-addon">Name: </span>
 					<input type="text"
 						   ref="name"
 						   className="form-control"
-						   defaultValue={LoginStore.user.name}/>
+						   defaultValue={LoginStore.getUser().name}/>
 				</div>
 				<div className="input-group">
 					<span className="input-group-addon">Display Name: </span>

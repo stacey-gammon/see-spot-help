@@ -2,10 +2,10 @@
 
 var React = require("react");
 
-import Permission = require("../../core/permission");
-import LoginStore = require("../../stores/loginstore");
-import PermissionsStore = require("../../stores/permissionsstore");
-import VolunteerGroup = require("../../core/volunteergroup");
+import Permission from '../../core/permission';
+import LoginStore from '../../stores/loginstore';
+import PermissionsStore from '../../stores/permissionsstore';
+import VolunteerGroup from '../../core/volunteergroup';
 
 var TakePhotoButton = require("../takephotobutton");
 var AddAnimalNote = require("./addanimalnote");

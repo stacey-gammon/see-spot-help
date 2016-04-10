@@ -1,10 +1,10 @@
 var React = require("react");
 
 var AnimalNote = require("../../core/animalnote");
-var Utils = require("../../core/utils");
+import Utils from '../../core/utils';
 
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
 
 var AddAnimalNote = React.createClass({
 	getInitialState: function() {

@@ -1,11 +1,11 @@
-import DataServices = require('./dataservices');
-import Utils = require('./utils');
+import DataServices from './dataservices';
+import Utils from './utils';
 
 abstract class DatabaseObject {
 	public timestamp: number = Date.now();
 	public id: string;
-	public abstract classNameForSessionStorage;
-	public abstract firebasePath;
+	public classNameForSessionStorage;
+	public firebasePath;
 
 	// If the object wants to store duplicate entries of itself, mapped by a particular unique
 	// attribute, it should add the properties in here.
@@ -88,5 +88,4 @@ abstract class DatabaseObject {
 		}
 	}
 }
-
-export = DatabaseObject;
+export default DatabaseObject;

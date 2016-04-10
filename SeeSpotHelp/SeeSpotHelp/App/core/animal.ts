@@ -1,11 +1,11 @@
-import DataServices = require('./dataservices');
-var ServerResponse = require('./serverresponse');
-var StringUtils = require('./stringutils');
-import DatabaseObject = require('./databaseobject');
+
+import DataServices from './dataservices';
+import StringUtils from './stringutils';
+import DatabaseObject from './databaseobject';
 
 // An animal that is currently being managed by a volunteer group.
 
-class Animal extends DatabaseObject {
+export default class Animal extends DatabaseObject {
 
 	public name: string;
 	public type: string;
@@ -69,5 +69,3 @@ class Animal extends DatabaseObject {
 		}
 	}
 }
-
-export = Animal;

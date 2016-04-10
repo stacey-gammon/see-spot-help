@@ -29,7 +29,7 @@ var GroupAnimalsTab = require("./group/groupanimalstab");
 var GroupMembersTab = require("./group/groupmemberstab");
 var AddAnimalNote = require("./animal/addanimalnote");
 var UserSettingsPage = require("./person/usersettingspage");
-var LoginStore = require("../stores/loginstore");
+import LoginStore from '../stores/loginstore';
 
 var Home = React.createClass({
 	contextTypes: {
@@ -85,7 +85,7 @@ var Home = React.createClass({
 			this.props.location.pathname != '/loginpage') {
 			this.context.router.push("/privatebetapage");
 		}
-		if (LoginStore.user && LoginStore.user.inBeta) {
+		if (LoginStore.getUser() && LoginStore.getUser().inBeta) {
 			return (
 				<div>
 					<MyNavBar/>

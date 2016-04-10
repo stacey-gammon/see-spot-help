@@ -1,12 +1,14 @@
 'use strict';
 
 var React = require("react");
-var Utils = require("../core/utils");
-import ScheduleStore = require("../stores/schedulestore");
-import AnimalStore = require("../stores/animalstore");
-import VolunteerStore = require("../stores/volunteerstore");
-import LoginStore = require("../stores/loginstore");
-import GroupStore = require("../stores/groupstore");
+
+import Utils from '../core/utils';
+import ScheduleStore from '../stores/schedulestore';
+import AnimalStore from '../stores/animalstore';
+import VolunteerStore from '../stores/volunteerstore';
+import LoginStore from '../stores/loginstore';
+import GroupStore from '../stores/groupstore';
+
 import moment = require('moment');
 
 var addCalendarEvent = require("./addcalendarevent");

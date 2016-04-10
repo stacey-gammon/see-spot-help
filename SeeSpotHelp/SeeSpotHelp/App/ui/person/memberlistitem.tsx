@@ -4,15 +4,17 @@ var React = require("react");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-var VolunteerGroup = require("../../core/volunteergroup");
-var Volunteer = require("../../core/volunteer");
-import ConstStrings = require("../../core/conststrings");
-var LoginStore = require("../../stores/loginstore");
-var GroupInfoBox = require("../../ui/group/groupinfobox");
-var GroupStore = require("../../stores/groupstore");
 var GroupActions = require("../../actions/groupactions");
-var VolunteerStore = require("../../stores/volunteerstore");
-var PermissionsStore = require("../../stores/permissionsstore");
+var GroupInfoBox = require("../../ui/group/groupinfobox");
+
+import VolunteerGroup from '../../core/volunteergroup';
+import Volunteer from '../../core/volunteer';
+import ConstStrings from '../../core/conststrings';
+import DataServices from '../../core/dataservices';
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
+import VolunteerStore from '../../stores/volunteerstore';
+import PermissionsStore from '../../stores/permissionsstore';
 
 var MemberListItem = React.createClass({
 	getInitialState: function() {
@@ -145,7 +147,7 @@ var MemberListItem = React.createClass({
 
 		if (memberPermission.pending()) {
 			if (userPermission.admin() ||
-				(LoginStore.user && this.props.member.id == LoginStore.user.id)) {
+				(LoginStore.getUser() && this.props.member.id == LoginStore.getUser().id)) {
 					className += " membershipPendingStyle";
 			} else {
 				// Regular members can't see members pending.
@@ -155,7 +157,7 @@ var MemberListItem = React.createClass({
 
 		var extraInfo = memberPermission.admin() ? "(admin)" : "";
 		if (userPermission.admin() ||
-			(LoginStore.user && this.props.member.id == LoginStore.user.id)) {
+			(LoginStore.getUser() && this.props.member.id == LoginStore.getUser().id)) {
 			extraInfo = memberPermission.pending() ?
 				"(membership pending)" :
 				memberPermission.denied() ?

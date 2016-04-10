@@ -20,4 +20,4 @@ var ConstStrings = {
 	Status: "Status"
 };
 
-export = ConstStrings;
+export default ConstStrings;

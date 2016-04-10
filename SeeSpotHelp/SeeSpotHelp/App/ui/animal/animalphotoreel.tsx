@@ -1,8 +1,9 @@
 "use strict"
 
 var React = require("react");
-var LoginStore = require("../../stores/loginstore");
 var TakePhotoButton = require("../takephotobutton");
+
+import LoginStore from '../../stores/loginstore';
 
 var AnimalPhotoReel = React.createClass({
 	getInitialState: function() {
@@ -20,10 +21,7 @@ var AnimalPhotoReel = React.createClass({
 	},
 
 	onChange: function () {
-		this.setState(
-			{
-				user: LoginStore.user
-			});
+		this.forceUpdate();
 	},
 
 	render: function () {

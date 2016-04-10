@@ -7,11 +7,11 @@ var Permission = require("../../core/permission");
 var InputField = require("../../core/inputfield");
 var InputFieldValidation = require("../../core/inputfieldvalidation");
 var TakePhotoButton = require("../takephotobutton");
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
-var PermissionsStore = require("../../stores/permissionsstore");
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
+import PermissionsStore from '../../stores/permissionsstore';
 
-var Utils = require("../../core/utils");
+import Utils from '../../core/utils';
 var GroupActions = require("../../actions/groupactions");
 
 var AddAnimalPage = React.createClass({

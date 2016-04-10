@@ -3,7 +3,7 @@
 var React = require("react");
 import DataServices = require('../core/dataservices');
 var Photo = require("../core/photo");
-var LoginStore = require("../stores/loginstore");
+import LoginStore from '../stores/loginstore';
 
 var TakePhotoButton = React.createClass({
 	getInitialState: function() {
@@ -21,10 +21,7 @@ var TakePhotoButton = React.createClass({
 	},
 
 	onChange: function () {
-		this.setState(
-			{
-				user: LoginStore.user
-			});
+		this.forceUpdate();
 	},
 
 	uploadSucceeded: function() {

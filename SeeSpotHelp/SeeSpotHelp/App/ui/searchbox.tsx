@@ -3,17 +3,18 @@
 var React = require("react");
 var ReactBootstrap = require("react-bootstrap");
 var Link = require("react-router").Link;
-var Utils = require("../core/utils");
-var Animal = require("../core/animal");
 var LinkContainer = require("react-router-bootstrap").LinkContainer;
 var ShelterSearchResults = require("./searchresults");
-var LoginStore = require("../stores/loginstore");
-import DataServices = require('../core/dataservices');
 var DropdownMenu = ReactBootstrap.DropdownMenu;
 var ButtonGroup = ReactBootstrap.ButtonGroup;
 var DropdownButton = ReactBootstrap.DropdownButton;
 var Button = ReactBootstrap.Button;
 var MenuItem = ReactBootstrap.MenuItem;
+
+import Utils from "../core/utils";
+import Animal from "../core/animal";
+import LoginStore from "../stores/loginstore";
+import DataServices from '../core/dataservices';
 
 var SearchBox = React.createClass({
 	getInitialState: function() {

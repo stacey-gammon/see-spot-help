@@ -1,6 +1,6 @@
 ﻿var React = require("react");
 
-var ConstStrings = require("./conststrings");
+import ConstStrings from "./conststrings";
 
 // Represents an input form field.
 // @param validations {inputfieldvalidations[]} an array list of input field validations
@@ -80,4 +80,4 @@ InputField.prototype.getFormGroupClassName = function () {
 	return formName;
 };
 
-export = InputField;
+export default InputField;

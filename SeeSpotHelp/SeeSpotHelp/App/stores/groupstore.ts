@@ -2,15 +2,15 @@
 
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
-//import { VolunteerGroup } from '../core/volunteergroup';
-import VolunteerGroup = require('../core/volunteergroup');
-var Animal = require('../core/animal');
-import DataServices = require('../core/dataservices');
-var VolunteerStore = require("../stores/volunteerstore");
-var PermissionsStore = require("../stores/permissionsstore");
-import DatabaseObject = require('../core/databaseobject');
 
-import BaseStore = require('./basestore');
+import VolunteerGroup from '../core/volunteergroup';
+import Animal from '../core/animal';
+import DataServices from '../core/dataservices';
+import VolunteerStore from "../stores/volunteerstore";
+import PermissionsStore from "../stores/permissionsstore";
+import DatabaseObject from '../core/databaseobject';
+
+import BaseStore from './basestore';
 
 class GroupStore extends BaseStore {
 	protected databaseObject: DatabaseObject = new VolunteerGroup();
@@ -98,4 +98,4 @@ class GroupStore extends BaseStore {
 	}
 }
 
-export = new GroupStore();
+export default new GroupStore();

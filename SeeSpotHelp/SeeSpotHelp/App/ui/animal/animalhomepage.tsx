@@ -5,15 +5,15 @@ var ReactBootstrap = require("react-bootstrap");
 var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
 
-var LoginStore = require("../../stores/loginstore");
+import LoginStore from '../../stores/loginstore';
 
-import Utils = require("../../core/utils");
-import Animal = require("../../core/animal");
-import VolunteerGroup = require("../../core/volunteergroup");
-import Permission = require("../../core/permission");
+import Utils from '../../core/utils';
+import Animal from '../../core/animal';
+import VolunteerGroup from '../../core/volunteergroup';
+import Permission from '../../core/permission';
 import AnimalStore = require("../../stores/animalstore");
-import PhotoStore = require("../../stores/photostore");
-import PermissionsStore = require("../../stores/permissionsstore");
+import PhotoStore from '../../stores/photostore';
+import PermissionsStore from '../../stores/permissionsstore';
 
 var AnimalActionsBox = require('./animalactionsbox');
 var AnimalPhotoReel = require("./animalphotoreel");
@@ -44,7 +44,6 @@ var AnimalHomePage = React.createClass({
 		var state = {
 			animal: animal,
 			group: group,
-			user: LoginStore.user,
 			permission: permission,
 			animalDefaultTabKey: null
 		};
@@ -91,7 +90,7 @@ var AnimalHomePage = React.createClass({
 		return (
 			<LinkContainer
 				to={{ pathname: "addAnimalPage",
-					state: { user: LoginStore.user,
+					state: { user: LoginStore.getUser(),
 							 group: this.state.group,
 							 animal: this.state.animal,
 							 mode: 'edit' } }}>

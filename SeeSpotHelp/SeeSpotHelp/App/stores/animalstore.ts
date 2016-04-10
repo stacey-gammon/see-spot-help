@@ -1,7 +1,7 @@
 'use strict';
 
-import Animal = require("../core/animal");
-import BaseStore = require('./basestore');
+import Animal from "../core/animal";
+import BaseStore from './basestore';
 
 class AnimalStore extends BaseStore {
 	protected databaseObject: Animal = new Animal();
@@ -24,4 +24,4 @@ class AnimalStore extends BaseStore {
 	}
 }
 
-export = new AnimalStore();
+export default new AnimalStore();

@@ -2,8 +2,8 @@
 
 var React = require('react');
 var AnimalThumbnail = require('./animalthumbnail');
-var GroupStore = require("../../stores/groupstore");
-var AnimalStore = require("../../stores/animalstore");
+import GroupStore from '../../stores/groupstore';
+import AnimalStore from '../../stores/animalstore';
 
 // A list of animals managed by the current volunteer group.
 var AnimalList = React.createClass({

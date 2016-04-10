@@ -1,15 +1,16 @@
 ﻿"use strict"
 
 var React = require("react");
-import ConstStrings = require("../../core/conststrings");
-import Utils = require("../../core/utils");
-import VolunteerGroup = require("../../core/volunteergroup");
-import Permission = require("../../core/permission");
-import InputField = require("../../core/inputfield");
-import InputFieldValidation = require("../../core/inputfieldvalidation");
-import LoginStore = require("../../stores/loginstore");
-import PermissionsStore = require("../../stores/permissionsstore");
-import GroupStore = require("../../stores/groupstore");
+
+import ConstStrings from '../../core/conststrings';
+import Utils from '../../core/utils';
+import VolunteerGroup from '../../core/volunteergroup';
+import Permission from '../../core/permission';
+import InputField from '../../core/inputfield';
+import InputFieldValidation from '../../core/inputfieldvalidation';
+import LoginStore from '../../stores/loginstore';
+import PermissionsStore from '../../stores/permissionsstore';
+import GroupStore from '../../stores/groupstore';
 
 var STATES = [
 	"AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",

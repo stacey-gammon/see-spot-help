@@ -1,7 +1,7 @@
 
-import DatabaseObject = require('./databaseobject');
+import DatabaseObject from './databaseobject';
 
-class Photo extends DatabaseObject {
+export default class Photo extends DatabaseObject {
 	public src: string;
 	public comment: string;
 	public userId: string;
@@ -20,5 +20,3 @@ class Photo extends DatabaseObject {
 	createInstance() { return new Photo(); }
 
 }
-
-export = Photo;

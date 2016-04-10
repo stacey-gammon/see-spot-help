@@ -6,16 +6,17 @@ var AnimalList = require("../animal/animallist");
 var SearchBox = require("../searchbox");
 var GroupInfoBox = require("../group/groupinfobox");
 var GroupActionsBox = require("../group/groupactionsbox");
-var Utils = require("../../core/utils");
-var Volunteer = require("../../core/volunteer");
-var VolunteerGroup = require("../../core/volunteergroup");
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
-var VolunteerStore = require("../../stores/volunteerstore");
-var AnimalStore = require("../../stores/animalstore");
-var AnimalActivityStore = require("../../stores/animalactivitystore");
 var AddAnimalButton = require("../animal/addanimalbutton");
 var AnimalActivityItem = require("../animal/animalactivityitem");
+
+import Utils from '../../core/utils';
+import Volunteer from '../../core/volunteer';
+import VolunteerGroup from '../../core/volunteergroup';
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
+import VolunteerStore from '../../stores/volunteerstore';
+import AnimalStore from '../../stores/animalstore';
+var AnimalActivityStore = require("../../stores/animalactivitystore");
 
 var UserActivityTab = React.createClass({
 	getInitialState: function () {
@@ -60,7 +61,7 @@ var UserActivityTab = React.createClass({
 	generateActivity: function (activity) {
 		var group = GroupStore.getGroupById(activity.groupId);
 		if (!group) return null;
-		var animal = AnimalStore.getAnimalById(activity.animalId, activity.groupId);
+		var animal = AnimalStore.getAnimalById(activity.animalId);
 		if (!animal) return null;
 		return (
 			<AnimalActivityItem activity={activity}

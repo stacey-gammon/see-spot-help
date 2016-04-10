@@ -1,7 +1,7 @@
 
-import DatabaseObject = require('./databaseobject');
+import DatabaseObject from './databaseobject';
 
-class Schedule extends DatabaseObject {
+export default class Schedule extends DatabaseObject {
 	public start: string;
 	public end: string;
 	public title: string;
@@ -23,5 +23,3 @@ class Schedule extends DatabaseObject {
 
 	createInstance(): Schedule { return new Schedule(); }
 }
-
-export = Schedule;

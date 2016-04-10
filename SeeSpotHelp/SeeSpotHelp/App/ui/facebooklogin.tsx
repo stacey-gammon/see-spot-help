@@ -1,8 +1,7 @@
 ﻿'use strict'
 
 var React = require('react');
-var LoginStore = require("../stores/loginstore");
-var LoginService = require("../core/loginservice");
+import LoginStore from '../stores/loginstore';
 
 var FacebookLogin = React.createClass({
 	contextTypes: {
@@ -12,10 +11,10 @@ var FacebookLogin = React.createClass({
 	loginAction: function () {
 		if (LoginStore.getUser()) {
 			LoginStore.logout();
-			delete sessionStorage.loginPageUserAuthenticating;
+			sessionStorage.setItem('loginPageUserAuthenticating', null);
 			this.context.router.push('/loginpage');
 		} else {
-			sessionStorage.loginPageUserAuthenticating = true;
+			sessionStorage.setItem('loginPageUserAuthenticating', 'true');
 			LoginStore.authenticate();
 		}
 	},

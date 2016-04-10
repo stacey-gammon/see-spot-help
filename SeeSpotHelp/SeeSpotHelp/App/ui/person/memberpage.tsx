@@ -1,14 +1,14 @@
 "use strict";
 
 var React = require("react");
-import Permission = require("../../core/permission");
-import Volunteer = require("../../core/volunteer");
-import VolunteerGroup = require("../../core/volunteergroup");
-import Utils = require("../../core/utils");
-import LoginStore = require("../../stores/loginstore");
-import GroupStore = require("../../stores/groupstore");
-import PermissionsStore = require("../../stores/permissionsstore");
-import VolunteerStore = require("../../stores/volunteerstore");
+import Permission from "../../core/permission";
+import Volunteer from "../../core/volunteer";
+import VolunteerGroup from "../../core/volunteergroup";
+import Utils from "../../core/utils";
+import LoginStore from "../../stores/loginstore";
+import GroupStore from "../../stores/groupstore";
+import PermissionsStore from "../../stores/permissionsstore";
+import VolunteerStore from "../../stores/volunteerstore";
 
 var MemberScheduleTab = require("./memberscheduletab");
 var FacebookLogin = require("../facebooklogin");

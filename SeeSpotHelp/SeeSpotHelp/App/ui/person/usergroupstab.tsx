@@ -6,15 +6,15 @@ var AnimalList = require("../animal/animallist");
 var SearchBox = require("../searchbox");
 var GroupInfoBox = require("../group/groupinfobox");
 var GroupActionsBox = require("../group/groupactionsbox");
-var Utils = require("../../core/utils");
-var Volunteer = require("../../core/volunteer");
-var VolunteerGroup = require("../../core/volunteergroup");
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
-var PermissionsStore = require("../../stores/permissionsstore");
-var VolunteerStore = require("../../stores/volunteerstore");
+import Utils from '../../core/utils';
+import Volunteer from '../../core/volunteer';
+import VolunteerGroup from '../../core/volunteergroup';
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
+import PermissionsStore from '../../stores/permissionsstore';
+import VolunteerStore from '../../stores/volunteerstore';
 var AnimalActivityStore = require("../../stores/animalactivitystore");
-var DataServices = require("../../core/dataservices");
+import DataServices from '../../core/dataservices';
 var AddAnimalButton = require("../animal/addanimalbutton");
 var AnimalActivityItem = require("../animal/animalactivityitem");
 var GroupListItem = require("../group/grouplistitem");
@@ -22,7 +22,7 @@ var Intro = require("../intro");
 
 var UserGroupsTab = React.createClass({
 	getInitialState: function () {
-		var user = Utils.FindPassedInProperty(this, 'user') || LoginStore.user;
+		var user = Utils.FindPassedInProperty(this, 'user') || LoginStore.getUser();
 		var groups = user ? GroupStore.getGroupsByUser(user) : [];
 		return {
 			user: user,
@@ -33,14 +33,14 @@ var UserGroupsTab = React.createClass({
 	onChange: function () {
 		var user;
 		if (!this.state.user) {
-			user = LoginStore.user
+			user = LoginStore.getUser()
 		} else {
 			user = VolunteerStore.getVolunteerById(this.state.user.id);
 		}
 		this.setState(
 			{
 				user: user,
-				groups: GroupStore.getGroupsByUser(LoginStore.user)
+				groups: GroupStore.getGroupsByUser(LoginStore.getUser())
 			});
 	},
 
@@ -75,7 +75,7 @@ var UserGroupsTab = React.createClass({
 
 	getSearchOrAddText: function() {
 		if (!this.state.user) return null;
-		if (this.state.user.id != LoginStore.user.id) return null;
+		if (this.state.user.id != LoginStore.getUser().id) return null;
 		return (
 			<div className="text-center">
 			<p>

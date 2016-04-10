@@ -1,8 +1,7 @@
 
-var StringUtils = function () { }
 
-StringUtils.MakeSearchable = function (field) {
-	return field.toLowerCase().replace(/\W/g, '');
+export default class StringUtils {
+	public static MakeSearchable(field) {
+		return field.toLowerCase().replace(/\W/g, '');
+	}
 }
-
-module.exports = StringUtils;

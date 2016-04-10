@@ -1,16 +1,11 @@
 ﻿"use strict";
 
 var React = require("react");
-var Volunteer = require("../../core/volunteer");
-var VolunteerGroup = require("../../core/volunteergroup");
-var Utils = require("../../core/utils");
+import Utils from '../../core/utils';
 var FacebookLogin = require("../facebooklogin");
 var GroupInfoBox = require("../group/groupinfobox");
 var AddNewGroup = require("../group/addnewgroup");
 var SearchPage = require("../searchpage");
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
-var VolunteerStore = require("../../stores/volunteerstore");
 var MemberScheduleTab = require("./memberscheduletab");
 var LoginPage = require("../loginpage");
 
@@ -20,6 +15,12 @@ var ReactBootstrap = require("react-bootstrap");
 var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
 var ReactRouterBootstrap = require("react-router-bootstrap");
+
+import Volunteer from '../../core/volunteer';
+import VolunteerGroup from '../../core/volunteergroup';
+import GroupStore from '../../stores/groupstore';
+import VolunteerStore from '../../stores/volunteerstore';
+import LoginStore from '../../stores/loginstore';
 
 var ProfilePage = React.createClass({
 	contextTypes: {

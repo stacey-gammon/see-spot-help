@@ -6,13 +6,13 @@ var MemberListItem = require("../person/memberlistitem");
 var SearchBox = require("../searchbox");
 var GroupInfoBox = require("./groupinfobox");
 var GroupActionsBox = require("./groupactionsbox");
-var FakeData = require("../../core/fakedata");
-var Volunteer = require("../../core/volunteer");
-var VolunteerGroup = require("../../core/volunteergroup");
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
-var VolunteerStore = require("../../stores/volunteerstore");
-var DataServices = require("../../core/dataservices");
+
+import Volunteer from '../../core/volunteer';
+import VolunteerGroup from '../../core/volunteergroup';
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
+import VolunteerStore from '../../stores/volunteerstore';
+import DataServices from '../../core/dataservices';
 
 var GroupMembersTab = React.createClass({
 	getInitialState: function () {
@@ -50,14 +50,13 @@ var GroupMembersTab = React.createClass({
 	onChange: function () {
 		this.setState(
 			{
-				user: LoginStore.user,
 				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
 			});
 	},
 
 	generateMember: function (member) {
 		return (
-			<MemberListItem user={this.state.user} member={member} group={this.state.group }/>
+			<MemberListItem user={LoginStore.getUser()} member={member} group={this.state.group }/>
 		);
 	},
 

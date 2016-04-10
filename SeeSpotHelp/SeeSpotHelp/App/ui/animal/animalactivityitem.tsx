@@ -4,16 +4,17 @@ var React = require("react");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-var VolunteerGroup = require("../../core/volunteergroup");
-var Volunteer = require("../../core/volunteer");
-var ConstStrings = require("../../core/conststrings");
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
-var VolunteerStore = require("../../stores/volunteerstore");
-var AnimalStore = require("../../stores/animalstore");
-var AnimalActivityStore = require("../../stores/animalactivitystore");
-var AnimalNote = require("../../core/animalnote");
-import Permission = require('../../core/permission');
+import VolunteerGroup from '../../core/volunteergroup';
+import Volunteer from '../../core/volunteer';
+import ConstStrings from '../../core/conststrings';
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
+import VolunteerStore from '../../stores/volunteerstore';
+import AnimalStore from '../../stores/animalstore';
+import PermissionsStore from '../../stores/permissionsstore';
+import AnimalActivityStore from '../../stores/animalactivitystore';
+import AnimalNote from '../../core/animalnote';
+import Permission from '../../core/permission';
 
 var AnimalActivityItem = React.createClass({
 	getInitialState: function() {

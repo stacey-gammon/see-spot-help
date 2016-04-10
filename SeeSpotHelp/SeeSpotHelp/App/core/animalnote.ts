@@ -1,9 +1,10 @@
+'use strict';
 
-import DataServices = require('./dataservices');
-import dateFormat = require('dateformat');
-import DatabaseObject = require('./databaseobject');
+import DataServices from './dataservices';
+import dateFormat from 'dateformat';
+import DatabaseObject from './databaseobject';
 
-class AnimalNote extends DatabaseObject {
+export default class AnimalNote extends DatabaseObject {
 	public note: string;
 	public userId: string;
 	public animalId: string;
@@ -28,5 +29,3 @@ class AnimalNote extends DatabaseObject {
 		return this.note;
 	}
 }
-
-export = AnimalNote;

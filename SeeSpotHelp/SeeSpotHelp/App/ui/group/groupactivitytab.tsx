@@ -6,16 +6,16 @@ var AnimalList = require("../animal/animallist");
 var SearchBox = require("../searchbox");
 var GroupInfoBox = require("./groupinfobox");
 var GroupActionsBox = require("./groupactionsbox");
-var FakeData = require("../../core/fakedata");
-var Volunteer = require("../../core/volunteer");
-var VolunteerGroup = require("../../core/volunteergroup");
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
-var AnimalStore = require("../../stores/animalstore");
-var AnimalActivityStore = require("../../stores/animalactivitystore");
-var DataServices = require("../../core/dataservices");
 var AddAnimalButton = require("../animal/addanimalbutton");
 var AnimalActivityItem = require("../animal/animalactivityitem");
+
+import Volunteer from '../../core/volunteer';
+import VolunteerGroup from '../../core/volunteergroup';
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
+import AnimalStore from '../../stores/animalstore';
+import AnimalActivityStore from '../../stores/animalactivitystore';
+import DataServices from '../../core/dataservices';
 
 var GroupActivityTab = React.createClass({
 	getInitialState: function () {
@@ -55,7 +55,7 @@ var GroupActivityTab = React.createClass({
 	onChange: function () {
 		this.setState(
 			{
-				user: LoginStore.user,
+				user: LoginStore.getUser(),
 				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
 			});
 	},

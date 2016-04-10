@@ -1,7 +1,7 @@
 'use strict';
 
-import Permission = require('../core/permission');
-import BaseStore = require('./basestore');
+import Permission from '../core/permission';
+import BaseStore from './basestore';
 
 class PermissionsStore extends BaseStore {
 	protected databaseObject: Permission = new Permission('', '');
@@ -43,4 +43,4 @@ class PermissionsStore extends BaseStore {
 	}
 }
 
-export = new PermissionsStore();
+export default new PermissionsStore();

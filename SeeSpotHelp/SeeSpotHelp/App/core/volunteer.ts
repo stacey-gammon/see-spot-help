@@ -1,11 +1,10 @@
 ﻿// A volunteer that may or may not be part of a volunteer group. User sessions
 // managed by facebook login and authentication.
 
-import VolunteerGroup = require('./volunteergroup');
-import DataServices = require('./dataservices');
+import VolunteerGroup from './volunteergroup';
+import DataServices from './dataservices';
+import DatabaseObject from './databaseobject';
 var ServerResponse = require('./serverresponse');
-var Firebase = require("firebase");
-import DatabaseObject = require('./databaseobject');
 
 class Volunteer extends DatabaseObject {
 	public name: string;
@@ -15,6 +14,7 @@ class Volunteer extends DatabaseObject {
 	public groups: Array<VolunteerGroup>;
 	public classNameForSessionStorage: string = 'Volunteer';
 	public firebasePath: string = 'users';
+	public betaCode: string;
 
 	constructor(name, email, id) {
 		super();
@@ -63,4 +63,4 @@ class Volunteer extends DatabaseObject {
 	}
 }
 
-export = Volunteer;
+export default Volunteer;

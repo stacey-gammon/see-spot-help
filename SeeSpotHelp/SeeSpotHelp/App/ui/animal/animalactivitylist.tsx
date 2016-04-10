@@ -2,7 +2,7 @@
 
 var React = require('react');
 var AnimalActivityStore = require("../../stores/animalactivitystore");
-var VolunteerStore = require("../../stores/volunteerstore");
+import VolunteerStore from '../../stores/volunteerstore';
 var AnimalActivityItem = require("./animalactivityitem");
 
 var AnimalActivityList = React.createClass({

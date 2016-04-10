@@ -1,4 +1,4 @@
-import DatabaseObject = require('./databaseobject');
+import DatabaseObject from './databaseobject';
 
 const Colors = {
 	TEAL: '#008080', // Teal
@@ -9,7 +9,7 @@ const Colors = {
 	PINK: '#FC6C85' // Pink
 };
 
-class Color extends DatabaseObject {
+export default class Color extends DatabaseObject {
 	public firebasePath: string = 'colors';
 	public classNameForSessionStorage: string = 'Color';
 
@@ -28,5 +28,3 @@ class Color extends DatabaseObject {
 		return Colors.TEAL;
 	}
 }
-
-export = Color;

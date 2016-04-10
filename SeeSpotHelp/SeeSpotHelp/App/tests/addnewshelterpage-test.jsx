@@ -6,7 +6,7 @@ var expect = require("expect"),
 	VolunteerGroup = require("../core/volunteergroup"),
 	ServerResponse = require("../core/serverresponse"),
 	AddNewGroup = require("../ui/group/addnewgroup");
-var LoginStore = require("../stores/loginstore");
+import LoginStore from '../stores/loginstore';
 
 var d3 = require("d3");
 

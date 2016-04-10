@@ -15,12 +15,12 @@ var GroupActionsBox = require("./groupactionsbox");
 var GroupScheduleTab = require("./groupscheduletab");
 /* eslint-enable no-unused-vars */
 
-import Utils = require("../../core/utils");
-import VolunteerGroup = require("../../core/volunteergroup");
-import Permission = require("../../core/permission");
-import LoginStore = require("../../stores/loginstore");
-import GroupStore = require("../../stores/groupstore");
-import PermissionsStore = require("../../stores/permissionsstore");
+import Utils from '../../core/utils';
+import VolunteerGroup from '../../core/volunteergroup';
+import Permission from '../../core/permission';
+import LoginStore from '../../stores/loginstore';
+import GroupStore from '../../stores/groupstore';
+import PermissionsStore from '../../stores/permissionsstore';
 
 var GroupHomePage = React.createClass({
 	getInitialState: function() {

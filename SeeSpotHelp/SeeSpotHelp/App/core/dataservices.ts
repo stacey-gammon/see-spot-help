@@ -3,7 +3,7 @@ import Firebase = require('firebase');
 
 // A helpful class filled with functions for validating various
 // input fields.
-class DataServices {
+export default class DataServices {
 	public static FirebaseURL = "https://shining-torch-1432.firebaseio.com/";
 
 	public firebaseURL: string = DataServices.FirebaseURL;
@@ -220,5 +220,3 @@ class DataServices {
 		}
 	}
 }
-
-export = DataServices;
