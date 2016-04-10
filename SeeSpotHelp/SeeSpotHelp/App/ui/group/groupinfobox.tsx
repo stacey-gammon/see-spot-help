@@ -2,10 +2,50 @@
 
 var React = require('react');
 
-var LoginStore = require("../../stores/loginstore");
-var VolunteerGroup = require("../../core/volunteergroup");
+import LoginStore = require("../../stores/loginstore");
+import GroupStore = require("../../stores/groupstore");
+import PermissionsStore = require("../../stores/permissionsstore");
+import VolunteerGroup = require("../../core/volunteergroup");
+import Permission = require("../../core/permission");
 
 var GroupInfoBox = React.createClass({
+	getInitialState: function() {
+		var member = this.props.member
+		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
+		var permission = member && group ?
+			PermissionsStore.getPermission(member.id, group.id) : null;
+		return {
+			member: member,
+			group: group,
+			permission: permission
+		};
+	},
+
+	componentDidMount: function () {
+		LoginStore.addChangeListener(this.onChange);
+		GroupStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
+	},
+
+	componentWillUnmount: function () {
+		LoginStore.removeChangeListener(this.onChange);
+		GroupStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
+	},
+
+	onChange: function () {
+		var group = this.state.group ?
+			GroupStore.getGroupById(this.state.group.id) : null;
+		var permission = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
+			Permission.CreateNonMemberPermission();
+		this.setState(
+			{
+				group: group,
+				permission: permission
+			});
+	},
+
 	editGroup: function() {
 		this.context.router.push(
 			{
@@ -22,9 +62,9 @@ var GroupInfoBox = React.createClass({
 	},
 
 	getEditButton: function() {
-		if (!LoginStore.user ||
-			this.props.group.getUserPermissions(LoginStore.user.id) !=
-			VolunteerGroup.PermissionsEnum.ADMIN) {
+		if (!LoginStore.getUser() ||
+			!this.state.permission||
+			!this.state.permission.admin()) {
 			return null;
 		}
 

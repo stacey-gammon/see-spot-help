@@ -41,7 +41,7 @@ var TakePhotoButton = React.createClass({
 			return function(e) {
 				var filePayload = e.target.result;
 				// Generate a location that can't be guessed using the file's contents and a random number
-				var hash = CryptoJS.SHA256(Math.random() + CryptoJS.SHA256(filePayload));
+				var hash = CryptoJS.SHA256(Math.random() + '' + CryptoJS.SHA256(filePayload));
 				var photo = new Photo();
 				photo.id = hash;
 				photo.src = filePayload;
@@ -67,8 +67,7 @@ var TakePhotoButton = React.createClass({
 	},
 
 	allowAction: function() {
-		if (!LoginStore.user || !this.props.group) return false;
-		return this.props.group.shouldAllowUserToEdit(LoginStore.user.id);
+		return this.props.permission.inGroup();
 	},
 
 	render: function () {

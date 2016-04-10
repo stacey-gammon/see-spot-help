@@ -15,8 +15,8 @@ abstract class BaseStore extends EventEmitter {
 	protected abstract databaseObject: DatabaseObject;
 	protected storageMappings: Object = {};
 	protected firebasePath: string;
-	protected errorMessage: string;
-	protected hasError: boolean = false;
+	public errorMessage: string;
+	public hasError: boolean = false;
 
 	constructor() {
 		super();
@@ -26,7 +26,7 @@ abstract class BaseStore extends EventEmitter {
 		this.firebasePath = this.databaseObject.firebasePath;
 		for (var i = 0; i < this.databaseObject.mappingProperties.length; i++) {
 			var property = this.databaseObject.mappingProperties[i];
-			this.storageMappings[property] = Object;
+			this.storageMappings[property] = {};
 		}
 	}
 

@@ -10,7 +10,7 @@ import LoginStore = require("../../stores/loginstore");
 var Calendar = require("../calendar");
 var GroupActionsBox = require('../group/groupactionsbox');
 
-var AnimalScheduleTab = React.createClass({
+var GroupScheduleTab = React.createClass({
 	getInitialState: function() {
 		return {
 			refreshCalendar: false,
@@ -35,9 +35,6 @@ var AnimalScheduleTab = React.createClass({
 			return (
 				<div>
 					<h1>Only members can view or edit a schedule.</h1>
-					<GroupActionsBox
-						group={this.props.group}
-						permission={this.props.permission}/>
 				</div>);
 		}
 		return (
@@ -45,13 +42,11 @@ var AnimalScheduleTab = React.createClass({
 				{this.getLegend()}
 				<Calendar
 					propToForceRefresh={this.state.refreshCalendar}
-					animalId={this.props.animalId}
-					memberId={this.props.memberId}
-					view={this.props.view}
+					view='group'
 					group={this.props.group} />
 			</div>
 		);
 	}
 });
 
-module.exports = AnimalScheduleTab;
+module.exports = GroupScheduleTab;

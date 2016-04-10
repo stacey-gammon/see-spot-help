@@ -7,13 +7,16 @@ var Tabs = ReactBootstrap.Tabs;
 
 var LoginStore = require("../../stores/loginstore");
 
-var Utils = require("../../core/utils");
-var Animal = require("../../core/animal");
-var VolunteerGroup = require("../../core/volunteergroup");
+import Utils = require("../../core/utils");
+import Animal = require("../../core/animal");
+import VolunteerGroup = require("../../core/volunteergroup");
+import Permission = require("../../core/permission");
+import AnimalStore = require("../../stores/animalstore");
+import PhotoStore = require("../../stores/photostore");
+import PermissionsStore = require("../../stores/permissionsstore");
+
 var AnimalActionsBox = require('./animalactionsbox');
 var AnimalPhotoReel = require("./animalphotoreel");
-var AnimalStore = require("../../stores/animalstore");
-var PhotoStore = require("../../stores/photostore");
 var AnimalActivityList = require("./animalactivitylist");
 var AnimalScheduleTab = require("./animalscheduletab");
 var ReactRouterBootstrap = require('react-router-bootstrap');
@@ -27,17 +30,22 @@ var AnimalHomePage = React.createClass({
 		var animal = Utils.FindPassedInProperty(this, 'animal');
 		var group = Utils.FindPassedInProperty(this, 'group');
 
+		var permission = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
+			Permission.CreateNonMemberPermission();
+
 		if (animal && !(animal instanceof Animal)) {
-			animal = Animal.castObject(animal);
+			animal = animal.castObject(animal);
 		}
 		if (group && !(group instanceof VolunteerGroup)) {
-			group = VolunteerGroup.castObject(group);
+			group = group.castObject(group);
 		}
 
 		var state = {
 			animal: animal,
 			group: group,
 			user: LoginStore.user,
+			permission: permission,
 			animalDefaultTabKey: null
 		};
 
@@ -47,20 +55,26 @@ var AnimalHomePage = React.createClass({
 	componentDidMount: function() {
 		LoginStore.addChangeListener(this.onChange);
 		PhotoStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
 		PhotoStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function () {
-		this.forceUpdate();
+		var permission = LoginStore.getUser() && this.state.group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, this.state.group.id) :
+			Permission.CreateNonMemberPermission();
+		this.setState({
+			permission: permission
+		});
 	},
 
 	shouldAllowUserToEdit: function () {
-		if (!LoginStore.user) return false;
-		return this.state.group.shouldAllowUserToEdit(LoginStore.user.id);
+		return this.state.permission.inGroup();
 	},
 
 	handleTabSelect: function(key) {
@@ -117,13 +131,23 @@ var AnimalHomePage = React.createClass({
 				<AnimalPhotoReel group={this.state.group} animal={animal} />
 							<Tabs activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
 							<Tab eventKey={1} title={Utils.getActivityGlyphicon()}>
-								<AnimalActionsBox group={this.state.group} animal={animal}/>
+								<AnimalActionsBox
+									group={this.state.group}
+									animal={animal}
+									permission={this.state.permission}/>
 								<br/>
 								<br/>
-								<AnimalActivityList group={this.state.group} animal={animal}/>
+								<AnimalActivityList
+									group={this.state.group}
+									animal={animal}
+									permission={this.state.permission}/>
 							</Tab>
 							<Tab eventKey={2} title={Utils.getCalendarGlyphicon()}>
-								<AnimalScheduleTab group={this.state.group} view="animal" animalId={animal.id}/>
+								<AnimalScheduleTab
+									group={this.state.group}
+									view="animal"
+									animalId={animal.id}
+									permission={this.state.permission}/>
 							</Tab>
 						</Tabs>
 			</div>

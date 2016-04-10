@@ -3,11 +3,13 @@
 var React = require("react");
 var ConstStrings = require("../../core/conststrings");
 var Animal = require("../../core/animal");
+var Permission = require("../../core/permission");
 var InputField = require("../../core/inputfield");
 var InputFieldValidation = require("../../core/inputfieldvalidation");
 var TakePhotoButton = require("../takephotobutton");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
+var PermissionsStore = require("../../stores/permissionsstore");
 
 var Utils = require("../../core/utils");
 var GroupActions = require("../../actions/groupactions");
@@ -44,6 +46,9 @@ var AddAnimalPage = React.createClass({
 		var mode = Utils.FindPassedInProperty(this, 'mode');
 		var group = Utils.FindPassedInProperty(this, 'group');
 		var animal = Utils.FindPassedInProperty(this, 'animal');
+		var permission = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
+			Permission.CreateNonMemberPermission();
 
 		if (!mode) mode = 'add';
 		// If in edit mode, fill in field values.
@@ -58,6 +63,7 @@ var AddAnimalPage = React.createClass({
 			fields: inputFields,
 			group: group,
 			mode: mode,
+			permission: permission,
 			animal: animal
 		};
 
@@ -68,17 +74,23 @@ var AddAnimalPage = React.createClass({
 	componentDidMount: function() {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function() {
+		var permission = LoginStore.getUser() && this.state.group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, this.state.group.id) :
+			Permission.CreateNonMemberPermission();
 		this.setState(
 			{
-				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
+				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null,
+				permission: permission
 			});
 	},
 
@@ -246,7 +258,8 @@ var AddAnimalPage = React.createClass({
 				<TakePhotoButton
 					user={LoginStore.getUser()}
 					group={this.state.group}
-					animal={this.state.animal}/>
+					animal={this.state.animal}
+					permission={this.state.permission}/>
 				<div style={{textAlign: 'center'}}>
 				<button className="btn btn-info padding AddAnimalButton"
 						onClick={this.addNewAnimal}>{buttonText}</button>

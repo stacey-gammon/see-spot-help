@@ -3,19 +3,24 @@
 var React = require("react");
 var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
-var VolunteerGroup = require("../../core/volunteergroup");
-var Volunteer = require("../../core/volunteer");
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
+import VolunteerGroup = require("../../core/volunteergroup");
+import Volunteer = require("../../core/volunteer");
+import Permission = require("../../core/permission");
+import LoginStore = require("../../stores/loginstore");
+import GroupStore = require("../../stores/groupstore");
+import PermissionsStore = require("../../stores/permissionsstore");
 
 var AddAnimalButton = React.createClass({
 	getInitialState: function() {
 		var user = LoginStore.getUser();
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-
+		var permission = user && group ?
+			PermissionsStore.getPermission(user.id, group.id) :
+			Permission.CreateNonMemberPermission();
 		return {
 			user: user,
-			group: group
+			group: group,
+			permission: permission
 		};
 	},
 
@@ -28,33 +33,31 @@ var AddAnimalButton = React.createClass({
 	componentDidMount: function() {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function() {
 		var user = LoginStore.getUser();
 		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
+		var permission = user && group ?
+			PermissionsStore.getPermission(user.id, group.id) :
+			Permission.CreateNonMemberPermission();
 		this.setState(
 			{
 				user: user,
 				group: group,
-				permissions: user && group ? group.getUserPermissions(user.id) : null
+				permissions: permission
 			});
 	},
 
 	getAddAnimalButton: function() {
-		if (!this.state.user || !this.state.group) {
-			return null;
-		}
-		var permissions = this.state.group.getUserPermissions(this.state.user.id);
-		if (!this.state.user ||
-			permissions == VolunteerGroup.PermissionsEnum.NONMEMBER ||
-			permissions == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ||
-			permissions == VolunteerGroup.PermissionsEnum.MEMBERSHIPDENIED) {
+		if (!this.state.user || !this.state.group || !this.state.permission.inGroup()) {
 			return null;
 		}
 		return (

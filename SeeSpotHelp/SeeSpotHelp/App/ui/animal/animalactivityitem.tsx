@@ -13,22 +13,26 @@ var VolunteerStore = require("../../stores/volunteerstore");
 var AnimalStore = require("../../stores/animalstore");
 var AnimalActivityStore = require("../../stores/animalactivitystore");
 var AnimalNote = require("../../core/animalnote");
-var AnimalActions = require("../../actions/animalactions");
+import Permission = require('../../core/permission');
 
 var AnimalActivityItem = React.createClass({
 	getInitialState: function() {
 		var member = this.props.member
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
+		var permission = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
+			Permission.CreateNonMemberPermission();
+
 		return {
 			user: LoginStore.getUser(),
-			group: group
+			group: group,
+			permission: permission
 		};
 	},
 
 	deleteAction: function (event) {
 		if (confirm("Are you sure you want to delete this post?")) {
 			this.props.activity.delete();
-			AnimalActions.animalActivityDeleted();
 		}
 	},
 
@@ -63,8 +67,7 @@ var AnimalActivityItem = React.createClass({
 	getActions: function () {
 		if (!this.state.user) return null;
 		if (this.props.activity.userId == this.state.user.id ||
-			this.props.group.getUserPermissions(this.state.user.id) ==
-				   VolunteerGroup.PermissionsEnum.ADMIN) {
+			this.permission.admin()) {
 			return (
 				<div className="media-right">
 					{this.getDeleteActionButton()}

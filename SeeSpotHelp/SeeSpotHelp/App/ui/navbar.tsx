@@ -25,9 +25,6 @@ var MyNavBar = React.createClass({
 	},
 
 	render: function() {
-		if (!LoginStore.getUser()) {
-			return null;
-		}
 		return (
 			<Navbar ref="mynavbar" className="navbar navbar-light bg-faded sh-navbar">
 				<Nav className="nav navbar-nav navbar-custom">

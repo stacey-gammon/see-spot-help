@@ -35,9 +35,6 @@ class VolunteerGroup extends DatabaseObject {
 	// Unfortunately, I don't know anyway to generate this dynamically.
 	public classNameForSessionStorage = 'VolunteerGroup';
 	public firebasePath = 'groups';
-	public userPermissionsMap: Object = {};
-	public availableMemberColors: Color = new Color();
-	public availableAnimalColors: Color = new Color();
 
 	constructor() {
 		super();
@@ -51,8 +48,6 @@ class VolunteerGroup extends DatabaseObject {
 
 	public static FromJSON(json) {
 		var group = VolunteerGroup.castObject(json);
-		group.availableMemberColors = Object.assign(new Color(), group.availableMemberColors);
-		group.availableAnimalColors = Object.assign(new Color(), group.availableAnimalColors);
 		return group;
 	}
 
@@ -114,7 +109,6 @@ class VolunteerGroup extends DatabaseObject {
 	public static createFromInputFields(inputFields, adminId) {
 		var group = new VolunteerGroup();
 		group.updateFromInputFields(inputFields);
-		group.userPermissionsMap[adminId] = VolunteerGroup.PermissionsEnum.ADMIN;
 		return group;
 	}
 
@@ -130,20 +124,6 @@ class VolunteerGroup extends DatabaseObject {
 		this.city = inputFields["city"].value;
 		this.state = inputFields["state"].value;
 		this.zipCode = inputFields["zipCode"].value;
-	}
-
-	shouldAllowUserToEdit(userId) {
-		var userPermissions = this.getUserPermissions(userId);
-		return userPermissions == VolunteerGroup.PermissionsEnum.MEMBER ||
-			   userPermissions == VolunteerGroup.PermissionsEnum.ADMIN;
-	}
-
-	getUserPermissions(userId) {
-		if (this.userPermissionsMap.hasOwnProperty(userId)) {
-			return this.userPermissionsMap[userId];
-		} else {
-			return VolunteerGroup.PermissionsEnum.NONMEMBER;
-		}
 	}
 
 	delete() {

@@ -4,20 +4,24 @@ var React = require("react");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-var VolunteerGroup = require("../../core/volunteergroup");
-var Utils = require("../../core/utils");
-var Volunteer = require("../../core/volunteer");
-var ConstStrings = require("../../core/conststrings");
-var LoginStore = require("../../stores/loginstore");
+import VolunteerGroup = require("../../core/volunteergroup");
+import Utils = require("../../core/utils");
+import Volunteer = require("../../core/volunteer");
+import ConstStrings = require("../../core/conststrings");
+import Permission = require("../../core/permission");
+import LoginStore = require("../../stores/loginstore");
+import GroupStore = require("../../stores/groupstore");
+import PermissionsStore = require("../../stores/permissionsstore");
 var GroupInfoBox = require("./groupinfobox");
 var LeaveGroupButton = require("./leavegroupbutton");
-var GroupStore = require("../../stores/groupstore");
 
 var GroupListItem = React.createClass({
 	getInitialState: function() {
 		var user = Utils.FindPassedInProperty(this, 'user') || LoginStore.getUser();
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-		var permissions = user && group ? group.getUserPermissions(user.id) : null;
+		var permissions = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
+			Permission.CreateNonMemberPermission();
 
 		return {
 			user: user,
@@ -35,32 +39,35 @@ var GroupListItem = React.createClass({
 	componentDidMount: function () {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function () {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function () {
 		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
 		var user = LoginStore.getUser();
-		console.log("group = ", group);
+		var permissions = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
+			Permission.CreateNonMemberPermission();
 		this.setState(
 			{
 				user: user,
 				group: group,
-				permissions: group ? group.getUserPermissions(user.id) : null
+				permissions: permissions
 			});
 	},
 
 	render: function () {
 		if (!this.props.user) return null;
 		var group = VolunteerGroup.castObject(this.props.group);
-		var permission = group.getUserPermissions(this.props.user.id);
-		var headerText = permission == VolunteerGroup.PermissionsEnum.ADMIN ?
-			"(Admin)" : permission == VolunteerGroup.PermissionsEnum.MEMBER ?
-			"(Member)" : permission == VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP ?
+		var headerText = this.state.permission.admin() ?
+			"(Admin)" : this.state.permission.member() ?
+			"(Member)" : this.state.permission.pending() ?
 			"(Membership Pending)" : "";
 		return (
 			<a className="list-group-item groupListElement">

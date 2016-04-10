@@ -12,14 +12,15 @@ var GroupMembersTab = require("./groupmemberstab");
 var GroupAnimalsTab = require("./groupanimalstab");
 var GroupActivityTab = require("./groupactivitytab");
 var GroupActionsBox = require("./groupactionsbox");
-var AnimalScheduleTab = require("../animal/animalscheduletab");
+var GroupScheduleTab = require("./groupscheduletab");
 /* eslint-enable no-unused-vars */
 
-var Utils = require("../../core/utils");
-var VolunteerGroup = require("../../core/volunteergroup");
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
-var PermissionsStore = require("../../stores/permissionsstore");
+import Utils = require("../../core/utils");
+import VolunteerGroup = require("../../core/volunteergroup");
+import Permission = require("../../core/permission");
+import LoginStore = require("../../stores/loginstore");
+import GroupStore = require("../../stores/groupstore");
+import PermissionsStore = require("../../stores/permissionsstore");
 
 var GroupHomePage = React.createClass({
 	getInitialState: function() {
@@ -31,11 +32,14 @@ var GroupHomePage = React.createClass({
 		// Undefined will mess up LoadOrSaveState so make sure we explicitly have false.
 		isSearchResult = isSearchResult ? true : false;
 
+		var permission = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
+			Permission.CreateNonMemberPermission();
 		var state = {
-			user: LoginStore.user,
 			group: group,
 			fromSearch: isSearchResult,
-			groupDefaultTabKey: null
+			groupDefaultTabKey: null,
+			permission: permission
 		};
 
 		Utils.LoadOrSaveState(state);
@@ -43,7 +47,7 @@ var GroupHomePage = React.createClass({
 		// If the user doesn't have any 'last looked at' group, and nothing has been set,
 		// see if we can grab one from the user.
 		if (!state.group && LoginStore.getUser()) {
-			var groups = GroupStore.getGroupsByUser(LoginStore.user);
+			var groups = GroupStore.getGroupsByUser(LoginStore.getUser());
 			if (groups && groups.length > 0) {
 				state.group = groups[0];
 				Utils.LoadOrSaveState(state);
@@ -60,8 +64,8 @@ var GroupHomePage = React.createClass({
 	},
 
 	getPreviousButton: function() {
-		if (this.state.fromSearch || !this.state.user) return null;
-		var usersGroups = GroupStore.getGroupsByUser(this.state.user);
+		if (this.state.fromSearch || !LoginStore.getUser()) return null;
+		var usersGroups = GroupStore.getGroupsByUser(LoginStore.getUser());
 		if (!usersGroups) return null;
 
 		var previousGroup = null;
@@ -82,8 +86,8 @@ var GroupHomePage = React.createClass({
 	},
 
 	getNextButton: function() {
-		if (this.state.fromSearch || !this.state.user) return null;
-		var usersGroups = GroupStore.getGroupsByUser(this.state.user);
+		if (this.state.fromSearch || !LoginStore.getUser()) return null;
+		var usersGroups = GroupStore.getGroupsByUser(LoginStore.getUser());
 		if (!usersGroups) return null;
 
 		var nextGroup = null;
@@ -125,12 +129,16 @@ var GroupHomePage = React.createClass({
 	onChange: function() {
 		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
 
+		var permission = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
+			Permission.CreateNonMemberPermission();
+
 		// We triggered a download, we'll get back here again once it's complete, with fresh data.
 		if (!group && this.state.group) group = this.state.group;
 		this.setState(
 			{
-				user: LoginStore.user,
-				group: group
+				group: group,
+				permission: permission
 			});
 	},
 
@@ -163,31 +171,34 @@ var GroupHomePage = React.createClass({
 							{this.getPreviousButton()}
 						</div>
 						<div className="media-body">
-							<GroupInfoBox group={this.state.group} user={this.state.user} />
+							<GroupInfoBox group={this.state.group} user={LoginStore.getUser()} />
 						</div>
 						<div className="media-right">
 							{this.getNextButton()}
 						</div>
 					</div>
-					<GroupActionsBox user={this.state.user} group={this.state.group} />
+					<GroupActionsBox user={LoginStore.getUser()} group={this.state.group} />
 					<Tabs activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
 						<Tab eventKey={1} title={Utils.getAnimalsTabIon()}>
-							<GroupAnimalsTab group={this.state.group} user={this.state.user}/>
+							<GroupAnimalsTab group={this.state.group} user={LoginStore.getUser()}/>
 						</Tab>
 						<Tab eventKey={2}
 								title={Utils.getMembersGlyphicon(this.state.group.memberCount())}>
-							<GroupMembersTab group={this.state.group} user={this.state.user}/>
+							<GroupMembersTab group={this.state.group} user={LoginStore.getUser()}/>
 						</Tab>
 						<Tab eventKey={3} title={Utils.getActivityGlyphicon()}>
-							<GroupActivityTab group={this.state.group} user={this.state.user}/>
+							<GroupActivityTab group={this.state.group} user={LoginStore.getUser()}/>
 						</Tab>
 						<Tab eventKey={4} title={Utils.getCalendarGlyphicon()}>
-							<AnimalScheduleTab group={this.state.group} view="group"/>
+							<GroupScheduleTab
+								group={this.state.group}
+								view="group"
+								permission={this.state.permission}/>
 						</Tab>
 					</Tabs>
 				</div>
 			);
-		} else if (LoginStore.user) {
+		} else if (LoginStore.getUser()) {
 			return (
 				<div>
 					<h1>

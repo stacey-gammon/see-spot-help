@@ -40,7 +40,7 @@ class Permission extends DatabaseObject {
 		return new Permission(userId, groupId, PermissionsEnum.PENDINGMEMBERSHIP);
 	}
 
-	public static CreateNonMemberPermission(userId, groupId) {
+	public static CreateNonMemberPermission(userId?, groupId?) {
 		return new Permission(userId, groupId, PermissionsEnum.NONMEMBER);
 	}
 

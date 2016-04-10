@@ -11,10 +11,9 @@ var SearchPage = require("../searchpage");
 var LoginStore = require("../../stores/loginstore");
 var GroupStore = require("../../stores/groupstore");
 var VolunteerStore = require("../../stores/volunteerstore");
-var AnimalScheduleTab = require("../animal/animalscheduletab");
+var MemberScheduleTab = require("./memberscheduletab");
 var LoginPage = require("../loginpage");
 
-var LoginActions = require("../../actions/loginactions");
 var UserGroupsTab = require("./usergroupstab");
 var UserActivityTab = require("./useractivitytab");
 var ReactBootstrap = require("react-bootstrap");
@@ -94,7 +93,7 @@ var ProfilePage = React.createClass({
 						<UserActivityTab user={LoginStore.getUser()}/>
 					</Tab>
 					<Tab eventKey={3} title={Utils.getCalendarGlyphicon()}>
-						<AnimalScheduleTab view="profile"/>
+						<MemberScheduleTab view="profile"/>
 					</Tab>
 				</Tabs>
 				<br/><br/>

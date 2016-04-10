@@ -1,19 +1,21 @@
 "use strict";
 
 var React = require("react");
-var Volunteer = require("../../core/volunteer");
-var VolunteerGroup = require("../../core/volunteergroup");
-var Utils = require("../../core/utils");
+import Permission = require("../../core/permission");
+import Volunteer = require("../../core/volunteer");
+import VolunteerGroup = require("../../core/volunteergroup");
+import Utils = require("../../core/utils");
+import LoginStore = require("../../stores/loginstore");
+import GroupStore = require("../../stores/groupstore");
+import PermissionsStore = require("../../stores/permissionsstore");
+import VolunteerStore = require("../../stores/volunteerstore");
+
+var MemberScheduleTab = require("./memberscheduletab");
 var FacebookLogin = require("../facebooklogin");
 var GroupInfoBox = require("../group/groupinfobox");
 var AddNewGroup = require("../group/addnewgroup");
 var SearchPage = require("../searchpage");
-var LoginStore = require("../../stores/loginstore");
-var GroupStore = require("../../stores/groupstore");
-var VolunteerStore = require("../../stores/volunteerstore");
-var AnimalScheduleTab = require("../animal/animalscheduletab");
 
-var LoginActions = require("../../actions/loginactions");
 var UserGroupsTab = require("./usergroupstab");
 var UserActivityTab = require("./useractivitytab");
 var ReactBootstrap = require("react-bootstrap");
@@ -29,6 +31,9 @@ var MemberPage = React.createClass({
 	getInitialState: function () {
 		var member = Utils.FindPassedInProperty(this, 'member') || LoginStore.getUser();
 
+		var permission = LoginStore.getUser() && this.state.group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, this.state.group.id) :
+			Permission.CreateNonMemberPermission();
 		var state = {
 			member: member
 		};
@@ -39,19 +44,21 @@ var MemberPage = React.createClass({
 	componentDidMount: function () {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function () {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function () {
 		var id;
 		if (this.state.member) {
 			id = this.state.member.id;
-		} else if (LoginStore.user){
-			id = LoginStore.user.id;
+		} else if (LoginStore.getUser()){
+			id = LoginStore.getUser().id;
 		}
 		this.setState(
 			{
@@ -69,7 +76,7 @@ var MemberPage = React.createClass({
 	},
 
 	render: function () {
-		if (!LoginStore.user || !this.state.member) return null;
+		if (!LoginStore.getUser() || !this.state.member) return null;
 		var heading = this.state.member.displayName ?
 			this.state.member.displayName : this.state.member.name;
 		if (this.state.member) {
@@ -89,7 +96,9 @@ var MemberPage = React.createClass({
 							<UserActivityTab user={this.state.member}/>
 						</Tab>
 						<Tab eventKey={3} title={Utils.getCalendarGlyphicon()}>
-							<AnimalScheduleTab memberId={this.state.member.id} view="member"/>
+							<MemberScheduleTab
+								memberId={this.state.member.id}
+								view="member"/>
 						</Tab>
 					</Tabs>
 					<br/><br/>

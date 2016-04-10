@@ -4,13 +4,14 @@ var React = require("react");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-var VolunteerGroup = require("../../core/volunteergroup");
-var Volunteer = require("../../core/volunteer");
-var ConstStrings = require("../../core/conststrings");
-var DataServices = require("../../core/dataservices");
-var LoginStore = require("../../stores/loginstore");
-var PermissionsStore = require("../../stores/permissionsstore");
-var GroupActions = require("../../actions/groupactions");
+import VolunteerGroup = require("../../core/volunteergroup");
+import Volunteer = require("../../core/volunteer");
+import ConstStrings = require("../../core/conststrings");
+import DataServices = require("../../core/dataservices");
+import Permission = require("../../core/permission");
+import LoginStore = require("../../stores/loginstore");
+import PermissionsStore = require("../../stores/permissionsstore");
+import GroupActions = require("../../actions/groupactions");
 var LeaveGroupButton = require("./leavegroupbutton");
 
 var GroupActionsBox = React.createClass({
@@ -18,7 +19,9 @@ var GroupActionsBox = React.createClass({
 		var user = LoginStore.getUser();
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
 
-		var permission = user && group ? PermissionsStore.getPermission(user.id, group.id) : null;
+		var permission = user && group ?
+			PermissionsStore.getPermission(user.id, group.id) :
+			Permission.CreateNonMemberPermission();
 
 		return {
 			user: user,
@@ -52,7 +55,7 @@ var GroupActionsBox = React.createClass({
 			PermissionsStore.getPermission(LoginStore.getUser().id, this.state.group.id) : null;
 		this.setState(
 			{
-				user: LoginStore.user,
+				user: LoginStore.getUser(),
 				permission: permission
 			});
 	},
@@ -64,7 +67,7 @@ var GroupActionsBox = React.createClass({
 
 		var permission = this.state.permission;
 		var group = new VolunteerGroup().castObject(this.state.group);
-		var user = new Volunteer().castObject(this.state.user);
+		var user = new Volunteer('','','').castObject(this.state.user);
 
 		if (permission.pending()) {
 			permission.permission = VolunteerGroup.PermissionsEnum.NONMEMBER;

@@ -30,7 +30,10 @@ var AnimalPhotoReel = React.createClass({
 		console.log("AnimalPhotoReel::render");
 		return (
 			<div className="animalPhotoReel" >
-				<TakePhotoButton group={this.props.group} user={LoginStore.getUser()}
+				<TakePhotoButton
+					group={this.props.group}
+					user={LoginStore.getUser()}
+					permission={this.props.permission}
 					animal={this.props.animal}/>
 			</div>
 		);

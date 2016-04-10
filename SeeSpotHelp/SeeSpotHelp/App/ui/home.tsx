@@ -79,6 +79,12 @@ var Home = React.createClass({
 	},
 
 	render: function() {
+		if (!LoginStore.getUser() &&
+			!LoginStore.userDownloading &&
+			this.props.location.pathname != '/privatebetapage' &&
+			this.props.location.pathname != '/loginpage') {
+			this.context.router.push("/privatebetapage");
+		}
 		if (LoginStore.user && LoginStore.user.inBeta) {
 			return (
 				<div>

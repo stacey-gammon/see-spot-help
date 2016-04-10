@@ -6,7 +6,9 @@ var Utils = require("../../core/utils");
 var VolunteerGroup = require("../../core/volunteergroup");
 import InputField = require("../../core/inputfield");
 import InputFieldValidation = require("../../core/inputfieldvalidation");
-var LoginStore = require("../../stores/loginstore");
+import LoginStore = require("../../stores/loginstore");
+import PermissionsStore = require("../../stores/permissionsstore");
+
 var GroupActions = require("../../actions/groupactions");
 
 var STATES = [
@@ -36,6 +38,9 @@ var AddNewGroup = React.createClass({
 
 		var mode = Utils.FindPassedInProperty(this, 'mode');
 		var group = Utils.FindPassedInProperty(this, 'group');
+		var permission = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
+			Permission.CreateNonMemberPermission();
 
 		if (!mode) {
 			mode = 'add';
@@ -52,7 +57,8 @@ var AddNewGroup = React.createClass({
 			fields: inputFields,
 			user : LoginStore.getUser(),
 			group: group,
-			mode: mode
+			mode: mode,
+			permission: permission
 		};
 	},
 
@@ -60,6 +66,28 @@ var AddNewGroup = React.createClass({
 		router: React.PropTypes.object.isRequired
 	},
 
+	componentDidMount: function() {
+		LoginStore.addChangeListener(this.onChange);
+		PermissionsStore.addChangeListener(this.onChange);
+	},
+
+	componentWillMount: function() {
+	},
+
+	componentWillUnmount: function() {
+		LoginStore.removeChangeListener(this.onChange);
+		PermissionsStore.removeChangeListener(this.onChange);
+	},
+
+	onChange: function() {
+		var permission = LoginStore.getUser() && this.state.group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, this.state.group.id) :
+			Permission.CreateNonMemberPermission();
+		this.setState(
+			{
+				permission: permission
+			});
+	},
 	validateFields: function() {
 		var errorFound = false;
 		for (var key in this.state.fields) {
@@ -144,22 +172,23 @@ var AddNewGroup = React.createClass({
 	},
 
 	render: function() {
-		if (this.state.user == null) {
-			throw "Non logged in user is attempting to add a new shelter";
-		}
 		var inputFields = [];
 		for (var key in this.state.fields) {
 			var field = this.state.fields[key];
 			inputFields.push(this.createInputField(field));
 		}
 		var buttonText = this.state.mode == 'edit' ? ConstStrings.Update : ConstStrings.Add;
+		var disabled =
+			this.state.mode == 'edit' && this.state.permission.admin() ||
+			this.state.mode == 'add' && LoginStore.getUser() ?
+				'false' : 'true';
 		return (
 			<div>
 				{this.state.errorMessage}
 				{inputFields}
 				<div style={{textAlign: 'center'}}
 					 className="center-block">
-					<button className="btn btn-info"
+					<button className="btn btn-info" disabled={disabled}
 						onClick={this.addNewVolunteerGroup}>{buttonText}
 					</button>
 					{this.getDeleteGroupButton()}
