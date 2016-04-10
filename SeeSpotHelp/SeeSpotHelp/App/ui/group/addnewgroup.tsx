@@ -2,14 +2,14 @@
 
 var React = require("react");
 import ConstStrings = require("../../core/conststrings");
-var Utils = require("../../core/utils");
-var VolunteerGroup = require("../../core/volunteergroup");
+import Utils = require("../../core/utils");
+import VolunteerGroup = require("../../core/volunteergroup");
+import Permission = require("../../core/permission");
 import InputField = require("../../core/inputfield");
 import InputFieldValidation = require("../../core/inputfieldvalidation");
 import LoginStore = require("../../stores/loginstore");
 import PermissionsStore = require("../../stores/permissionsstore");
-
-var GroupActions = require("../../actions/groupactions");
+import GroupStore = require("../../stores/groupstore");
 
 var STATES = [
 	"AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",
@@ -69,23 +69,24 @@ var AddNewGroup = React.createClass({
 	componentDidMount: function() {
 		LoginStore.addChangeListener(this.onChange);
 		PermissionsStore.addChangeListener(this.onChange);
-	},
-
-	componentWillMount: function() {
+		GroupStore.addChangeListener(this.onChange);
 	},
 
 	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
+		GroupStore.removeChangeListener(this.onChange);
 		PermissionsStore.removeChangeListener(this.onChange);
 	},
 
 	onChange: function() {
-		var permission = LoginStore.getUser() && this.state.group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, this.state.group.id) :
+		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
+		var permission = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
 			Permission.CreateNonMemberPermission();
 		this.setState(
 			{
-				permission: permission
+				permission: permission,
+				group: group
 			});
 	},
 	validateFields: function() {
@@ -109,7 +110,6 @@ var AddNewGroup = React.createClass({
 	},
 
 	insertGroupCallback: function(group) {
-		GroupActions.newGroupAdded(group);
 		this.context.router.push(
 			{
 				pathname: "GroupHomePage",
@@ -126,7 +126,6 @@ var AddNewGroup = React.createClass({
 				this.state.group.updateFromInputFields(this.state.fields);
 				this.state.group.update();
 				this.insertGroupCallback(this.state.group);
-				GroupActions.groupUpdated(this.state.group);
 			} else {
 				var group = VolunteerGroup.createFromInputFields(
 					this.state.fields,
@@ -158,7 +157,6 @@ var AddNewGroup = React.createClass({
 	deleteGroup: function() {
 		if (confirm("WAIT! Are you sure you want to permanently delete this group?")) {
 			this.state.group.delete();
-			GroupActions.groupDeleted(this.state.group);
 		}
 	},
 
@@ -179,9 +177,9 @@ var AddNewGroup = React.createClass({
 		}
 		var buttonText = this.state.mode == 'edit' ? ConstStrings.Update : ConstStrings.Add;
 		var disabled =
-			this.state.mode == 'edit' && this.state.permission.admin() ||
-			this.state.mode == 'add' && LoginStore.getUser() ?
-				'false' : 'true';
+			(this.state.mode == 'edit' && this.state.permission.admin()) ||
+			(this.state.mode == 'add' && LoginStore.getUser()) ?
+				false : true;
 		return (
 			<div>
 				{this.state.errorMessage}

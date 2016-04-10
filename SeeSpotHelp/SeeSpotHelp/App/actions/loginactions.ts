@@ -27,7 +27,7 @@ var LoginActions = {
 
 	loginStatusChanged: function (response) {
 		if (response.state == "unknown") {
-			userLoggedOut();
+			// userLoggedOut();
 		}
 	},
 

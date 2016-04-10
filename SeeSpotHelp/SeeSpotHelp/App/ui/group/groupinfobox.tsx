@@ -12,8 +12,8 @@ var GroupInfoBox = React.createClass({
 	getInitialState: function() {
 		var member = this.props.member
 		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-		var permission = member && group ?
-			PermissionsStore.getPermission(member.id, group.id) : null;
+		var permission = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) : null;
 		return {
 			member: member,
 			group: group,

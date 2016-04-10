@@ -1,4 +1,4 @@
-"user strict";
+'use strict';
 
 var React = require("react");
 var Utils = require("../core/utils");
@@ -107,7 +107,7 @@ var Calendar = React.createClass({
 		for (var i = 0; i < schedule.length; i++) {
 			var event = schedule[i];
 			var volunteer = VolunteerStore.getVolunteerById(event.userId);
-			var animal = AnimalStore.getAnimalById(event.animalId, event.groupId);
+			var animal = AnimalStore.getAnimalById(event.animalId);
 			var group = GroupStore.getGroupById(event.groupId);
 
 			// We'll have to wait for them to be downloaded.
@@ -198,11 +198,12 @@ var Calendar = React.createClass({
 	},
 
 	componentDidUpdate: function() {
+		var calendar: JQuery = $("#calendar");
 		// This is a really crappy hack. Full Calendar will not render if it's not visible
 		// and because of the tabs, it isn't visible at first.  There isn't any react call that
 		// I can find that will be called after everything is display on a tab.
 		setTimeout(function() {
-			$('#calendar').fullCalendar('render');
+			calendar.fullCalendar('render');
 		}.bind(this), 300);
 	},
 
