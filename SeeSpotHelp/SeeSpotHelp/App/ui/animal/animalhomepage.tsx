@@ -35,10 +35,10 @@ var AnimalHomePage = React.createClass({
 			Permission.CreateNonMemberPermission();
 
 		if (animal && !(animal instanceof Animal)) {
-			animal = animal.castObject(animal);
+			animal = new Animal().castObject(animal);
 		}
 		if (group && !(group instanceof VolunteerGroup)) {
-			group = group.castObject(group);
+			group = new VolunteerGroup().castObject(group);
 		}
 
 		var state = {
@@ -127,7 +127,10 @@ var AnimalHomePage = React.createClass({
 						<p className="animalInfo">{animal.description}</p>
 					</div>
 				</div>
-				<AnimalPhotoReel group={this.state.group} animal={animal} />
+				<AnimalPhotoReel
+					group={this.state.group}
+					permission={this.state.permission}
+					animal={animal} />
 							<Tabs activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
 							<Tab eventKey={1} title={Utils.getActivityGlyphicon()}>
 								<AnimalActionsBox

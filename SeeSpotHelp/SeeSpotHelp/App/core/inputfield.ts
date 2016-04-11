@@ -5,7 +5,7 @@ import ConstStrings from "./conststrings";
 // Represents an input form field.
 // @param validations {inputfieldvalidations[]} an array list of input field validations
 // that this field should run during the validate call.
-var InputField = function (validations) {
+var InputField = function (validations?) {
 	this.hasError = false;
 	this.validated = false;
 	this.errorMessage = "";

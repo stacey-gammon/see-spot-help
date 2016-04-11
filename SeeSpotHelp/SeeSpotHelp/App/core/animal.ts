@@ -40,7 +40,6 @@ export default class Animal extends DatabaseObject {
 		super();
 		this.mappingProperties.push('userId');
 		this.mappingProperties.push('groupId');
-		this.mappingProperties.push('animalId');
 	}
 
 	createInstance() { return new Animal(); }

@@ -71,6 +71,7 @@ export default class Utils {
 			}
 		} catch (error) {
 			console.log("Failed to load property " + prop + " into state: ", error);
+			sessionStorage.setItem(prop, null);
 		}
 	}
 

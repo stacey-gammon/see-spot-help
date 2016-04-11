@@ -7,7 +7,6 @@ import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
 import VolunteerGroup from '../../core/volunteergroup';
 
-var TakePhotoButton = require("../takephotobutton");
 var AddAnimalNote = require("./addanimalnote");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;

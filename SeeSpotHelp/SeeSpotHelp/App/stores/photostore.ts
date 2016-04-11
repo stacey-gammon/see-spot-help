@@ -7,6 +7,7 @@ class PhotoStore extends BaseStore {
 	protected databaseObject: Photo = new Photo();
 	constructor() {
 		super();
+		this.Init();
 	}
 
 	getPhotosByAnimalId(animalId) {

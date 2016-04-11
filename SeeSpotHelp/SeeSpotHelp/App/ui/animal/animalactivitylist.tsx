@@ -1,9 +1,10 @@
 'use strict'
 
 var React = require('react');
-var AnimalActivityStore = require("../../stores/animalactivitystore");
-import VolunteerStore from '../../stores/volunteerstore';
 var AnimalActivityItem = require("./animalactivityitem");
+
+import AnimalActivityStore from '../../stores/animalactivitystore';
+import VolunteerStore from '../../stores/volunteerstore';
 
 var AnimalActivityList = React.createClass({
 	getInitialState: function() {

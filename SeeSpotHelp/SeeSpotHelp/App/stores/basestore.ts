@@ -125,7 +125,7 @@ abstract class BaseStore extends EventEmitter {
 		if (!storageMapping.hasOwnProperty(propertyValue)) {
 			storageMapping[propertyValue] = [];
 			this.downloadFromMapping(property, propertyValue);
-			return null;
+			return [];
 		}
 
 		var items = [];

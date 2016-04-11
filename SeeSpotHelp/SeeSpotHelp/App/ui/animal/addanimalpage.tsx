@@ -1,12 +1,13 @@
 ﻿"use strict"
 
 var React = require("react");
-var ConstStrings = require("../../core/conststrings");
-var Animal = require("../../core/animal");
-var Permission = require("../../core/permission");
-var InputField = require("../../core/inputfield");
-var InputFieldValidation = require("../../core/inputfieldvalidation");
-var TakePhotoButton = require("../takephotobutton");
+var TakePhotoButton = require('../takephotobutton');
+
+import ConstStrings from '../../core/conststrings';
+import Animal from '../../core/animal';
+import Permission from '../../core/permission';
+import InputField from '../../core/inputfield';
+import InputFieldValidation from '../../core/inputfieldvalidation';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import PermissionsStore from '../../stores/permissionsstore';
@@ -84,12 +85,13 @@ var AddAnimalPage = React.createClass({
 	},
 
 	onChange: function() {
-		var permission = LoginStore.getUser() && this.state.group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, this.state.group.id) :
+		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
+		var permission = LoginStore.getUser() && group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
 			Permission.CreateNonMemberPermission();
 		this.setState(
 			{
-				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null,
+				group: group,
 				permission: permission
 			});
 	},
