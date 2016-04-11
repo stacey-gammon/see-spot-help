@@ -102,9 +102,11 @@ abstract class BaseStore extends EventEmitter {
 		var deletedObject = this.storage[id];
 		this.storage[id] = null;
 
-		for (var prop in this.storageMappings) {
-			this.deleteFromMapping(
-				this.storageMappings[prop], deletedObject[prop], id);
+		if (deletedObject) {
+			for (var prop in this.storageMappings) {
+				this.deleteFromMapping(
+					this.storageMappings[prop], deletedObject[prop], id);
+			}
 		}
 	}
 

@@ -16,7 +16,7 @@ import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import VolunteerStore from '../../stores/volunteerstore';
 import AnimalStore from '../../stores/animalstore';
-var AnimalActivityStore = require("../../stores/animalactivitystore");
+import AnimalActivityStore from '../../stores/animalactivitystore';
 
 var UserActivityTab = React.createClass({
 	getInitialState: function () {
@@ -77,8 +77,7 @@ var UserActivityTab = React.createClass({
 
 	render: function () {
 		if (!this.state.user) { return this.getLoading(); }
-		var notes =
-			AnimalActivityStore.getActivityByUserId(this.state.user.id);
+		var notes = AnimalActivityStore.getActivityById(this.state.user.id);
 		if (!notes) { return this.getLoading(); }
 
 		var displayNotes = [];

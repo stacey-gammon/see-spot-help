@@ -11,19 +11,19 @@ class AnimalActivityStore extends BaseStore {
 		this.Init();
 	}
 
-	getActivityById(id) {
+	public getActivityById(id) {
 		return this.getItemById(id);
 	}
 
-	getActivityByUserId(userId) {
+	public getActivityByUserId(userId) {
 		return this.getItemsByProperty('userId', userId);
 	}
 
-	getActivityByGroupId(groupId) {
+	public getActivityByGroupId(groupId) {
 		return this.getItemsByProperty('groupId', groupId);
 	}
 
-	getActivityByAnimalId(animalId) {
+	public getActivityByAnimalId(animalId: string) {
 		return this.getItemsByProperty('animalId', animalId);
 	}
 };

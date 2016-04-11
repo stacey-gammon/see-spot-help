@@ -6,12 +6,13 @@ var AnimalList = require("../animal/animallist");
 var SearchBox = require("../searchbox");
 var GroupInfoBox = require("./groupinfobox");
 var GroupActionsBox = require("./groupactionsbox");
+var AddAnimalButton = require("../animal/addanimalbutton");
+
 import Volunteer from '../../core/volunteer';
 import VolunteerGroup from '../../core/volunteergroup';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import DataServices from '../../core/dataservices';
-var AddAnimalButton = require("../animal/addanimalbutton");
 
 var GroupAnimalsTab = React.createClass({
 	getInitialState: function () {
@@ -20,7 +21,6 @@ var GroupAnimalsTab = React.createClass({
 					this.props.location.state.group ||
 					this.props.group;
 		return {
-			user: LoginStore.getUser(),
 			group: group
 		}
 	},
@@ -34,9 +34,6 @@ var GroupAnimalsTab = React.createClass({
 	componentDidMount: function () {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
-	},
-
-	componentWillMount: function () {
 	},
 
 	componentWillUnmount: function () {
@@ -54,9 +51,13 @@ var GroupAnimalsTab = React.createClass({
 	render: function () {
 		return (
 			<div className="shelterAnimalsTab">
-				<AddAnimalButton group={this.state.group} user={LoginStore.getUser()}/>
+				<AddAnimalButton
+					group={this.state.group}
+					permission={this.props.permission}/>
 				<br/><br/>
-				<AnimalList group={this.state.group} user={LoginStore.getUser()}/>
+				<AnimalList
+					group={this.state.group}
+					user={LoginStore.getUser()}/>
 			</div>
 		);
 	}

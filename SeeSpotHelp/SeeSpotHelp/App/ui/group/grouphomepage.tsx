@@ -117,9 +117,6 @@ var GroupHomePage = React.createClass({
 		PermissionsStore.addChangeListener(this.onChange);
 	},
 
-	componentWillMount: function() {
-	},
-
 	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
@@ -180,11 +177,13 @@ var GroupHomePage = React.createClass({
 					<GroupActionsBox user={LoginStore.getUser()} group={this.state.group} />
 					<Tabs activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
 						<Tab eventKey={1} title={Utils.getAnimalsTabIon()}>
-							<GroupAnimalsTab group={this.state.group} user={LoginStore.getUser()}/>
+							<GroupAnimalsTab
+								group={this.state.group}
+								permission={this.state.permission}/>
 						</Tab>
 						<Tab eventKey={2}
 								title={Utils.getMembersGlyphicon(this.state.group.memberCount())}>
-							<GroupMembersTab group={this.state.group} user={LoginStore.getUser()}/>
+							<GroupMembersTab group={this.state.group}/>
 						</Tab>
 						<Tab eventKey={3} title={Utils.getActivityGlyphicon()}>
 							<GroupActivityTab group={this.state.group} user={LoginStore.getUser()}/>
