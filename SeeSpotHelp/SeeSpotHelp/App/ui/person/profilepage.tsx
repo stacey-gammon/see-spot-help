@@ -36,10 +36,13 @@ var ProfilePage = React.createClass({
 	},
 
 	componentWillMount: function () {
+		console.log('profilepage:componentWillMount');
+
 		// There is no user and none is going to be downloaded, we must prompt them to log in.
 		// TODO: when we open the app up to the public, we must be able to handle non-logged in
 		// users.
 		if (!LoginStore.getUser() && !LoginStore.userDownloading) {
+			console.log('profilepage: pushing to private beta');
 			this.context.router.push("/privatebetapage");
 		}
 	},
@@ -76,6 +79,7 @@ var ProfilePage = React.createClass({
 	},
 
 	render: function () {
+		console.log('profilepage: render');
 		if (!LoginStore.getUser()) return null;
 		var defaultKey = this.state.profileDefaultTabKey ? this.state.profileDefaultTabKey : 1;
 		var heading = "Hello, " + LoginStore.getUser().name;

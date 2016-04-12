@@ -31,18 +31,21 @@ var GroupHomePage = React.createClass({
 
 		// Undefined will mess up LoadOrSaveState so make sure we explicitly have false.
 		isSearchResult = isSearchResult ? true : false;
-
-		var permission = LoginStore.getUser() && group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
-			Permission.CreateNonMemberPermission();
 		var state = {
 			group: group,
 			fromSearch: isSearchResult,
 			groupDefaultTabKey: null,
-			permission: permission
+			permission: null
 		};
 
 		Utils.LoadOrSaveState(state);
+
+		// Don't load the permission from session storage.
+
+		var permission = LoginStore.getUser() && state.group ?
+			PermissionsStore.getPermission(LoginStore.getUser().id, state.group.id) :
+			Permission.CreateNonMemberPermission();
+		state.permission = permission;
 
 		// If the user doesn't have any 'last looked at' group, and nothing has been set,
 		// see if we can grab one from the user.
@@ -50,6 +53,12 @@ var GroupHomePage = React.createClass({
 			var groups = GroupStore.getGroupsByUser(LoginStore.getUser());
 			if (groups && groups.length > 0) {
 				state.group = groups[0];
+
+				var permission = LoginStore.getUser() && state.group ?
+					PermissionsStore.getPermission(LoginStore.getUser().id, state.group.id) :
+					Permission.CreateNonMemberPermission();
+				state.permission = permission;
+
 				Utils.LoadOrSaveState(state);
 			}
 		}

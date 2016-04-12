@@ -1,8 +1,7 @@
 var React = require("react");
 
-var AnimalNote = require("../../core/animalnote");
+import AnimalNote from '../../core/animalnote';
 import Utils from '../../core/utils';
-
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 
@@ -55,11 +54,11 @@ var AddAnimalNote = React.createClass({
 			this.state.activity.note = this.refs.note.value;
 			this.state.activity.update();
 		} else {
-			var note = new AnimalNote(
-				this.refs.note.value,
-				this.state.animal.id,
-				this.state.group.id,
-				this.state.user.id);
+			var note = new AnimalNote();
+			note.note = this.refs.note.value;
+			note.animalId = this.state.animal.id;
+			note.groupId = this.state.group.id;
+			note.userId = this.state.user.id;
 			note.insert();
 		}
 

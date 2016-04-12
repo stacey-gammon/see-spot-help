@@ -37,6 +37,7 @@ var Home = React.createClass({
 	},
 
 	getInitialState: function() {
+		console.log('Home:getInitialState');
 		return {};
 	},
 
@@ -79,6 +80,7 @@ var Home = React.createClass({
 	},
 
 	render: function() {
+		console.log('Home:render');
 		if (!LoginStore.getUser() &&
 			!LoginStore.userDownloading &&
 			this.props.location.pathname != '/privatebetapage' &&

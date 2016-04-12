@@ -5,8 +5,6 @@ var Router = require("react-router");
 var DatePicker = require('react-datepicker');
 var moment = require('moment');
 
-import $ = require("jquery");
-
 import Utils from '../core/utils';
 import LoginStore from '../stores/loginstore';
 import GroupStore from '../stores/groupstore';
@@ -184,8 +182,10 @@ var AddCalendarEvent = React.createClass({
 	},
 
 	onChange: function() {
+		var newGroup = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
+		var group = newGroup ? newGroup : this.state.group;
 		this.setState({
-			group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
+			group: group
 		});
 	},
 
@@ -301,7 +301,7 @@ var AddCalendarEvent = React.createClass({
 
 	getGroup: function () {
 		var group = this.state.group;
-		if (!group && this.refs && this.refs.groupChoice) {
+		if (!group && this.refs && this.refs.groupChoice && this.refs.groupChoice.value) {
 			group = GroupStore.getGroupById(this.refs.groupChoice.value);
 		}
 		return group;
@@ -328,9 +328,10 @@ var AddCalendarEvent = React.createClass({
 
 		var options = [];
 		var animals = AnimalStore.getAnimalsByGroupId(group.id);
-		if (!animals) return null;
-		for (var i = 0; i < animals.length; i++) {
-			options.push(this.createOptionElement(animals[i]));
+		if (animals) {
+			for (var i = 0; i < animals.length; i++) {
+				options.push(this.createOptionElement(animals[i]));
+			}
 		}
 		return (
 			<div className="form-group" style={{marginBottom: 2 + "px"}}>
@@ -348,9 +349,8 @@ var AddCalendarEvent = React.createClass({
 	},
 
 	getAnimalInputField: function() {
-		var animal = this.getAnimal();
-		if (!animal) return null;
 		if (this.state.animalId) {
+			var animal = this.getAnimal();
 			return (
 				<div className="input-group">
 					<span className="input-group-addon">Animal:</span>
