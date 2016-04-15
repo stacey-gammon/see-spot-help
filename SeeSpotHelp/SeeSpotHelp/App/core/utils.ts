@@ -58,7 +58,15 @@ export default class Utils {
 	}
 
 	public static SaveStateProp(state, prop) {
-		sessionStorage.setItem(prop, JSON.stringify(state[prop]));
+		this.SaveProp(prop, state[prop]);
+	}
+
+	public static SaveProp(prop, value) {
+		sessionStorage.setItem(prop, JSON.stringify(value));
+	}
+
+	public static GetProp(prop) {
+		return JSON.parse(sessionStorage.getItem(prop));
 	}
 
 	public static LoadStateProp(state, prop) {

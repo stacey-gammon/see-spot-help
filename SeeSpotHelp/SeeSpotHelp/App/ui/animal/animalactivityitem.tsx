@@ -68,7 +68,7 @@ var AnimalActivityItem = React.createClass({
 	getActions: function () {
 		if (!this.state.user) return null;
 		if (this.props.activity.userId == this.state.user.id ||
-			this.permission.admin()) {
+			this.state.permission.admin()) {
 			return (
 				<div className="media-right">
 					{this.getDeleteActionButton()}

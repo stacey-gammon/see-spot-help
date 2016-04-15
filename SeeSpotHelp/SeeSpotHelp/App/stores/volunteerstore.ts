@@ -4,7 +4,7 @@ import Volunteer from '../core/volunteer';
 import BaseStore from './basestore';
 
 class VolunteerStore extends BaseStore {
-	protected databaseObject: Volunteer = new Volunteer('', '', '');
+	protected databaseObject: Volunteer = new Volunteer('', '');
 
 	constructor() {
 		super();

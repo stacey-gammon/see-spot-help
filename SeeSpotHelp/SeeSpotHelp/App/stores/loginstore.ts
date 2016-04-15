@@ -16,12 +16,16 @@ enum ChangeEventEnum {
 };
 
 class LoginStore extends BaseStore {
-	protected databaseObject: DatabaseObject = new Volunteer('', '', '');
+	protected databaseObject: DatabaseObject = new Volunteer('', '');
 	private userInBeta: boolean = false;
-	private user: Volunteer;
-	private authenticated: boolean = false;
+	private user: Volunteer = null;
+	private authenticated: boolean = null;
 	private dispatchToken;
 	public userDownloading: boolean = false;
+	public hasUser: boolean = null;
+
+	private resolveMe = null;
+	private rejectMe = null;
 
 	constructor() {
 		super();
@@ -30,7 +34,7 @@ class LoginStore extends BaseStore {
 			this.handleAction(action);
 		}.bind(this));
 
-		new Firebase(DataServices.FirebaseURL).onAuth(this.authDataChanged);
+		//new Firebase(DataServices.FirebaseURL).onAuth(this.authDataChanged);
 
 		this.checkAuthenticated();
 		if (this.isAuthenticating()) {
@@ -46,7 +50,7 @@ class LoginStore extends BaseStore {
 		if (!this) return;
 		console.log('LoginStore.authDataChanged');
 		if (authData) {
-			sessionStorage.setItem('loginStoreAuthenticating', null);
+			sessionStorage.setItem('loginStoreAuthenticating', '');
 			console.log("User " + authData.uid + " is logged in with " + authData.provider);
 			// Load the new user associated with the login.
 			new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
@@ -64,7 +68,7 @@ class LoginStore extends BaseStore {
 		console.log('checkAuthenticatedWithRetries: ' + retry);
 		var authData = this.checkAuthenticated();
 		if (authData) {
-			sessionStorage.setItem('loginStoreAuthenticating', null);
+			sessionStorage.setItem('loginStoreAuthenticating', '');
 			this.emitChange();
 			return authData;
 		}
@@ -72,8 +76,8 @@ class LoginStore extends BaseStore {
 		if (retry && retry >= 4) {
 			console.log('checkAuthenticatedWithRetries: unsuccessful');
 			// No auth data on the third try, give up and set user as logged out.
-			sessionStorage.setItem('loginStoreAuthenticating', null);
-			sessionStorage.setItem('user', null);
+			sessionStorage.setItem('loginStoreAuthenticating', '');
+			sessionStorage.setItem('user', '');
 			this.user = null;
 			this.emitChange();
 			return null;
@@ -91,6 +95,7 @@ class LoginStore extends BaseStore {
 		var authData = DataServices.GetAuthData();
 		if (authData) {
 			this.authenticated = true;
+			sessionStorage.setItem('loginStoreAuthenticating', '');
 			console.log("User " + authData.uid + " is logged in with " + authData.provider);
 			return authData;
 		} else {
@@ -145,58 +150,98 @@ class LoginStore extends BaseStore {
 		LoginActions.userLoggedOut();
 	}
 
-	onUserDownloaded(user) {
-		console.log('onUserDownloaded', user);
+	onUserDownloaded(data) {
 		var authData = this.checkAuthenticated() as any;
 		// We are authenticated but no user exists for us, insert a new user.
-		if (authData && user == null) {
-			Volunteer.LoadVolunteer(
-				authData.uid,
-				authData.facebook.displayName,
-				authData.facebook.email,
-				LoginActions.userLoggedIn);
+		if (authData && data.val() == null) {
+			this.user = new Volunteer(authData.facebook.displayName, authData.facebook.email);
+			this.user.id = authData.uid;
+			this.user.insert();
+			this.hasUser = true;
+		} else if (authData && data.val()){
+			this.user = new Volunteer('', '').castObject(data.val());
+			this.hasUser = true;
+		} else {
+			this.hasUser = false;
 		}
-		this.user = this.databaseObject.castObject(user);
+		this.resolve();
 		this.emitChange();
 	}
 
 	isAuthenticated() {
-		this.checkAuthenticated();
 		return this.authenticated;
 	}
 
-	// In case of a hard refresh, always attempt to re-grab the user data from local
-	// storage if it doesn't exist.
-	getUser() {
-		if (!this.user && !this.userDownloading) {
-			console.log('LoginStore.getUser: no user object');
-			var user = null;
-			try {
-				user = JSON.parse(sessionStorage.getItem("user"));
-			} catch (error) {
-				console.log('Failed to parse user value ' + sessionStorage.getItem("user"));
-			}
-			if (user) {
-				if (!this.authenticated && !sessionStorage.getItem('loginStoreAuthenticating')) {
-					this.authenticate();
-				} else {
-					this.userDownloading = true;
-					new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
-							"users/" + user.id, true);
-				}
-			} else {
-				// The authentication causes a page refresh, so we may not have a user but be
-				// authenticated anyway.
-				var authData = this.checkAuthenticated();
-				if (this.authenticated) {
-					this.userDownloading = true;
-					new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
-						"users/" + authData.uid, true);
-				}
-			}
+	getUserFromStorage() {
+		try {
+			return JSON.parse(sessionStorage.getItem("user"));
+		} catch (error) {
+			console.log('Failed to parse user value ' + sessionStorage.getItem("user"));
+			sessionStorage.setItem('user', '');
+			return null;
 		}
+	}
 
-		return this.authenticated ? this.user : null;
+	downloadAndAuthenticateUser() {
+		var authData = this.checkAuthenticated();
+		if (authData) {
+			this.downloadUser(authData.uid);
+		} else if (!this.authenticated && !sessionStorage.getItem('loginStoreAuthenticating')) {
+			this.authenticate();
+		} else {
+			this.reject();
+		}
+	}
+
+	downloadUser(userId) {
+		if (this.userDownloading) return;
+		this.userDownloading = true;
+		DataServices.DownloadData(
+			'users/' + userId,
+			this.onUserDownloaded.bind(this),
+			this.reject.bind(this));
+	}
+
+	getUser() {
+		if (this.user && this.authenticated) return this.user;
+		if (this.userDownloading || this.authenticated === false || this.hasUser === false) {
+			return null;
+		}
+		this.downloadAndAuthenticateUser();
+		return null;
+	}
+
+	clearPromiseFunctions () {
+		this.resolveMe = null;
+		this.rejectMe = null;
+	}
+
+	reject() {
+		if (this.rejectMe) { this.rejectMe(); }
+		this.clearPromiseFunctions();
+		this.userDownloading = false;
+	}
+
+	resolve() {
+		if (this.resolveMe) { this.resolveMe(this.user); }
+		this.clearPromiseFunctions();
+		this.userDownloading = false;
+	}
+
+	ensureUser() {
+		return new Promise(function(resolve, reject) {
+			if (this.user && this.authenticated) {
+				resolve(this.user);
+				return;
+			}
+			this.resolveMe = function (data) {
+				resolve(data)
+			};
+			this.rejectMe = function (error) {
+				reject(error);
+			};
+			return this.getUser();
+		}.bind(this));
 	}
 
 	emitChange(changeEvent? : ChangeEventEnum) {

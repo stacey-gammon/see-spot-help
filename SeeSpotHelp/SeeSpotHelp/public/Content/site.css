@@ -308,13 +308,33 @@ p {
     margin: 20px;
 }
 
+.slider-img {
+	margin: 5px;
+	height: 100px;
+}
+
+.photo-slider {
+	height: 100px;
+	background-color: #fafaf9;
+	margin: 10px 40px;
+}
+
+.slick-next, .slick-prev {
+	background-color: #C1DAD6 !important;
+	color: #495864 !important;
+}
+
+.slick-disabled {
+	background-color: lightgrey;
+	color: #495864;
+}
+
 .takePhotoButton {
-    display: inline;
+    /* display: inline; */
 }
 
 .addPhotoFileInput {
-    display: none;
-    visibility: hidden;
+    display: none !important;
 }
 
 .GroupActionsBox {

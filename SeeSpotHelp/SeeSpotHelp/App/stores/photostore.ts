@@ -11,7 +11,9 @@ class PhotoStore extends BaseStore {
 	}
 
 	getPhotosByAnimalId(animalId) {
-		return this.getItemsByProperty('animalId', animalId);
+		return this.getItemsByProperty('animalId', animalId).sort(function (a, b) {
+			return b.timestamp - a.timestamp;
+		});
 	}
 
 	// Note this will only return the main photo for each animal in the group, used for the

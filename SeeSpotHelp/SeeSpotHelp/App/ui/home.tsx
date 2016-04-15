@@ -61,10 +61,18 @@ var Home = React.createClass({
 	},
 
 	componentDidMount: function() {
-		LoginStore.addChangeListener(this.onChange);
-		this.setState({
-			user: LoginStore.getUser()
-		});
+		LoginStore.ensureUser().then(
+			function() {
+				if (this.isMounted()) {
+					this.setState({
+						user: LoginStore.getUser()
+					});
+					// If we don't have a user, we don't care about changes since a login event
+					// cause an entire page refresh and then it will register.
+					LoginStore.addChangeListener(this.onChange);
+				}
+			}.bind(this)
+		)
 	},
 
 	componentWillUnmount: function() {
@@ -81,10 +89,11 @@ var Home = React.createClass({
 
 	render: function() {
 		console.log('Home:render');
-		if (!LoginStore.getUser() &&
-			!LoginStore.userDownloading &&
+		if (((!LoginStore.getUser() && !LoginStore.userDownloading) ||
+			 (LoginStore.getUser() && !LoginStore.getUser().inBeta)) &&
 			this.props.location.pathname != '/privatebetapage' &&
-			this.props.location.pathname != '/loginpage') {
+			this.props.location.pathname != '/loginpage' &&
+			this.props.location.pathname != '/enterBetaCode') {
 			this.context.router.push("/privatebetapage");
 		}
 		if (LoginStore.getUser() && LoginStore.getUser().inBeta) {
@@ -94,11 +103,12 @@ var Home = React.createClass({
 					{this.props.children}
 				</div>
 			);
+		} else if (LoginStore.userDownloading) {
+			return (<span className="spinner active"><i className="fa-spin"></i></span>);
 		}
+
 		return (
-			<div>
-				{this.props.children}
-			</div>
+			<div> {this.props.children} </div>
 		);
 	}
 });

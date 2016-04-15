@@ -5,6 +5,7 @@ import DataServices from './dataservices';
 import Color from './colors';
 import Animal from './animal';
 import Permission from './permission';
+
 import DatabaseObject from './databaseobject';
 
 // A volunteer group represents a group of volunteers at a given

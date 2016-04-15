@@ -3,12 +3,20 @@
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 import Events = require('events');
+import Promise = require('bluebird');
 
 import DataServices from '../core/dataservices';
 import DatabaseObject from '../core/databaseobject';
 
 var EventEmitter = Events.EventEmitter;
 var CHANGE_EVENT = "change";
+
+enum EventTypeEnum {
+	INSERT,
+	UPDATE,
+	DELETE,
+	ALL
+};
 
 abstract class BaseStore extends EventEmitter {
 	protected storage: Object = {};
@@ -18,6 +26,16 @@ abstract class BaseStore extends EventEmitter {
 	protected firebasePath: string;
 	public errorMessage: string;
 	public hasError: boolean = false;
+	private isDownloading: boolean = false;
+	private promiseResolveCallbacks: Array<any> = [];
+
+	// Mapping of EventTypeEnum to an array of object with a callback and potentially an id.
+	private listenerInfo = {
+		INSERT: [],
+		UPDATE: [],
+		DELETE: [],
+		ALL: []
+	};
 
 	constructor() {
 		super();
@@ -35,12 +53,54 @@ abstract class BaseStore extends EventEmitter {
 		this.on(CHANGE_EVENT, callback);
 	}
 
+	addItemListener(id, callback) {
+		this.listenerInfo[EventTypeEnum.ALL].push({ callback: callback, id: id });
+	}
+
+	emitFor(id, type) {
+		for (var i = 0; i < this.listenerInfo[type].length; i++) {
+			var listenerInfo = this.listenerInfo[type][i];
+			if (!listenerInfo.id || listenerInfo.id == id) {
+				var state = {}
+				state[this.databaseObject.classNameForSessionStorage + 'Id'] = id;
+				listenerInfo.callback(state);
+			}
+		}
+	}
+
+	resolvePromises(id) {
+		for (var i = 0; i < this.promiseResolveCallbacks.length; i++) {
+			this.promiseResolveCallbacks[i]();
+		}
+	}
+
 	removeChangeListener(callback) {
 		this.removeListener(CHANGE_EVENT, callback);
 	}
 
 	emitChange() {
 		this.emit(CHANGE_EVENT);
+	}
+
+	ensureItemById(id) {
+		var promise = new Promise(function(resolve, reject) {
+			var onResolve = function (data) {
+				resolve(data)
+			};
+			var onReject = function (error) {
+				reject(error);
+			};
+			if (!this.storage.hasOwnProperty(id)) {
+				this.storage[id] = null;
+				this.downloadItem(id, onResolve, onReject);
+			} else if (!this.isDownloading){
+				resolve(this.storage[id]);
+			} else {
+				this.promiseResolveCallbacks.push(onResolve);
+			//	reject('Already waiting on the download.');
+			}
+		}.bind(this));
+		return promise;
 	}
 
 	getItemById(id) {
@@ -68,7 +128,8 @@ abstract class BaseStore extends EventEmitter {
 		mapping[key].push(id);
 	}
 
-	itemDownloaded(id: string, snapshot) {
+	itemDownloaded(id: string, onSuccess, snapshot) {
+		this.isDownloading = false;
 		if (snapshot && snapshot.val() && !this.storage.hasOwnProperty[id]) {
 			this.itemAdded(snapshot);
 		} else if (snapshot && snapshot.val()) {
@@ -76,6 +137,8 @@ abstract class BaseStore extends EventEmitter {
 		} else {
 			this.itemDeletedWithId(id);
 		}
+		if (onSuccess) { onSuccess(); }
+		this.resolvePromises(id);
 	}
 
 	itemAdded(snapshot) {
@@ -122,6 +185,7 @@ abstract class BaseStore extends EventEmitter {
 
 	getItemsByProperty(property, propertyValue) {
 		var storageMapping = this.storageMappings[property];
+		console.log(this.databaseObject.classNameForSessionStorage + ':getItemsByProperty(' + property + ', ' + propertyValue + ')');
 		if (!storageMapping.hasOwnProperty(propertyValue)) {
 			storageMapping[propertyValue] = [];
 			this.downloadFromMapping(property, propertyValue);
@@ -136,11 +200,13 @@ abstract class BaseStore extends EventEmitter {
 		return items;
 	}
 
-	errorOccurred(errorObject) {
+	errorOccurred(errorObject, onError?) {
+		this.isDownloading = false;
 		if (errorObject) {
 			this.errorMessage = errorObject.message;
 			this.hasError = true;
 			this.emitChange();
+			if (onError) { onError(errorObject); }
 		}
 	}
 
@@ -149,12 +215,13 @@ abstract class BaseStore extends EventEmitter {
 		this.hasError = false;
 	}
 
-	downloadItem(id) {
+	downloadItem(id, onSuccess?, onError?) {
+		this.isDownloading = true;
 		this.resetErrorInfo();
 		DataServices.DownloadData(
 			this.firebasePath + '/' + id,
-			this.itemDownloaded.bind(this, id),
-			this.errorOccurred.bind(this));
+			this.itemDownloaded.bind(this, id, onSuccess),
+			this.errorOccurred.bind(this, onError));
 	}
 
 	downloadFromMapping(property, propertyValue) {

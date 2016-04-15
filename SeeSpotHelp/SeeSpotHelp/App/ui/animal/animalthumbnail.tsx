@@ -5,6 +5,8 @@ var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 import DataServices from '../../core/dataservices';
 import PhotoStore from '../../stores/photostore';
+import AnimalStore from '../../stores/animalstore';
+
 
 // A small representation of an animal to be displayed in the animal
 // list. Clicking on the thumbnail will direct the user to the chosen

@@ -32,7 +32,7 @@ var EnterBetaCode = React.createClass({
 	submitBetaCode: function () {
 		var betaCode = this.refs.betaCode.value;
 		var onSuccess = function (data) {
-			var invitesLeft = parseInt(data);
+			var invitesLeft = parseInt(data.val());
 			if (invitesLeft > 0) {
 				LoginStore.getUser().inBeta = true;
 				LoginStore.getUser().betaCode = betaCode;
@@ -47,7 +47,7 @@ var EnterBetaCode = React.createClass({
 		var onError = function () {
 			this.setState({error: true});
 		}.bind(this);
-		DataServices.DownloadData('inviteCodes/' + betaCode, onSuccess, onError);
+		DataServices.DownloadDataOnce('inviteCodes/' + betaCode, onSuccess, onError);
 	},
 
 	getErrorText: function () {

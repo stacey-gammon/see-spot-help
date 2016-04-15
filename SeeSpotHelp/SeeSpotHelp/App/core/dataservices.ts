@@ -136,6 +136,17 @@ export default class DataServices {
 		);
 	}
 
+	public static DownloadDataOnce(path, onSuccess, onError?) {
+		var ref = new Firebase(DataServices.FirebaseURL + "/" + path);
+		ref.once("value", function (snapshot) {
+				onSuccess(snapshot);
+			}, function (errorObject) {
+				console.log("The read failed: " + errorObject.code);
+				if (onError) onError(errorObject);
+			}
+		);
+	}
+
 	public GetFirebaseData(path, listen) {
 		console.log("DataServices:GetFirebaseData for url " + path);
 		var ref = new Firebase(this.firebaseURL + "/" + path);

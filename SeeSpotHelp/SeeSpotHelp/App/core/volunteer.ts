@@ -16,8 +16,10 @@ class Volunteer extends DatabaseObject {
 	public firebasePath: string = 'users';
 	public betaCode: string;
 
-	constructor(name, email, id) {
+	constructor(name, email) {
 		super();
+		this.name = name;
+		this.email = email;
 	};
 
 	defaultGroupId() {
@@ -27,28 +29,11 @@ class Volunteer extends DatabaseObject {
 		return null;
 	}
 
-	public createInstance() { return new Volunteer('', '', ''); };
+	public createInstance() { return new Volunteer('', ''); };
 
-	public static LoadVolunteer(id, name, email, callback) {
-
-		var onSuccess = function (response) {
-			var volunteer = null;
-			if (response) {
-				volunteer = this.castObject(response);
-			} else {
-				volunteer = new Volunteer(name, email, id);
-				DataServices.SetFirebaseData("users/" + id, volunteer);
-			}
-			callback(volunteer);
-		};
-
-		var onFailure = function (response) {
-			console.log("failed");
-			callback(null, new ServerResponse("err"));
-		};
-
-		var dataServices = new DataServices(onSuccess, onFailure);
-		dataServices.GetFirebaseData("users/" + id, false);
+	// We don't push data for inserts so override base implementation.
+	insert() {
+		DataServices.SetFirebaseData(this.firebasePath + '/' + this.id, this);
 	}
 
 	// Returns the default volunteer group this volunteer belongs to,

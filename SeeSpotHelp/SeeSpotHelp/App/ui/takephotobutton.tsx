@@ -1,8 +1,9 @@
-﻿"use strict"
+﻿'use strict'
 
 var React = require("react");
-import DataServices = require('../core/dataservices');
-var Photo = require("../core/photo");
+
+import DataServices from '../core/dataservices';
+import Photo from '../core/photo';
 import LoginStore from '../stores/loginstore';
 
 var TakePhotoButton = React.createClass({
@@ -40,15 +41,12 @@ var TakePhotoButton = React.createClass({
 				// Generate a location that can't be guessed using the file's contents and a random number
 				var hash = CryptoJS.SHA256(Math.random() + '' + CryptoJS.SHA256(filePayload));
 				var photo = new Photo();
-				photo.id = hash;
+				photo.id = '' + hash;
 				photo.src = filePayload;
 				photo.animalId = this.props.animal.id;
 				photo.groupId = this.props.animal.groupId;
 				photo.userId = LoginStore.getUser().id;
 				photo.insert();
-
-				this.props.animal.photoIds.push('' + hash + '');
-				this.props.animal.update();
 			}.bind(this);
 		}.bind(this))(file);
 		reader.readAsDataURL(file);
@@ -69,17 +67,20 @@ var TakePhotoButton = React.createClass({
 
 	render: function () {
 		return (
-			<div className="takePhotoButton" >
+			<div className="takePhotoButton" width="90px">
 				<button className="btn btn-info padding"
 						disabled={!this.allowAction()}
 						onClick={this.addPhoto}
-						style={{padding: '8px 4px 8px 12px'}}>
+						style={this.props.style}>
 					<span className="glyphicon glyphicon-camera"
-						style={{color: 'white', marginRight: '10px'}}></span>
+						style={{color: 'white'}}></span>
 				</button>
 				<input type="file" accept="image/*"
-					   onChange={this.loadPhoto}
-					   className="addPhotoFileInput" ref="addPhotoFileInput"/>
+						onChange={this.loadPhoto}
+						hidden="true"
+						width="0px"
+						className="addPhotoFileInput"
+						ref="addPhotoFileInput"/>
 			</div>
 		);
 	}

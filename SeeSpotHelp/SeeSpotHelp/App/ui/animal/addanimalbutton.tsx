@@ -11,51 +11,12 @@ import GroupStore from '../../stores/groupstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
 var AddAnimalButton = React.createClass({
-	// getInitialState: function() {
-	// 	var user = LoginStore.getUser();
-	// 	var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-	// 	var permission = user && group ?
-	// 		PermissionsStore.getPermission(user.id, group.id) :
-	// 		Permission.CreateNonMemberPermission();
-	// 	return {
-	// 		user: user,
-	// 		group: group,
-	// 		permission: permission
-	// 	};
-	// },
-
 	componentWillReceiveProps: function(nextProps) {
 		this.setState({
 			group: nextProps.group,
 			permission: nextProps.permission
 		});
 	},
-	//
-	// componentDidMount: function() {
-	// 	LoginStore.addChangeListener(this.onChange);
-	// 	GroupStore.addChangeListener(this.onChange);
-	// 	PermissionsStore.removeChangeListener(this.onChange);
-	// },
-	//
-	// componentWillUnmount: function() {
-	// 	LoginStore.removeChangeListener(this.onChange);
-	// 	GroupStore.removeChangeListener(this.onChange);
-	// 	PermissionsStore.removeChangeListener(this.onChange);
-	// },
-	//
-	// onChange: function() {
-	// 	var user = LoginStore.getUser();
-	// 	var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
-	// 	var permission = user && group ?
-	// 		PermissionsStore.getPermission(user.id, group.id) :
-	// 		Permission.CreateNonMemberPermission();
-	// 	this.setState(
-	// 		{
-	// 			user: user,
-	// 			group: group,
-	// 			permissions: permission
-	// 		});
-	// },
 
 	getAddAnimalButton: function() {
 		if (!this.props.permission.inGroup()) {

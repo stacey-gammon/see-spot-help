@@ -11,10 +11,11 @@ import Utils from '../../core/utils';
 import Animal from '../../core/animal';
 import VolunteerGroup from '../../core/volunteergroup';
 import Permission from '../../core/permission';
-import AnimalStore = require("../../stores/animalstore");
+import AnimalStore from '../../stores/animalstore';
 import PhotoStore from '../../stores/photostore';
 import PermissionsStore from '../../stores/permissionsstore';
 
+var TakePhotoButton = require("../takephotobutton");
 var AnimalActionsBox = require('./animalactionsbox');
 var AnimalPhotoReel = require("./animalphotoreel");
 var AnimalActivityList = require("./animalactivitylist");
@@ -116,6 +117,11 @@ var AnimalHomePage = React.createClass({
 							 style={{margin: 5 + "px"}}
 							 height="100px" width="100px"
 							 src={imageSrc} />
+						<TakePhotoButton
+							group={this.state.group}
+							user={LoginStore.getUser()}
+							permission={this.state.permission}
+							animal={animal}/>
 					</div>
 					<div className="media-body padding">
 						<h1 className="animalInfo">{animal.name}
