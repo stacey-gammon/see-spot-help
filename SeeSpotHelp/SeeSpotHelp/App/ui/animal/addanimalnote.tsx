@@ -76,10 +76,7 @@ var AddAnimalNote = React.createClass({
 			this.context.router.push(
 				{
 					pathname: "groupHomePage",
-					state: {
-						group: this.state.group,
-						user: this.state.user
-					}
+					state: { groupId: this.state.group.id }
 				});
 		}
 	},

@@ -7,8 +7,6 @@ export default class Photo extends DatabaseObject {
 	public userId: string;
 	public groupId: string;
 	public animalId: string;
-	public classNameForSessionStorage: string = 'Photo';
-	public firebasePath: string = 'photos';
 
 	constructor() {
 		super();

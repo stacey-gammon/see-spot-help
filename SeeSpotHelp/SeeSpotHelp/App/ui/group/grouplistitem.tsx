@@ -77,8 +77,7 @@ var GroupListItem = React.createClass({
 			"(Membership Pending)" : "";
 		return (
 			<a className="list-group-item groupListElement">
-				<LinkContainer to={{ pathname: "GroupHomePage" ,
-					state: { user: this.props.user, group: group} }}>
+				<LinkContainer to={{ pathname: "GroupHomePage", state: { groupId: group.id} }}>
 					<div className="media">
 						<div className="media-body">
 							<h1>{this.props.group.name}</h1>

@@ -13,8 +13,6 @@ export default class Permission extends DatabaseObject {
 	public userId: string;
 	public groupId: string;
 	public permission: PermissionsEnum = PermissionsEnum.NONMEMBER;
-	public firebasePath: string = 'permissions';
-	public classNameForSessionStorage: string = 'Permission';
 
 	constructor(userId: string, groupId: string, permission?: PermissionsEnum) {
 		super();

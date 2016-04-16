@@ -73,14 +73,6 @@ var GroupHomePage = React.createClass({
 		this.setState({ groupId: group.id });
 	},
 
-	// shouldComponentUpdate: function(nextProps, nextState) {
-	// 	if (nextProps == this.props &&
-	// 		nextState == this.state) return false;
-	// 	// You can access `this.props` and `this.state` here
-	// 	// This function should return a boolean, whether the component should re-render.
-	// 	return false;
-	// },
-
 	getPreviousButton: function() {
 		if (this.state.fromSearch || !LoginStore.getUser()) return null;
 		var usersGroups = GroupStore.getGroupsByUser(LoginStore.getUser());

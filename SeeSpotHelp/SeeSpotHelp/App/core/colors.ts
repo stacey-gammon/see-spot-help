@@ -10,9 +10,6 @@ const Colors = {
 };
 
 export default class Color extends DatabaseObject {
-	public firebasePath: string = 'colors';
-	public classNameForSessionStorage: string = 'Color';
-
 	constructor() {
 		super();
 

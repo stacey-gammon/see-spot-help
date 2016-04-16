@@ -1,4 +1,4 @@
-"use strict"
+'use strict'
 
 var React = require("react");
 var Link = require("react-router").Link;
@@ -6,6 +6,11 @@ var AnimalList = require("../animal/animallist");
 var SearchBox = require("../searchbox");
 var GroupInfoBox = require("../group/groupinfobox");
 var GroupActionsBox = require("../group/groupactionsbox");
+var AddAnimalButton = require("../animal/addanimalbutton");
+var AnimalActivityItem = require("../animal/animalactivityitem");
+var GroupListItem = require("../group/grouplistitem");
+var Intro = require("../intro");
+
 import Utils from '../../core/utils';
 import Volunteer from '../../core/volunteer';
 import VolunteerGroup from '../../core/volunteergroup';
@@ -13,12 +18,8 @@ import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import PermissionsStore from '../../stores/permissionsstore';
 import VolunteerStore from '../../stores/volunteerstore';
-var AnimalActivityStore = require("../../stores/animalactivitystore");
+import AnimalActivityStore from '../../stores/animalactivitystore';
 import DataServices from '../../core/dataservices';
-var AddAnimalButton = require("../animal/addanimalbutton");
-var AnimalActivityItem = require("../animal/animalactivityitem");
-var GroupListItem = require("../group/grouplistitem");
-var Intro = require("../intro");
 
 var UserGroupsTab = React.createClass({
 	getInitialState: function () {

@@ -12,8 +12,6 @@ class Volunteer extends DatabaseObject {
 	public email: string;
 	public inBeta: boolean; // TODO: Check for security issues with this.
 	public groups: Array<VolunteerGroup>;
-	public classNameForSessionStorage: string = 'Volunteer';
-	public firebasePath: string = 'users';
 	public betaCode: string;
 
 	constructor(name, email) {

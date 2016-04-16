@@ -34,8 +34,6 @@ export default class VolunteerGroup extends DatabaseObject {
 	public state: string;
 	public zipCode: string;
 	// Unfortunately, I don't know anyway to generate this dynamically.
-	public classNameForSessionStorage = 'VolunteerGroup';
-	public firebasePath = 'groups';
 
 	constructor() {
 		super();

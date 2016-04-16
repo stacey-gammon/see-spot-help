@@ -13,14 +13,12 @@ export default class Animal extends DatabaseObject {
 	public age: number;
 	public status: number = Animal.StatusEnum.ADOPTABLE;
 	public groupId: string;
-	public classNameForSessionStorage: string = 'Animal';
 
 	// Only used for searching:
 	public zipCode: string;
 	public shelter: string;
 	public city: string;
 	public state: string;
-	public firebasePath: string = "animals";
 
 	public static StatusEnum = Object.freeze(
 		{

@@ -10,8 +10,6 @@ export default class AnimalNote extends DatabaseObject {
 	public userId: string;
 	public animalId: string;
 	public groupId: string;
-	public classNameForSessionStorage: string = 'AnimalNote';
-	public firebasePath: string = 'notes';
 
 	constructor() {
 		super();

@@ -4,6 +4,7 @@ import Utils from './utils';
 abstract class DatabaseObject {
 	public timestamp: number = Date.now();
 	public id: string;
+	public className: string;
 	public classNameForSessionStorage;
 	public firebasePath;
 
@@ -11,7 +12,12 @@ abstract class DatabaseObject {
 	// attribute, it should add the properties in here.
 	public mappingProperties: Array<string> = [];
 
-	constructor() { }
+	constructor() {
+		this.className = this.classNameForSessionStorage = this.constructor.name;
+		// Nest the paths on firebase for better organization with types that have multiple
+		// mappings.
+		this.firebasePath = this.className + '/' + this.className;
+	}
 
 	abstract createInstance();
 
@@ -33,14 +39,10 @@ abstract class DatabaseObject {
 			value: string|number,
 			id?: string) {
 		var specific = id ? id + '/' : '';
-		return firebasePath +
-			'By' +
-			property.charAt(0).toUpperCase() +
-			property.slice(1) +
-			'/' +
-			value +
-			'/' +
-			specific;
+		return (
+			firebasePath + 'By' + property.charAt(0).toUpperCase() + property.slice(1) + '/' +
+			value + '/' +
+			specific);
 	}
 
 	// Returns a path to the mapping for a particular unique property on this element. For instance
@@ -61,6 +63,10 @@ abstract class DatabaseObject {
 
 	getInserts(): Object {
 		this.id = DataServices.GetNewPushKey(this.firebasePath);
+		if (!this.id) {
+			console.log('WARN: null push key for path ' + this.firebasePath);
+			return [];
+		}
 		return this.getUpdates();
 	}
 

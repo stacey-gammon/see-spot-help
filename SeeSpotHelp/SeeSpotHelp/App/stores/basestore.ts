@@ -185,8 +185,8 @@ abstract class BaseStore extends EventEmitter {
 
 	getItemsByProperty(property, propertyValue) {
 		var storageMapping = this.storageMappings[property];
-		console.log(this.databaseObject.classNameForSessionStorage + ':getItemsByProperty(' + property + ', ' + propertyValue + ')');
 		if (!storageMapping.hasOwnProperty(propertyValue)) {
+			console.log(this.databaseObject.classNameForSessionStorage + ':getItemsByProperty(' + property + ', ' + propertyValue + ')');
 			storageMapping[propertyValue] = [];
 			this.downloadFromMapping(property, propertyValue);
 			return [];

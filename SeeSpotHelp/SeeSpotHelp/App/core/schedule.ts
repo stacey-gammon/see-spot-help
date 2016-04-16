@@ -10,8 +10,6 @@ export default class Schedule extends DatabaseObject {
 	public userId: string;
 	public animalId: string;
 	public groupId: string;
-	public classNameForSessionStorage: string = 'Schedule';
-	public firebasePath: string = 'schedule';
 
 	constructor() {
 		super();

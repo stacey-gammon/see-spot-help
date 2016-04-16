@@ -114,9 +114,7 @@ var AddNewGroup = React.createClass({
 		this.context.router.push(
 			{
 				pathname: "GroupHomePage",
-				state: {
-					group:  group
-				}
+				state: { groupId:  group.id }
 			});
 	},
 
