@@ -200,13 +200,15 @@ abstract class BaseStore extends EventEmitter {
 		return items;
 	}
 
-	errorOccurred(errorObject, onError?) {
+	errorOccurred(onError, errorObject) {
 		this.isDownloading = false;
 		if (errorObject) {
 			this.errorMessage = errorObject.message;
 			this.hasError = true;
 			this.emitChange();
-			if (onError) { onError(errorObject); }
+			if (onError) {
+				onError(errorObject);
+			}
 		}
 	}
 

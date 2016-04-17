@@ -84,24 +84,23 @@ var ProfilePage = React.createClass({
 		var defaultKey = this.state.profileDefaultTabKey ? this.state.profileDefaultTabKey : 1;
 		var heading = "Hello, " + LoginStore.getUser().name;
 		return (
-			<div>
-				<div className="media padding">
+			<div className="page">
+				<div className="media info-top">
 					<div className="media-body">
 					<h1>{heading}</h1>
 					</div>
 				</div>
-				<Tabs activeKey={defaultKey} onSelect={this.handleTabSelect}>
-					<Tab eventKey={1} title="Groups">
+				<Tabs className="tabs-area" activeKey={defaultKey} onSelect={this.handleTabSelect}>
+					<Tab className="tab" eventKey={1} title="Groups">
 						<UserGroupsTab user={LoginStore.getUser()}/>
 					</Tab>
-					<Tab eventKey={2} title={Utils.getActivityGlyphicon()}>
+					<Tab className="tab" eventKey={2} title={Utils.getActivityGlyphicon()}>
 						<UserActivityTab user={LoginStore.getUser()}/>
 					</Tab>
-					<Tab eventKey={3} title={Utils.getCalendarGlyphicon()}>
+					<Tab className="tab" eventKey={3} title={Utils.getCalendarGlyphicon()}>
 						<MemberScheduleTab view="profile"/>
 					</Tab>
 				</Tabs>
-				<br/><br/>
 			</div>
 		);
 	}

@@ -152,30 +152,32 @@ var GroupHomePage = React.createClass({
 		var defaultTabKey = this.state.groupDefaultTabKey ? this.state.groupDefaultTabKey : 1;
 		var memberTitle = "Members (" + group.memberCount() + ")";
 		return (
-			<div>
-				<div className="media">
-					<div className="media-left">
-						{this.getPreviousButton()}
+			<div className="page">
+				<div className="info-top">
+					<div className="media">
+						<div className="media-left">
+							{this.getPreviousButton()}
+						</div>
+						<div className="media-body">
+							<GroupInfoBox group={group} user={LoginStore.getUser()} />
+						</div>
+						<div className="media-right">
+							{this.getNextButton()}
+						</div>
 					</div>
-					<div className="media-body">
-						<GroupInfoBox group={group} user={LoginStore.getUser()} />
-					</div>
-					<div className="media-right">
-						{this.getNextButton()}
-					</div>
+					<GroupActionsBox user={LoginStore.getUser()} group={group} />
 				</div>
-				<GroupActionsBox user={LoginStore.getUser()} group={group} />
-				<Tabs activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
-					<Tab eventKey={1} title={Utils.getAnimalsTabIon()}>
+				<Tabs className="tabs-area" activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
+					<Tab className="tab" eventKey={1} title={Utils.getAnimalsTabIon()}>
 						<GroupAnimalsTab group={group} permission={permission}/>
 					</Tab>
-					<Tab eventKey={2} title={Utils.getMembersGlyphicon(group.memberCount())}>
+					<Tab className="tab" eventKey={2} title={Utils.getMembersGlyphicon(group.memberCount())}>
 						<GroupMembersTab group={group}/>
 					</Tab>
-					<Tab eventKey={3} title={Utils.getActivityGlyphicon()}>
+					<Tab className="tab" eventKey={3} title={Utils.getActivityGlyphicon()}>
 						<GroupActivityTab group={group} user={LoginStore.getUser()}/>
 					</Tab>
-					<Tab eventKey={4} title={Utils.getCalendarGlyphicon()}>
+					<Tab className="tab" eventKey={4} title={Utils.getCalendarGlyphicon()}>
 						<GroupScheduleTab group={group} view="group" permission={permission}/>
 					</Tab>
 				</Tabs>

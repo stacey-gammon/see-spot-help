@@ -117,7 +117,7 @@ var UserGroupsTab = React.createClass({
 
 	render: function () {
 		return (
-			<div className="list-group">
+			<div>
 				{this.getGroups()}
 			</div>
 		);

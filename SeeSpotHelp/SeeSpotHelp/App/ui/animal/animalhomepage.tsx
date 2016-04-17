@@ -110,54 +110,56 @@ var AnimalHomePage = React.createClass({
 		var animal = this.state.animal;
 		var defaultTabKey = this.state.animalDefaultTabKey ? this.state.animalDefaultTabKey : 1;
 		return (
-			<div>
-				<div className="media">
-					<div className="media-left">
-						<img className="media-object"
-							 style={{margin: 5 + "px"}}
-							 height="100px" width="100px"
-							 src={imageSrc} />
-						<TakePhotoButton
-							group={this.state.group}
-							user={LoginStore.getUser()}
-							permission={this.state.permission}
-							animal={animal}/>
+			<div className="page">
+				<div className="info-top">
+					<div className="media">
+						<div className="media-left">
+							<img className="media-object"
+								 style={{margin: 5 + "px"}}
+								 height="100px" width="100px"
+								 src={imageSrc} />
+							<TakePhotoButton
+								group={this.state.group}
+								user={LoginStore.getUser()}
+								permission={this.state.permission}
+								animal={animal}/>
+						</div>
+						<div className="media-body padding">
+							<h1 className="animalInfo">{animal.name}
+							{this.getEditIcon()}
+							</h1>
+							<h2 className="animalInfo">{animal.age} years old</h2>
+							<h2 className="animalInfo">{animal.status}</h2>
+							<h2 className="animalInfo">{animal.breed}</h2>
+							<p className="animalInfo">{animal.description}</p>
+						</div>
 					</div>
-					<div className="media-body padding">
-						<h1 className="animalInfo">{animal.name}
-						{this.getEditIcon()}
-						</h1>
-						<h2 className="animalInfo">{animal.age} years old</h2>
-						<h2 className="animalInfo">{animal.status}</h2>
-						<h2 className="animalInfo">{animal.breed}</h2>
-						<p className="animalInfo">{animal.description}</p>
-					</div>
+					<AnimalPhotoReel
+						group={this.state.group}
+						permission={this.state.permission}
+						animal={animal} />
 				</div>
-				<AnimalPhotoReel
-					group={this.state.group}
-					permission={this.state.permission}
-					animal={animal} />
-							<Tabs activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
-							<Tab eventKey={1} title={Utils.getActivityGlyphicon()}>
-								<AnimalActionsBox
-									group={this.state.group}
-									animal={animal}
-									permission={this.state.permission}/>
-								<br/>
-								<br/>
-								<AnimalActivityList
-									group={this.state.group}
-									animal={animal}
-									permission={this.state.permission}/>
-							</Tab>
-							<Tab eventKey={2} title={Utils.getCalendarGlyphicon()}>
-								<AnimalScheduleTab
-									group={this.state.group}
-									view="animal"
-									animalId={animal.id}
-									permission={this.state.permission}/>
-							</Tab>
-						</Tabs>
+				<Tabs className="tabs-area" activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
+					<Tab  className="tab" eventKey={1} title={Utils.getActivityGlyphicon()}>
+						<AnimalActionsBox
+							group={this.state.group}
+							animal={animal}
+							permission={this.state.permission}/>
+						<br/>
+						<br/>
+						<AnimalActivityList
+							group={this.state.group}
+							animal={animal}
+							permission={this.state.permission}/>
+					</Tab>
+					<Tab className="tab" eventKey={2} title={Utils.getCalendarGlyphicon()}>
+						<AnimalScheduleTab
+							group={this.state.group}
+							view="animal"
+							animalId={animal.id}
+							permission={this.state.permission}/>
+					</Tab>
+				</Tabs>
 			</div>
 		);
 	}
