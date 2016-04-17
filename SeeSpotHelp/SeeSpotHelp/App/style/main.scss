@@ -1,0 +1,232 @@
+
+@import 'mixins';
+@import 'colors';
+@import 'nav';
+@import 'buttons';
+@import 'group';
+@import 'animal';
+@import 'page';
+
+h1 {
+    font-size: 15px;
+    text-align: center;
+    font-weight: bold;
+    margin: 2px;
+    letter-spacing: 1px;
+	line-height: 21px;
+}
+
+h2 {
+    font-size: 12px;
+    text-align: center;
+    margin: 2px;
+    letter-spacing: 1px;
+}
+
+
+.email {
+	width: 100% !important;
+	  max-width: 600px;
+	  margin: 5 auto !important;
+}
+
+.input-group-addon {
+    min-width:100px;// if you want width please write here //
+    text-align:left;
+}
+
+.input-group {
+	max-width: 600px;
+	margin: 5px auto;
+}
+
+.form-control {
+	max-width: 600px;
+}
+
+.PostTextArea {
+    display: block !important;
+	width: 100%;
+	max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin: 5px auto !important;
+}
+
+.smallHelpText {
+	font-size: 10px;
+	max-width: 600px;
+	margin: 0 auto;
+	margin-top: -20px;
+}
+
+
+.glyph-warning {
+	color: red;
+}
+
+.group-list-glyph {
+	font-size: 1.5em;
+	color: #505050;
+}
+.group-list-glyph:hover {
+	color: #434343;
+}
+
+.glyph-warning:hover {
+	color: darkred;
+}
+
+
+p {
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.selectList {
+    margin: 5px;
+    padding: 5px;
+    width: 100%;
+    max-width: 200px;
+}
+
+.membershipRevokedStyle {
+    background-color: lightgray;
+    color: darkgray;
+}
+
+.searchInputBox {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.betaIntroDiv {
+	max-width: 700px;
+	margin: 0 auto;
+	color: #495864;
+}
+
+.betaPageBold1, .betaPageBold2, .betaPageBold3 {
+	/* font-weight: bold; */
+	/* color: #B7AFA3; */
+	font-size: 1.2em;
+	line-height: 29px;
+	text-align: left;
+	margin-left: 50px;
+	display: none;
+}
+
+.betaPageBold2 {
+	/* letter-spacing: 1.6px; */
+}
+.betaPageBold3 {
+    /* letter-spacing: 2.0px; */
+}
+
+.developedForText {
+	color: white;
+}
+
+.privateBetaPage {
+    padding: 20px;
+	height: 95%;
+	margin: 20px 10px 20px 10px;
+	background-color: #C1DAD6;
+   	color: #495864;
+    border-radius: 25px;
+	font-size: 1.1em;
+	line-height: 1.5em;
+	border: 3px solid #B7AFA3;
+}
+
+.loginPage {
+    padding: 20px;
+    margin: 20px;
+}
+
+.slider-img {
+	margin: 5px;
+	height: 100px;
+}
+
+.photo-slider {
+	height: 100px;
+	background-color: #fafaf9;
+	margin: 10px 40px;
+}
+
+.slick-next, .slick-prev {
+	background-color: #C1DAD6 !important;
+	color: #495864 !important;
+}
+
+.slick-disabled {
+	background-color: lightgrey;
+	color: #495864;
+}
+
+.takePhotoButton {
+    /* display: inline; */
+}
+
+.addPhotoFileInput {
+    display: none !important;
+}
+
+.GroupActionsBox {
+    margin: 10px;
+}
+
+.padding {
+    margin: 2px;
+    padding: 5px;
+}
+
+.animalImg {
+    width: 100px;
+    height: 100px;
+    margin: 5px;
+}
+
+
+.center-cropped-image {
+  width: 100px;
+  height: 100px;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+.spinner {
+  display: inline-block;
+  opacity: 0;
+  width: 0;
+
+  -webkit-transition: opacity 0.25s, width 0.25s;
+  -moz-transition: opacity 0.25s, width 0.25s;
+  -o-transition: opacity 0.25s, width 0.25s;
+  transition: opacity 0.25s, width 0.25s;
+}
+
+.has-spinner.active {
+  cursor:progress;
+}
+
+.has-spinner.active .spinner {
+  opacity: 1;
+  width: auto; /* This doesn't work, just fix for unkown width elements */
+}
+
+.has-spinner.btn-mini.active .spinner {
+    width: 10px;
+}
+
+.has-spinner.btn-small.active .spinner {
+    width: 13px;
+}
+
+.has-spinner.btn.active .spinner {
+    width: 16px;
+}
+
+.has-spinner.btn-large.active .spinner {
+    width: 19px;
+}

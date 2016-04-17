@@ -1,0 +1,55 @@
+.page {
+	margin-right: 2px;
+	margin-left: 2px;
+}
+
+.info-top {
+	border-top: 2px solid $color7;
+	border-left: 2px solid $color7;
+	border-right: 2px solid $color7;
+
+	@include border-top-radius(20px);
+	background-color: $info-top-bg-color;
+	color: $info-top-color;
+	padding: 15px;
+}
+
+.nav-tabs {
+	background-color: $info-top-bg-color;
+	border-right: 2px solid $color7;
+	border-left: 2px solid $color7;
+	padding-left: 15px;
+}
+
+.tab-content {
+	background-color: white;
+	margin: 0px;
+}
+
+.tabs-area {
+	li a {
+		background-color: $inactive-tab-bg-color;
+		@include border-top-radius(10px);
+		border-width: 2px 2px 1px 2px;
+		border-color: $color7;
+		height: 48px;
+	}
+
+	li.active a {
+		background-color: $page-bg-color;
+		border-width: 2px 2px 0px 2px;
+		border-color: $color7;
+	}
+}
+
+.tab {
+	background-color: $page-bg-color !important;
+}
+
+.large-tab-icon {
+	font-size: 20px;
+}
+
+.small-tab-icon {
+	font-size: 15px;
+}

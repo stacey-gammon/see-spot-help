@@ -1,0 +1,99 @@
+@import 'colors';
+
+.navbar {
+	background-color: $nav-bg-color;
+	margin-bottom: 0px !important;
+	border: 0px solid red !important;
+}
+
+.nav-item {
+	-webkit-appearance: none;
+	color: $nav-item-color;
+	outline: none;
+	border: 0;
+	background: transparent;
+	margin: 0px;
+}
+
+.nav-item:hover {
+	color: $nav-item-color-hover;
+}
+
+.glyphicon {
+	color: $nav-item-color;
+}
+
+.glyphicon:hover {
+	color: $nav-item-color-hover;
+}
+
+.navbar-custom {
+    display: inline-block;
+}
+
+.navbar-custom>li {
+    display: inline-block;
+    float: left;
+}
+
+.navbar-right {
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.navbar-right > li {
+    display: inline-block;
+    margin-top: 4px;
+}
+
+
+.logo-header {
+	display: inline-block !important;
+	margin: 0 auto !important;
+	height: 40px;
+	width: 130px;
+}
+
+.logo-header img {
+	height: 40px;
+	margin-left: 10px !important;
+	margin-top: -15px !important;
+	margin-bottom: 15px !important;
+	width: 130px;
+	margin: 0 auto;
+	display: inline-block;
+}
+
+
+.invisible-button {
+	-webkit-appearance: none;
+	outline: none;
+	border: 0;
+	background: transparent;
+}
+
+.hamburgerDropdown {
+	-webkit-appearance: none;
+	outline: none;
+	border: 0;
+	background: transparent;
+	font-size:1.3em;
+	margin-top: 11px;
+	margin-right: -10px;
+	float: right;
+}
+
+.dropdownMenuStyle {
+    /* RGBa with 0.6 opacity */
+    background-color: rgba(255, 255, 255, 0.9);
+	border: 2px solid #DCDCDC;
+}
+
+.dropdownToggleStyle {
+    float: right;
+    visibility: hidden;
+    height: 0px;
+    width: 0px;
+}

@@ -1,0 +1,40 @@
+
+$color1: #C1DAD6;
+$color1Comp: #495864;
+
+$color2: #B7AFA3;
+$color2Complement: #3e3931;
+
+$color3: #6D929B;
+$color4: #57777e;
+$color5: #495864;
+
+$color6: #FFE361;
+$color6Comp: #FFFFFF;
+$color6Comp2: #D2D2D3;
+
+$color7: #6BCBCA;
+$color7Comp: white;
+
+$color8: #50d07d;
+
+$color9: #F5FAFA;
+
+$shadow: rgba(153,153,153,0.63);
+
+$group-bg-color: $color7;
+$group-color: $color7Comp;
+
+$animal-bg-color: $color7;
+$animal-color: $color7Comp;
+
+$button-color: $color8;
+
+$nav-bg-color: white;
+$nav-item-color: darken($color6, 15%);
+$nav-item-color-hover: $color6;
+
+$inactive-tab-bg-color: white;
+$page-bg-color: white;
+$info-top-bg-color: lighten($color7, 30%);
+$info-top-color: darken($color7, 30%);

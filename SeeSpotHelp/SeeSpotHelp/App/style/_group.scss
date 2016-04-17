@@ -1,0 +1,19 @@
+
+@import 'mixins';
+@import 'base';
+
+.groupListElement {
+	@extend .base-list-element;
+
+	background-color: $group-bg-color;
+	color: $group-color !important;
+
+}
+
+.shelterResult {
+	width: 100%;
+}
+
+.GroupActionsBox {
+    margin: 10px;
+}

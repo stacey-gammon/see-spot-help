@@ -1,0 +1,16 @@
+.button {
+	margin: 5 auto !important;
+}
+
+.btn {
+	margin: 3px;
+}
+
+.btn-info {
+	background-color: $button-color;
+	border: 1px solid darken($button-color, 10%);
+}
+
+.btn-info:hover {
+	background-color: darken($button-color, 15%);
+}

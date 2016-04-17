@@ -1,0 +1,43 @@
+
+@import 'base';
+
+
+.animalListElement:hover {
+	color: #B7AFA3 !important;
+};
+
+.animalListInfo {
+    border: solid 1px black;
+}
+
+.animalListElement {
+	@extend .base-list-element;
+	background-color: $animal-bg-color;
+	color: $animal-color !important;
+}
+
+.addAnimalButton {
+    float: right;
+	display: block;
+    margin: 0 0 10px 10px;
+}
+
+.addAnimalNoteButton {
+    float: right;
+	display: block;
+    margin: 0 0 10px 10px;
+}
+
+.animalInfo {
+    text-align: left;
+}
+
+.animalThumbnailText {
+    font-size: 13px;
+    text-align: left;
+}
+
+.animalThumbnailImg {
+    width: 75px;
+    height: 75px;
+}
