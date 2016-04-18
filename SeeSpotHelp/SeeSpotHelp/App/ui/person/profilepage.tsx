@@ -79,7 +79,6 @@ var ProfilePage = React.createClass({
 	},
 
 	render: function () {
-		console.log('profilepage: render');
 		if (!LoginStore.getUser()) return null;
 		var defaultKey = this.state.profileDefaultTabKey ? this.state.profileDefaultTabKey : 1;
 		var heading = "Hello, " + LoginStore.getUser().name;
@@ -87,7 +86,7 @@ var ProfilePage = React.createClass({
 			<div className="page">
 				<div className="media info-top">
 					<div className="media-body">
-					<h1>{heading}</h1>
+						<h1>{heading}</h1>
 					</div>
 				</div>
 				<Tabs className="tabs-area" activeKey={defaultKey} onSelect={this.handleTabSelect}>

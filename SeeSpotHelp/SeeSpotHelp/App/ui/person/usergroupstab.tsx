@@ -2,33 +2,19 @@
 
 var React = require("react");
 var Link = require("react-router").Link;
-var AnimalList = require("../animal/animallist");
-var SearchBox = require("../searchbox");
-var GroupInfoBox = require("../group/groupinfobox");
-var GroupActionsBox = require("../group/groupactionsbox");
-var AddAnimalButton = require("../animal/addanimalbutton");
-var AnimalActivityItem = require("../animal/animalactivityitem");
 var GroupListItem = require("../group/grouplistitem");
 var Intro = require("../intro");
 
 import Utils from '../../core/utils';
-import Volunteer from '../../core/volunteer';
-import VolunteerGroup from '../../core/volunteergroup';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
-import PermissionsStore from '../../stores/permissionsstore';
 import VolunteerStore from '../../stores/volunteerstore';
-import AnimalActivityStore from '../../stores/animalactivitystore';
-import DataServices from '../../core/dataservices';
+import PermissionsStore from '../../stores/permissionsstore';
 
 var UserGroupsTab = React.createClass({
 	getInitialState: function () {
 		var user = Utils.FindPassedInProperty(this, 'user') || LoginStore.getUser();
-		var groups = user ? GroupStore.getGroupsByUser(user) : [];
-		return {
-			user: user,
-			groups: groups
-		}
+		return { user: user }
 	},
 
 	onChange: function () {
@@ -37,19 +23,13 @@ var UserGroupsTab = React.createClass({
 			user = LoginStore.getUser()
 		} else {
 			user = VolunteerStore.getVolunteerById(this.state.user.id);
+			user = user ? user : this.state.user;
 		}
-		this.setState(
-			{
-				user: user,
-				groups: GroupStore.getGroupsByUser(LoginStore.getUser())
-			});
+		this.setState({ user: user });
 	},
 
 	componentWillReceiveProps: function(nextProps) {
-		this.setState({
-			group:  GroupStore.getGroupsByUser(nextProps.user),
-			user: nextProps.user
-		});
+		this.setState({ user: nextProps.user });
 	},
 
 	componentDidMount: function () {
@@ -79,47 +59,57 @@ var UserGroupsTab = React.createClass({
 		if (this.state.user.id != LoginStore.getUser().id) return null;
 		return (
 			<div className="text-center">
-			<p>
-			<Link to="searchPage">Search for a group</Link>&nbsp;|&nbsp;
-			<Link to="addNewGroup">Add a new group</Link>
-			</p>
+				<p>
+					<Link to="searchPage">Search for a group</Link>&nbsp;|&nbsp;
+					<Link to="addNewGroup">Add a new group</Link>
+				</p>
 			</div>
 		);
 	},
 
-	getGroups: function() {
-		if (!LoginStore.getUser() || !this.state.groups) return null;
-		if (this.state.groups.length == 0 &&
-			(!LoginStore.getUser() ||
-			 (this.state.user && this.state.user.id != LoginStore.getUser().id))) {
-				return (
-					<div>This user does not currently belong to any groups.</div>
-				);
-		} else if (this.state.groups.length == 0) {
+	getGroupsForUser: function () {
+		var groups = [];
+		var permissions = PermissionsStore.getPermissionsByUserId(this.state.user.id);
+		for (var i = 0; i < permissions.length; i++) {
+			if (permissions[i].inGroup()) {
+				var group = GroupStore.getGroupById(permissions[i].groupId);
+				if (group) groups.push(group);
+			}
+		}
+		return groups;
+	},
+
+	getGroupElements: function() {
+		if (!this.state.user) return [];
+		var groups = this.getGroupsForUser();
+		if (groups.length == 0 && this.state.user.id != LoginStore.getUser().id) {
 			return (
-				<Intro />
+				<div>This user does not currently belong to any groups.</div>
 			);
-		} else if (this.state.groups.length) {
-			var groups = this.state.groups.map(this.getGroupElement);
+		}
+
+		if (!groups.length) {
+			return ( <Intro /> );
+		}
+
+		if (groups.length) {
+			var groupElements = groups.map(this.getGroupElement);
 			return (
 				<div className="text-center groupList">
-					{groups}
+					{groupElements}
 					<div>
 						{this.getSearchOrAddText()}
 					</div>
 				</div>
 			);
-		} else {
-			console.log("nothing!");
-			return <div></div>
 		}
+
+		return null;
 	},
 
 	render: function () {
 		return (
-			<div>
-				{this.getGroups()}
-			</div>
+			<div> {this.getGroupElements()} </div>
 		);
 	}
 });

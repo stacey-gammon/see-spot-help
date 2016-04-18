@@ -131,9 +131,9 @@ abstract class BaseStore extends EventEmitter {
 	itemDownloaded(id: string, onSuccess, snapshot) {
 		this.isDownloading = false;
 		if (snapshot && snapshot.val() && !this.storage.hasOwnProperty[id]) {
-			this.itemAdded(snapshot);
+			this.itemAdded(null, snapshot);
 		} else if (snapshot && snapshot.val()) {
-			this.itemChanged(snapshot);
+			this.itemChanged(null, snapshot);
 		} else {
 			this.itemDeletedWithId(id);
 		}
@@ -141,13 +141,12 @@ abstract class BaseStore extends EventEmitter {
 		this.resolvePromises(id);
 	}
 
-	itemAdded(snapshot) {
+	itemAdded(prop, snapshot) {
 		if (snapshot.val()) {
 			var casted = this.databaseObject.castObject(snapshot.val());
 			// Wait for the subsequent update to set the id.
 			if (!casted.id) return;
-
-			for (var prop in this.storageMappings) {
+			if (prop) {
 				this.addIdToMapping(this.storageMappings[prop], casted[prop], casted.id);
 			}
 			this.storage[casted.id] = casted;
@@ -173,13 +172,13 @@ abstract class BaseStore extends EventEmitter {
 		}
 	}
 
-	itemChanged(snapshot) {
+	itemChanged(prop, snapshot) {
 		var changedObject = this.databaseObject.castObject(snapshot.val());
 		if (this.storage.hasOwnProperty(changedObject.id)) {
 			this.storage[changedObject.id] = changedObject;
 			this.emitChange();
 		} else {
-			this.itemAdded(snapshot);
+			this.itemAdded(prop, snapshot);
 		}
 	}
 
@@ -233,8 +232,8 @@ abstract class BaseStore extends EventEmitter {
 			property,
 			propertyValue);
 
-		DataServices.OnChildAdded(path, this.itemAdded.bind(this));
-		DataServices.OnChildChanged(path, this.itemChanged.bind(this));
+		DataServices.OnChildAdded(path, this.itemAdded.bind(this, property));
+		DataServices.OnChildChanged(path, this.itemChanged.bind(this, property));
 		DataServices.OnChildRemoved(path, this.itemDeleted.bind(this));
 	}
 }
