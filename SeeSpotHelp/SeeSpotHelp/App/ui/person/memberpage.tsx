@@ -88,7 +88,7 @@ var MemberPage = React.createClass({
 						<h1>{heading}</h1>
 						</div>
 					</div>
-					<Tabs activeKey={defaultKey} onSelect={this.handleTabSelect}>
+					<Tabs className="tabs-area" activeKey={defaultKey} onSelect={this.handleTabSelect}>
 						<Tab eventKey={1} title="Groups">
 							<UserGroupsTab user={this.state.member}/>
 						</Tab>

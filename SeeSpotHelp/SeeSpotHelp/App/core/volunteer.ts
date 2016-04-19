@@ -10,9 +10,9 @@ class Volunteer extends DatabaseObject {
 	public name: string;
 	public displayName: string;
 	public email: string;
-	public inBeta: boolean; // TODO: Check for security issues with this.
-	public groups: Array<VolunteerGroup>;
+	public inBeta: boolean;
 	public betaCode: string;
+	public firebasePath: string = 'users';
 
 	constructor(name, email) {
 		super();
@@ -20,29 +20,11 @@ class Volunteer extends DatabaseObject {
 		this.email = email;
 	};
 
-	defaultGroupId() {
-		for (var groupId in this.groups) {
-			return groupId;
-		}
-		return null;
-	}
-
 	public createInstance() { return new Volunteer('', ''); };
 
 	// We don't push data for inserts so override base implementation.
 	insert() {
 		DataServices.SetFirebaseData(this.firebasePath + '/' + this.id, this);
-	}
-
-	// Returns the default volunteer group this volunteer belongs to,
-	// if any. If the volunteer does not exist yet in the server db, they
-	// will be inserted. Returns null if user is not attached to any
-	// groups.
-	getDefaultVolunteerGroup() {
-		// Note: If there is more than one group this user belongs to, should
-		// we let them specify the "default" one?  Probably not a common
-		// scenario to have more than one.
-		return this.groups.length > 0 ? this.groups[0] : null;
 	}
 }
 

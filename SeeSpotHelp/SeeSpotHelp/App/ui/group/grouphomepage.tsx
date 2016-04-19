@@ -1,7 +1,6 @@
 ﻿"use strict";
 
 var React = require("react");
-/* eslint-disable no-unused-vars */
 var Link = require("react-router").Link;
 var ReactBootstrap = require("react-bootstrap");
 var Tab = ReactBootstrap.Tab;
@@ -14,7 +13,6 @@ var GroupAnimalsTab = require("./groupanimalstab");
 var GroupActivityTab = require("./groupactivitytab");
 var GroupActionsBox = require("./groupactionsbox");
 var GroupScheduleTab = require("./groupscheduletab");
-/* eslint-enable no-unused-vars */
 
 import Utils from '../../core/utils';
 import VolunteerGroup from '../../core/volunteergroup';
@@ -63,7 +61,7 @@ var GroupHomePage = React.createClass({
 				if (group) {
 					Utils.SaveProp('groupId', group.id);
 					if (this.isMounted()) { this.setState({ permission: permission }); }
-					this.addChangeListeners();
+					this.addChangeListeners(group);
 				}
 			}.bind(this)
 		);
@@ -121,8 +119,9 @@ var GroupHomePage = React.createClass({
 		}
 	},
 
-	addChangeListeners: function () {
-		StoreStateHelper.AddChangeListeners([LoginStore, GroupStore, PermissionsStore], this);
+	addChangeListeners: function (group) {
+		PermissionsStore.addPropertyListener(this, 'groupId', group.id, this.onChange.bind(this));
+		StoreStateHelper.AddChangeListeners([LoginStore, GroupStore], this);
 	},
 
 	componentWillMount: function() {
@@ -130,7 +129,8 @@ var GroupHomePage = React.createClass({
 	},
 
 	componentWillUnmount: function() {
-		StoreStateHelper.RemoveChangeListeners([LoginStore, GroupStore, PermissionsStore], this);
+		StoreStateHelper.RemoveChangeListeners([LoginStore, GroupStore], this);
+		PermissionsStore.removePropertyListener(this);
 	},
 
 	onChange: function() {
@@ -147,10 +147,24 @@ var GroupHomePage = React.createClass({
 		Utils.LoadOrSaveState(stateDuplicate);
 	},
 
+	getMembersTabTitle: function (group) {
+		if (!group) return null;
+		var permissions = PermissionsStore.getPermissionsByGroupId(group.id);
+		if (permissions) {
+			var count = 0;
+			for (var i = 0; i < permissions.length; i++) {
+				if (permissions[i].inGroup()) {
+					count++;
+				}
+			}
+			return Utils.getMembersGlyphicon(count);
+		}
+		return null;
+	},
+
 	hasGroupHomePage: function(group) {
 		var permission = StoreStateHelper.GetPermission(this.state);
 		var defaultTabKey = this.state.groupDefaultTabKey ? this.state.groupDefaultTabKey : 1;
-		var memberTitle = "Members (" + group.memberCount() + ")";
 		return (
 			<div className="page">
 				<div className="info-top">
@@ -171,8 +185,9 @@ var GroupHomePage = React.createClass({
 					<Tab className="tab" eventKey={1} title={Utils.getAnimalsTabIon()}>
 						<GroupAnimalsTab group={group} permission={permission}/>
 					</Tab>
-					<Tab className="tab" eventKey={2} title={Utils.getMembersGlyphicon(group.memberCount())}>
-						<GroupMembersTab group={group}/>
+					<Tab className="tab" ref="groupMembersTab" eventKey={2}
+						title={this.getMembersTabTitle(group)}>
+						<GroupMembersTab group={group} permission={permission}/>
 					</Tab>
 					<Tab className="tab" eventKey={3} title={Utils.getActivityGlyphicon()}>
 						<GroupActivityTab group={group} user={LoginStore.getUser()}/>

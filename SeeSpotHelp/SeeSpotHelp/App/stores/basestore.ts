@@ -1,6 +1,6 @@
 'use strict';
 
-var Dispatcher = require("../dispatcher/dispatcher");
+var Dispatcher = require('../dispatcher/dispatcher');
 var ActionConstants = require('../constants/actionconstants');
 import Events = require('events');
 import Promise = require('bluebird');
@@ -18,6 +18,20 @@ enum EventTypeEnum {
 	ALL
 };
 
+class PropertyListener {
+	public property: string = null;
+	public value: any;
+	public callback: any;
+	public listener: any;
+
+	constructor(listener, property, value, callback) {
+		this.listener = listener;
+		this.property = property;
+		this.value = value;
+		this.callback = callback;
+	}
+}
+
 abstract class BaseStore extends EventEmitter {
 	protected storage: Object = {};
 	// A blank representation of the item this store contains:
@@ -28,6 +42,8 @@ abstract class BaseStore extends EventEmitter {
 	public hasError: boolean = false;
 	private isDownloading: boolean = false;
 	private promiseResolveCallbacks: Array<any> = [];
+	private propertyListeners: Array<PropertyListener> = [];
+	private itemListeners: Array<PropertyListener> = [];
 
 	// Mapping of EventTypeEnum to an array of object with a callback and potentially an id.
 	private listenerInfo = {
@@ -49,23 +65,21 @@ abstract class BaseStore extends EventEmitter {
 		}
 	}
 
-	addChangeListener(callback) {
-		this.on(CHANGE_EVENT, callback);
+	addPropertyListener(listener, property, value, callback) {
+		this.propertyListeners.push(new PropertyListener(listener, property, value, callback));
 	}
 
-	addItemListener(id, callback) {
-		this.listenerInfo[EventTypeEnum.ALL].push({ callback: callback, id: id });
-	}
-
-	emitFor(id, type) {
-		for (var i = 0; i < this.listenerInfo[type].length; i++) {
-			var listenerInfo = this.listenerInfo[type][i];
-			if (!listenerInfo.id || listenerInfo.id == id) {
-				var state = {}
-				state[this.databaseObject.classNameForSessionStorage + 'Id'] = id;
-				listenerInfo.callback(state);
+	removePropertyListener(listener) {
+		for (var i = 0; i < this.propertyListeners.length; i++) {
+			var propListener = this.propertyListeners[i];
+			if (propListener.listener == listener) {
+				this.propertyListeners.slice(i, i + 1);
 			}
 		}
+	}
+
+	addChangeListener(callback) {
+		this.on(CHANGE_EVENT, callback);
 	}
 
 	resolvePromises(id) {
@@ -78,8 +92,17 @@ abstract class BaseStore extends EventEmitter {
 		this.removeListener(CHANGE_EVENT, callback);
 	}
 
-	emitChange() {
+	emitChange(property?, value?) {
 		this.emit(CHANGE_EVENT);
+		if (property) {
+			for (var i = 0; i < this.propertyListeners.length; i++) {
+				var propListener = this.propertyListeners[i];
+				if (propListener.property == property &&
+					propListener.value == value) {
+					propListener.callback();
+				}
+			}
+		}
 	}
 
 	ensureItemById(id) {
@@ -122,6 +145,7 @@ abstract class BaseStore extends EventEmitter {
 	}
 
 	addIdToMapping(mapping, key, id) {
+		if (!mapping) return;
 		if (!mapping[key]) {
 			mapping[key] = [];
 		}
@@ -131,9 +155,9 @@ abstract class BaseStore extends EventEmitter {
 	itemDownloaded(id: string, onSuccess, snapshot) {
 		this.isDownloading = false;
 		if (snapshot && snapshot.val() && !this.storage.hasOwnProperty[id]) {
-			this.itemAdded(null, snapshot);
+			this.itemAdded('id', snapshot);
 		} else if (snapshot && snapshot.val()) {
-			this.itemChanged(null, snapshot);
+			this.itemChanged('id', snapshot);
 		} else {
 			this.itemDeletedWithId(id);
 		}
@@ -151,7 +175,7 @@ abstract class BaseStore extends EventEmitter {
 			}
 			this.storage[casted.id] = casted;
 
-			this.emitChange();
+			this.emitChange(prop, casted[prop]);
 		}
 	}
 

@@ -37,10 +37,6 @@ export default class VolunteerGroup extends DatabaseObject {
 
 	constructor() {
 		super();
-
-		// for (var prop in VolunteerGroup.CalendarColorsEnum) {
-		// 	this.availableMemberColors.push(VolunteerGroup.CalendarColorsEnum[prop]);
-		// }
 	}
 
 	createInstance() { return new VolunteerGroup(); }
