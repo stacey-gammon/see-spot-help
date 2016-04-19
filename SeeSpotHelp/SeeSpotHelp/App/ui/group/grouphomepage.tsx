@@ -1,15 +1,11 @@
-﻿"use strict";
+﻿'use strict';
 
-var React = require("react");
-var Link = require("react-router").Link;
-var ReactBootstrap = require("react-bootstrap");
-var Tab = ReactBootstrap.Tab;
-var Tabs = ReactBootstrap.Tabs;
+import * as React from 'react';
 
-var Intro = require("../intro");
-var GroupInfoBox = require("./groupinfobox");
-var GroupActionsBox = require("./groupactionsbox");
-var GroupPageTabs = require("./grouppagetabs");
+var Intro = require('../intro');
+
+import GroupInfoBar from './groupinfobar';
+import GroupPageTabs from './grouppagetabs';
 
 import Utils from '../../core/utils';
 import VolunteerGroup from '../../core/volunteergroup';
@@ -19,19 +15,24 @@ import GroupStore from '../../stores/groupstore';
 import PermissionsStore from '../../stores/permissionsstore';
 import StoreStateHelper from '../../stores/storestatehelper';
 
-var GroupHomePage = React.createClass({
-	getInitialState: function() {
-		var isSearchResult = Utils.FindPassedInProperty(this, 'isSearchResult');
+class GroupHomePage extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
 		var groupId = Utils.FindPassedInProperty(this, 'groupId');
-		var state = {
-			fromSearch: isSearchResult,
-			groupId: groupId
-		};
-		Utils.LoadOrSaveState(state);
-		return state;
-	},
+		this.state = { groupId: groupId };
+		Utils.LoadOrSaveState(this.state);
+	}
 
-	loadFromServer: function () {
+	componentWillMount() {
+		this.loadFromServer();
+	}
+
+	componentWillUnmount() {
+		StoreStateHelper.RemoveChangeListeners([LoginStore, GroupStore], this);
+		PermissionsStore.removePropertyListener(this);
+	}
+
+	loadFromServer() {
 		var groupId = this.state.groupId;
 		// If the user doesn't have any 'last looked at' group, see if we can grab one from the user.
 		if (!groupId && LoginStore.getUser()) {
@@ -56,83 +57,46 @@ var GroupHomePage = React.createClass({
 				var permission = StoreStateHelper.GetPermission(this.state);
 				if (group) {
 					Utils.SaveProp('groupId', group.id);
-					if (this.isMounted()) { this.setState({ permission: permission }); }
+					this.setState({ permission: permission });
 					this.addChangeListeners(permission);
 				}
 			}.bind(this)
 		);
-	},
+	}
 
-	loadDifferentGroup: function(group) {
+	loadDifferentGroup(group) {
 		this.setState({ groupId: group.id });
-	},
+	}
 
-	addChangeListeners: function (permission) {
+	addChangeListeners(permission) {
 		PermissionsStore.addPropertyListener(this, 'id', permission.id, this.onChange.bind(this));
 		StoreStateHelper.AddChangeListeners([LoginStore, GroupStore], this);
-	},
+	}
 
-	componentWillMount: function() {
-		this.loadFromServer();
-	},
-
-	componentWillUnmount: function() {
-		StoreStateHelper.RemoveChangeListeners([LoginStore, GroupStore], this);
-		PermissionsStore.removePropertyListener(this);
-	},
-
-	onChange: function() {
+	onChange() {
 		var permission = StoreStateHelper.GetPermission(this.state);
 		this.setState({ permission: permission });
-	},
+	}
 
-	handleTabSelect: function(key) {
-		this.setState({groupDefaultTabKey : key});
-		// We aren't supposed to manipulate state directly, but it doesn't yet have the newly
-		// selected tab that we want to save to local storage.
-		var stateDuplicate = this.state;
-		stateDuplicate.groupDefaultTabKey = key;
-		Utils.LoadOrSaveState(stateDuplicate);
-	},
-
-	hasGroupHomePage: function(group) {
+	hasGroupHomePage(group) {
 		var permission = StoreStateHelper.GetPermission(this.state);
 		return (
-			<div className="page">
-				<div className="info-top">
-					<div className="media">
-						<div className="media-left">
-						</div>
-						<div className="media-body">
-							<GroupInfoBox group={group} permission={permission} />
-						</div>
-						<div className="media-right">
-						</div>
-					</div>
-					<GroupActionsBox user={LoginStore.getUser()} group={group} />
-				</div>
+			<div className='page'>
+				<GroupInfoBar group={group} permission={permission}/>
 				<GroupPageTabs group={group} permission={permission} />
 			</div>
 		);
-	},
+	}
 
-	render: function() {
-		if (PermissionsStore.hasError || LoginStore.hasError || GroupStore.hasError) {
-			var message = PermissionsStore.errorMessage ||
-				LoginStore.errorMessage ||
-				GroupStore.errorMessage;
-			return (
-				<div className='alert alert-danger'> {message} </div>
-			);
-		}
-
+	render() {
 		if (this.state.groupId) {
 			var group = GroupStore.getGroupById(this.state.groupId);
-			if (group) { return this.hasGroupHomePage(group); }
+			if (group) {
+				return this.hasGroupHomePage(group);
+			}
 		}
-
 		return ( <div> <Intro /> </div> );
 	}
-});
+}
 
 module.exports = GroupHomePage;

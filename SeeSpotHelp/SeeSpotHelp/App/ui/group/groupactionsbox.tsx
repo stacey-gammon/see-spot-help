@@ -68,7 +68,7 @@ var GroupActionsBox = React.createClass({
 
 		var permission = this.state.permission;
 		var group = new VolunteerGroup().castObject(this.state.group);
-		var user = new Volunteer('','','').castObject(this.state.user);
+		var user = new Volunteer('','').castObject(this.state.user);
 
 		if (permission.pending()) {
 			permission.permission = VolunteerGroup.PermissionsEnum.NONMEMBER;
@@ -115,4 +115,4 @@ var GroupActionsBox = React.createClass({
 	}
 });
 
-module.exports = GroupActionsBox;
+export default GroupActionsBox;

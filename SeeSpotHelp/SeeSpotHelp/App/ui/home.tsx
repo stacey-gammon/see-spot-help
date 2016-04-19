@@ -7,7 +7,7 @@ var ReactRouter = require("react-router");
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
 var DefaultRoute = ReactRouter.DefaultRoute;
-var browserHistory = ReactRouter.browserHistory;
+var hashHistory = ReactRouter.hashHistory;
 var IndexRoute = ReactRouter.IndexRoute;
 
 var MyNavBar = require("./navbar");
@@ -25,10 +25,9 @@ var LoginPage = require("./loginpage");
 var PrivateBetaPage = require("./privatebetapage");
 var EnterBetaCode = require("./enterbetacode");
 var AddCalendarEvent = require("./addcalendarevent");
-var GroupAnimalsTab = require("./group/groupanimalstab");
-var GroupMembersTab = require("./group/groupmemberstab");
 var AddAnimalNote = require("./animal/addanimalnote");
 var UserSettingsPage = require("./person/usersettingspage");
+
 import LoginStore from '../stores/loginstore';
 
 var Home = React.createClass({
@@ -114,7 +113,7 @@ var Home = React.createClass({
 });
 
 var routes = (
-	<Router history={browserHistory} path="/" component={Home}>
+	<Router path="/" component={Home}>
 		<IndexRoute component={ProfilePage} />
 		<Route path="searchPage" component={SearchPage}/>
 		<Route path="groupHomePage" component={GroupHomePage}/>
@@ -125,8 +124,6 @@ var routes = (
 		<Route path="memberPage" component={MemberPage} />
 		<Route path="privateBetaPage" component={PrivateBetaPage} />
 		<Route path="loginPage" component={LoginPage} />
-		<Route path="groupAnimalsTab" component={GroupAnimalsTab} />
-		<Route path="groupMembersTab" component={GroupMembersTab} />
 		<Route path="addAnimalNote" component={AddAnimalNote} />
 		<Route path="userSettingsPage" component={UserSettingsPage} />
 		<Route path="addCalendarEvent" component={AddCalendarEvent} />
@@ -135,6 +132,6 @@ var routes = (
 );
 
 ReactDOM.render(
-	<Router routes={routes}/>,
+	<Router history={hashHistory} routes={routes}/>,
 	document.getElementById('content')
 );

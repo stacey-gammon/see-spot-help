@@ -15,7 +15,7 @@ import Permission from '../../core/permission';
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
-class GroupPageTabs extends React.Component<any, any> {
+export default class GroupPageTabs extends React.Component<any, any> {
 	constructor(props) {
 		super(props);
 		this.state = { groupDefaultTabKey: null };
@@ -40,6 +40,11 @@ class GroupPageTabs extends React.Component<any, any> {
 		var stateDuplicate = this.state;
 		stateDuplicate.groupDefaultTabKey = key;
 		Utils.LoadOrSaveState(stateDuplicate);
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return nextProps.group != this.props.group ||
+			nextProps.permission != this.props.permission;
 	}
 
 	getMembersTabTitle (group) {
@@ -79,5 +84,3 @@ class GroupPageTabs extends React.Component<any, any> {
 		);
 	}
 }
-
-module.exports = GroupPageTabs;

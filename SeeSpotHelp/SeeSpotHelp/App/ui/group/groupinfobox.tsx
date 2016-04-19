@@ -50,4 +50,4 @@ class GroupInfoBox extends React.Component<any, any> {
 	}
 }
 
-module.exports = GroupInfoBox;
+export default GroupInfoBox;
