@@ -1,33 +1,24 @@
-"use strict";
+'use strict';
 
-var React = require('react');
-
+import * as React from 'react';
 import $ = require('jquery');
-var Calendar = require("../calendar");
-var GroupActionsBox = require('../group/groupactionsbox');
 
-import Utils from '../../core/utils';
-import Animal from '../../core/animal';
-import VolunteerGroup from '../../core/volunteergroup';
+var Calendar = require('../calendar');
+
 import LoginStore from '../../stores/loginstore';
 
-var GroupScheduleTab = React.createClass({
-	getInitialState: function() {
-		return {
-			refreshCalendar: false,
-		}
-	},
+class GroupScheduleTab extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
+		this.state = { refreshCalendar: false }
+	}
 
-	getLegend: function() {
-		return (<h1>Legend:</h1>);
-	},
-
-	componentWillReceiveProps: function(nextProps) {
+	componentWillReceiveProps (nextProps) {
 		var props = $.extend(nextProps, {refreshCalendar : true});
 		this.setState(props);
-	},
+	}
 
-	render: function() {
+	render() {
 		if (!this.props.group && this.props.memberId < 0) return null;
 
 		if (this.props.group &&
@@ -36,11 +27,11 @@ var GroupScheduleTab = React.createClass({
 			return (
 				<div>
 					<h1>Only members can view or edit a schedule.</h1>
-				</div>);
+				</div>
+			);
 		}
 		return (
 			<div>
-				{this.getLegend()}
 				<Calendar
 					propToForceRefresh={this.state.refreshCalendar}
 					view='group'
@@ -48,6 +39,6 @@ var GroupScheduleTab = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
 module.exports = GroupScheduleTab;

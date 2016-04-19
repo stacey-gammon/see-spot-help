@@ -1,7 +1,6 @@
 "use strict";
 
 import * as React from 'react';
-var Link = require("react-router").Link;
 var ReactBootstrap = require("react-bootstrap");
 var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
@@ -12,7 +11,6 @@ var GroupActivityTab = require("./groupactivitytab");
 var GroupScheduleTab = require("./groupscheduletab");
 
 import Utils from '../../core/utils';
-import VolunteerGroup from '../../core/volunteergroup';
 import Permission from '../../core/permission';
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
