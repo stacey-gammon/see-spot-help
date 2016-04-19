@@ -71,54 +71,6 @@ var GroupHomePage = React.createClass({
 		this.setState({ groupId: group.id });
 	},
 
-	getPreviousButton: function() {
-		if (this.state.fromSearch || !LoginStore.getUser()) return null;
-		var usersGroups = GroupStore.getGroupsByUser(LoginStore.getUser());
-		if (!usersGroups) return null;
-
-		var previousGroup = null;
-		for (var i = 0; i < usersGroups.length; i++) {
-			if (usersGroups[i].id == this.state.groupId) {
-				break;
-			}
-			previousGroup = usersGroups[i];
-		}
-		if (previousGroup) {
-			return (
-				<button className="btn btn-default"
-						onClick={this.loadDifferentGroup.bind(this, previousGroup)}>
-					Prev
-				</button>
-			);
-		}
-	},
-
-	getNextButton: function() {
-		if (this.state.fromSearch || !LoginStore.getUser()) return null;
-		var usersGroups = GroupStore.getGroupsByUser(LoginStore.getUser());
-		if (!usersGroups) return null;
-
-		var nextGroup = null;
-		var groupFound = false;
-		for (var i = 0; i < usersGroups.length; i++) {
-			if (groupFound) {
-				nextGroup = usersGroups[i];
-				break;
-			}
-			if (usersGroups[i].id == this.state.groupId) {
-				groupFound = true;
-			}
-		}
-		if (nextGroup) {
-			return (
-				<button className="btn btn-default"
-						onClick={this.loadDifferentGroup.bind(this, nextGroup)}>
-					Next
-				</button>
-			);
-		}
-	},
-
 	addChangeListeners: function (group) {
 		PermissionsStore.addPropertyListener(this, 'groupId', group.id, this.onChange.bind(this));
 		StoreStateHelper.AddChangeListeners([LoginStore, GroupStore], this);
@@ -170,13 +122,11 @@ var GroupHomePage = React.createClass({
 				<div className="info-top">
 					<div className="media">
 						<div className="media-left">
-							{this.getPreviousButton()}
 						</div>
 						<div className="media-body">
-							<GroupInfoBox group={group} user={LoginStore.getUser()} />
+							<GroupInfoBox group={group} permission={permission} />
 						</div>
 						<div className="media-right">
-							{this.getNextButton()}
 						</div>
 					</div>
 					<GroupActionsBox user={LoginStore.getUser()} group={group} />
@@ -216,7 +166,7 @@ var GroupHomePage = React.createClass({
 		}
 
 		return ( <div> <Intro /> </div> );
-}
+	}
 });
 
 module.exports = GroupHomePage;

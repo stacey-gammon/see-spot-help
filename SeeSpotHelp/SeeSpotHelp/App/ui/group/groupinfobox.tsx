@@ -1,52 +1,20 @@
 ﻿'use strict'
 
-var React = require('react');
+import * as React from 'react';
 
 import LoginStore from '../../stores/loginstore';
-import GroupStore from '../../stores/groupstore';
-import PermissionsStore from '../../stores/permissionsstore';
-import VolunteerGroup from '../../core/volunteergroup';
 import Permission from '../../core/permission';
 
-var GroupInfoBox = React.createClass({
-	getInitialState: function() {
-		var member = this.props.member
-		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-		var permission = LoginStore.getUser() && group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) : null;
-		return {
-			member: member,
-			group: group,
-			permission: permission
-		};
-	},
+class GroupInfoBox extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
+	}
 
-	componentDidMount: function () {
-		LoginStore.addChangeListener(this.onChange);
-		GroupStore.addChangeListener(this.onChange);
-		PermissionsStore.addChangeListener(this.onChange);
-	},
+	static contextTypes = {
+		router: React.PropTypes.object.isRequired
+	}
 
-	componentWillUnmount: function () {
-		LoginStore.removeChangeListener(this.onChange);
-		GroupStore.removeChangeListener(this.onChange);
-		PermissionsStore.removeChangeListener(this.onChange);
-	},
-
-	onChange: function () {
-		var group = this.state.group ?
-			GroupStore.getGroupById(this.state.group.id) : null;
-		var permission = LoginStore.getUser() && group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
-			Permission.CreateNonMemberPermission();
-		this.setState(
-			{
-				group: group,
-				permission: permission
-			});
-	},
-
-	editGroup: function() {
+	editGroup() {
 		this.context.router.push(
 			{
 				pathname: "/addNewGroup",
@@ -55,29 +23,22 @@ var GroupInfoBox = React.createClass({
 					mode: 'edit'
 				}
 			});
-	},
+	}
 
-	contextTypes: {
-		router: React.PropTypes.object.isRequired
-	},
-
-	getEditButton: function() {
+	getEditButton() {
 		if (!LoginStore.getUser() ||
-			!this.state.permission||
-			!this.state.permission.admin()) {
+			!this.props.permission||
+			!this.props.permission.admin()) {
 			return null;
 		}
-
 		return (
-				<span style={{marginLeft: 10 + 'px'}}
-					onClick={this.editGroup}
-					className="glyphicon glyphicon-edit">
-				</span>
+			<span style={{marginLeft: 10 + 'px'}} onClick={this.editGroup.bind(this)}
+				className="glyphicon glyphicon-edit">
+			</span>
 		);
-	},
+	}
 
-	render: function() {
-		console.log("GroupInfoBox:render");
+	render() {
 		return (
 			<div className="shelterInfoBox">
 				<h1>{this.props.group.name}{this.getEditButton()}</h1>
@@ -87,6 +48,6 @@ var GroupInfoBox = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
 module.exports = GroupInfoBox;
