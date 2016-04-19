@@ -8,11 +8,8 @@ var Tabs = ReactBootstrap.Tabs;
 
 var Intro = require("../intro");
 var GroupInfoBox = require("./groupinfobox");
-var GroupMembersTab = require("./groupmemberstab");
-var GroupAnimalsTab = require("./groupanimalstab");
-var GroupActivityTab = require("./groupactivitytab");
 var GroupActionsBox = require("./groupactionsbox");
-var GroupScheduleTab = require("./groupscheduletab");
+var GroupPageTabs = require("./grouppagetabs");
 
 import Utils from '../../core/utils';
 import VolunteerGroup from '../../core/volunteergroup';
@@ -28,7 +25,6 @@ var GroupHomePage = React.createClass({
 		var groupId = Utils.FindPassedInProperty(this, 'groupId');
 		var state = {
 			fromSearch: isSearchResult,
-			groupDefaultTabKey: null,
 			groupId: groupId
 		};
 		Utils.LoadOrSaveState(state);
@@ -61,7 +57,7 @@ var GroupHomePage = React.createClass({
 				if (group) {
 					Utils.SaveProp('groupId', group.id);
 					if (this.isMounted()) { this.setState({ permission: permission }); }
-					this.addChangeListeners(group);
+					this.addChangeListeners(permission);
 				}
 			}.bind(this)
 		);
@@ -71,8 +67,8 @@ var GroupHomePage = React.createClass({
 		this.setState({ groupId: group.id });
 	},
 
-	addChangeListeners: function (group) {
-		PermissionsStore.addPropertyListener(this, 'groupId', group.id, this.onChange.bind(this));
+	addChangeListeners: function (permission) {
+		PermissionsStore.addPropertyListener(this, 'id', permission.id, this.onChange.bind(this));
 		StoreStateHelper.AddChangeListeners([LoginStore, GroupStore], this);
 	},
 
@@ -99,24 +95,8 @@ var GroupHomePage = React.createClass({
 		Utils.LoadOrSaveState(stateDuplicate);
 	},
 
-	getMembersTabTitle: function (group) {
-		if (!group) return null;
-		var permissions = PermissionsStore.getPermissionsByGroupId(group.id);
-		if (permissions) {
-			var count = 0;
-			for (var i = 0; i < permissions.length; i++) {
-				if (permissions[i].inGroup()) {
-					count++;
-				}
-			}
-			return Utils.getMembersGlyphicon(count);
-		}
-		return null;
-	},
-
 	hasGroupHomePage: function(group) {
 		var permission = StoreStateHelper.GetPermission(this.state);
-		var defaultTabKey = this.state.groupDefaultTabKey ? this.state.groupDefaultTabKey : 1;
 		return (
 			<div className="page">
 				<div className="info-top">
@@ -131,21 +111,7 @@ var GroupHomePage = React.createClass({
 					</div>
 					<GroupActionsBox user={LoginStore.getUser()} group={group} />
 				</div>
-				<Tabs className="tabs-area" activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
-					<Tab className="tab" eventKey={1} title={Utils.getAnimalsTabIon()}>
-						<GroupAnimalsTab group={group} permission={permission}/>
-					</Tab>
-					<Tab className="tab" ref="groupMembersTab" eventKey={2}
-						title={this.getMembersTabTitle(group)}>
-						<GroupMembersTab group={group} permission={permission}/>
-					</Tab>
-					<Tab className="tab" eventKey={3} title={Utils.getActivityGlyphicon()}>
-						<GroupActivityTab group={group} user={LoginStore.getUser()}/>
-					</Tab>
-					<Tab className="tab" eventKey={4} title={Utils.getCalendarGlyphicon()}>
-						<GroupScheduleTab group={group} view="group" permission={permission}/>
-					</Tab>
-				</Tabs>
+				<GroupPageTabs group={group} permission={permission} />
 			</div>
 		);
 	},
