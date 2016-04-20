@@ -1,6 +1,8 @@
-﻿"use strict"
+﻿'use strict'
 
-var React = require("react");
+import * as React from 'react';
+
+import InputTextField from '../shared/inputtextfield';
 
 import ConstStrings from '../../core/conststrings';
 import Utils from '../../core/utils';
@@ -13,10 +15,10 @@ import PermissionsStore from '../../stores/permissionsstore';
 import GroupStore from '../../stores/groupstore';
 
 var STATES = [
-	"AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",
-	"ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS",
-	"MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR",
-	"PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
+	'AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI',
+	'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS',
+	'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR',
+	'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
 ];
 
 var AddNewGroup = React.createClass({
@@ -24,12 +26,12 @@ var AddNewGroup = React.createClass({
 		// for short hand.
 		var IFV = InputFieldValidation;
 		var inputFields = {
-			"name": new InputField([IFV.validateNotEmpty]),
-			"shelter": new InputField([IFV.validateNotEmpty]),
-			"address": new InputField([IFV.validateNotEmpty]),
-			"city": new InputField([IFV.validateNotEmpty]),
-			"state": new InputField([IFV.validateNotEmpty]),
-			"zipCode": new InputField([IFV.validateNotEmpty])
+			'name': new InputField([IFV.validateNotEmpty]),
+			'shelter': new InputField([IFV.validateNotEmpty]),
+			'address': new InputField([IFV.validateNotEmpty]),
+			'city': new InputField([IFV.validateNotEmpty]),
+			'state': new InputField([IFV.validateNotEmpty]),
+			'zipCode': new InputField([IFV.validateNotEmpty])
 		};
 		// Store the ref name on the input field without manually
 		// writing it out twice.
@@ -69,14 +71,17 @@ var AddNewGroup = React.createClass({
 
 	componentDidMount: function() {
 		LoginStore.addChangeListener(this.onChange);
-		PermissionsStore.addChangeListener(this.onChange);
-		GroupStore.addChangeListener(this.onChange);
+		if (LoginStore.getUser()) {
+			PermissionsStore.addPropertyListener(
+				this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+		}
+		GroupStore.addPropertyListener(this, 'id', this.state.group.id, this.onChange.bind(this));
 	},
 
 	componentWillUnmount: function() {
 		LoginStore.removeChangeListener(this.onChange);
-		GroupStore.removeChangeListener(this.onChange);
-		PermissionsStore.removeChangeListener(this.onChange);
+		PermissionsStore.removePropertyListener(this);
+		GroupStore.removePropertyListener(this);
 	},
 
 	onChange: function() {
@@ -97,14 +102,14 @@ var AddNewGroup = React.createClass({
 			field.value = this.refs[field.ref].value;
 			field.validate();
 			if (field.hasError) {
-				console.log("Error found with field " + field.ref);
+				console.log('Error found with field ' + field.ref);
 				errorFound = true;
 			}
 		}
 		// Forces a re-render based on the new validation states for each
 		// field.
 		if (errorFound) {
-			console.log("Error found!");
+			console.log('Error found!');
 			this.setState({ fields: this.state.fields });
 		}
 		return errorFound;
@@ -113,7 +118,7 @@ var AddNewGroup = React.createClass({
 	insertGroupCallback: function(group) {
 		this.context.router.push(
 			{
-				pathname: "GroupHomePage",
+				pathname: 'GroupHomePage',
 				state: { groupId:  group.id }
 			});
 	},
@@ -136,25 +141,11 @@ var AddNewGroup = React.createClass({
 	},
 
 	createInputField: function(inputField) {
-		var inputFieldClassName = "form-control " + inputField.ref;
-		return (
-			<div className={inputField.getFormGroupClassName()}>
-				{inputField.getErrorLabel()}
-				<div className="input-group">
-					<span className="input-group-addon">{inputField.getUserString()}</span>
-					<input type="text"
-						   ref={inputField.ref}
-						   id={inputField.ref}
-						   className={inputFieldClassName}
-						   defaultValue={inputField.value}/>
-				</div>
-				{inputField.getValidationSpan()}
-			</div>
-		);
+		return <InputTextField inputField={inputField}/>
 	},
 
 	deleteGroup: function() {
-		if (confirm("WAIT! Are you sure you want to permanently delete this group?")) {
+		if (confirm('WAIT! Are you sure you want to permanently delete this group?')) {
 			this.state.group.delete();
 		}
 	},
@@ -162,7 +153,7 @@ var AddNewGroup = React.createClass({
 	getDeleteGroupButton: function() {
 		if (this.state.mode == 'add') return null;
 		return (
-			<button className="btn btn-warning" onClick={this.deleteGroup}>
+			<button className='btn btn-warning' onClick={this.deleteGroup}>
 				Delete
 			</button>
 		);
@@ -184,8 +175,8 @@ var AddNewGroup = React.createClass({
 				{this.state.errorMessage}
 				{inputFields}
 				<div style={{textAlign: 'center'}}
-					 className="center-block">
-					<button className="btn btn-info" disabled={disabled}
+					 className='center-block'>
+					<button className='btn btn-info' disabled={disabled}
 						onClick={this.addNewVolunteerGroup}>{buttonText}
 					</button>
 					{this.getDeleteGroupButton()}

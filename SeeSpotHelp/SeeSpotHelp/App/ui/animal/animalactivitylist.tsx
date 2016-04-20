@@ -33,7 +33,8 @@ var AnimalActivityList = React.createClass({
 
 	generateAnimalNote: function (note) {
 		return (
-			<AnimalActivityItem activity={note}
+			<AnimalActivityItem key={note.id}
+								activity={note}
 								group={this.props.group}
 								animal={this.props.animal}/>
 		);
