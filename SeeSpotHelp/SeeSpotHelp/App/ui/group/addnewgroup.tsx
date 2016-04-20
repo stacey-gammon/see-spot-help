@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import InputTextField from '../shared/inputtextfield';
+import InputFields from '../shared/inputfields';
 
 import ConstStrings from '../../core/conststrings';
 import Utils from '../../core/utils';
@@ -140,10 +140,6 @@ var AddNewGroup = React.createClass({
 		}
 	},
 
-	createInputField: function(inputField) {
-		return <InputTextField inputField={inputField}/>
-	},
-
 	deleteGroup: function() {
 		if (confirm('WAIT! Are you sure you want to permanently delete this group?')) {
 			this.state.group.delete();
@@ -160,11 +156,6 @@ var AddNewGroup = React.createClass({
 	},
 
 	render: function() {
-		var inputFields = [];
-		for (var key in this.state.fields) {
-			var field = this.state.fields[key];
-			inputFields.push(this.createInputField(field));
-		}
 		var buttonText = this.state.mode == 'edit' ? ConstStrings.Update : ConstStrings.Add;
 		var disabled =
 			(this.state.mode == 'edit' && this.state.permission.admin()) ||
@@ -173,7 +164,7 @@ var AddNewGroup = React.createClass({
 		return (
 			<div>
 				{this.state.errorMessage}
-				{inputFields}
+				<InputFields fields={this.state.fields}/>
 				<div style={{textAlign: 'center'}}
 					 className='center-block'>
 					<button className='btn btn-info' disabled={disabled}
