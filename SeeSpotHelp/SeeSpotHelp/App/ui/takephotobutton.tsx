@@ -3,7 +3,7 @@
 var React = require("react");
 
 import DataServices from '../core/dataservices';
-import Photo from '../core/photo';
+import Photo from '../core/databaseobjects/photo';
 import LoginStore from '../stores/loginstore';
 
 var TakePhotoButton = React.createClass({

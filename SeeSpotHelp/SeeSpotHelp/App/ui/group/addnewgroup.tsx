@@ -3,11 +3,12 @@
 import * as React from 'react';
 
 import InputFields from '../shared/inputfields';
+import AddOrEditButtonBar from '../shared/addoreditbuttonbar';
 
 import ConstStrings from '../../core/conststrings';
 import Utils from '../../core/utils';
-import VolunteerGroup from '../../core/volunteergroup';
-import Permission from '../../core/permission';
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Permission from '../../core/databaseobjects/permission';
 import InputField from '../../core/inputfield';
 import InputFieldValidation from '../../core/inputfieldvalidation';
 import LoginStore from '../../stores/loginstore';
@@ -95,11 +96,11 @@ var AddNewGroup = React.createClass({
 				group: group
 			});
 	},
+
 	validateFields: function() {
 		var errorFound = false;
 		for (var key in this.state.fields) {
 			var field = this.state.fields[key];
-			field.value = this.refs[field.ref].value;
 			field.validate();
 			if (field.hasError) {
 				console.log('Error found with field ' + field.ref);
@@ -112,31 +113,33 @@ var AddNewGroup = React.createClass({
 			console.log('Error found!');
 			this.setState({ fields: this.state.fields });
 		}
-		return errorFound;
+		return !errorFound;
 	},
 
-	insertGroupCallback: function(group) {
-		this.context.router.push(
-			{
-				pathname: 'GroupHomePage',
-				state: { groupId:  group.id }
-			});
+	goToGroup: function(group) {
+		this.context.router.push({
+			pathname: 'GroupHomePage',
+			state: { groupId:  group.id }
+		});
 	},
 
-	addNewVolunteerGroup: function() {
-		var errorFound = this.validateFields();
-		if (!errorFound) {
-			if (this.state.mode == 'edit') {
-				this.state.group.updateFromInputFields(this.state.fields);
-				this.state.group.update();
-				this.insertGroupCallback(this.state.group);
-			} else {
-				var group = VolunteerGroup.createFromInputFields(
-					this.state.fields,
-					this.state.user.id);
-				group.insert(this.state.user);
-				this.insertGroupCallback(group);
-			}
+	editGroup: function() {
+		this.refs.inputFields.fillWithValues(this.state.fields);
+		if (!this.validateFields()) {
+			this.state.group.updateFromInputFields(this.state.fields);
+			this.state.group.update();
+			this.goToGroup(this.state.group);
+		}
+	},
+
+	addGroup: function() {
+		this.refs.inputFields.fillWithValues(this.state.fields);
+		if (!this.validateFields()) {
+			var group = VolunteerGroup.createFromInputFields(
+				this.state.fields,
+				this.state.user.id);
+			group.insert(this.state.user);
+			this.goToGroup(group);
 		}
 	},
 
@@ -146,32 +149,17 @@ var AddNewGroup = React.createClass({
 		}
 	},
 
-	getDeleteGroupButton: function() {
-		if (this.state.mode == 'add') return null;
-		return (
-			<button className='btn btn-warning' onClick={this.deleteGroup}>
-				Delete
-			</button>
-		);
-	},
-
 	render: function() {
-		var buttonText = this.state.mode == 'edit' ? ConstStrings.Update : ConstStrings.Add;
-		var disabled =
-			(this.state.mode == 'edit' && this.state.permission.admin()) ||
-			(this.state.mode == 'add' && LoginStore.getUser()) ?
-				false : true;
 		return (
 			<div>
 				{this.state.errorMessage}
-				<InputFields fields={this.state.fields}/>
-				<div style={{textAlign: 'center'}}
-					 className='center-block'>
-					<button className='btn btn-info' disabled={disabled}
-						onClick={this.addNewVolunteerGroup}>{buttonText}
-					</button>
-					{this.getDeleteGroupButton()}
-				</div>
+				<InputFields ref='inputFields' fields={this.state.fields}/>
+				<AddOrEditButtonBar
+					mode={this.state.mode}
+					permission={this.state.permission}
+					onAdd={this.addGroup.bind(this)}
+					onEdit={this.editGroup.bind(this)}
+					onDelete={this.deleteGroup.bind(this)}/>
 			</div>
 		);
 	}

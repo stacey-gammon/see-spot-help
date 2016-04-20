@@ -11,8 +11,8 @@ var LoginPage = require('../loginpage');
 import ProfilePageTabs from './profilepagetabs';
 
 import Utils from '../../core/utils';
-import Volunteer from '../../core/volunteer';
-import VolunteerGroup from '../../core/volunteergroup';
+import Volunteer from '../../core/databaseobjects/volunteer';
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import GroupStore from '../../stores/groupstore';
 import VolunteerStore from '../../stores/volunteerstore';
 import LoginStore from '../../stores/loginstore';

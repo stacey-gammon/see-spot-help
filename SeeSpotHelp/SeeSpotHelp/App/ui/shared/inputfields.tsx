@@ -8,8 +8,16 @@ export default class InputFields extends React.Component<any, any> {
 		super(props);
 	}
 
-	createInputField(inputField) {
-		return <InputTextField inputField={inputField}/>
+	createInputField(inputField: InputField) {
+		return <InputTextField ref={inputField.ref} inputField={inputField}/>
+	}
+
+	fillWithValues(inputFields) {
+		for (var key in inputFields) {
+			var inputField = inputFields[key];
+			var inputFieldElement = this.refs[inputField.ref] as InputTextField;
+			inputField.value = inputFieldElement.getValue();
+		}
 	}
 
 	render() {

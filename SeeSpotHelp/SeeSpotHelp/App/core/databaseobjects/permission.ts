@@ -1,4 +1,4 @@
-import DataServices from './dataservices';
+import DataServices from '../dataservices';
 import DatabaseObject from './databaseobject';
 
 enum PermissionsEnum {

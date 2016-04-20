@@ -11,7 +11,7 @@ var GroupActivityTab = require("./groupactivitytab");
 var GroupScheduleTab = require("./groupscheduletab");
 
 import Utils from '../../core/utils';
-import Permission from '../../core/permission';
+import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
 

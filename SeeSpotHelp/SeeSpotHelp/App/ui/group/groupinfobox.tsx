@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import LoginStore from '../../stores/loginstore';
-import Permission from '../../core/permission';
+import Permission from '../../core/databaseobjects/permission';
 
 class GroupInfoBox extends React.Component<any, any> {
 	context = { router: null }; // Just to keep Typescript happy.

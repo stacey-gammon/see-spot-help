@@ -7,8 +7,8 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 var GroupActions = require("../../actions/groupactions");
 var GroupInfoBox = require("../../ui/group/groupinfobox");
 
-import VolunteerGroup from '../../core/volunteergroup';
-import Volunteer from '../../core/volunteer';
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Volunteer from '../../core/databaseobjects/volunteer';
 import ConstStrings from '../../core/conststrings';
 import DataServices from '../../core/dataservices';
 import LoginStore from '../../stores/loginstore';

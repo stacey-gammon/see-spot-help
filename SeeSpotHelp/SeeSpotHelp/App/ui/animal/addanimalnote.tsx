@@ -1,6 +1,6 @@
 var React = require("react");
 
-import AnimalNote from '../../core/animalnote';
+import AnimalNote from '../../core/databaseobjects/animalnote';
 import Utils from '../../core/utils';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';

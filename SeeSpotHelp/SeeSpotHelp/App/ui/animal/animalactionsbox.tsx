@@ -2,10 +2,10 @@
 
 var React = require("react");
 
-import Permission from '../../core/permission';
+import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
-import VolunteerGroup from '../../core/volunteergroup';
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 
 var AddAnimalNote = require("./addanimalnote");
 var ReactRouterBootstrap = require('react-router-bootstrap');

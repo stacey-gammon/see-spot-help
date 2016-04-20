@@ -1,6 +1,6 @@
 'use strict';
 
-import Photo from '../core/photo';
+import Photo from '../core/databaseobjects/photo';
 import BaseStore from './basestore';
 
 class PhotoStore extends BaseStore {

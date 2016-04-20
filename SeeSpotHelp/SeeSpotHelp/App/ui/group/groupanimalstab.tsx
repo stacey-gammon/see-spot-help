@@ -6,8 +6,8 @@ var Link = require("react-router").Link;
 import AnimalList from '../animal/animallist';
 var AddAnimalButton = require("../animal/addanimalbutton");
 
-import Volunteer from '../../core/volunteer';
-import VolunteerGroup from '../../core/volunteergroup';
+import Volunteer from '../../core/databaseobjects/volunteer';
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import DataServices from '../../core/dataservices';

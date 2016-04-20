@@ -6,7 +6,7 @@ import Events = require('events');
 import Promise = require('bluebird');
 
 import DataServices from '../core/dataservices';
-import DatabaseObject from '../core/databaseobject';
+import DatabaseObject from '../core/databaseobjects/databaseobject';
 
 var EventEmitter = Events.EventEmitter;
 var CHANGE_EVENT = "change";

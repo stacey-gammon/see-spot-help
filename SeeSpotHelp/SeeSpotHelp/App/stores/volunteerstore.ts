@@ -1,6 +1,6 @@
 ﻿'use strict';
 
-import Volunteer from '../core/volunteer';
+import Volunteer from '../core/databaseobjects/volunteer';
 import BaseStore from './basestore';
 
 class VolunteerStore extends BaseStore {

@@ -1,6 +1,6 @@
 'use strict';
 
-import Permission from '../core/permission';
+import Permission from '../core/databaseobjects/permission';
 import BaseStore from './basestore';
 
 class PermissionsStore extends BaseStore {

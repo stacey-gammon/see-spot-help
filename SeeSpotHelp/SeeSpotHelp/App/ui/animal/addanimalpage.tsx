@@ -4,8 +4,8 @@ var React = require("react");
 var TakePhotoButton = require('../takephotobutton');
 
 import ConstStrings from '../../core/conststrings';
-import Animal from '../../core/animal';
-import Permission from '../../core/permission';
+import Animal from '../../core/databaseobjects/animal';
+import Permission from '../../core/databaseobjects/permission';
 import InputField from '../../core/inputfield';
 import InputFieldValidation from '../../core/inputfieldvalidation';
 import LoginStore from '../../stores/loginstore';

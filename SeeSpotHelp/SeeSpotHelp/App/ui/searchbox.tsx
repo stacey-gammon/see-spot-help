@@ -12,7 +12,7 @@ var Button = ReactBootstrap.Button;
 var MenuItem = ReactBootstrap.MenuItem;
 
 import Utils from "../core/utils";
-import Animal from "../core/animal";
+import Animal from "../core/databaseobjects/animal";
 import LoginStore from "../stores/loginstore";
 import DataServices from '../core/dataservices';
 

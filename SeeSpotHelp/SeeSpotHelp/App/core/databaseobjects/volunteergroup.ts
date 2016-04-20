@@ -1,7 +1,7 @@
 ﻿"use strict"
 
-var ServerResponse = require("./serverresponse");
-import DataServices from './dataservices';
+var ServerResponse = require("../serverresponse");
+import DataServices from '../dataservices';
 import Color from './colors';
 import Animal from './animal';
 import Permission from './permission';

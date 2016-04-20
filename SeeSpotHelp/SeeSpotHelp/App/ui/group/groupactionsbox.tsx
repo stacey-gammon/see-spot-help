@@ -6,11 +6,11 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 var LeaveGroupButton = require("./leavegroupbutton");
 
-import VolunteerGroup from '../../core/volunteergroup';
-import Volunteer from '../../core/volunteer';
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Volunteer from '../../core/databaseobjects/volunteer';
 import ConstStrings from '../../core/conststrings';
 import DataServices from '../../core/dataservices';
-import Permission from '../../core/permission';
+import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
 

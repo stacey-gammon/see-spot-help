@@ -5,7 +5,7 @@ var Link = require("react-router").Link;
 var FacebookLogin = require("../facebooklogin");
 
 import LoginStore from '../../stores/loginstore';
-import Volunteer from '../../core/volunteer';
+import Volunteer from '../../core/databaseobjects/volunteer';
 
 var BasicSettingsTab = React.createClass({
 	contextTypes: {

@@ -1,6 +1,6 @@
 'use strict';
 
-import Animal from "../core/animal";
+import Animal from "../core/databaseobjects/animal";
 import BaseStore from './basestore';
 
 class AnimalStore extends BaseStore {

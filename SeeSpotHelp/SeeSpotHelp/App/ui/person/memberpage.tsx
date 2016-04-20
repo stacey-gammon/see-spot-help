@@ -1,9 +1,9 @@
 "use strict";
 
 var React = require("react");
-import Permission from "../../core/permission";
-import Volunteer from "../../core/volunteer";
-import VolunteerGroup from "../../core/volunteergroup";
+import Permission from "../../core/databaseobjects/permission";
+import Volunteer from "../../core/databaseobjects/volunteer";
+import VolunteerGroup from "../../core/databaseobjects/volunteergroup";
 import Utils from "../../core/utils";
 import LoginStore from "../../stores/loginstore";
 import GroupStore from "../../stores/groupstore";

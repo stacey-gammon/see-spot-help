@@ -1,6 +1,6 @@
 'use strict';
 
-import AnimalNote from '../core/animalnote';
+import AnimalNote from '../core/databaseobjects/animalnote';
 import BaseStore from './basestore';
 
 class AnimalActivityStore extends BaseStore {

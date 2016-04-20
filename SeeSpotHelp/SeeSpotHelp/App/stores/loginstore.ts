@@ -4,10 +4,10 @@ var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 var LoginActions = require("../actions/loginactions");
 
-import Volunteer from '../core/volunteer';
-import VolunteerGroup from '../core/volunteergroup';
+import Volunteer from '../core/databaseobjects/volunteer';
+import VolunteerGroup from '../core/databaseobjects/volunteergroup';
+import DatabaseObject from '../core/databaseobjects/databaseobject';
 import DataServices from '../core/dataservices';
-import DatabaseObject from '../core/databaseobject';
 import BaseStore from './basestore';
 
 enum ChangeEventEnum {

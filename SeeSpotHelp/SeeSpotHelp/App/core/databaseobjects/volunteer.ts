@@ -2,9 +2,9 @@
 // managed by facebook login and authentication.
 
 import VolunteerGroup from './volunteergroup';
-import DataServices from './dataservices';
+import DataServices from '../dataservices';
 import DatabaseObject from './databaseobject';
-var ServerResponse = require('./serverresponse');
+var ServerResponse = require('../serverresponse');
 
 class Volunteer extends DatabaseObject {
 	public name: string;

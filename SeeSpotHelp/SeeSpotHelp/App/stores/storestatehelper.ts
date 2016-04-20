@@ -1,5 +1,5 @@
 
-import Permission from '../core/permission';
+import Permission from '../core/databaseobjects/permission';
 import LoginStore from './loginstore';
 import PermissionsStore from './permissionsstore';
 

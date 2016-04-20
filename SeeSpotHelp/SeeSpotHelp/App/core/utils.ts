@@ -1,11 +1,11 @@
 var React = require('react');
 
-import Volunteer from './volunteer';
-import VolunteerGroup from './volunteergroup';
-import Animal from './animal';
-import Schedule from './schedule';
-import Permission from './permission';
-import Photo from './photo';
+import Volunteer from './databaseobjects/volunteer';
+import VolunteerGroup from './databaseobjects/volunteergroup';
+import Animal from './databaseobjects/animal';
+import Schedule from './databaseobjects/schedule';
+import Permission from './databaseobjects/permission';
+import Photo from './databaseobjects/photo';
 
 var SessionStorageClasses = {};
 SessionStorageClasses['Volunteer'] = Volunteer;

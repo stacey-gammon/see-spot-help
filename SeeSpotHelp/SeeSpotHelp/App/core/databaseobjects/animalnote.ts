@@ -2,7 +2,7 @@
 
 var dateFormat = require('dateformat');
 
-import DataServices from './dataservices';
+import DataServices from '../dataservices';
 import DatabaseObject from './databaseobject';
 
 export default class AnimalNote extends DatabaseObject {

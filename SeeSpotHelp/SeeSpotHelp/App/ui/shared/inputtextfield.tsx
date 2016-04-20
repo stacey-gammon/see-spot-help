@@ -7,6 +7,11 @@ export default class InputTextField extends React.Component<any, any> {
 		super(props);
 	}
 
+	getValue() {
+		var element = this.refs[this.props.inputField.ref] as any;
+		return element.value;
+	}
+
 	render() {
 		var inputField = this.props.inputField;
 		var inputFieldClassName = 'form-control ' + inputField.ref;

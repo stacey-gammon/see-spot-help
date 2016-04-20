@@ -9,7 +9,7 @@ var BasicSettingsTab = require("./basicsettingstab");
 var PrivacySettingsTab = require("./privacysettingstab");
 var FacebookLogin = require("../facebooklogin");
 
-import Volunteer from '../../core/volunteer';
+import Volunteer from '../../core/databaseobjects/volunteer';
 import LoginStore from '../../stores/loginstore';
 
 var UserSettingsPage = React.createClass({

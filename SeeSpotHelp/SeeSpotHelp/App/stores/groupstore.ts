@@ -3,12 +3,13 @@
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 
-import VolunteerGroup from '../core/volunteergroup';
-import Animal from '../core/animal';
+import VolunteerGroup from '../core/databaseobjects/volunteergroup';
+import Animal from '../core/databaseobjects/animal';
+import DatabaseObject from '../core/databaseobjects/databaseobject';
+
 import DataServices from '../core/dataservices';
 import VolunteerStore from "../stores/volunteerstore";
 import PermissionsStore from "../stores/permissionsstore";
-import DatabaseObject from '../core/databaseobject';
 
 import BaseStore from './basestore';
 

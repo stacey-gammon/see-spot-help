@@ -1,6 +1,6 @@
 
-import DataServices from './dataservices';
-import StringUtils from './stringutils';
+import DataServices from '../dataservices';
+import StringUtils from '../stringutils';
 import DatabaseObject from './databaseobject';
 
 // An animal that is currently being managed by a volunteer group.

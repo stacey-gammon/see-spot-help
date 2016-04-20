@@ -3,9 +3,10 @@
 var React = require("react");
 var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
-import VolunteerGroup from '../../core/volunteergroup';
-import Volunteer from '../../core/volunteer';
-import Permission from '../../core/permission';
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Volunteer from '../../core/databaseobjects/volunteer';
+import Permission from '../../core/databaseobjects/permission';
+
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import PermissionsStore from '../../stores/permissionsstore';

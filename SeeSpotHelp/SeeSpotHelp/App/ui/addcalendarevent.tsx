@@ -12,7 +12,7 @@ import ScheduleStore from '../stores/schedulestore';
 import VolunteerStore from '../stores/volunteerstore';
 import AnimalStore from '../stores/animalstore';
 import PermissionsStore from '../stores/permissionsstore';
-import Schedule from '../core/schedule';
+import Schedule from '../core/databaseobjects/schedule';
 
 var TimePicker = require('bootstrap-timepicker/js/bootstrap-timepicker.js');
 require('bootstrap-timepicker/css/bootstrap-timepicker.css');

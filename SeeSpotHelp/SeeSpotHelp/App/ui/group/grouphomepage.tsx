@@ -8,8 +8,8 @@ import GroupInfoBar from './groupinfobar';
 import GroupPageTabs from './grouppagetabs';
 
 import Utils from '../../core/utils';
-import VolunteerGroup from '../../core/volunteergroup';
-import Permission from '../../core/permission';
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import PermissionsStore from '../../stores/permissionsstore';

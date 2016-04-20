@@ -10,8 +10,8 @@ var AddAnimalButton = require("../animal/addanimalbutton");
 var AnimalActivityItem = require("../animal/animalactivityitem");
 
 import Utils from '../../core/utils';
-import Volunteer from '../../core/volunteer';
-import VolunteerGroup from '../../core/volunteergroup';
+import Volunteer from '../../core/databaseobjects/volunteer';
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import VolunteerStore from '../../stores/volunteerstore';

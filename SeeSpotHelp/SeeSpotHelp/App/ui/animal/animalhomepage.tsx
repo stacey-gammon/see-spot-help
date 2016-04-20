@@ -8,9 +8,9 @@ var Tabs = ReactBootstrap.Tabs;
 import LoginStore from '../../stores/loginstore';
 
 import Utils from '../../core/utils';
-import Animal from '../../core/animal';
-import VolunteerGroup from '../../core/volunteergroup';
-import Permission from '../../core/permission';
+import Animal from '../../core/databaseobjects/animal';
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Permission from '../../core/databaseobjects/permission';
 import AnimalStore from '../../stores/animalstore';
 import PhotoStore from '../../stores/photostore';
 import PermissionsStore from '../../stores/permissionsstore';

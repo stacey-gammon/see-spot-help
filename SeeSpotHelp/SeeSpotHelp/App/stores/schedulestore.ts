@@ -1,6 +1,6 @@
 'use strict';
 
-import Schedule from '../core/schedule';
+import Schedule from '../core/databaseobjects/schedule';
 import BaseStore from './basestore';
 
 class ScheduleStore extends BaseStore {

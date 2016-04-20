@@ -4,8 +4,8 @@ var React = require('react');
 
 import $ = require('jquery');
 import Utils from '../../core/utils';
-import Animal from '../../core/animal';
-import VolunteerGroup from '../../core/volunteergroup';
+import Animal from '../../core/databaseobjects/animal';
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import LoginStore from '../../stores/loginstore';
 var Calendar = require("../calendar");
 var GroupActionsBox = require('../group/groupactionsbox');
