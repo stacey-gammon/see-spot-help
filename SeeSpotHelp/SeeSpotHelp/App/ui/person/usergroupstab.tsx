@@ -48,9 +48,7 @@ var UserGroupsTab = React.createClass({
 
 	getGroupElement: function(group) {
 		return (
-			<GroupListItem
-				user={this.state.user}
-				group={group}/>
+			<GroupListItem key={group.id} user={this.state.user} group={group}/>
 		);
 	},
 
@@ -80,7 +78,7 @@ var UserGroupsTab = React.createClass({
 	},
 
 	getGroupElements: function() {
-		if (!this.state.user) return [];
+		if (!this.state.user) return null;
 		var groups = this.getGroupsForUser();
 		if (groups.length == 0 && this.state.user.id != LoginStore.getUser().id) {
 			return (

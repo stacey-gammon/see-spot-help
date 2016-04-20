@@ -15,7 +15,7 @@ import GroupStore from '../../stores/groupstore';
 import PermissionsStore from '../../stores/permissionsstore';
 import StoreStateHelper from '../../stores/storestatehelper';
 
-class GroupHomePage extends React.Component<any, any> {
+export default class GroupHomePage extends React.Component<any, any> {
 	constructor(props) {
 		super(props);
 		var groupId = Utils.FindPassedInProperty(this, 'groupId');
@@ -98,5 +98,3 @@ class GroupHomePage extends React.Component<any, any> {
 		return ( <div> <Intro /> </div> );
 	}
 }
-
-module.exports = GroupHomePage;

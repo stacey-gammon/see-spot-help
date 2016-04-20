@@ -13,7 +13,6 @@ import DataServices from '../../core/dataservices';
 import Permission from '../../core/permission';
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
-var GroupActions = require("../../actions/groupactions");
 
 var GroupActionsBox = React.createClass({
 	getInitialState: function() {
@@ -85,7 +84,6 @@ var GroupActionsBox = React.createClass({
 				 });
 			this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
 		}
-		GroupActions.groupUpdated(this.state.group);
 	},
 
 	getRequestToJoinButton: function () {

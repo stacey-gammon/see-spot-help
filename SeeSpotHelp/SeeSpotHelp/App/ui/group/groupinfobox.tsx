@@ -6,12 +6,11 @@ import LoginStore from '../../stores/loginstore';
 import Permission from '../../core/permission';
 
 class GroupInfoBox extends React.Component<any, any> {
+	context = { router: null }; // Just to keep Typescript happy.
+	static contextTypes = { router: React.PropTypes.object.isRequired }
+
 	constructor(props) {
 		super(props);
-	}
-
-	static contextTypes = {
-		router: React.PropTypes.object.isRequired
 	}
 
 	editGroup() {

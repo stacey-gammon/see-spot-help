@@ -1,32 +1,31 @@
-﻿"use strict";
+﻿'use strict';
 
-/* eslint-disable no-unused-vars */
-var React = require("react");
-var ReactDOM = require("react-dom");
-var ReactRouter = require("react-router");
+var React = require('react');
+var ReactDOM = require('react-dom');
+var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
 var DefaultRoute = ReactRouter.DefaultRoute;
 var hashHistory = ReactRouter.hashHistory;
 var IndexRoute = ReactRouter.IndexRoute;
 
-var MyNavBar = require("./navbar");
-var User = require("../core/volunteer");
-/* eslint-enable no-unused-vars */
+var MyNavBar = require('./navbar');
+var User = require('../core/volunteer');
 
-var GroupHomePage = require("./group/grouphomepage");
-var SearchPage = require("./searchpage");
-var AnimalHomePage = require("./animal/animalHomePage");
-var AddNewGroup = require("./group/addnewgroup");
-var AddAnimalPage = require("./animal/addanimalpage");
-var ProfilePage = require("./person/profilepage");
-var MemberPage = require("./person/memberpage");
-var LoginPage = require("./loginpage");
-var PrivateBetaPage = require("./privatebetapage");
-var EnterBetaCode = require("./enterbetacode");
-var AddCalendarEvent = require("./addcalendarevent");
-var AddAnimalNote = require("./animal/addanimalnote");
-var UserSettingsPage = require("./person/usersettingspage");
+import GroupHomePage from './group/grouphomepage';
+import ProfilePage from './person/profilepage';
+
+var SearchPage = require('./searchpage');
+var AnimalHomePage = require('./animal/animalHomePage');
+var AddNewGroup = require('./group/addnewgroup');
+var AddAnimalPage = require('./animal/addanimalpage');
+var MemberPage = require('./person/memberpage');
+var LoginPage = require('./loginpage');
+var PrivateBetaPage = require('./privatebetapage');
+var EnterBetaCode = require('./enterbetacode');
+var AddCalendarEvent = require('./addcalendarevent');
+var AddAnimalNote = require('./animal/addanimalnote');
+var UserSettingsPage = require('./person/usersettingspage');
 
 import LoginStore from '../stores/loginstore';
 
@@ -54,7 +53,7 @@ var Home = React.createClass({
 			if (d.getElementById(id)) return;
 			js = d.createElement(s);
 			js.id = id;
-			js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=1021154377958416";
+			js.src = '//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=1021154377958416';
 			fjs.parentNode.insertBefore(js, fjs);
 		}(document, 'script', 'facebook-jssdk'));
 	},
@@ -93,7 +92,7 @@ var Home = React.createClass({
 			this.props.location.pathname != '/privatebetapage' &&
 			this.props.location.pathname != '/loginpage' &&
 			this.props.location.pathname != '/enterBetaCode') {
-			this.context.router.push("/privatebetapage");
+			this.context.router.push('/privatebetapage');
 		}
 		if (LoginStore.getUser() && LoginStore.getUser().inBeta) {
 			return (
@@ -103,7 +102,7 @@ var Home = React.createClass({
 				</div>
 			);
 		} else if (LoginStore.userDownloading) {
-			return (<span className="spinner active"><i className="fa-spin"></i></span>);
+			return (<span className='spinner active'><i className='fa-spin'></i></span>);
 		}
 
 		return (
@@ -113,21 +112,21 @@ var Home = React.createClass({
 });
 
 var routes = (
-	<Router path="/" component={Home}>
+	<Router path='/' component={Home}>
 		<IndexRoute component={ProfilePage} />
-		<Route path="searchPage" component={SearchPage}/>
-		<Route path="groupHomePage" component={GroupHomePage}/>
-		<Route path="animalHomePage" component={AnimalHomePage} />
-		<Route path="addNewGroup" component={AddNewGroup} />
-		<Route path="addAnimalPage" component={AddAnimalPage} />
-		<Route path="profilePage" component={ProfilePage} />
-		<Route path="memberPage" component={MemberPage} />
-		<Route path="privateBetaPage" component={PrivateBetaPage} />
-		<Route path="loginPage" component={LoginPage} />
-		<Route path="addAnimalNote" component={AddAnimalNote} />
-		<Route path="userSettingsPage" component={UserSettingsPage} />
-		<Route path="addCalendarEvent" component={AddCalendarEvent} />
-		<Route path="enterBetaCode" component={EnterBetaCode} />
+		<Route path='searchPage' component={SearchPage}/>
+		<Route path='groupHomePage' component={GroupHomePage}/>
+		<Route path='animalHomePage' component={AnimalHomePage} />
+		<Route path='addNewGroup' component={AddNewGroup} />
+		<Route path='addAnimalPage' component={AddAnimalPage} />
+		<Route path='profilePage' component={ProfilePage} />
+		<Route path='memberPage' component={MemberPage} />
+		<Route path='privateBetaPage' component={PrivateBetaPage} />
+		<Route path='loginPage' component={LoginPage} />
+		<Route path='addAnimalNote' component={AddAnimalNote} />
+		<Route path='userSettingsPage' component={UserSettingsPage} />
+		<Route path='addCalendarEvent' component={AddCalendarEvent} />
+		<Route path='enterBetaCode' component={EnterBetaCode} />
 	</Router>
 );
 

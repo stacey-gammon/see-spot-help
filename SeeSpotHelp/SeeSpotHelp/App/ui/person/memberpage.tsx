@@ -30,10 +30,6 @@ var MemberPage = React.createClass({
 
 	getInitialState: function () {
 		var member = Utils.FindPassedInProperty(this, 'member') || LoginStore.getUser();
-
-		var permission = LoginStore.getUser() && this.state.group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, this.state.group.id) :
-			Permission.CreateNonMemberPermission();
 		var state = {
 			member: member
 		};

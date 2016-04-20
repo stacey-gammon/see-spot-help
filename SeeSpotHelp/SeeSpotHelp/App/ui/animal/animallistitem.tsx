@@ -14,13 +14,7 @@ import AnimalStore from '../../stores/animalstore';
 export default class AnimalListItem extends React.Component<any, any> {
 	constructor(props) {
 		super(props);
-		this.state = {
-			imageSrc: null
-		}
-	}
-
-	static contextTypes = {
-		router: React.PropTypes.object.isRequired
+		this.state = { imageSrc: null }
 	}
 
 	componentDidMount() {
@@ -41,18 +35,18 @@ export default class AnimalListItem extends React.Component<any, any> {
 		var photos = PhotoStore.getPhotosByAnimalId(this.props.animal.id);
 		var imageSrc = photos && photos.length > 0 ? photos[0].src : this.props.animal.getDefaultPhoto();
 		return (
-			<a href="#" key={this.props.animal.id} className="list-group-item animalListElement">
-				<LinkContainer to={{ pathname: "animalHomePage" ,
+			<a href='#' key={this.props.animal.id} className='list-group-item animalListElement'>
+				<LinkContainer to={{ pathname: 'animalHomePage' ,
 							   state: { user: this.props.user, group: this.props.group, animal: this.props.animal} }}>
-					<div className="media">
-						<div className="media-left">
-							<img className="media-object" src={imageSrc} height="100px" width="100px"/>
+					<div className='media'>
+						<div className='media-left'>
+							<img className='media-object' src={imageSrc} height='100px' width='100px'/>
 						</div>
-						<div className="media-body">
-							<h4 className="media-heading">{this.props.animal.name}</h4>
-							<div className="animalThumbnailText">{this.props.animal.status}</div>
-							<div className="animalThumbnailText">{this.props.animal.breed}</div>
-							<div className="animalThumbnailText">{this.props.animal.age} years old</div>
+						<div className='media-body'>
+							<h4 className='media-heading'>{this.props.animal.name}</h4>
+							<div className='animalThumbnailText'>{this.props.animal.status}</div>
+							<div className='animalThumbnailText'>{this.props.animal.breed}</div>
+							<div className='animalThumbnailText'>{this.props.animal.age} years old</div>
 						</div>
 					</div>
 				</LinkContainer>
