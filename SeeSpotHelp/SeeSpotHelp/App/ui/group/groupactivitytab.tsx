@@ -62,7 +62,8 @@ var GroupActivityTab = React.createClass({
 
 	generateActivity: function (activity) {
 		return (
-			<AnimalActivityItem activity={activity}
+			<AnimalActivityItem key={activity.id}
+								activity={activity}
 								group={this.state.group}
 								showAnimalInfo="true"/>
 		);

@@ -21,7 +21,7 @@ class GroupMembersTab extends React.Component<GroupProp, any> {
 
 	generateMember(member) {
 		return (
-			<MemberListItem user={LoginStore.getUser()} member={member} group={this.props.group}/>
+			<MemberListItem key={member.id} user={LoginStore.getUser()} member={member} group={this.props.group}/>
 		);
 	}
 

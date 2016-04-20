@@ -1,30 +1,37 @@
 ﻿'use strict'
 
-var React = require('react');
-var AnimalThumbnail = require('./animalthumbnail');
+import * as React from 'react';
+
+import AnimalListItem from './animallistitem';
 import GroupStore from '../../stores/groupstore';
 import AnimalStore from '../../stores/animalstore';
 
-// A list of animals managed by the current volunteer group.
-var AnimalList = React.createClass({
-	generateAnimal: function (animal) {
+export default class AnimalList extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
+	}
+
+	generateAnimal(animal) {
 		return (
-			<AnimalThumbnail animal={animal} user={this.props.user} group={this.props.group }/>
+			<AnimalListItem key={animal.id} animal={animal} user={this.props.user} group={this.props.group }/>
 		);
-	},
-	componentDidMount: function () {
-		AnimalStore.addChangeListener(this.onChange);
-	},
+	}
 
-	componentWillUnmount: function () {
-		AnimalStore.removeChangeListener(this.onChange);
-	},
+	componentDidMount() {
+		if (this.props.group) {
+			AnimalStore.addPropertyListener(this, 'groupId', this.props.group.id, this.onChange.bind(this));
+		}
+	}
 
-	onChange: function () {
+	componentWillUnmount() {
+		AnimalStore.removePropertyListener(this);
+	}
+
+	onChange() {
 		this.forceUpdate();
-	},
+	}
 
-	render: function () {
+	render() {
 		if (!this.props.group) return null;
 		var animals = AnimalStore.getAnimalsByGroupId(this.props.group.id);
 		if (!animals) return null;
@@ -38,6 +45,4 @@ var AnimalList = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = AnimalList;
+}

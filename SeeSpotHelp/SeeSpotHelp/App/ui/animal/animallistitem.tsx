@@ -1,44 +1,47 @@
-﻿"use strict"
+'use strict'
 
-var React = require("react");
+import * as React from 'react';
+
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
-import DataServices from '../../core/dataservices';
+
 import PhotoStore from '../../stores/photostore';
 import AnimalStore from '../../stores/animalstore';
-
 
 // A small representation of an animal to be displayed in the animal
 // list. Clicking on the thumbnail will direct the user to the chosen
 // animals home page.
-var AnimalThumbnail = React.createClass({
-	getInitialState: function() {
-		return {
+export default class AnimalListItem extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
+		this.state = {
 			imageSrc: null
 		}
-	},
+	}
 
-	contextTypes: {
+	static contextTypes = {
 		router: React.PropTypes.object.isRequired
-	},
+	}
 
-	componentDidMount: function() {
-		PhotoStore.addChangeListener(this.onChange);
-	},
+	componentDidMount() {
+		if (this.props.animal) {
+			PhotoStore.addPropertyListener(this, 'animalId', this.props.animal.id, this.onChange.bind(this));
+		}
+	}
 
-	componentWillUnmount: function() {
-		PhotoStore.removeChangeListener(this.onChange);
-	},
+	componentWillUnmount() {
+		PhotoStore.removePropertyListener(this);
+	}
 
-	onChange: function () {
+	onChange() {
 		this.forceUpdate();
-	},
+	}
 
-	render: function () {
+	render() {
 		var photos = PhotoStore.getPhotosByAnimalId(this.props.animal.id);
 		var imageSrc = photos && photos.length > 0 ? photos[0].src : this.props.animal.getDefaultPhoto();
 		return (
-			<a href="#" className="list-group-item animalListElement">
+			<a href="#" key={this.props.animal.id} className="list-group-item animalListElement">
 				<LinkContainer to={{ pathname: "animalHomePage" ,
 							   state: { user: this.props.user, group: this.props.group, animal: this.props.animal} }}>
 					<div className="media">
@@ -56,6 +59,4 @@ var AnimalThumbnail = React.createClass({
 			</a>
 		);
 	}
-});
-
-module.exports = AnimalThumbnail;
+}

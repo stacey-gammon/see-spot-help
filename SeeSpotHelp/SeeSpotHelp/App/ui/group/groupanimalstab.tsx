@@ -1,11 +1,9 @@
-﻿"use strict"
+﻿'use strict'
 
-var React = require("react");
+import * as React from 'react';
 var Link = require("react-router").Link;
-var AnimalList = require("../animal/animallist");
-var SearchBox = require("../searchbox");
-var GroupInfoBox = require("./groupinfobox");
-var GroupActionsBox = require("./groupactionsbox");
+
+import AnimalList from '../animal/animallist';
 var AddAnimalButton = require("../animal/addanimalbutton");
 
 import Volunteer from '../../core/volunteer';
@@ -14,41 +12,42 @@ import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import DataServices from '../../core/dataservices';
 
-var GroupAnimalsTab = React.createClass({
-	getInitialState: function () {
+export default class GroupAnimalsTab extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
 		var group = this.props.location &&
 					this.props.location.state &&
 					this.props.location.state.group ||
 					this.props.group;
-		return {
+		this.state = {
 			group: group
 		}
-	},
+	}
 
-	componentWillReceiveProps: function(nextProps) {
+	componentWillReceiveProps(nextProps) {
 		this.setState({
 			group: nextProps.group
 		});
-	},
+	}
 
-	componentDidMount: function () {
+	componentDidMount() {
 		LoginStore.addChangeListener(this.onChange);
 		GroupStore.addChangeListener(this.onChange);
-	},
+	}
 
-	componentWillUnmount: function () {
+	componentWillUnmount() {
 		LoginStore.removeChangeListener(this.onChange);
 		GroupStore.removeChangeListener(this.onChange);
-	},
+	}
 
-	onChange: function () {
+	onChange() {
 		this.setState(
 			{
 				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
 			});
-	},
+	}
 
-	render: function () {
+	render() {
 		return (
 			<div className="shelterAnimalsTab">
 				<AddAnimalButton
@@ -61,6 +60,4 @@ var GroupAnimalsTab = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = GroupAnimalsTab;
+}

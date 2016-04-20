@@ -58,7 +58,7 @@ class GroupHomePage extends React.Component<any, any> {
 				if (group) {
 					Utils.SaveProp('groupId', group.id);
 					this.setState({ permission: permission });
-					this.addChangeListeners(permission);
+					this.addChangeListeners(group);
 				}
 			}.bind(this)
 		);
@@ -68,8 +68,8 @@ class GroupHomePage extends React.Component<any, any> {
 		this.setState({ groupId: group.id });
 	}
 
-	addChangeListeners(permission) {
-		PermissionsStore.addPropertyListener(this, 'id', permission.id, this.onChange.bind(this));
+	addChangeListeners(group) {
+		PermissionsStore.addPropertyListener(this, 'groupId', group.id, this.onChange.bind(this));
 		StoreStateHelper.AddChangeListeners([LoginStore, GroupStore], this);
 	}
 

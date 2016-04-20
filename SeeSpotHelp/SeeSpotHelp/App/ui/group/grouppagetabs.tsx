@@ -5,8 +5,8 @@ var ReactBootstrap = require("react-bootstrap");
 var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
 
+import GroupAnimalsTab from './groupanimalstab';
 var GroupMembersTab = require("./groupmemberstab");
-var GroupAnimalsTab = require("./groupanimalstab");
 var GroupActivityTab = require("./groupactivitytab");
 var GroupScheduleTab = require("./groupscheduletab");
 
@@ -40,11 +40,6 @@ export default class GroupPageTabs extends React.Component<any, any> {
 		var stateDuplicate = this.state;
 		stateDuplicate.groupDefaultTabKey = key;
 		Utils.LoadOrSaveState(stateDuplicate);
-	}
-
-	shouldComponentUpdate(nextProps, nextState) {
-		return nextProps.group != this.props.group ||
-			nextProps.permission != this.props.permission;
 	}
 
 	getMembersTabTitle (group) {
