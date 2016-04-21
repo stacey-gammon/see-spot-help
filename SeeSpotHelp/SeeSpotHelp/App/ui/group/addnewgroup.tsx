@@ -12,6 +12,7 @@ import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
 import GroupStore from '../../stores/groupstore';
+import StoreStateHelper from '../../stores/storestatehelper';
 
 export default class AddNewGroup extends React.Component<any, any> {
 	public context: any;
@@ -21,48 +22,54 @@ export default class AddNewGroup extends React.Component<any, any> {
 	constructor(props) {
 		super(props);
 		var mode = Utils.FindPassedInProperty(this, 'mode');
-		var group = Utils.FindPassedInProperty(this, 'group');
-		var permission = LoginStore.getUser() && group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
-			Permission.CreateNonMemberPermission();
-
-		if (!mode) {
-			mode = 'add';
-		}
-
-		this.state = {
-			editor: new GroupEditor(group),
-			group: group,
-			mode: mode,
-			permission: permission
+		mode = mode ? mode : 'add';
+		var groupId = Utils.FindPassedInProperty(this, 'groupId');
+		var state = {
+			groupId: groupId,
+			mode: mode
 		};
+		Utils.LoadOrSaveState(state);
+		this.state = state;
 	}
 
-	componentDidMount() {
-		LoginStore.addChangeListener(this.onChange);
-		if (LoginStore.getUser()) {
-			PermissionsStore.addPropertyListener(
-				this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
-		}
-		GroupStore.addPropertyListener(this, 'id', this.state.group.id, this.onChange.bind(this));
+	componentWillMount() {
+		this.ensureRequiredState();
 	}
 
 	componentWillUnmount() {
 		LoginStore.removeChangeListener(this.onChange);
 		PermissionsStore.removePropertyListener(this);
-		GroupStore.removePropertyListener(this);
+	}
+
+	ensureRequiredState() {
+		var promises = [];
+		promises.push(LoginStore.ensureUser());
+		promises.push(GroupStore.ensureItemById(this.state.groupId));
+
+		Promise.all(promises).then(
+			function () {
+				var group = GroupStore.getGroupById(this.state.groupId);
+				var permission = StoreStateHelper.GetPermission(this.state);
+				if (group) {
+					Utils.SaveProp('groupId', group.id);
+					this.setState({ permission: permission, editor: new GroupEditor(group) });
+					this.addChangeListeners(group);
+				}
+			}.bind(this)
+		);
+	}
+
+	addChangeListeners() {
+		LoginStore.addChangeListener(this.onChange);
+		if (LoginStore.getUser()) {
+			PermissionsStore.addPropertyListener(
+				this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+		}
 	}
 
 	onChange() {
-		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
-		var permission = LoginStore.getUser() && group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
-			Permission.CreateNonMemberPermission();
-		this.setState(
-			{
-				permission: permission,
-				group: group
-			});
+		var permission = StoreStateHelper.GetPermission(this.state);
+		this.setState({ permission: permission });
 	}
 
 	goToGroup() {
@@ -77,6 +84,7 @@ export default class AddNewGroup extends React.Component<any, any> {
 	}
 
 	render() {
+		if (!this.state.editor) return null;
 		return (
 			<EditorElement
 				mode={this.state.mode}

@@ -52,7 +52,6 @@ export default class GroupHomePage extends React.Component<any, any> {
 
 		Promise.all(promises).then(
 			function () {
-				console.log('promises all resolved.');
 				var group = GroupStore.getGroupById(groupId);
 				var permission = StoreStateHelper.GetPermission(this.state);
 				if (group) {
