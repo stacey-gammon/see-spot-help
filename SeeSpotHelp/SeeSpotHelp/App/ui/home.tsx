@@ -14,10 +14,10 @@ var User = require('../core/volunteer');
 
 import GroupHomePage from './group/grouphomepage';
 import ProfilePage from './person/profilepage';
+import AddNewGroup from './group/addnewgroup';
 
 var SearchPage = require('./searchpage');
 var AnimalHomePage = require('./animal/animalHomePage');
-var AddNewGroup = require('./group/addnewgroup');
 var AddAnimalPage = require('./animal/addanimalpage');
 var MemberPage = require('./person/memberpage');
 var LoginPage = require('./loginpage');

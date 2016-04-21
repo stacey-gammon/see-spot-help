@@ -4,7 +4,6 @@ import * as React from 'react';
 
 var FacebookLogin = require('../facebooklogin');
 var GroupInfoBox = require('../group/groupinfobox');
-var AddNewGroup = require('../group/addnewgroup');
 var SearchPage = require('../searchpage');
 var LoginPage = require('../loginpage');
 

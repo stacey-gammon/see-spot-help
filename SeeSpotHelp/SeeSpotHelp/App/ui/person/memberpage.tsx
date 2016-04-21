@@ -13,7 +13,6 @@ import VolunteerStore from "../../stores/volunteerstore";
 var MemberScheduleTab = require("./memberscheduletab");
 var FacebookLogin = require("../facebooklogin");
 var GroupInfoBox = require("../group/groupinfobox");
-var AddNewGroup = require("../group/addnewgroup");
 var SearchPage = require("../searchpage");
 
 var UserGroupsTab = require("./usergroupstab");
