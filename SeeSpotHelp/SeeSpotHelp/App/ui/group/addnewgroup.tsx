@@ -2,13 +2,16 @@
 
 import * as React from 'react';
 
+// Ui Elements:
 import EditorElement from '../shared/editorelement';
 
+// Core components:
 import GroupEditor from '../../core/editor/groupeditor';
 import Utils from '../../core/utils';
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import Permission from '../../core/databaseobjects/permission';
 
+// Stores and store helpers:
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
 import GroupStore from '../../stores/groupstore';
@@ -42,11 +45,7 @@ export default class AddNewGroup extends React.Component<any, any> {
 	}
 
 	ensureRequiredState() {
-		var promises = [];
-		promises.push(LoginStore.ensureUser());
-		promises.push(GroupStore.ensureItemById(this.state.groupId));
-
-		Promise.all(promises).then(
+		GroupStore.ensureItemById(this.state.groupId).then(
 			function () {
 				var group = GroupStore.getGroupById(this.state.groupId);
 				var permission = StoreStateHelper.GetPermission(this.state);

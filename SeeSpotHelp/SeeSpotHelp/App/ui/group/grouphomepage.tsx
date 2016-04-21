@@ -42,15 +42,11 @@ export default class GroupHomePage extends React.Component<any, any> {
 			}
 		}
 
-		// User doesn't belong to any groups, and isn't look at any.  We'll just show an intro
-		// screen.
+		// User doesn't belong to any groups, and isn't looking at any.  We'll just show an intro
+		// screen on the home page.
 		if (!groupId) return;
 
-		var promises = [];
-		promises.push(LoginStore.ensureUser());
-		promises.push(GroupStore.ensureItemById(groupId));
-
-		Promise.all(promises).then(
+		GroupStore.ensureItemById(groupId).then(
 			function () {
 				var group = GroupStore.getGroupById(groupId);
 				var permission = StoreStateHelper.GetPermission(this.state);

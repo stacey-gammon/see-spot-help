@@ -9,7 +9,7 @@ export default class InputFields extends React.Component<any, any> {
 	}
 
 	createInputField(inputField: InputField) {
-		return <InputTextField ref={inputField.ref} inputField={inputField}/>
+		return <InputTextField key={inputField.ref} ref={inputField.ref} inputField={inputField}/>
 	}
 
 	fillWithValues(inputFields) {
