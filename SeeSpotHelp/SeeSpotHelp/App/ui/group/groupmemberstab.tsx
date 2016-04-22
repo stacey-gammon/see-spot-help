@@ -10,18 +10,22 @@ import LoginStore from '../../stores/loginstore';
 import VolunteerStore from '../../stores/volunteerstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
-interface GroupProp {
-	group?: VolunteerGroup
+interface MemberTabProperties {
+	group?: VolunteerGroup,
+	permission?: Permission
 }
 
-class GroupMembersTab extends React.Component<GroupProp, any> {
+export default class GroupMembersTab extends React.Component<MemberTabProperties, any> {
 	constructor(props) {
 		super(props);
 	}
 
 	generateMember(member) {
 		return (
-			<MemberListItem key={member.id} user={LoginStore.getUser()} member={member} group={this.props.group}/>
+			<MemberListItem key={member.id}
+				user={LoginStore.getUser()}
+				member={member}
+				group={this.props.group}/>
 		);
 	}
 
@@ -69,5 +73,3 @@ class GroupMembersTab extends React.Component<GroupProp, any> {
 		);
 	}
 }
-
-module.exports = GroupMembersTab;

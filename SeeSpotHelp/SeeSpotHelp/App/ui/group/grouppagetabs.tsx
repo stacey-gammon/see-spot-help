@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import * as React from 'react';
 var ReactBootstrap = require("react-bootstrap");
@@ -7,8 +7,8 @@ var Tabs = ReactBootstrap.Tabs;
 
 import GroupAnimalsTab from './groupanimalstab';
 import GroupActivityTab from './groupactivitytab';
-var GroupMembersTab = require("./groupmemberstab");
-var GroupScheduleTab = require("./groupscheduletab");
+import GroupMembersTab from './groupmemberstab';
+import GroupScheduleTab from './groupscheduletab';
 
 import Utils from '../../core/utils';
 import Permission from '../../core/databaseobjects/permission';

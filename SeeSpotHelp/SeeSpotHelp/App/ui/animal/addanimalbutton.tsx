@@ -1,49 +1,28 @@
-"use strict";
+'use strict';
 
-var React = require("react");
+import * as React from 'react';
 var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
-import Volunteer from '../../core/databaseobjects/volunteer';
 import Permission from '../../core/databaseobjects/permission';
 
-import LoginStore from '../../stores/loginstore';
-import GroupStore from '../../stores/groupstore';
-import PermissionsStore from '../../stores/permissionsstore';
+export default class AddAnimalButton extends React.Component<any, any> {
+	constructor(props) { super(props); }
 
-var AddAnimalButton = React.createClass({
-	componentWillReceiveProps: function(nextProps) {
-		this.setState({
-			group: nextProps.group,
-			permission: nextProps.permission
-		});
-	},
+	render() {
+		if (!this.props.permission.inGroup()) { return null; }
 
-	getAddAnimalButton: function() {
-		if (!this.props.permission.inGroup()) {
-			return null;
-		}
 		return (
 			<div className='center-block' style={{textAlign: 'center'}}>
-			<LinkContainer
-				to={{pathname: "addAnimalPage",
-					state: {group: this.props.group,
-							mode: 'add'}}}>
-				<button className="btn btn-info addAnimalButton padding">
-					Add Animal
-				</button>
-			</LinkContainer>
-			</div>
-		);
-	},
-
-	render: function() {
-		return (
-			<div>
-				{this.getAddAnimalButton()}
+				<LinkContainer
+					to={{pathname: 'addAnimalPage',
+						state: {group: this.props.group,
+								permission: this.props.permission,
+								mode: 'add'}}}>
+					<button className='btn btn-info addAnimalButton padding'>
+						Add Animal
+					</button>
+				</LinkContainer>
 			</div>
 		);
 	}
-});
-
-module.exports = AddAnimalButton;
+}

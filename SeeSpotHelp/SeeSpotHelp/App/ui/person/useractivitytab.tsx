@@ -1,11 +1,7 @@
-"use strict"
+'use strict'
 
 var React = require("react");
 var Link = require("react-router").Link;
-var AnimalList = require("../animal/animallist");
-var SearchBox = require("../searchbox");
-var GroupInfoBox = require("../group/groupinfobox");
-var AddAnimalButton = require("../animal/addanimalbutton");
 var AnimalActivityItem = require("../animal/animalactivityitem");
 
 import Utils from '../../core/utils';

@@ -7,7 +7,7 @@ var Calendar = require('../calendar');
 
 import LoginStore from '../../stores/loginstore';
 
-class GroupScheduleTab extends React.Component<any, any> {
+export default class GroupScheduleTab extends React.Component<any, any> {
 	constructor(props) {
 		super(props);
 		this.state = { refreshCalendar: false }
@@ -40,5 +40,3 @@ class GroupScheduleTab extends React.Component<any, any> {
 		);
 	}
 }
-
-module.exports = GroupScheduleTab;

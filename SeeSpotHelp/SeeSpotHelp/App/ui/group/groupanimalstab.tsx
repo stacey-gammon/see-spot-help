@@ -4,7 +4,7 @@ import * as React from 'react';
 var Link = require("react-router").Link;
 
 import AnimalList from '../animal/animallist';
-var AddAnimalButton = require("../animal/addanimalbutton");
+import AddAnimalButton from '../animal/addanimalbutton';
 
 import Volunteer from '../../core/databaseobjects/volunteer';
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';

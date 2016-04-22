@@ -1,55 +1,90 @@
-var React = require("react");
+import * as React from 'react';
+
+import Promise = require('bluebird');
 
 import AnimalNote from '../../core/databaseobjects/animalnote';
 import Utils from '../../core/utils';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
+import AnimalStore from '../../stores/animalstore';
+import AnimalActivityStore from '../../stores/animalactivitystore';
+import PermissionsStore from '../../stores/permissionsstore';
+import StoreStateHelper from '../../stores/storestatehelper';
 
-var AddAnimalNote = React.createClass({
-	getInitialState: function() {
+export default class AddAnimalNote extends React.Component<any, any> {
+	public refs: any;
+	public context: any;
+
+	constructor(props) {
+		super(props);
+
 		var mode = Utils.FindPassedInProperty(this, "mode");
-		var animal = Utils.FindPassedInProperty(this, "animal");
-		var group = Utils.FindPassedInProperty(this, "group");
-		var activity = Utils.FindPassedInProperty(this, "activity");
-		var user = LoginStore.getUser();
+		var animalId = Utils.FindPassedInProperty(this, "animalId");
+		var groupId = Utils.FindPassedInProperty(this, "groupId");
+		var activityId = Utils.FindPassedInProperty(this, "activityId");
 
 		if (!mode) mode = 'add';
 
-		return {
-			user: user,
-			animal: animal,
+		this.state = {
+			animalId: animalId,
 			mode: mode,
-			group: group,
-			activity: activity
+			groupId: groupId,
+			activityId: activityId
 		};
-	},
+		Utils.LoadOrSaveState(this.state);
+		if (mode == 'add') this.state.activityId = null;
+	}
 
 	// Required for page transitions via this.context.router.push.
-	contextTypes: {
+	static contextTypes = {
 		router: React.PropTypes.object.isRequired
-	},
+	}
 
-	// Listen for changes made to the group in case the user was banned or membership was approved,
-	// we'll need up update the actions they can use.
-	componentDidMount: function() {
-		GroupStore.addChangeListener(this.onChange);
-	},
+	ensureRequiredState() {
+		var promises = [];
+		promises.push(GroupStore.ensureItemById(this.state.groupId));
+		promises.push(AnimalStore.ensureItemById(this.state.animalId));
+		if (this.state.mode == 'edit') {
+			promises.push(AnimalActivityStore.ensureItemById(this.state.activityId));
+		}
 
-	componentWillUnmount: function() {
+		Promise.all(promises).then(
+			function () {
+				var group = GroupStore.getGroupById(this.state.groupId);
+				var animal = AnimalStore.getItemById(this.state.animalId);
+				var activity = AnimalActivityStore.getItemById(this.state.activityId);
+				var permission = StoreStateHelper.GetPermission(this.state);
+				if (group && animal) {
+					this.setState({
+						permission: permission
+					});
+					this.addChangeListeners(group);
+				}
+			}.bind(this)
+		);
+	}
+
+	addChangeListeners() {
+		LoginStore.addChangeListener(this.onChange);
+		if (LoginStore.getUser()) {
+			PermissionsStore.addPropertyListener(
+				this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+		}
+	}
+
+	componentWillMount() {
+		this.ensureRequiredState();
+	}
+
+	componentWillUnmount() {
 		GroupStore.removeChangeListener(this.onChange);
-	},
+	}
 
-	onChange: function() {
-		var user = LoginStore.getUser();
-		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
-		this.setState(
-			{
-				user: user,
-				group: group
-			});
-	},
+	onChange() {
+		this.forceUpdate();
+	}
 
-	submitNote: function() {
+	submitNote() {
 		if (this.state.mode == 'edit') {
 			this.state.activity.note = this.refs.note.value;
 			this.state.activity.update();
@@ -79,10 +114,9 @@ var AddAnimalNote = React.createClass({
 					state: { groupId: this.state.group.id }
 				});
 		}
-	},
+	}
 
-	render: function() {
-		console.log("AddAnimalNote:render:");
+	render() {
 		var value = this.state.mode == 'edit' ? this.state.activity.note : "";
 		var buttonText = this.state.mode == 'edit' ? "Update" : "Post";
 		var headerText = this.state.mode == 'edit' ?
@@ -108,6 +142,4 @@ var AddAnimalNote = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = AddAnimalNote;
+}
