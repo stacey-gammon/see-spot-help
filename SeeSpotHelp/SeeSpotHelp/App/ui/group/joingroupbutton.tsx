@@ -1,0 +1,56 @@
+'use strict'
+
+import * as React from 'react';
+
+import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import ConstStrings from '../../core/conststrings';
+import DataServices from '../../core/dataservices';
+import Permission from '../../core/databaseobjects/permission';
+import LoginStore from '../../stores/loginstore';
+
+export default class JoinGroupButton extends React.Component<any, any> {
+	public refs: any;
+	constructor(props) { super(props); }
+
+	requestToJoin() {
+		if (!this.props.group || !LoginStore.getUser()|| !this.props.permission) {
+			return null;
+		}
+
+		var permission = this.props.permission;
+		if (permission.pending()) {
+			permission.permission = VolunteerGroup.PermissionsEnum.NONMEMBER;
+			permission.update();
+			this.refs.requestToJoinButton.innerHTML = ConstStrings.RequestToJoin;
+		} else {
+			permission.permission = VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
+			permission.update();
+			DataServices.PushFirebaseData('emails/tasks',
+				{
+					eventType: 'NEW_REQUEST_PENDING',
+					adminId: LoginStore.getUser().id,
+					groupName: this.props.group.name
+				 });
+			this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
+		}
+	}
+
+	render() {
+		if (!LoginStore.getUser()) return null;
+
+		if (this.props.permission.inGroup()) {
+			return null;
+		}
+
+		var text = this.props.permission.pending() ?
+			ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
+
+		return (
+			<button className="btn btn-warning requestToJoinButton buttonPadding"
+					ref="requestToJoinButton"
+					onClick={this.requestToJoin}>
+				{text}
+			</button>
+		);
+	}
+}
