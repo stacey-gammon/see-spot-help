@@ -2,8 +2,8 @@
 
 var React = require("react");
 var Link = require("react-router").Link;
-var GroupListItem = require("../group/grouplistitem");
 var Intro = require("../intro");
+import GroupListItem from '../group/grouplistitem';
 
 import Utils from '../../core/utils';
 import LoginStore from '../../stores/loginstore';
@@ -48,7 +48,7 @@ var UserGroupsTab = React.createClass({
 
 	getGroupElement: function(group) {
 		return (
-			<GroupListItem key={group.id} user={this.state.user} group={group}/>
+			<GroupListItem key={group.id} group={group}/>
 		);
 	},
 

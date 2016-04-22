@@ -2,7 +2,7 @@
 var Router = require('react-router');
 var LinkContainer = require('react-router-bootstrap').LinkContainer;
 import LoginStore from '../stores/loginstore';
-var GroupListItem = require("./group/grouplistitem");
+import GroupListItem from './group/grouplistitem';
 var AnimalThumbnail = require("./animal/animalthumbnail");
 var Animal = require("../core/animal");
 
@@ -33,14 +33,10 @@ var ShelterSearchResults = React.createClass({
 
 	generateResult: function(result) {
 		if (this.props.searchForValue == 'groups') {
-			return (
-				<GroupListItem group={result} user={LoginStore.getUser()}/>
-			);
+			return <GroupListItem key={result.id} group={result}/>
 		} else {
 			result = Animal.castObject(result);
-			return (
-				<AnimalThumbnail animal={result} user={LoginStore.getUser()}/>
-			);
+			return <AnimalThumbnail animal={result} user={LoginStore.getUser()}/>
 		}
 	},
 
