@@ -1,116 +1,19 @@
-﻿"use strict"
+﻿'use strict'
 
-var React = require("react");
-var ReactRouterBootstrap = require('react-router-bootstrap');
-var LinkContainer = ReactRouterBootstrap.LinkContainer;
+import * as React from 'react';
 
-var LeaveGroupButton = require("./leavegroupbutton");
+import LeaveGroupButton from './leavegroupbutton';
+import JoinGroupButton from './joingroupbutton';
 
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
-import Volunteer from '../../core/databaseobjects/volunteer';
-import ConstStrings from '../../core/conststrings';
-import DataServices from '../../core/dataservices';
-import Permission from '../../core/databaseobjects/permission';
-import LoginStore from '../../stores/loginstore';
-import PermissionsStore from '../../stores/permissionsstore';
+export default class GroupActionsBox extends React.Component<any, any> {
+	constructor(props) { super(props); }
 
-var GroupActionsBox = React.createClass({
-	getInitialState: function() {
-		var user = LoginStore.getUser();
-		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-
-		var permission = user && group ?
-			PermissionsStore.getPermission(user.id, group.id) :
-			Permission.CreateNonMemberPermission();
-
-		return {
-			user: user,
-			group: group,
-			permission: permission
-		};
-	},
-
-	componentWillReceiveProps: function(nextProps) {
-		var permission = this.state.user && nextProps.group ?
-			PermissionsStore.getPermission(this.state.user.id, nextProps.group.id) : null;
-
-		this.setState({
-			group: nextProps.group,
-			permission: permission
-		});
-	},
-
-	componentDidMount: function () {
-		LoginStore.addChangeListener(this.onChange);
-		PermissionsStore.addChangeListener(this.onChange);
-	},
-
-	componentWillUnmount: function () {
-		LoginStore.removeChangeListener(this.onChange);
-		PermissionsStore.removeChangeListener(this.onChange);
-	},
-
-	onChange: function () {
-		var permission = LoginStore.getUser() && this.state.group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, this.state.group.id) : null;
-		this.setState(
-			{
-				user: LoginStore.getUser(),
-				permission: permission
-			});
-	},
-
-	requestToJoin: function () {
-		if (!this.state.group || !this.state.user || !this.state.permission) {
-			throw "Attempting to join group when user or group is undefined or null";
-		}
-
-		var permission = this.state.permission;
-		var group = new VolunteerGroup().castObject(this.state.group);
-		var user = new Volunteer('','').castObject(this.state.user);
-
-		if (permission.pending()) {
-			permission.permission = VolunteerGroup.PermissionsEnum.NONMEMBER;
-			permission.update();
-			this.refs.requestToJoinButton.innerHTML = ConstStrings.RequestToJoin;
-		} else {
-			permission.permission = VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
-			permission.update();
-			DataServices.PushFirebaseData('emails/tasks',
-				{
-					eventType: 'NEW_REQUEST_PENDING',
-					adminId: this.state.user.id,
-					groupName: this.state.group.name
-				 });
-			this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
-		}
-	},
-
-	getRequestToJoinButton: function () {
-		if (!this.state.user) return null;
-
-		if (this.state.permission.inGroup()) {
-			return null;
-		}
-		var text = this.state.permission.pending() ?
-			ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
-
-		return (
-			<button className="btn btn-warning requestToJoinButton buttonPadding"
-					ref="requestToJoinButton"
-					onClick={this.requestToJoin}>
-				{text}
-			</button>
-		);
-	},
-
-	render: function () {
+	render() {
 		return (
 			<div className="GroupActionsBox">
-				{this.getRequestToJoinButton()}
+				<JoinGroupButton group={this.props.group} permission={this.props.permission}/>
+				<LeaveGroupButton permission={this.props.permission}/>
 			</div>
 		);
 	}
-});
-
-export default GroupActionsBox;
+}

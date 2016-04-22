@@ -26,6 +26,7 @@ export default class GroupEditor extends Editor {
 	insert(user) {
 		var group = VolunteerGroup.createFromInputFields(this.inputFields, user.id);
 		group.insert(user);
+		this.databaseObject = group;
 	}
 
 	update() {

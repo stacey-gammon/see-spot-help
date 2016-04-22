@@ -32,6 +32,8 @@ export default class AddNewGroup extends React.Component<any, any> {
 			mode: mode
 		};
 		Utils.LoadOrSaveState(state);
+		// Make sure we don't load a group id from session storage if we are adding a new group.
+		if (mode == 'add') state.groupId = null;
 		this.state = state;
 	}
 
@@ -45,10 +47,15 @@ export default class AddNewGroup extends React.Component<any, any> {
 	}
 
 	ensureRequiredState() {
+		if (this.state.mode == 'add') {
+			this.setState({ editor: new GroupEditor(null) });
+			return;
+		}
 		GroupStore.ensureItemById(this.state.groupId).then(
 			function () {
 				var group = GroupStore.getGroupById(this.state.groupId);
 				var permission = StoreStateHelper.GetPermission(this.state);
+			//	var editor = this.state.mode == 'add' ? new GroupEditor(null) : new GroupEditor(group);
 				if (group) {
 					Utils.SaveProp('groupId', group.id);
 					this.setState({ permission: permission, editor: new GroupEditor(group) });

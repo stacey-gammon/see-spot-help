@@ -8,7 +8,6 @@ import Animal from '../../core/databaseobjects/animal';
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import LoginStore from '../../stores/loginstore';
 var Calendar = require("../calendar");
-var GroupActionsBox = require('../group/groupactionsbox');
 
 var GroupScheduleTab = React.createClass({
 	getInitialState: function() {

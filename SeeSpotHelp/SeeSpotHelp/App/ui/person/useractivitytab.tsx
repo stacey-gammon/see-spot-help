@@ -5,7 +5,6 @@ var Link = require("react-router").Link;
 var AnimalList = require("../animal/animallist");
 var SearchBox = require("../searchbox");
 var GroupInfoBox = require("../group/groupinfobox");
-var GroupActionsBox = require("../group/groupactionsbox");
 var AddAnimalButton = require("../animal/addanimalbutton");
 var AnimalActivityItem = require("../animal/animalactivityitem");
 

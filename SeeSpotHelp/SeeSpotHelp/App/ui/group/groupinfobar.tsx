@@ -23,7 +23,7 @@ export default class GroupInfoBar extends React.Component<any, any> {
 				<InfoBar>
 					<div/>
 					<GroupInfoBox group={this.props.group} permission={this.props.permission} />
-					<GroupActionsBox user={LoginStore.getUser()} group={this.props.group} />
+					<GroupActionsBox permission={this.props.permission} group={this.props.group} />
 				</InfoBar>
 			</div>
 		);

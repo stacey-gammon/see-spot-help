@@ -1,6 +1,7 @@
 
 import Permission from '../core/databaseobjects/permission';
 import LoginStore from './loginstore';
+import GroupStore from './groupstore';
 import PermissionsStore from './permissionsstore';
 
 class StoreStateHelper {

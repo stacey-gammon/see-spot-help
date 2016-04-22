@@ -4,7 +4,8 @@ var React = require("react");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 var GroupInfoBox = require("./groupinfobox");
-var LeaveGroupButton = require("./leavegroupbutton");
+
+import LeaveGroupButton from './leavegroupbutton';
 
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import Utils from '../../core/utils';
@@ -87,7 +88,7 @@ var GroupListItem = React.createClass({
 							<h2>{this.props.group.city}, {this.props.group.state} {this.props.group.zipCode}</h2>
 						</div>
 						<div className="media-right">
-							<LeaveGroupButton user={this.props.user} group={group} />
+							<LeaveGroupButton permission={this.state.permission} />
 						</div>
 					</div>
 				</LinkContainer>

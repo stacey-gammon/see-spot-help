@@ -1,84 +1,32 @@
-﻿"use strict"
+﻿'use strict'
 
-var React = require("react");
-var ReactRouterBootstrap = require('react-router-bootstrap');
-var LinkContainer = ReactRouterBootstrap.LinkContainer;
+import * as React from 'react';
 
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
-import LoginStore from '../../stores/loginstore';
-import GroupStore from '../../stores/groupstore';
-import PermissionsStore from '../../stores/permissionsstore';
+export default class LeaveGroupButton extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
+	}
 
-var LeaveGroupButton = React.createClass({
-	getInitialState: function() {
-		var user = LoginStore.getUser();
-		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-		var permission = user && group ?
-			PermissionsStore.getPermission(user.id, group.id) : null;
-
-		return {
-			user: user,
-			group: group,
-			permission: permission
-		};
-	},
-
-	componentDidMount: function () {
-		LoginStore.addChangeListener(this.onChange);
-		GroupStore.addChangeListener(this.onChange);
-		PermissionsStore.addChangeListener(this.onChange);
-	},
-
-	componentWillUnmount: function () {
-		LoginStore.removeChangeListener(this.onChange);
-		GroupStore.removeChangeListener(this.onChange);
-		PermissionsStore.removeChangeListener(this.onChange);
-	},
-
-	onChange: function () {
-		var user = LoginStore.getUser();
-		var group = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
-		var permission = user && group ?
-			PermissionsStore.getPermission(user.id, group.id) : null;
-
-		this.setState(
-			{
-				user: user,
-				group: group,
-				permission: permission
-			});
-	},
-
-	leaveGroup: function(event) {
+	leaveGroup(event) {
 		// This is a hack because a parent LinkContainer element is
 		// redirecting the user to another page.
 		event.stopPropagation();
 
-		this.state.permission.leave();
-		this.state.permission.update();
-	},
+		this.props.permission.leave();
+		this.props.permission.update();
+	}
 
-	getLeaveGroupButton: function () {
+	render() {
 		// TODO: will have to let admins leave at some point.
-		if (!this.state.permission || !this.state.permission.member()) {
+		if (!this.props.permission || !this.props.permission.member()) {
 			return null;
 		}
 		return (
 			<button className="btn btn-warning leaveShelterButton padding"
-						ref="leaveGroupButton"
+					ref="leaveGroupButton"
 					onClick={this.leaveGroup}>
-					Leave
+				Leave
 			</button>
 		);
-	},
-
-	render: function () {
-		return (
-			<div>
-				{this.getLeaveGroupButton()}
-			</div>
-		);
 	}
-});
-
-module.exports = LeaveGroupButton;
+}
