@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 // Ui Elements:
-import EditorElement from '../shared/editorelement';
+import EditorElement from '../shared/editor/editorelement';
 
 // Core components:
 import GroupEditor from '../../core/editor/groupeditor';

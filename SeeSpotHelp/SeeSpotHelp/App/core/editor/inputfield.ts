@@ -1,6 +1,6 @@
 ﻿var React = require("react");
 
-import ConstStrings from "./conststrings";
+import ConstStrings from "../conststrings";
 
 // Represents an input form field.
 // @param validations {inputfieldvalidations[]} an array list of input field validations

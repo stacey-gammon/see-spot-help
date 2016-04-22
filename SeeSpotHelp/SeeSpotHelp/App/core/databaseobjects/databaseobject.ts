@@ -33,6 +33,18 @@ abstract class DatabaseObject {
 		}
 	}
 
+	// Updates the instance based on the values entered by the user on an input form.
+	// @param inputFields { { fieldName : InputField} } - A object where the keys
+	// are the field name (e.g. "groupName", "shelterName") and the values are
+	// InputFields which hold the values given by the user.
+	updateFromInputFields(inputFields) {
+		for (var prop in this) {
+			if (inputFields.hasOwnProperty(prop)) {
+				this[prop] = inputFields[prop].value;
+			}
+		}
+	}
+
 	public static GetPathToMapping(
 			firebasePath: string,
 			property: string,

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import InputField from '../../core/inputfield';
-import InputTextField from '../shared/inputtextfield';
+import InputField from '../../../core/editor/inputfield';
+import InputTextField from './inputtextfield';
 
 export default class InputFields extends React.Component<any, any> {
 	constructor(props) {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import ConstStrings from '../../core/conststrings';
-import LoginStore from '../../stores/loginstore';
+import ConstStrings from '../../../core/conststrings';
+import LoginStore from '../../../stores/loginstore';
 
 export default class AddOrEditButtonBar extends React.Component<any, any> {
 	constructor(props) {

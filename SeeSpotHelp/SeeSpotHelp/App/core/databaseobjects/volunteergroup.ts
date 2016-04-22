@@ -96,31 +96,6 @@ export default class VolunteerGroup extends DatabaseObject {
 		}
 	)
 
-	// Creates and returns a new volunteer group based on the fields supplied
-	// by the user during an input form.
-	// @param inputFields { { fieldName : InputField} } - A object where the keys
-	// are the field name (e.g. "groupName", "shelterName") and the values are
-	// InputFields which hold the values given by the user.
-	public static createFromInputFields(inputFields, adminId) {
-		var group = new VolunteerGroup();
-		group.updateFromInputFields(inputFields);
-		return group;
-	}
-
-	// Creates and returns a new volunteer group based on the fields supplied
-	// by the user during an input form.
-	// @param inputFields { { fieldName : InputField} } - A object where the keys
-	// are the field name (e.g. "groupName", "shelterName") and the values are
-	// InputFields which hold the values given by the user.
-	updateFromInputFields(inputFields) {
-		this.name = inputFields["name"].value;
-		this.shelter = inputFields["shelter"].value;
-		this.address = inputFields["address"].value;
-		this.city = inputFields["city"].value;
-		this.state = inputFields["state"].value;
-		this.zipCode = inputFields["zipCode"].value;
-	}
-
 	delete() {
 		DataServices.SetFirebaseData("deletedGroups/" + this.id, this);
 		super.delete();

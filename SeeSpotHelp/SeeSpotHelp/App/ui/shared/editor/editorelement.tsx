@@ -5,14 +5,14 @@ import * as React from 'react';
 import InputFields from './inputfields';
 import AddOrEditButtonBar from './addoreditbuttonbar';
 
-import GroupEditor from '../../core/editor/groupeditor';
-import Utils from '../../core/utils';
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
-import Permission from '../../core/databaseobjects/permission';
-import InputField from '../../core/inputfield';
-import InputFieldValidation from '../../core/inputfieldvalidation';
+import GroupEditor from '../../../core/editor/groupeditor';
+import Utils from '../../../core/utils';
+import VolunteerGroup from '../../../core/databaseobjects/volunteergroup';
+import Permission from '../../../core/databaseobjects/permission';
+import InputField from '../../../core/editor/inputfield';
+import InputFieldValidation from '../../../core/editor/inputfieldvalidation';
 
-import LoginStore from '../../stores/loginstore';
+import LoginStore from '../../../stores/loginstore';
 
 export default class EditorElement extends React.Component<any, any> {
 	public refs: any;

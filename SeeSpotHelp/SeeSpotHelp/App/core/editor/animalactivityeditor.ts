@@ -1,19 +1,12 @@
 
-import VolunteerGroup from '../databaseobjects/volunteergroup';
+import AnimalActivityItem from '../databaseobjects/animalnote';
 
 import InputField from './inputfield';
 import InputFieldValidation from './inputfieldvalidation';
 import { Editor } from './editor';
 
-var STATES = [
-	'AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI',
-	'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS',
-	'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR',
-	'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
-];
-
-export default class GroupEditor extends Editor {
-	public databaseObject: VolunteerGroup;
+export default class AcitivtyEditor extends Editor {
+	public databaseObject: AnimalActivityItem;
 
 	constructor(group) {
 		super();
@@ -24,10 +17,10 @@ export default class GroupEditor extends Editor {
 	getInputFields() { return this.inputFields; }
 
 	insert(user) {
-		var group = new VolunteerGroup();
-		group.updateFromInputFields(this.inputFields);
-		group.insert(user);
-		this.databaseObject = group;
+		var activity = new AnimalActivityItem()
+		activity.updateFromInputFields(this.inputFields);
+		activity.insert();
+		this.databaseObject = activity;
 	}
 
 	update() {
