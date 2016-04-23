@@ -1,7 +1,7 @@
 'use strict'
 
-var React = require('react');
-var AnimalActivityItem = require("./animalactivityitem");
+import * as React from 'react';
+import AnimalActivityItem from './animalactivityitem';
 
 import AnimalActivityStore from '../../stores/animalactivitystore';
 import VolunteerStore from '../../stores/volunteerstore';

@@ -36,7 +36,8 @@ export default class AnimalActivityItem extends React.Component<any, any> {
 	shouldComponentUpdate(newProps, newState) {
 		return newProps.permission != this.props.permission ||
 			newProps.group != this.props.group ||
-			newProps.activity != this.props.activity;
+			newProps.activity != this.props.activity ||
+			newState.memberName != this.state.memberName;
 	}
 
 	onChange() {

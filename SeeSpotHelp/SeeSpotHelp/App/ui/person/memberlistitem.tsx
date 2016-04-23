@@ -1,11 +1,8 @@
-﻿"use strict"
+﻿'use strict'
 
-var React = require("react");
+import * as React from 'react';
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
-
-var GroupActions = require("../../actions/groupactions");
-var GroupInfoBox = require("../../ui/group/groupinfobox");
 
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import Volunteer from '../../core/databaseobjects/volunteer';
@@ -59,6 +56,9 @@ var MemberListItem = React.createClass({
 	},
 
 	approveMembership: function () {
+		// This is a hack because a parent LinkContainer element is
+		// redirecting the user to another page.
+		event.stopPropagation();
 		this.state.permission.setMember();
 		this.state.permission.update();
 		DataServices.PushFirebaseData('emails/tasks',
@@ -70,6 +70,10 @@ var MemberListItem = React.createClass({
 	},
 
 	denyMembership: function () {
+		// This is a hack because a parent LinkContainer element is
+		// redirecting the user to another page.
+		event.stopPropagation();
+
 		this.state.permission.setDenied();
 		this.state.permission.update();
 	},

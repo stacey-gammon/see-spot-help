@@ -220,6 +220,7 @@ abstract class BaseStore extends EventEmitter {
 	}
 
 	itemDeletedWithId(id) {
+		console.log(this.databaseObject.className + 'Store: itemDeleted with id ' + id);
 		var deletedObject = this.storage[id];
 		this.storage[id] = null;
 
@@ -234,8 +235,9 @@ abstract class BaseStore extends EventEmitter {
 	itemChanged(prop, snapshot) {
 		var changedObject = this.databaseObject.castObject(snapshot.val());
 		if (this.storage.hasOwnProperty(changedObject.id)) {
+			console.log(this.databaseObject.className + 'Store: itemChanged with id ' + changedObject.id + ' and prop ' + prop);
 			this.storage[changedObject.id] = changedObject;
-			this.emitChange();
+			this.emitChange(prop, changedObject[prop]);
 		} else {
 			this.itemAdded(prop, null, null, snapshot);
 		}
