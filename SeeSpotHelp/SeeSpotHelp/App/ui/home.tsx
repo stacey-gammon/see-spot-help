@@ -15,6 +15,7 @@ var User = require('../core/volunteer');
 import GroupHomePage from './group/grouphomepage';
 import ProfilePage from './person/profilepage';
 import AddNewGroup from './group/addnewgroup';
+import AddAnimalNote from './animal/addanimalnote';
 
 var SearchPage = require('./searchpage');
 var AnimalHomePage = require('./animal/animalHomePage');
@@ -24,7 +25,6 @@ var LoginPage = require('./loginpage');
 var PrivateBetaPage = require('./privatebetapage');
 var EnterBetaCode = require('./enterbetacode');
 var AddCalendarEvent = require('./addcalendarevent');
-var AddAnimalNote = require('./animal/addanimalnote');
 var UserSettingsPage = require('./person/usersettingspage');
 
 import LoginStore from '../stores/loginstore';

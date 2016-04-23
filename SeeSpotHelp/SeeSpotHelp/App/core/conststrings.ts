@@ -1,7 +1,7 @@
 ﻿
 var ConstStrings = {
-	RequestToJoin: "Request to join",
-	JoinRequestPending: "Request pending (click to cancel)",
+	RequestToJoin: "Join",
+	JoinRequestPending: "Pending",
 	LeaveGroup: "Leave",
 	GroupName: "Group Name",
 	Shelter: "Shelter",

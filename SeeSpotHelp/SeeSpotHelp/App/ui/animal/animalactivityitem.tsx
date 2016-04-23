@@ -1,14 +1,13 @@
-"use strict"
+'use strict'
 
-var React = require("react");
+import * as React from 'react';
+
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import Volunteer from '../../core/databaseobjects/volunteer';
 import ConstStrings from '../../core/conststrings';
 import LoginStore from '../../stores/loginstore';
-import GroupStore from '../../stores/groupstore';
 import VolunteerStore from '../../stores/volunteerstore';
 import AnimalStore from '../../stores/animalstore';
 import PermissionsStore from '../../stores/permissionsstore';
@@ -16,59 +15,70 @@ import AnimalActivityStore from '../../stores/animalactivitystore';
 import AnimalNote from '../../core/databaseobjects/animalnote';
 import Permission from '../../core/databaseobjects/permission';
 
-var AnimalActivityItem = React.createClass({
-	getInitialState: function() {
-		var member = this.props.member
-		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
-		var permission = LoginStore.getUser() && group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
-			Permission.CreateNonMemberPermission();
+export default class AnimalActivityItem extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
+		this.state = { memberName: 'loading...' };
+	}
 
-		return {
-			user: LoginStore.getUser(),
-			group: group,
-			permission: permission
-		};
-	},
+	componentWillMount() {
+		VolunteerStore.ensureItemById(this.props.activity.userId).then(function() {
+			var member = VolunteerStore.getVolunteerById(this.props.activity.userId);
+			var memberName = member.displayName ? member.displayName : member.name;
+			this.setState({ memberName: memberName });
+		}.bind(this));
+	}
 
-	deleteAction: function (event) {
+	componentWillUnmount() {
+		VolunteerStore.removePropertyListener(this);
+	}
+
+	shouldComponentUpdate(newProps, newState) {
+		return newProps.permission != this.props.permission ||
+			newProps.group != this.props.group ||
+			newProps.activity != this.props.activity;
+	}
+
+	onChange() {
+		this.forceUpdate();
+	}
+
+	deleteAction(event) {
 		if (confirm("Are you sure you want to delete this post?")) {
 			this.props.activity.delete();
 		}
-	},
+	}
 
-	getEditActionButton: function() {
-		if (!this.state.user ||
-			this.props.activity.userId != this.state.user.id) {
+	getEditActionButton() {
+		if (!LoginStore.getUser() || this.props.activity.userId != LoginStore.getUser().id) {
 			return null;
 		}
 		return (
 			<LinkContainer
 				to={{ pathname: "addAnimalNote",
-					state: { user: this.state.user,
-							 animal: this.props.animal,
-							 activity: this.props.activity,
-							 group: this.props.group,
-							 mode: 'edit' } }}>
+					state: { animal: this.props.animal,
+							activity: this.props.activity,
+							group: this.props.group,
+							mode: 'edit' } }}>
 				<span style={{marginLeft: '10px'}} className="glyphicon glyphicon-edit">
 				</span>
 			</LinkContainer>
 		);
-	},
+	}
 
-	getDeleteActionButton: function() {
+	getDeleteActionButton() {
 		return (
 			<div>
 				<span onClick={this.deleteAction}
 					className="glyphicon glyphicon-remove-circle"/>
 			</div>
 		);
-	},
+	}
 
-	getActions: function () {
-		if (!this.state.user) return null;
-		if (this.props.activity.userId == this.state.user.id ||
-			this.state.permission.admin()) {
+	getActions() {
+		if (!LoginStore.getUser()) return null;
+		if (this.props.activity.userId == LoginStore.getUser().id ||
+			this.props.permission.admin()) {
 			return (
 				<div className="media-right">
 					{this.getDeleteActionButton()}
@@ -77,9 +87,9 @@ var AnimalActivityItem = React.createClass({
 		} else {
 			return null;
 		}
-	},
+	}
 
-	getAnimalNameHeader: function() {
+	getAnimalNameHeader() {
 		if (this.props.showAnimalInfo && this.props.group && this.props.animal) {
 			var animalName = this.props.animal.name;
 			return (
@@ -88,18 +98,11 @@ var AnimalActivityItem = React.createClass({
 		} else {
 			return null;
 		}
-	},
+	}
 
-	render: function () {
-		var member = VolunteerStore.getVolunteerById(this.props.activity.userId);
-		var userName =
-			!member ?
-			"...loading" :
-			member.displayName ?
-			member.displayName :
-			member.name;
+	render() {
 		var date = this.props.activity.getDateForDisplay();
-		var userAndDateInfo = " - " + userName + " - " + date;
+		var userAndDateInfo = " - " + this.state.memberName + " - " + date;
 		return (
 			<div className="list-group-item">
 				<div className="media">
@@ -110,8 +113,8 @@ var AnimalActivityItem = React.createClass({
 						<p>
 						<a><LinkContainer
 							to={{ pathname: "/memberPage",
-								state: { member: member} }}>
-							<button className="invisible-button">{userName}</button>
+								state: { memberId: this.props.activity.userId} }}>
+							<button className="invisible-button">{this.state.memberName}</button>
 						</LinkContainer>
 						</a>
 						{date}
@@ -122,6 +125,4 @@ var AnimalActivityItem = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = AnimalActivityItem;
+}

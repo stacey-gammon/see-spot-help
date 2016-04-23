@@ -44,11 +44,11 @@ export default class JoinGroupButton extends React.Component<any, any> {
 
 		var text = this.props.permission.pending() ?
 			ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
-
+		var helperText = this.props.permission.pending() ? 'click to cancel' : '';
 		return (
 			<button className="btn btn-warning requestToJoinButton buttonPadding"
 					ref="requestToJoinButton"
-					onClick={this.requestToJoin}>
+					onClick={this.requestToJoin.bind(this)}>
 				{text}
 			</button>
 		);

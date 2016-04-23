@@ -31,9 +31,7 @@ export default class GroupListItem extends React.Component<any, any> {
 	}
 
 	onChange() {
-		this.state = {
-			permission: StoreStateHelper.GetPermission(this.props)
-		}
+		this.setState({ permission: StoreStateHelper.GetPermission(this.props) });
 	}
 
 	render() {

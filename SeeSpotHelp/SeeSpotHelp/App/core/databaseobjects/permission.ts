@@ -87,8 +87,10 @@ export default class Permission extends DatabaseObject {
 	update() {
 		if (this.permission == PermissionsEnum.NONMEMBER) {
 			this.delete();
-		} else {
+		} else if (this.id) {
 			super.update();
+		} else {
+			this.insert();
 		}
 	}
 

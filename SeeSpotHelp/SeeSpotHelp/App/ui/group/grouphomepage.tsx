@@ -64,7 +64,10 @@ export default class GroupHomePage extends React.Component<any, any> {
 	}
 
 	addChangeListeners(group) {
-		PermissionsStore.addPropertyListener(this, 'groupId', group.id, this.onChange.bind(this));
+		if (LoginStore.getUser()) {
+			PermissionsStore.addPropertyListener(
+				this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+		}
 		StoreStateHelper.AddChangeListeners([LoginStore, GroupStore], this);
 	}
 
@@ -84,6 +87,7 @@ export default class GroupHomePage extends React.Component<any, any> {
 	}
 
 	render() {
+		console.log('GroupHomePage:render');
 		if (this.state.groupId) {
 			var group = GroupStore.getGroupById(this.state.groupId);
 			if (group) {

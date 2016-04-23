@@ -18,6 +18,7 @@ interface MemberTabProperties {
 export default class GroupMembersTab extends React.Component<MemberTabProperties, any> {
 	constructor(props) {
 		super(props);
+		this.state = {loading: true};
 	}
 
 	generateMember(member) {
@@ -29,11 +30,22 @@ export default class GroupMembersTab extends React.Component<MemberTabProperties
 		);
 	}
 
+	componentWillMount() {
+		if (this.props.group.id) {
+			PermissionsStore.getPermissionsByGroupId(this.props.group.id);
+		}
+	}
+
 	componentDidMount() {
 		if (this.props.group) {
 			PermissionsStore.addPropertyListener(
 				this, 'groupId', this.props.group.id, this.onChange.bind(this));
 		}
+	}
+
+	shouldComponentUpdate(newProps, newState) {
+		return newProps.permission != this.props.permission ||
+			newProps.group != this.props.group;
 	}
 
 	componentWillUnmount() {
@@ -51,13 +63,17 @@ export default class GroupMembersTab extends React.Component<MemberTabProperties
 
 	addMemberElement(permission, members) {
 		if (!permission.notInGroup()) {
-			this.addVolunteerListener(permission.userId);
 			var member = VolunteerStore.getVolunteerById(permission.userId);
-			if (member) { members.push(this.generateMember(member)); }
+			if (member) {
+				members.push(this.generateMember(member));
+			} else {
+				this.addVolunteerListener(permission.userId);
+			}
 		}
 	}
 
 	render() {
+		console.log('GroupMembersTab:render');
 		if (!this.props.group) return null;
 		var memberPermissions = PermissionsStore.getPermissionsByGroupId(this.props.group.id);
 		if (!memberPermissions) return null;

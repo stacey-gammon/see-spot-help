@@ -40,7 +40,7 @@ abstract class BaseStore extends EventEmitter {
 	protected firebasePath: string;
 	public errorMessage: string;
 	public hasError: boolean = false;
-	private isDownloading: boolean = false;
+	private isDownloading: any = {};
 	private promiseResolveCallbacks: Array<any> = [];
 	private propertyListeners: Array<PropertyListener> = [];
 	private itemListeners: Array<PropertyListener> = [];
@@ -66,6 +66,16 @@ abstract class BaseStore extends EventEmitter {
 	}
 
 	addPropertyListener(listener, property, value, callback) {
+		// First make sure we aren't inserting a duplicate listener which can throw us into a
+		// forever loop.
+		for (var i = 0; i < this.propertyListeners.length; i++) {
+			var propListener = this.propertyListeners[i];
+			if (propListener.listener == listener &&
+				propListener.property == property &&
+				propListener.value == value) {
+				return;
+			}
+		}
 		this.propertyListeners.push(new PropertyListener(listener, property, value, callback));
 	}
 
@@ -105,6 +115,26 @@ abstract class BaseStore extends EventEmitter {
 		}
 	}
 
+	// ensurepropertybyvalue(property, value) {
+	// 	return new promise(function(resolve, reject) {
+	// 		var onresolve = function (data) {
+	// 			resolve(data)
+	// 		};
+	// 		var onreject = function (error) {
+	// 			reject(error);
+	// 		};
+	// 		if (!this.storage.hasownproperty(id)) {
+	// 			this.storage[id] = null;
+	// 			this.downloadfrommapping(property, value, onresolve, onreject);
+	// 		} else if (!this.isdownloading){
+	// 			resolve(this.storage[id]);
+	// 		} else {
+	// 			this.promiseresolvecallbacks.push(onresolve);
+	// 		//	reject('already waiting on the download.');
+	// 		}
+	// 	}.bind(this));
+	// }
+
 	ensureItemById(id) {
 		var promise = new Promise(function(resolve, reject) {
 			var onResolve = function (data) {
@@ -116,7 +146,7 @@ abstract class BaseStore extends EventEmitter {
 			if (!this.storage.hasOwnProperty(id)) {
 				this.storage[id] = null;
 				this.downloadItem(id, onResolve, onReject);
-			} else if (!this.isDownloading){
+			} else if (!this.isDownloading[id]){
 				resolve(this.storage[id]);
 			} else {
 				this.promiseResolveCallbacks.push(onResolve);
@@ -153,9 +183,10 @@ abstract class BaseStore extends EventEmitter {
 	}
 
 	itemDownloaded(id: string, onSuccess, snapshot) {
-		this.isDownloading = false;
+		console.log(this.databaseObject.className + 'Store: itemDownloaded with id ' + id);
+		this.isDownloading[id] = false;
 		if (snapshot && snapshot.val() && !this.storage.hasOwnProperty[id]) {
-			this.itemAdded('id', snapshot);
+			this.itemAdded('id', null, null, snapshot);
 		} else if (snapshot && snapshot.val()) {
 			this.itemChanged('id', snapshot);
 		} else {
@@ -165,17 +196,21 @@ abstract class BaseStore extends EventEmitter {
 		this.resolvePromises(id);
 	}
 
-	itemAdded(prop, snapshot) {
+	itemAdded(prop, onSuccess, onError, snapshot) {
 		if (snapshot.val()) {
 			var casted = this.databaseObject.castObject(snapshot.val());
 			// Wait for the subsequent update to set the id.
 			if (!casted.id) return;
 			if (prop) {
+				console.log(this.databaseObject.className + 'Store: added with prop ' + prop + ' and value ' + casted[prop]);
 				this.addIdToMapping(this.storageMappings[prop], casted[prop], casted.id);
 			}
 			this.storage[casted.id] = casted;
 
+			if (onSuccess) onSuccess();
 			this.emitChange(prop, casted[prop]);
+		} else {
+			if (onError) onError();
 		}
 	}
 
@@ -202,14 +237,14 @@ abstract class BaseStore extends EventEmitter {
 			this.storage[changedObject.id] = changedObject;
 			this.emitChange();
 		} else {
-			this.itemAdded(prop, snapshot);
+			this.itemAdded(prop, null, null, snapshot);
 		}
 	}
 
 	getItemsByProperty(property, propertyValue) {
 		var storageMapping = this.storageMappings[property];
 		if (!storageMapping.hasOwnProperty(propertyValue)) {
-			console.log(this.databaseObject.classNameForSessionStorage + ':getItemsByProperty(' + property + ', ' + propertyValue + ')');
+			console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');
 			storageMapping[propertyValue] = [];
 			this.downloadFromMapping(property, propertyValue);
 			return [];
@@ -223,8 +258,8 @@ abstract class BaseStore extends EventEmitter {
 		return items;
 	}
 
-	errorOccurred(onError, errorObject) {
-		this.isDownloading = false;
+	errorOccurred(id, onError, errorObject) {
+		this.isDownloading[id] = false;
 		if (errorObject) {
 			this.errorMessage = errorObject.message;
 			this.hasError = true;
@@ -241,22 +276,22 @@ abstract class BaseStore extends EventEmitter {
 	}
 
 	downloadItem(id, onSuccess?, onError?) {
-		this.isDownloading = true;
+		this.isDownloading[id] = true;
 		this.resetErrorInfo();
 		DataServices.DownloadData(
 			this.firebasePath + '/' + id,
 			this.itemDownloaded.bind(this, id, onSuccess),
-			this.errorOccurred.bind(this, onError));
+			this.errorOccurred.bind(this, id, onError));
 	}
 
-	downloadFromMapping(property, propertyValue) {
+	downloadFromMapping(property, propertyValue, onSuccess?, onError?) {
 		this.resetErrorInfo();
 		var path = DatabaseObject.GetPathToMapping(
 			this.firebasePath,
 			property,
 			propertyValue);
 
-		DataServices.OnChildAdded(path, this.itemAdded.bind(this, property));
+		DataServices.OnChildAdded(path, this.itemAdded.bind(this, property, onSuccess, onError));
 		DataServices.OnChildChanged(path, this.itemChanged.bind(this, property));
 		DataServices.OnChildRemoved(path, this.itemDeleted.bind(this));
 	}

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-var AnimalActivityItem = require("../animal/animalactivityitem");
+import AnimalActivityItem from '../animal/animalactivityitem';
 
 import Volunteer from '../../core/databaseobjects/volunteer';
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
@@ -39,6 +39,7 @@ export default class GroupActivityTab extends React.Component<any, any> {
 		return (
 			<AnimalActivityItem key={activity.id}
 								activity={activity}
+								user={LoginStore.getUser()}
 								permission={this.props.permission}
 								group={this.props.group}
 								showAnimalInfo="true"/>

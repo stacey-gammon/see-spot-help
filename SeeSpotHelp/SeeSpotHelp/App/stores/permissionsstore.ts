@@ -30,7 +30,6 @@ class PermissionsStore extends BaseStore {
 			}
 		}
 
-		console.log('WARN: Shouldn\'t get here');
 		return Permission.CreateNonMemberPermission(userId, groupId);
 	}
 
