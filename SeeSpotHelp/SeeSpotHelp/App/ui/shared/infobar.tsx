@@ -11,8 +11,8 @@ export default class InfoBar extends React.Component<any, any> {
 		var mediaLeft = "";
 		var mediaCenter = "";
 		var mediaRight = "";
-		if (this.props.children.length == 1) {
-			mediaCenter = this.props.children[1];
+		if (!Array.isArray(this.props.children)) {
+			mediaCenter = this.props.children;
 		} else if (this.props.children.length >= 2) {
 			mediaLeft = this.props.children[0];
 			mediaCenter = this.props.children[1];
@@ -20,8 +20,11 @@ export default class InfoBar extends React.Component<any, any> {
 		if (this.props.children.length == 3) {
 			mediaRight = this.props.children[2];
 		}
+
+		var className = this.props.noTabs ? 'info-top-no-tabs' : 'info-top';
+
 		return (
-			<div className='info-top'>
+			<div className={className}>
 				<div className='media'>
 					<div className='media-left'>
 						{mediaLeft}

@@ -94,8 +94,11 @@ export default class AddNewGroup extends React.Component<any, any> {
 		var extraFields = {
 			userId: LoginStore.getUser()
 		}
+		var title = this.state.mode == 'add' ?
+			'Add a new group' : 'Edit ' + this.state.editor.databaseObject.name;
 		return (
 			<EditorElement
+				title={title}
 				extraFields={extraFields}
 				mode={this.state.mode}
 				permission={this.state.permission}

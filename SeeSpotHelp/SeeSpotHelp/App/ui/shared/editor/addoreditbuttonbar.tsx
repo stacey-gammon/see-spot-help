@@ -4,6 +4,8 @@ import ConstStrings from '../../../core/conststrings';
 import LoginStore from '../../../stores/loginstore';
 
 export default class AddOrEditButtonBar extends React.Component<any, any> {
+	public context: any;
+	static contextTypes = { router: React.PropTypes.object.isRequired }
 	constructor(props) {
 		super(props);
 	}
@@ -15,6 +17,10 @@ export default class AddOrEditButtonBar extends React.Component<any, any> {
 				Delete
 			</button>
 		);
+	}
+
+	cancel() {
+		this.context.router.goBack();
 	}
 
 	render() {
@@ -30,6 +36,9 @@ export default class AddOrEditButtonBar extends React.Component<any, any> {
 					{addOrEditText}
 				</button>
 				{this.getDeleteGroupButton()}
+				<button className='btn btn-info' disabled={disabled} onClick={this.cancel.bind(this)}>
+					Cancel
+				</button>
 			</div>
 		);
 	}

@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import InputFields from './inputfields';
 import AddOrEditButtonBar from './addoreditbuttonbar';
+import InfoBar from '../infobar';
 
 import GroupEditor from '../../../core/editor/groupeditor';
 import Utils from '../../uiutils';
@@ -52,7 +53,8 @@ export default class EditorElement extends React.Component<any, any> {
 
 	render() {
 		return (
-			<div>
+			<div className='page'>
+				<InfoBar noTabs='true'><h1>{this.props.title}</h1></InfoBar>
 				<InputFields ref='inputFields' fields={this.props.editor.getInputFields()}/>
 				<AddOrEditButtonBar
 					mode={this.props.mode}

@@ -1,18 +1,12 @@
 ﻿'use strict'
 
 import * as React from 'react';
-var TakePhotoButton = require('../takephotobutton');
 
 import EditorElement from '../shared/editor/editorelement';
 
 import AnimalEditor from '../../core/editor/animaleditor';
-import ConstStrings from '../../core/conststrings';
 import Animal from '../../core/databaseobjects/animal';
 import Permission from '../../core/databaseobjects/permission';
-import InputField from '../../core/editor/inputfield';
-import InputTextAreaField from '../../core/editor/inputtextareafield';
-import InputListField from '../../core/editor/inputlistfield';
-import InputFieldValidation from '../../core/editor/inputfieldvalidation';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import AnimalStore from '../../stores/animalstore';
@@ -96,24 +90,12 @@ export default class AddAnimalPage extends React.Component<any, any> {
 
 	goToAnimalPage() {
 		this.context.router.push(
-			{
-				pathname: "animalHomePage",
-				state: {
-					group: this.state.group,
-					animal: this.state.animal,
-					user: LoginStore.getUser()
-				}
-			});
+			{ pathname: "animalHomePage", state: { animal: this.state.animal } });
 	}
 
 	goToGroupPage() {
 		this.context.router.push(
-			{
-				pathname: "groupHomePage",
-				state: {
-					groupId: this.state.group.id
-				}
-			});
+			{ pathname: "groupHomePage", state: { groupId: this.state.animal.groupId } });
 	}
 
 	render() {
@@ -124,8 +106,11 @@ export default class AddAnimalPage extends React.Component<any, any> {
 		}
 		Object.assign(extraFields, GroupStore.getGroupById(this.state.groupId));
 
+		var title = this.state.mode == 'add' ?
+			'Add an animal' : 'Edit ' + this.state.editor.databaseObject.name;
 		return (
 			<EditorElement
+				title={title}
 				extraFields={extraFields}
 				mode={this.state.mode}
 				permission={this.state.permission}

@@ -1,12 +1,16 @@
-﻿"use strict";
+﻿'use strict';
 
 var React = require("react");
-var SearchBox = require("./searchbox");
+var SearchBox = require('./searchbox');
+import InfoBar from './shared/infobar';
 
 var SearchPage = React.createClass({
 	render: function() {
 		return (
-			<SearchBox />
+			<div className='page'>
+				<InfoBar noTabs='true'><h1>Search</h1></InfoBar>
+				<SearchBox />
+			</div>
 		);
 	}
 });

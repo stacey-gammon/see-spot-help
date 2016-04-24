@@ -14,10 +14,16 @@
 	padding: 15px;
 }
 
+.info-top-no-tabs {
+	@extend .info-top;
+	border-bottom: 1px solid $color7;
+}
+
 .nav-tabs {
 	background-color: $info-top-bg-color;
 	border-right: 2px solid $color7;
 	border-left: 2px solid $color7;
+	border-bottom: 1px solid $color7;
 	padding-left: 15px;
 }
 

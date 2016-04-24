@@ -115,8 +115,12 @@ export default class AddAnimalNote extends React.Component<any, any> {
 			groupId: this.state.groupId,
 			userId: LoginStore.getUser().id
 		}
+
+		var title = this.state.mode == 'add' ?
+			'Add a comment' : 'Edit your activity';
 		return (
 			<EditorElement
+				title={title}
 				extraFields={extraFields}
 				mode={this.state.mode}
 				permission={this.state.permission}

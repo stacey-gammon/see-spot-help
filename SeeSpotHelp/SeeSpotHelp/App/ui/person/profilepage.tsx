@@ -8,6 +8,7 @@ var SearchPage = require('../searchpage');
 var LoginPage = require('../loginpage');
 
 import ProfilePageTabs from './profilepagetabs';
+import InfoBar from '../shared/infobar';
 
 import Utils from '../uiutils';
 import Volunteer from '../../core/databaseobjects/volunteer';
@@ -57,11 +58,7 @@ export default class ProfilePage extends React.Component<any, any> {
 		var heading = 'Hello, ' + LoginStore.getUser().name;
 		return (
 			<div className='page'>
-				<div className='media info-top'>
-					<div className='media-body'>
-						<h1>{heading}</h1>
-					</div>
-				</div>
+				<InfoBar><h1>{heading}</h1></InfoBar>
 				<ProfilePageTabs user={LoginStore.getUser()}/>
 			</div>
 		);
