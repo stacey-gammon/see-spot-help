@@ -4,7 +4,7 @@ var React = require("react");
 var Link = require("react-router").Link;
 var AnimalActivityItem = require("../animal/animalactivityitem");
 
-import Utils from '../../core/utils';
+import Utils from '../uiutils';
 import Volunteer from '../../core/databaseobjects/volunteer';
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import LoginStore from '../../stores/loginstore';

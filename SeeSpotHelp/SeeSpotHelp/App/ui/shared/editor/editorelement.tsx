@@ -6,7 +6,7 @@ import InputFields from './inputfields';
 import AddOrEditButtonBar from './addoreditbuttonbar';
 
 import GroupEditor from '../../../core/editor/groupeditor';
-import Utils from '../../../core/utils';
+import Utils from '../../uiutils';
 import VolunteerGroup from '../../../core/databaseobjects/volunteergroup';
 import Permission from '../../../core/databaseobjects/permission';
 import InputField from '../../../core/editor/inputfield';
@@ -30,7 +30,7 @@ export default class EditorElement extends React.Component<any, any> {
 	edit() {
 		this.refs.inputFields.fillWithValues(this.props.editor.getInputFields());
 		if (this.validateFields()) {
-			this.props.editor.update(LoginStore.getUser());
+			this.props.editor.update(this.props.extraFields);
 			this.props.onEditOrInsert();
 		}
 	}
@@ -38,7 +38,7 @@ export default class EditorElement extends React.Component<any, any> {
 	insert() {
 		this.refs.inputFields.fillWithValues(this.props.editor.getInputFields());
 		if (this.validateFields()) {
-			this.props.editor.insert(LoginStore.getUser());
+			this.props.editor.insert(this.props.extraFields);
 			this.props.onEditOrInsert();
 		}
 	}

@@ -11,7 +11,7 @@ var DropdownButton = ReactBootstrap.DropdownButton;
 var Button = ReactBootstrap.Button;
 var MenuItem = ReactBootstrap.MenuItem;
 
-import Utils from "../core/utils";
+import Utils from "./uiutils";
 import VolunteerGroup from "../core/databaseobjects/volunteergroup";
 import Animal from "../core/databaseobjects/animal";
 import LoginStore from "../stores/loginstore";

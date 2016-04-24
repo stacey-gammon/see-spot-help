@@ -7,7 +7,7 @@ var Intro = require('../intro');
 import GroupInfoBar from './groupinfobar';
 import GroupPageTabs from './grouppagetabs';
 
-import Utils from '../../core/utils';
+import Utils from '../uiutils';
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';

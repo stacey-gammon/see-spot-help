@@ -10,7 +10,7 @@ import GroupActivityTab from './groupactivitytab';
 import GroupMembersTab from './groupmemberstab';
 import GroupScheduleTab from './groupscheduletab';
 
-import Utils from '../../core/utils';
+import Utils from '../uiutils';
 import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';

@@ -1,11 +1,12 @@
 var React = require('react');
 
-import Volunteer from './databaseobjects/volunteer';
-import VolunteerGroup from './databaseobjects/volunteergroup';
-import Animal from './databaseobjects/animal';
-import Schedule from './databaseobjects/schedule';
-import Permission from './databaseobjects/permission';
-import Photo from './databaseobjects/photo';
+import Volunteer from '../core/databaseobjects/volunteer';
+import VolunteerGroup from '../core/databaseobjects/volunteergroup';
+import Animal from '../core/databaseobjects/animal';
+import Schedule from '../core/databaseobjects/schedule';
+import Permission from '../core/databaseobjects/permission';
+import Photo from '../core/databaseobjects/photo';
+import Activity from '../core/databaseobjects/activity';
 
 var SessionStorageClasses = {};
 SessionStorageClasses['Volunteer'] = Volunteer;
@@ -14,6 +15,11 @@ SessionStorageClasses['Animal'] = Animal;
 SessionStorageClasses['Schedule'] = Schedule;
 SessionStorageClasses['Permission'] = Permission;
 SessionStorageClasses['Photo'] = Photo;
+
+export enum AddOrEditMode {
+	ADD,
+	EDIT
+};
 
 export default class Utils {
 

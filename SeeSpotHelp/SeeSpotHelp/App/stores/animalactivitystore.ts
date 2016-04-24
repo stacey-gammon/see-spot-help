@@ -1,10 +1,10 @@
 'use strict';
 
-import AnimalNote from '../core/databaseobjects/animalnote';
+import Activity from '../core/databaseobjects/activity';
 import BaseStore from './basestore';
 
 class AnimalActivityStore extends BaseStore {
-	protected databaseObject: AnimalNote = new AnimalNote();
+	protected databaseObject: Activity = new Activity();
 
 	constructor() {
 		super();

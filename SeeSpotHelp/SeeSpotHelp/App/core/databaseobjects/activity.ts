@@ -5,8 +5,8 @@ var dateFormat = require('dateformat');
 import DataServices from '../dataservices';
 import DatabaseObject from './databaseobject';
 
-export default class AnimalNote extends DatabaseObject {
-	public note: string;
+export default class Activity extends DatabaseObject {
+	public description: string = '';
 	public userId: string;
 	public animalId: string;
 	public groupId: string;
@@ -18,13 +18,9 @@ export default class AnimalNote extends DatabaseObject {
 		this.mappingProperties.push('animalId');
 	}
 
-	createInstance() { return new AnimalNote(); }
+	createInstance() { return new Activity(); }
 
 	getDateForDisplay() {
 		return dateFormat(new Date(this.timestamp), "mm/dd/yy, h:MM TT");
-	}
-
-	toDisplayString() {
-		return this.note;
 	}
 }

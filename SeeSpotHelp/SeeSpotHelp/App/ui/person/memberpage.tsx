@@ -4,7 +4,7 @@ var React = require("react");
 import Permission from "../../core/databaseobjects/permission";
 import Volunteer from "../../core/databaseobjects/volunteer";
 import VolunteerGroup from "../../core/databaseobjects/volunteergroup";
-import Utils from "../../core/utils";
+import Utils from "../uiutils";
 import LoginStore from "../../stores/loginstore";
 import GroupStore from "../../stores/groupstore";
 import PermissionsStore from "../../stores/permissionsstore";

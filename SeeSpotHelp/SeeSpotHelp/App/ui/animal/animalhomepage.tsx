@@ -7,7 +7,7 @@ var Tabs = ReactBootstrap.Tabs;
 
 import LoginStore from '../../stores/loginstore';
 
-import Utils from '../../core/utils';
+import Utils from '../uiutils';
 import Animal from '../../core/databaseobjects/animal';
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import Permission from '../../core/databaseobjects/permission';
@@ -165,4 +165,4 @@ var AnimalHomePage = React.createClass({
 	}
 });
 
-module.exports = AnimalHomePage;
+export default AnimalHomePage;

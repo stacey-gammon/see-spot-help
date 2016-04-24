@@ -5,7 +5,7 @@ var Link = require("react-router").Link;
 var Intro = require("../intro");
 import GroupListItem from '../group/grouplistitem';
 
-import Utils from '../../core/utils';
+import Utils from '../uiutils';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import VolunteerStore from '../../stores/volunteerstore';

@@ -2,8 +2,11 @@ import * as React from 'react';
 
 import Promise = require('bluebird');
 
-import AnimalNote from '../../core/databaseobjects/animalnote';
-import Utils from '../../core/utils';
+import EditorElement from '../shared/editor/editorelement';
+
+import ActivityEditor from '../../core/editor/activityeditor';
+import Activity from '../../core/databaseobjects/activity';
+import Utils from '../uiutils';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import AnimalStore from '../../stores/animalstore';
@@ -54,9 +57,11 @@ export default class AddAnimalNote extends React.Component<any, any> {
 				var animal = AnimalStore.getItemById(this.state.animalId);
 				var activity = AnimalActivityStore.getItemById(this.state.activityId);
 				var permission = StoreStateHelper.GetPermission(this.state);
+				var editor = new ActivityEditor(activity);
 				if (group && animal) {
 					this.setState({
-						permission: permission
+						permission: permission,
+						editor: editor
 					});
 					this.addChangeListeners(group);
 				}
@@ -84,62 +89,40 @@ export default class AddAnimalNote extends React.Component<any, any> {
 		this.forceUpdate();
 	}
 
-	submitNote() {
-		if (this.state.mode == 'edit') {
-			this.state.activity.note = this.refs.note.value;
-			this.state.activity.update();
-		} else {
-			var note = new AnimalNote();
-			note.note = this.refs.note.value;
-			note.animalId = this.state.animal.id;
-			note.groupId = this.state.group.id;
-			note.userId = this.state.user.id;
-			note.insert();
-		}
-
-		if (this.state.animal) {
+	goBackToPage() {
+		if (this.state.animalId) {
 			this.context.router.push(
 				{
 					pathname: "animalHomePage",
 					state: {
-						group: this.state.group,
-						animal: this.state.animal,
-						user: this.state.user
+						groupId: this.state.groupId,
+						animalId: this.state.animalId
 					}
 				});
 		} else {
 			this.context.router.push(
 				{
 					pathname: "groupHomePage",
-					state: { groupId: this.state.group.id }
+					state: { groupId: this.state.groupId }
 				});
 		}
 	}
 
 	render() {
-		var value = this.state.mode == 'edit' ? this.state.activity.note : "";
-		var buttonText = this.state.mode == 'edit' ? "Update" : "Post";
-		var headerText = this.state.mode == 'edit' ?
-			'Update your post about ' + this.state.animal.name :
-			'Make a post about ' + this.state.animal.name;
+		if (!this.state.editor) return null;
+		var extraFields = {
+			animalId: this.state.animalId,
+			groupId: this.state.groupId,
+			userId: LoginStore.getUser().id
+		}
 		return (
-			<div>
-				<h1>{headerText}</h1>
-				<div className="center-block padding">
-					<textarea
-						className="form-control padding center-block PostTextArea"
-						ref="note"
-						rows="5"
-						id="comment"
-						defaultValue={value}>
-					</textarea>
-					<div style={{textAlign: 'center'}}>
-					<button className="btn btn-info" onClick={this.submitNote}>
-						{buttonText}
-					</button>
-					</div>
-				</div>
-			</div>
+			<EditorElement
+				extraFields={extraFields}
+				mode={this.state.mode}
+				permission={this.state.permission}
+				onEditOrInsert={this.goBackToPage.bind(this)}
+				onDelete={this.goBackToPage.bind(this)}
+				editor={this.state.editor} />
 		);
 	}
 }

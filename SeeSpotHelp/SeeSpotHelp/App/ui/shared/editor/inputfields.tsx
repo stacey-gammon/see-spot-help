@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import InputField from '../../../core/editor/inputfield';
-import InputTextField from './inputtextfield';
+import InputFieldElement from './inputfield';
 
 export default class InputFields extends React.Component<any, any> {
 	constructor(props) {
@@ -9,13 +9,13 @@ export default class InputFields extends React.Component<any, any> {
 	}
 
 	createInputField(inputField: InputField) {
-		return <InputTextField key={inputField.ref} ref={inputField.ref} inputField={inputField}/>
+		return <InputFieldElement key={inputField.ref} ref={inputField.ref} inputField={inputField}/>
 	}
 
 	fillWithValues(inputFields) {
 		for (var key in inputFields) {
 			var inputField = inputFields[key];
-			var inputFieldElement = this.refs[inputField.ref] as InputTextField;
+			var inputFieldElement = this.refs[inputField.ref] as InputFieldElement;
 			inputField.value = inputFieldElement.getValue();
 		}
 	}

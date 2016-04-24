@@ -9,7 +9,7 @@ var UserGroupsTab = require('./usergroupstab');
 var UserActivityTab = require('./useractivitytab');
 var MemberScheduleTab = require('./memberscheduletab');
 
-import Utils from '../../core/utils';
+import Utils from '../uiutils';
 import LoginStore from '../../stores/loginstore';
 
 export default class ProfilePageTabs extends React.Component<any, any> {

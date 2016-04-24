@@ -9,7 +9,7 @@ var LoginPage = require('../loginpage');
 
 import ProfilePageTabs from './profilepagetabs';
 
-import Utils from '../../core/utils';
+import Utils from '../uiutils';
 import Volunteer from '../../core/databaseobjects/volunteer';
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import GroupStore from '../../stores/groupstore';

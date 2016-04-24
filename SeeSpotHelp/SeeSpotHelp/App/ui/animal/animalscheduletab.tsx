@@ -7,7 +7,7 @@ var Calendar = require("../calendar");
 
 import GroupActionsBox from '../group/groupactionsbox';
 
-import Utils from '../../core/utils';
+import Utils from '../uiutils';
 import Animal from '../../core/databaseobjects/animal';
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import LoginStore from '../../stores/loginstore';

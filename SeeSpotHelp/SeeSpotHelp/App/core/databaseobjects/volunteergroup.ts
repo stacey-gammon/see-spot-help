@@ -107,9 +107,9 @@ export default class VolunteerGroup extends DatabaseObject {
 	//	 callback is expected to take as a first argument the potentially
 	//	 inserted volunteer group (null on failure) and a server
 	//	 response to hold error and success information.
-	insert(user?) {
+	insert(userId?) {
 		var inserts = this.getInserts();
-		var permission = Permission.CreateAdminPermission(user.id, this.id);
+		var permission = Permission.CreateAdminPermission(userId, this.id);
 		Object.assign(inserts, permission.getInserts());
 
 		DataServices.UpdateMultiple(inserts);

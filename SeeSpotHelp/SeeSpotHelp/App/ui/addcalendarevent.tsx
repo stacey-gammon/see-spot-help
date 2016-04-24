@@ -5,7 +5,7 @@ var Router = require("react-router");
 var DatePicker = require('react-datepicker');
 var moment = require('moment');
 
-import Utils from '../core/utils';
+import Utils from './uiutils';
 import LoginStore from '../stores/loginstore';
 import GroupStore from '../stores/groupstore';
 import ScheduleStore from '../stores/schedulestore';

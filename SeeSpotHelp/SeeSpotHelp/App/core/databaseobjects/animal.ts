@@ -7,12 +7,14 @@ import DatabaseObject from './databaseobject';
 
 export default class Animal extends DatabaseObject {
 
-	public name: string;
-	public type: string;
-	public breed: string;
-	public age: number;
+	public name: string = '';
+	public type: string = 'Dog';
+	public description: string = '';
+	public breed: string = '';
+	public age: number = null;
 	public status: number = Animal.StatusEnum.ADOPTABLE;
 	public groupId: string;
+	public userId: string;
 
 	// Only used for searching:
 	public zipCode: string;
@@ -48,7 +50,7 @@ export default class Animal extends DatabaseObject {
 		];
 	}
 
-	CopyGroupFields(group) {
+	copyGroupFields(group) {
 		// Add these fields for searching.
 		this.zipCode = StringUtils.MakeSearchable(group.zipCode);
 		this.shelter = StringUtils.MakeSearchable(group.shelter);

@@ -12,7 +12,7 @@ import VolunteerStore from '../../stores/volunteerstore';
 import AnimalStore from '../../stores/animalstore';
 import PermissionsStore from '../../stores/permissionsstore';
 import AnimalActivityStore from '../../stores/animalactivitystore';
-import AnimalNote from '../../core/databaseobjects/animalnote';
+import Activity from '../../core/databaseobjects/activity';
 import Permission from '../../core/databaseobjects/permission';
 
 export default class AnimalActivityItem extends React.Component<any, any> {
@@ -109,7 +109,7 @@ export default class AnimalActivityItem extends React.Component<any, any> {
 				<div className="media">
 					<div className="media-body">
 						{this.getAnimalNameHeader()}
-						<p>{this.props.activity.toDisplayString()}
+						<p>{this.props.activity.description}
 						{this.getEditActionButton()}</p>
 						<p>
 						<a><LinkContainer

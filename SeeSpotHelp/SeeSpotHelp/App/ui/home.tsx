@@ -16,10 +16,10 @@ import GroupHomePage from './group/grouphomepage';
 import ProfilePage from './person/profilepage';
 import AddNewGroup from './group/addnewgroup';
 import AddAnimalNote from './animal/addanimalnote';
+import AnimalHomePage from './animal/animalHomePage';
+import AddAnimalPage from './animal/addanimalpage';
 
 var SearchPage = require('./searchpage');
-var AnimalHomePage = require('./animal/animalHomePage');
-var AddAnimalPage = require('./animal/addanimalpage');
 var MemberPage = require('./person/memberpage');
 var LoginPage = require('./loginpage');
 var PrivateBetaPage = require('./privatebetapage');

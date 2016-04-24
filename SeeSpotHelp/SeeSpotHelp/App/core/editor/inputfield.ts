@@ -2,6 +2,13 @@
 
 import ConstStrings from "../conststrings";
 
+export enum InputFieldType {
+	TEXT,
+	TEXT_AREA,
+	LIST,
+	HIDDEN
+}
+
 // Represents an input form field.
 // @param validations {inputfieldvalidations[]} an array list of input field validations
 // that this field should run during the validate call.
@@ -11,16 +18,11 @@ export default class InputField {
 	public errorMessage: string = '';
 	public value: string = '';
 	public ref: string = '';
-	public type: string = 'text';
-	public listItems: Array<any> = [];
+	public type: InputFieldType = InputFieldType.TEXT;
 	public validations: Array<any> = [];
 
 	constructor (validations?) {
 		this.validations = validations ? validations : [];
-	}
-
-	setListItems(listItems) {
-		this.listItems = listItems;
 	}
 
 	getUserString() {

@@ -16,17 +16,15 @@ export default class GroupEditor extends Editor {
 	public databaseObject: VolunteerGroup;
 
 	constructor(group) {
-		super();
-		this.databaseObject = group;
-		this.createInputFields();
+		super(group);
 	}
 
 	getInputFields() { return this.inputFields; }
 
-	insert(user) {
+	insert(extraFields) {
 		var group = new VolunteerGroup();
 		group.updateFromInputFields(this.inputFields);
-		group.insert(user);
+		group.insert(extraFields.userId);
 		this.databaseObject = group;
 	}
 
@@ -45,16 +43,5 @@ export default class GroupEditor extends Editor {
 			'state': new InputField([IFV.validateNotEmpty]),
 			'zipCode': new InputField([IFV.validateNotEmpty])
 		};
-
-		// Store the ref name on the input field without manually
-		// writing it out twice.
-		for (var field in this.inputFields) {
-			this.inputFields[field].ref = field;
-		}
-		if (this.databaseObject) {
-			for (var field in this.inputFields) {
-				this.inputFields[field].value = this.databaseObject[field];
-			}
-		}
 	}
 }

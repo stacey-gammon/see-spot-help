@@ -1,5 +1,4 @@
 import DataServices from '../dataservices';
-import Utils from '../utils';
 
 abstract class DatabaseObject {
 	public timestamp: number = Date.now();

@@ -2,7 +2,7 @@
 
 var React = require("react");
 
-import Utils from '../core/utils';
+import Utils from './uiutils';
 import ScheduleStore from '../stores/schedulestore';
 import AnimalStore from '../stores/animalstore';
 import VolunteerStore from '../stores/volunteerstore';
