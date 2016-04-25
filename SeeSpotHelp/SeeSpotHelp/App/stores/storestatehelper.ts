@@ -30,6 +30,32 @@ class StoreStateHelper {
 			stores[i].removeChangeListener(reactClass.onChange);
 		}
 	}
+
+	public static AddPropertyListeners(idToStoreMap, reactClass) {
+		LoginStore.addChangeListener(reactClass.onChange.bind(reactClass));
+		PermissionsStore.addPropertyListener(
+			reactClass, 'userId', LoginStore.getUser().id, reactClass.onChange.bind(reactClass));
+		for (var id in idToStoreMap) {
+			var store = idToStoreMap[id];
+			store.addPropertyListener(reactClass, 'id', id, reactClass.onChange.bind(reactClass));
+		}
+	}
+
+	public static EnsureRequiredState(idToStoreMap, reactClass) {
+		var promises = [];
+		for (var id in idToStoreMap) {
+			var store = idToStoreMap[id];
+			promises.push(store.ensureItemById(id));
+		}
+
+		Promise.all(promises).then(
+			function () {
+				var permission = StoreStateHelper.GetPermission(reactClass.state);
+				reactClass.setState({ permission: permission });
+				this.AddPropertyListeners(idToStoreMap, reactClass);
+			}.bind(this)
+		);
+	}
 }
 
 export default StoreStateHelper;

@@ -1,11 +1,6 @@
-﻿"use strict"
+﻿'use strict'
 
-var React = require('react');
-var ReactBootstrap = require("react-bootstrap");
-var Tab = ReactBootstrap.Tab;
-var Tabs = ReactBootstrap.Tabs;
-
-import LoginStore from '../../stores/loginstore';
+import * as React from 'react';
 
 import Utils from '../uiutils';
 import Animal from '../../core/databaseobjects/animal';
@@ -13,156 +8,76 @@ import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 import Permission from '../../core/databaseobjects/permission';
 import AnimalStore from '../../stores/animalstore';
 import PhotoStore from '../../stores/photostore';
+import GroupStore from '../../stores/groupstore';
+import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
+import StoreStateHelper from '../../stores/storestatehelper';
 
-var TakePhotoButton = require("../takephotobutton");
-var AnimalActionsBox = require('./animalactionsbox');
-var AnimalPhotoReel = require("./animalphotoreel");
-var AnimalActivityList = require("./animalactivitylist");
-var AnimalScheduleTab = require("./animalscheduletab");
+import AnimalPageTabs from './animalpagetabs';
+import AnimalInfoBar from './animalinfobar';
+
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 // Animal home page displays animal information, photos and activies and notes made
 // by volunteers, as well as ability to edit, delete and add a new activity or note
 // about the specific animal.
-var AnimalHomePage = React.createClass({
-	getInitialState: function() {
+export default class AnimalHomePage extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
 		var animal = Utils.FindPassedInProperty(this, 'animal');
 		var group = Utils.FindPassedInProperty(this, 'group');
 
-		var permission = LoginStore.getUser() && group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, group.id) :
-			Permission.CreateNonMemberPermission();
-
-		if (animal && !(animal instanceof Animal)) {
-			animal = new Animal().castObject(animal);
-		}
-		if (group && !(group instanceof VolunteerGroup)) {
-			group = new VolunteerGroup().castObject(group);
-		}
-
-		var state = {
-			animal: animal,
-			group: group,
-			permission: permission,
+		this.state = {
+			animalId: animal.id,
+			groupId: group.id,
+			permission: Permission.CreateNonMemberPermission(),
 			animalDefaultTabKey: null
 		};
 
-		Utils.LoadOrSaveState(state);
-		return state;
-	},
-	componentDidMount: function() {
-		LoginStore.addChangeListener(this.onChange);
-		PhotoStore.addChangeListener(this.onChange);
-		PermissionsStore.addChangeListener(this.onChange);
-	},
+		Utils.LoadOrSaveState(this.state);
+	}
 
-	componentWillUnmount: function() {
+	componentWillMount() {
+		var idToStoreMap = {};
+		idToStoreMap[this.state.groupId] = GroupStore;
+		idToStoreMap[this.state.animalId] = AnimalStore;
+		StoreStateHelper.EnsureRequiredState(idToStoreMap, this);
+	}
+
+	componentDidMount() {
+		PhotoStore.addPropertyListener(
+			this, 'animalId', this.state.animalId, this.onChange.bind(this));
+	}
+
+	componentWillUnmount() {
 		LoginStore.removeChangeListener(this.onChange);
-		PhotoStore.removeChangeListener(this.onChange);
-		PermissionsStore.removeChangeListener(this.onChange);
-	},
+		PhotoStore.removePropertyListener(this);
+		PermissionsStore.removePropertyListener(this);
+		GroupStore.removePropertyListener(this);
+		AnimalStore.removePropertyListener(this);
+	}
 
-	onChange: function () {
-		var permission = LoginStore.getUser() && this.state.group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, this.state.group.id) :
-			Permission.CreateNonMemberPermission();
-		this.setState({
-			permission: permission
-		});
-	},
+	onChange() {
+		var permission = StoreStateHelper.GetPermission(this.state);
+		this.setState({ permission: permission });
+	}
 
-	shouldAllowUserToEdit: function () {
-		return this.state.permission.inGroup();
-	},
-
-	handleTabSelect: function(key) {
-		this.setState({animalDefaultTabKey : key});
-		// We aren't supposed to manipulate state directly, but it doesn't yet have the newly
-		// selected tab that we want to save to local storage.
-		var stateDuplicate = this.state;
-		stateDuplicate.animalDefaultTabKey = key;
-		Utils.LoadOrSaveState(stateDuplicate);
-	},
-
-	getEditIcon: function() {
-		if (!this.shouldAllowUserToEdit()) return null;
-		return (
-			<LinkContainer
-				to={{ pathname: "addAnimalPage",
-					state: { user: LoginStore.getUser(),
-							 group: this.state.group,
-							 animal: this.state.animal,
-							 mode: 'edit' } }}>
-				<span style={{marginLeft: '10px'}}
-						className="glyphicon glyphicon-edit">
-				</span>
-			</LinkContainer>
-		);
-	},
-
-	render: function () {
-		if (!this.state.animal) return null;
-		var photos = PhotoStore.getPhotosByAnimalId(this.state.animal.id);
-		var imageSrc = photos && photos.length > 0 ? photos[0].src : this.state.animal.getDefaultPhoto();
-
-		var animal = this.state.animal;
-		var defaultTabKey = this.state.animalDefaultTabKey ? this.state.animalDefaultTabKey : 1;
+	render() {
+		var animal = AnimalStore.getItemById(this.state.animalId);
+		var group = GroupStore.getItemById(this.state.groupId);
+		if (!animal || !group) return null;
 		return (
 			<div className="page">
-				<div className="info-top">
-					<div className="media">
-						<div className="media-left">
-							<img className="media-object"
-								 style={{margin: 5 + "px"}}
-								 height="100px" width="100px"
-								 src={imageSrc} />
-							<TakePhotoButton
-								group={this.state.group}
-								user={LoginStore.getUser()}
-								permission={this.state.permission}
-								animal={animal}/>
-						</div>
-						<div className="media-body padding">
-							<h1 className="animalInfo">{animal.name}
-							{this.getEditIcon()}
-							</h1>
-							<h2 className="animalInfo">{animal.age} years old</h2>
-							<h2 className="animalInfo">{animal.status}</h2>
-							<h2 className="animalInfo">{animal.breed}</h2>
-							<p className="animalInfo">{animal.description}</p>
-						</div>
-					</div>
-					<AnimalPhotoReel
-						group={this.state.group}
-						permission={this.state.permission}
-						animal={animal} />
-				</div>
-				<Tabs className="tabs-area" activeKey={defaultTabKey} onSelect={this.handleTabSelect}>
-					<Tab  className="tab" eventKey={1} title={Utils.getActivityGlyphicon()}>
-						<AnimalActionsBox
-							group={this.state.group}
-							animal={animal}
-							permission={this.state.permission}/>
-						<br/>
-						<br/>
-						<AnimalActivityList
-							group={this.state.group}
-							animal={animal}
-							permission={this.state.permission}/>
-					</Tab>
-					<Tab className="tab" eventKey={2} title={Utils.getCalendarGlyphicon()}>
-						<AnimalScheduleTab
-							group={this.state.group}
-							view="animal"
-							animalId={animal.id}
-							permission={this.state.permission}/>
-					</Tab>
-				</Tabs>
+				<AnimalInfoBar
+					group={group}
+					permission={this.state.permission}
+					animal={animal} />
+				<AnimalPageTabs
+					group={group}
+					permission={this.state.permission}
+					animal={animal} />
 			</div>
 		);
 	}
-});
-
-export default AnimalHomePage;
+}

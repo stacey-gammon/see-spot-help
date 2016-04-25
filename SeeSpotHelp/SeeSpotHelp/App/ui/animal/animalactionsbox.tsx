@@ -1,108 +1,51 @@
-﻿"use strict"
+﻿'use strict'
 
-var React = require("react");
+import * as React from 'react';
 
 import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 
-var AddAnimalNote = require("./addanimalnote");
-var ReactRouterBootstrap = require('react-router-bootstrap');
-var LinkContainer = ReactRouterBootstrap.LinkContainer;
+import AddAnimalNote from './addanimalnote';
+
+var TakePhotoButton = require("../takephotobutton");
+var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
 // Actions to display on the animal home page, such as Add Activity,
 // Edit and Delete.
-var AnimalActionsBox = React.createClass({
-	getInitialState: function() {
-		var permission = LoginStore.getUser() && this.props.group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, this.props.group.id) :
-			Permission.CreateNonMemberPermission();
-		return {
-			walking: false,
-			animal: this.props.animal,
-			group: VolunteerGroup.castObject(this.props.group),
-			permission: permission
-		}
-	},
+export default class AnimalActionsBox extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
+	}
 
-	componentDidMount: function () {
-		LoginStore.addChangeListener(this.onChange);
-		PermissionsStore.addChangeListener(this.onChange);
-	},
+	shouldAllowUserToEdit() {
+		return this.props.permission.inGroup();
+	}
 
-	componentWillUnmount: function () {
-		LoginStore.removeChangeListener(this.onChange);
-		PermissionsStore.removeChangeListener(this.onChange);
-	},
-
-	onChange: function () {
-		var permission = LoginStore.getUser() && this.props.group ?
-			PermissionsStore.getPermission(LoginStore.getUser().id, this.props.group.id) :
-			Permission.CreateNonMemberPermission();
-		this.setState({
-			permission: permission
-		});
-	},
-
-	// endWalk: function() {
-	// 	var startWalk = this.state.startWalkTime;
-	// 	var totalWalkTimeInMinutes = (Date.now() - startWalk) / (1000 * 60);
-	// 	this.setState({ walking: false });
-	//
-	// 	// TODO(stacey): Temporary, implement this feature fully.
-	// 	console.log("You walked the dog for " + totalWalkTimeInMinutes + " minutes");
-	// },
-	//
-	// startWalk: function() {
-	// 	this.setState({walking: true, startWalkTime: Date.now() });
-	// 	var walkButton = document.getElementById('walkButton');
-	// 	walkButton.text = "End Walk";
-	// 	walkButton.onClick = this.endWalk;
-	// },
-
-	shouldAllowUserToEdit: function () {
-		return this.state.permission.inGroup();
-	},
-
-	// Currently not called bc they are not implemented yet.
-	getWalkAndVisitButtons: function () {
+	render() {
 		return (
-			<div>
-			<button className="btn btn-info padding walkAnimalButton"
-					id="walkButton"
-					disabled={!this.shouldAllowUserToEdit()}
-					onClick={this.walkFunction}>
-				Walk
-			</button>
-			<button className="btn btn-info padding"
-					disabled={!this.shouldAllowUserToEdit()}
-					onClick={this.alertNotImplemented}>
-				Visit
-			</button>
-			</div>
-		);
-	},
-
-	render: function () {
-		var walkFunction = this.state.walking ? this.endWalk : this.startWalk;
-		var walkText = this.state.walking ? "End walk" : "Walk";
-		return (
-			<div>
-				<LinkContainer
-					disabled={!this.shouldAllowUserToEdit()}
-					to={{ pathname: "addAnimalNote",
-						state: { animal: this.props.animal,
-								 group: this.state.group,
-								 mode: 'add' } }}>
-					<button className="btn btn-info padding addAnimalNoteButton"
-							disabled={!this.shouldAllowUserToEdit()}>
-						Add a comment
-					</button>
-				</LinkContainer>
+			<div className='container-fluid'>
+				<div className='row'>
+					<div className='col-md-12 text-right'>
+						<TakePhotoButton
+							group={this.props.group}
+							permission={this.props.permission}
+							animal={this.props.animal}/>
+						<LinkContainer
+							disabled={!this.shouldAllowUserToEdit()}
+							to={{ pathname: "addAnimalNote",
+								state: { animal: this.props.animal,
+										 group: this.props.group,
+										 mode: 'add' } }}>
+							<button className="btn btn-info"
+									disabled={!this.shouldAllowUserToEdit()}>
+								Post comment
+							</button>
+						</LinkContainer>
+					</div>
+				</div>
 			</div>
 		);
 	}
-});
-
-module.exports = AnimalActionsBox;
+}

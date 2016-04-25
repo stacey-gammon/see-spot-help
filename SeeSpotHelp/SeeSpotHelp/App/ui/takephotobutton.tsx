@@ -67,8 +67,8 @@ var TakePhotoButton = React.createClass({
 
 	render: function () {
 		return (
-			<div className="takePhotoButton" width="90px">
-				<button className="btn btn-info padding"
+			<span>
+				<button className="btn btn-info"
 						disabled={!this.allowAction()}
 						onClick={this.addPhoto}
 						style={this.props.style}>
@@ -77,11 +77,9 @@ var TakePhotoButton = React.createClass({
 				</button>
 				<input type="file" accept="image/*"
 						onChange={this.loadPhoto}
-						hidden="true"
-						width="0px"
 						className="addPhotoFileInput"
 						ref="addPhotoFileInput"/>
-			</div>
+			</span>
 		);
 	}
 });

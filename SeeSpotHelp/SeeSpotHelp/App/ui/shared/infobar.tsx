@@ -21,6 +21,11 @@ export default class InfoBar extends React.Component<any, any> {
 			mediaRight = this.props.children[2];
 		}
 
+		var additionalChildren = [];
+		for (var i = 3; i < this.props.children.length; i++) {
+			additionalChildren.push(this.props.children[i]);
+		}
+
 		var className = this.props.noTabs ? 'info-top-no-tabs' : 'info-top';
 
 		return (
@@ -36,6 +41,7 @@ export default class InfoBar extends React.Component<any, any> {
 						{mediaRight}
 					</div>
 				</div>
+				{additionalChildren}
 			</div>
 		);
 	}
