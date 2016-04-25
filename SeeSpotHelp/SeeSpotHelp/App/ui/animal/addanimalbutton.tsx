@@ -12,17 +12,15 @@ export default class AddAnimalButton extends React.Component<any, any> {
 		if (!this.props.permission.inGroup()) { return null; }
 
 		return (
-			<div className='center-block' style={{textAlign: 'center'}}>
-				<LinkContainer
-					to={{pathname: 'addAnimalPage',
-						state: {group: this.props.group,
-								permission: this.props.permission,
-								mode: 'add'}}}>
-					<button className='btn btn-info addAnimalButton padding'>
-						Add Animal
-					</button>
-				</LinkContainer>
-			</div>
+			<LinkContainer
+				to={{pathname: 'addAnimalPage',
+					state: {group: this.props.group,
+							permission: this.props.permission,
+							mode: 'add'}}}>
+				<button className='btn btn-info addAnimalButton padding'>
+					Add Animal
+				</button>
+			</LinkContainer>
 		);
 	}
 }

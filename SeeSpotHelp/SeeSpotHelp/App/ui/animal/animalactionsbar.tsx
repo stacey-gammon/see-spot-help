@@ -8,6 +8,7 @@ import PermissionsStore from '../../stores/permissionsstore';
 import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
 
 import AddAnimalNote from './addanimalnote';
+import ActionsBar from '../shared/actionsbar';
 
 var TakePhotoButton = require("../takephotobutton");
 var LinkContainer = require('react-router-bootstrap').LinkContainer;
@@ -25,27 +26,23 @@ export default class AnimalActionsBox extends React.Component<any, any> {
 
 	render() {
 		return (
-			<div className='container-fluid'>
-				<div className='row'>
-					<div className='col-md-12 text-right'>
-						<TakePhotoButton
-							group={this.props.group}
-							permission={this.props.permission}
-							animal={this.props.animal}/>
-						<LinkContainer
-							disabled={!this.shouldAllowUserToEdit()}
-							to={{ pathname: "addAnimalNote",
-								state: { animal: this.props.animal,
-										 group: this.props.group,
-										 mode: 'add' } }}>
-							<button className="btn btn-info"
-									disabled={!this.shouldAllowUserToEdit()}>
-								Post comment
-							</button>
-						</LinkContainer>
-					</div>
-				</div>
-			</div>
+			<ActionsBar>
+				<TakePhotoButton
+					group={this.props.group}
+					permission={this.props.permission}
+					animal={this.props.animal}/>
+				<LinkContainer
+					disabled={!this.shouldAllowUserToEdit()}
+					to={{ pathname: "addAnimalNote",
+						state: { animal: this.props.animal,
+								 group: this.props.group,
+								 mode: 'add' } }}>
+					<button className="btn btn-info"
+							disabled={!this.shouldAllowUserToEdit()}>
+						Post comment
+					</button>
+				</LinkContainer>
+			</ActionsBar>
 		);
 	}
 }

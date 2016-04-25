@@ -6,56 +6,39 @@ import AnimalActivityItem from './animalactivityitem';
 import AnimalActivityStore from '../../stores/animalactivitystore';
 import VolunteerStore from '../../stores/volunteerstore';
 
-var AnimalActivityList = React.createClass({
-	getInitialState: function() {
-		return {
-			animal: this.props.animal
-		};
-	},
+export default class AnimalActivityList extends React.Component<any, any> {
+	constructor(props) { super(props); }
 
-	componentDidMount: function () {
-		AnimalActivityStore.addChangeListener(this.onChange);
+	componentDidMount() {
+		AnimalActivityStore.addPropertyListener(
+			this, 'animalId', this.props.animal.id, this.forceUpdate.bind(this));
 		// In case a user changes their name on us, update the note.
-		VolunteerStore.addChangeListener(this.onChange);
-	},
+		VolunteerStore.addChangeListener(this.forceUpdate);
+	}
 
-	componentWillUnmount: function () {
-		AnimalActivityStore.removeChangeListener(this.onChange);
-		VolunteerStore.removeChangeListener(this.onChange);
-	},
+	componentWillUnmount() {
+		AnimalActivityStore.removePropertyListener(this);
+		VolunteerStore.removeChangeListener(this.forceUpdate);
+	}
 
-	onChange: function () {
-		this.setState(
-			{
-				animal: this.props.animal
-			});
-	},
-
-	generateAnimalNote: function (note) {
+	generateAnimalNote(note) {
 		return (
 			<AnimalActivityItem key={note.id}
 								activity={note}
 								group={this.props.group}
 								animal={this.props.animal}/>
 		);
-	},
+	}
 
-	render: function () {
-		var notes = AnimalActivityStore.getActivityByAnimalId(this.props.animal.id);
-		console.log("AnimalActivityList:render with notes:", notes);
-		var displayNotes = [];
-		for (var i = 0; i < notes.length; i++) {
-			displayNotes.push(this.generateAnimalNote(notes[i]));
-		}
-		var text = notes && notes.length > 0 ? '' :
-			"No activity posted yet.";
+	render() {
+		var activity = AnimalActivityStore.getActivityByAnimalId(this.props.animal.id);
+		var activityElements = activity.map(this.generateAnimalNote.bind(this));
+		var text = activity && activity.length > 0 ? '' : 'Be the first to make a post!';
 		return (
 			<div className="list-group">
 				{text}
-				{displayNotes}
+				{activityElements}
 			</div>
 		);
 	}
-});
-
-module.exports = AnimalActivityList;
+}

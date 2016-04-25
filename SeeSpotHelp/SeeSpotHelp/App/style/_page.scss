@@ -62,7 +62,10 @@
 
 .actions-bar {
 	max-width: 600px;
-	.btn {
-		background-color: green;
-	}
+	margin: 5px 5px !important;
+}
+
+.glyphicon-camera {
+	color: white;
+	font-size: 20px;
 }

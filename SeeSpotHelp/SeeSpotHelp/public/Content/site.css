@@ -20,10 +20,8 @@ h2 {
     margin: 0 0 10px 10px;
 }
 
-.addAnimalNoteButton {
+.actions-bar {
     float: right;
-	display: block;
-    margin: 0 0 10px 10px;
 }
 
 .email {

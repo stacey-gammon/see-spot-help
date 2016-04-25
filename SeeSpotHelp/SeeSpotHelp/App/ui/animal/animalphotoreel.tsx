@@ -1,71 +1,40 @@
-"use strict"
+'use strict'
 
-var React = require("react");
+import * as React from 'react';
 var Slider = require('react-slick');
-var TakePhotoButton = require("../takephotobutton");
 
 import LoginStore from '../../stores/loginstore';
 import PhotoStore from '../../stores/photostore';
 
-var LeftNavButton = React.createClass({
-  render() {
-    return <button>Prev</button>
-  }
-});
+export default class AnimalPhotoReel extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
+	}
 
-var RightNavButton = React.createClass({
-  render() {
-    return <button>Next</button>
-  }
-});
+	componentDidMount() {
+		PhotoStore.addPropertyListener(
+			this, 'animalId', this.props.animal.id, this.forceUpdate.bind(this));
+	}
 
-var AnimalPhotoReel = React.createClass({
-	getInitialState: function() {
-		return {
-			user: LoginStore.getUser()
-		}
-	},
+	componentWillUnmount() {
+		PhotoStore.removePropertyListener(this);
+	}
 
-	componentDidMount: function () {
-		LoginStore.addChangeListener(this.onChange);
-	},
-
-	componentWillUnmount: function () {
-		LoginStore.removeChangeListener(this.onChange);
-	},
-
-	onChange: function () {
-		this.forceUpdate();
-	},
-
-	generateImage: function (photo) {
+	generateImage(photo) {
 		return (
 			<div><img className="slider-img" src={photo.src}/></div>
 		);
-	},
+	}
 
-	getAddPhotoButton: function () {
-		var style = {height: '30px', width: '40px', margin: '5px'};
-		return (
-			<div style={{vertialAlign: 'middle'}}>
-				<TakePhotoButton
-					group={this.props.group}
-					style={style}
-					user={LoginStore.getUser()}
-					permission={this.props.permission}
-					animal={this.props.animal}/>
-			</div>
-		);
-	},
-
-	render: function () {
-		console.log("AnimalPhotoReel::render");
+	render() {
 		var photos = PhotoStore.getPhotosByAnimalId(this.props.animal.id);
+		if (!photos || photos.length == 0) return null;
+
 		var photoImgs = [];
-		//photoImgs.push(this.getAddPhotoButton());
 		for (var i = 0; i < photos.length; i++) {
 			photoImgs.push(this.generateImage(photos[i]));
 		}
+
 		var settings = {
 			dots: false,
 			arrows: true,
@@ -77,6 +46,7 @@ var AnimalPhotoReel = React.createClass({
 			variableWidth: true,
 			adaptiveHeight: false
 		};
+
 		return (
 			<div className="photo-slider">
 				<Slider {...settings}>
@@ -85,6 +55,4 @@ var AnimalPhotoReel = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = AnimalPhotoReel;
+}

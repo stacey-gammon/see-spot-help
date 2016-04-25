@@ -10,8 +10,8 @@ import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
 import InfoBar from '../shared/infobar';
+import AnimalPhotoReel from './animalphotoreel';
 
-var AnimalPhotoReel = require("./animalphotoreel");
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 

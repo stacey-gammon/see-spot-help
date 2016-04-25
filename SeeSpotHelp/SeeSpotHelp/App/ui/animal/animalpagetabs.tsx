@@ -5,9 +5,9 @@ var ReactBootstrap = require("react-bootstrap");
 var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
 
-var AnimalActivityList = require("./animalactivitylist");
-var AnimalScheduleTab = require("./animalscheduletab");
-import AnimalActionsBox from './animalactionsbox';
+import AnimalActivityList from './animalactivitylist';
+import AnimalScheduleTab from './animalscheduletab';
+import AnimalActionsBar from './animalactionsbar';
 
 import Utils from '../uiutils';
 import Permission from '../../core/databaseobjects/permission';
@@ -47,12 +47,10 @@ export default class GroupPageTabs extends React.Component<any, any> {
 			<Tabs className="tabs-area" activeKey={defaultTabKey}
 				onSelect={this.handleTabSelect.bind(this)}>
 				<Tab  className="tab" eventKey={1} title={Utils.getActivityGlyphicon()}>
-					<AnimalActionsBox
+					<AnimalActionsBar
 						group={this.props.group}
 						animal={this.props.animal}
 						permission={this.props.permission}/>
-					<br/>
-					<br/>
 					<AnimalActivityList
 						group={this.props.group}
 						animal={this.props.animal}
