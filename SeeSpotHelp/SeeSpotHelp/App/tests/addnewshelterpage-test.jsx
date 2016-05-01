@@ -3,7 +3,7 @@ var ReactDOM = require("react-dom");
 var ReactTestUtils = require("react-addons-test-utils");
 var expect = require("expect"),
 	Volunteer = require("../core/volunteer"),
-	VolunteerGroup = require("../core/volunteergroup"),
+	Group = require("../core/group"),
 	ServerResponse = require("../core/serverresponse"),
 	AddNewGroup = require("../ui/group/addnewgroup");
 import LoginStore from '../stores/loginstore';
@@ -107,8 +107,8 @@ describe("AddNewGroup", function () {
 		ReactTestUtils.Simulate.change(zipInput);
 
 		// Mock out actual server call.
-		VolunteerGroup.prototype.insert = function (user, callback) {
-			var group = VolunteerGroup.getFakeGroups()["123"];
+		Group.prototype.insert = function (user, callback) {
+			var group = Group.getFakeGroups()["123"];
 			callback(group, new ServerResponse());
 		};
 		// Otherwise we'll get issues when trying to switch pages.
@@ -125,8 +125,8 @@ describe("AddNewGroup", function () {
 		console.log("EditGroupSuccess");
 		var user = new Volunteer("john", "doe", "123");
 		LoginStore.user = user;
-		var group = new VolunteerGroup("My Group", "My Shelter", "123 Dog Lane", "Cat City", "NY", "12345", "5");
-		group.userPermissionsMap[123] = VolunteerGroup.PermissionsEnum.ADMIN;
+		var group = new Group("My Group", "My Shelter", "123 Dog Lane", "Cat City", "NY", "12345", "5");
+		group.userPermissionsMap[123] = Group.PermissionsEnum.ADMIN;
 		var AddNewGroup = ReactTestUtils.renderIntoDocument(
 			<AddNewGroup group={group} mode="edit" />
 		);

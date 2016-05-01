@@ -5,7 +5,7 @@ var ActionConstants = require('../constants/actionconstants');
 var LoginActions = require("../actions/loginactions");
 
 import Volunteer from '../core/databaseobjects/volunteer';
-import VolunteerGroup from '../core/databaseobjects/volunteergroup';
+import Group from '../core/databaseobjects/group';
 import DatabaseObject from '../core/databaseobjects/databaseobject';
 import DataServices from '../core/dataservices';
 import BaseStore from './basestore';

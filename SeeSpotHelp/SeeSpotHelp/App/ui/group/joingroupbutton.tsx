@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import ConstStrings from '../../core/conststrings';
 import DataServices from '../../core/dataservices';
 import Permission from '../../core/databaseobjects/permission';
@@ -19,11 +19,11 @@ export default class JoinGroupButton extends React.Component<any, any> {
 
 		var permission = this.props.permission;
 		if (permission.pending()) {
-			permission.permission = VolunteerGroup.PermissionsEnum.NONMEMBER;
+			permission.permission = Group.PermissionsEnum.NONMEMBER;
 			permission.update();
 			this.refs.requestToJoinButton.innerHTML = ConstStrings.RequestToJoin;
 		} else {
-			permission.permission = VolunteerGroup.PermissionsEnum.PENDINGMEMBERSHIP;
+			permission.permission = Group.PermissionsEnum.PENDINGMEMBERSHIP;
 			permission.update();
 			DataServices.PushFirebaseData('emails/tasks',
 				{

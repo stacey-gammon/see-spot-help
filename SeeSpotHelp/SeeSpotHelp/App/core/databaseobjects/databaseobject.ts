@@ -1,5 +1,11 @@
 import DataServices from '../dataservices';
 import Firebase = require('firebase');
+//import Util from './util';
+
+export enum Status {
+	ACTIVE,
+	ARCHIVED
+}
 
 abstract class DatabaseObject {
 	public timestamp: number = Firebase.ServerValue.TIMESTAMP;
@@ -7,6 +13,8 @@ abstract class DatabaseObject {
 	public className: string;
 	public classNameForSessionStorage;
 	public firebasePath;
+
+	public status: Status = Status.ACTIVE;
 
 	// If the object wants to store duplicate entries of itself, mapped by a particular unique
 	// attribute, it should add the properties in here.
@@ -104,6 +112,33 @@ abstract class DatabaseObject {
 			var path = this.getPathToMapping(this.mappingProperties[i]);
 			DataServices.RemoveFirebaseData(path);
 		}
+	}
+
+	deleteExternalReferences(externalInstances) {
+		// TODO: Think about how to handle soft vs hard deletes.  For now, taking the easiest
+		// course of action and not propagating deletes to external reference items.
+
+		// var deleteData = function(snapshot) {
+		// 	for (var id in snapshot.val()) {
+		// 		var item = snapshot.val()[id];
+		// 		DataServices.RemoveFirebaseData(item.firebasePath + '/' + id);
+		//
+		// 		for (var i = 0; i < item.mappingProperties.length; i++) {
+		// 			var mapping = item.mappingProperties[i];
+		// 			var ref = instance.getPathToMapping(mapping);
+		// 			DataServices.RemoveFirebaseData(ref + '/' + id);
+		// 		}
+		// 	}
+		// };
+		//
+		// var externalId = this.className.toLowerCase() + 'Id';
+		// for (var i = 0; i < externalInstances.length; i++) {
+		// 	var instance = externalInstances[i];
+		// 	if (instance.mappingProperties.indexOf(externalId) >= 0) {
+		// 		var ref = DatabaseObject.GetPathToMapping(instance.firebasePath, externalId, this.id);
+		// 		DataServices.DownloadDataOnce(ref, deleteData);
+		// 	}
+		// }
 	}
 }
 export default DatabaseObject;

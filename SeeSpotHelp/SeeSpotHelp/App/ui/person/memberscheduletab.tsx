@@ -5,7 +5,7 @@ var React = require('react');
 import $ = require('jquery');
 import Utils from '../uiutils';
 import Animal from '../../core/databaseobjects/animal';
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import LoginStore from '../../stores/loginstore';
 var Calendar = require("../calendar");
 

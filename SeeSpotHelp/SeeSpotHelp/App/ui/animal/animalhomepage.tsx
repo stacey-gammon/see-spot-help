@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import Utils from '../uiutils';
 import Animal from '../../core/databaseobjects/animal';
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import Permission from '../../core/databaseobjects/permission';
 import AnimalStore from '../../stores/animalstore';
 import PhotoStore from '../../stores/photostore';

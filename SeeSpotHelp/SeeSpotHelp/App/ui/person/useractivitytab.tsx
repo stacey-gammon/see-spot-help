@@ -1,90 +1,65 @@
 'use strict'
 
-var React = require("react");
-var Link = require("react-router").Link;
-var AnimalActivityItem = require("../animal/animalactivityitem");
+import * as React from 'react';
 
-import Utils from '../uiutils';
+import AnimalActivityItem from '../animal/animalactivityitem';
+
 import Volunteer from '../../core/databaseobjects/volunteer';
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
-import VolunteerStore from '../../stores/volunteerstore';
 import AnimalStore from '../../stores/animalstore';
 import AnimalActivityStore from '../../stores/animalactivitystore';
+import DataServices from '../../core/dataservices';
 
-var UserActivityTab = React.createClass({
-	getInitialState: function () {
-		var group = Utils.FindPassedInProperty(this, 'group');
-		return {
-			user: LoginStore.getUser(),
-			group: group
-		}
-	},
+export default class UserActivityTab extends React.Component<any, any> {
+	constructor(props) { super(props); }
 
-	componentWillReceiveProps: function(nextProps) {
-		this.setState({
-			group: nextProps.group,
-			user: nextProps.user
-		});
-	},
+	componentDidMount() {
+		AnimalActivityStore.addPropertyListener(
+			this, 'userId', this.props.user.id, this.onChange.bind(this));
+		LoginStore.addChangeListener(this.onChange.bind(this));
+	}
 
-	componentDidMount: function () {
-		AnimalActivityStore.addChangeListener(this.onChange);
-		LoginStore.addChangeListener(this.onChange);
-		GroupStore.addChangeListener(this.onChange);
-	},
-
-	componentWillMount: function () {
-	},
-
-	componentWillUnmount: function () {
-		AnimalActivityStore.removeChangeListener(this.onChange);
+	componentWillUnmount() {
+		AnimalActivityStore.removePropertyListener(this);
 		LoginStore.removeChangeListener(this.onChange);
-		GroupStore.removeChangeListener(this.onChange);
-	},
+	}
 
-	onChange: function () {
-		if (!LoginStore.getUser()) return;
-		this.setState(
-			{
-				user: VolunteerStore.getVolunteerById(LoginStore.getUser().id),
-				group: this.state.group ? GroupStore.getGroupById(this.state.group.id) : null
-			});
-	},
+	shouldComponentUpdate(newProps, newState) {
+		return newProps.permission != this.props.permission ||
+			newProps.group != this.props.group;
+	}
 
-	generateActivity: function (activity) {
-		var group = GroupStore.getGroupById(activity.groupId);
-		if (!group) return null;
-		var animal = AnimalStore.getAnimalById(activity.animalId);
-		if (!animal) return null;
+	onChange() {
+		this.forceUpdate();
+	}
+
+	generateActivity(activity) {
 		return (
-			<AnimalActivityItem activity={activity}
-								animal={animal}
-								group={group}
+			<AnimalActivityItem key={activity.id}
+								activity={activity}
+								user={this.props.user.id}
+								permission={this.props.permission}
+								group={this.props.group}
 								showAnimalInfo="true"/>
 		);
-	},
+	}
 
-	getLoading() {
-		return (<div> Loading... </div>);
-	},
+	render() {
+		var activityElements = [];
+		var animalActivity = AnimalActivityStore.getItemsByProperty('userId', this.props.user.id);
+		animalActivity.sort(function(a,b) {
+			return a.timestamp < b.timestamp ? 1 : -1;
+		});
 
-	render: function () {
-		if (!this.state.user) { return this.getLoading(); }
-		var notes = AnimalActivityStore.getActivityById(this.state.user.id);
-		if (!notes) { return this.getLoading(); }
-
-		var displayNotes = [];
-		for (var i = 0; i < notes.length; i++) {
-			displayNotes.push(this.generateActivity(notes[i]));
+		for (var i = 0; i < animalActivity.length; i++) {
+			activityElements.push(this.generateActivity(animalActivity[i]));
 		}
 		return (
 			<div className="list-group">
-				{displayNotes}
+				{activityElements}
 			</div>
 		);
 	}
-});
-
-module.exports = UserActivityTab;
+}

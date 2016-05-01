@@ -5,7 +5,7 @@ import * as React from 'react';
 import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 
 import AddAnimalNote from './addanimalnote';
 import ActionsBar from '../shared/actionsbar';

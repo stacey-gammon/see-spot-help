@@ -12,7 +12,7 @@ export default class AddOrEditButtonBar extends React.Component<any, any> {
 
 	getDeleteGroupButton() {
 		if (this.props.mode == 'add') return null;
-		var deleteDisabled = this.props.mode == 'edit' && this.props.permission.admin();
+		var deleteDisabled = this.props.mode == 'edit' && !this.props.permission.admin();
 		return (
 			<button className='btn btn-warning' onClick={this.props.onDelete} disabled={deleteDisabled}>
 				Delete

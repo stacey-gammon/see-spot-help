@@ -1,7 +1,7 @@
 ﻿// A volunteer that may or may not be part of a volunteer group. User sessions
 // managed by facebook login and authentication.
 
-import VolunteerGroup from './volunteergroup';
+import Group from './group';
 import DataServices from '../dataservices';
 import DatabaseObject from './databaseobject';
 var ServerResponse = require('../serverresponse');

@@ -12,7 +12,7 @@ import InfoBar from '../shared/infobar';
 
 import Utils from '../uiutils';
 import Volunteer from '../../core/databaseobjects/volunteer';
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import GroupStore from '../../stores/groupstore';
 import VolunteerStore from '../../stores/volunteerstore';
 import LoginStore from '../../stores/loginstore';

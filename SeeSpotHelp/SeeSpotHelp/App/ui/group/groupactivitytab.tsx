@@ -5,7 +5,7 @@ import * as React from 'react';
 import AnimalActivityItem from '../animal/animalactivityitem';
 
 import Volunteer from '../../core/databaseobjects/volunteer';
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import AnimalStore from '../../stores/animalstore';

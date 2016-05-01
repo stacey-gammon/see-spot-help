@@ -4,9 +4,13 @@ var ServerResponse = require("../serverresponse");
 import DataServices from '../dataservices';
 import Color from './colors';
 import Animal from './animal';
+import Photo from './photo';
+import Schedule from './schedule';
+import Activity from './activity';
 import Permission from './permission';
 
 import DatabaseObject from './databaseobject';
+import { Status } from './databaseobject';
 
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
@@ -26,23 +30,23 @@ import DatabaseObject from './databaseobject';
 // @param state {string} The state the shelter belongs in.
 // @param zipCode {string} The zip code the shelter resides in.
 // @param id {string} the id of the group.
-export default class VolunteerGroup extends DatabaseObject {
-	public name: string;
-	public shelter: string;
-	public address: string;
-	public city: string;
-	public state: string;
-	public zipCode: string;
+export default class Group extends DatabaseObject {
+	public name: string = '';
+	public shelter: string = '';
+	public address: string = '';
+	public city: string = '';
+	public state: string = '';
+	public zipCode: string = '';
 	// Unfortunately, I don't know anyway to generate this dynamically.
 
 	constructor() {
 		super();
 	}
 
-	createInstance() { return new VolunteerGroup(); }
+	createInstance() { return new Group(); }
 
 	public static FromJSON(json) {
-		var group = VolunteerGroup.castObject(json);
+		var group = Group.castObject(json);
 		return group;
 	}
 
@@ -65,13 +69,13 @@ export default class VolunteerGroup extends DatabaseObject {
 	}
 
 	// Casts the given obj as a volunteer group.  Careful -
-	// obj must have originally been a type of VolunteerGroup
+	// obj must have originally been a type of Group
 	// for this to work as expected.  Helpful when passing around
 	// objects via React state and props.  Can use this to restore the
 	// original class, complete with functions, from an object with only
 	// properties.
 	public static castObject(obj) {
-		var group = new VolunteerGroup();
+		var group = new Group();
 		group = Object.assign(group, obj);
 		return group;
 	}
@@ -97,13 +101,13 @@ export default class VolunteerGroup extends DatabaseObject {
 	)
 
 	delete() {
-		DataServices.SetFirebaseData("deletedGroups/" + this.id, this);
-		super.delete();
+		this.status = Status.ARCHIVED;
+		this.update();
 	}
 
 	// Attempts to insert the current instance into the database as
 	// a new volunteer group.
-	// @param callback {Function(VolunteerGroup, ServerResponse) }
+	// @param callback {Function(Group, ServerResponse) }
 	//	 callback is expected to take as a first argument the potentially
 	//	 inserted volunteer group (null on failure) and a server
 	//	 response to hold error and success information.

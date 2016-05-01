@@ -174,12 +174,13 @@ export default class DataServices {
 	};
 
 	public static RemoveFirebaseData(path, callback?) {
-		var ref = new Firebase(DataServices.FirebaseURL + "/" + path);
+		console.log('DataServices.RemovingFirebaseData at ' + path);
+		var ref = new Firebase(DataServices.FirebaseURL + '/' + path);
 		ref.remove(callback);
 	}
 
 	public static PushFirebaseData(path, value) {
-		var ref = new Firebase(DataServices.FirebaseURL + "/" + path);
+		var ref = new Firebase(DataServices.FirebaseURL + '/' + path);
 		var newPath = { 'key': null };
 		var onComplete = function (err) {
 			console.log('pushing new data completed with ', err);

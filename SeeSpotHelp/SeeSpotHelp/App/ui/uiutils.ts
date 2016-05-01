@@ -1,7 +1,7 @@
 var React = require('react');
 
 import Volunteer from '../core/databaseobjects/volunteer';
-import VolunteerGroup from '../core/databaseobjects/volunteergroup';
+import Group from '../core/databaseobjects/group';
 import Animal from '../core/databaseobjects/animal';
 import Schedule from '../core/databaseobjects/schedule';
 import Permission from '../core/databaseobjects/permission';
@@ -10,7 +10,7 @@ import Activity from '../core/databaseobjects/activity';
 
 var SessionStorageClasses = {};
 SessionStorageClasses['Volunteer'] = Volunteer;
-SessionStorageClasses['VolunteerGroup'] = VolunteerGroup;
+SessionStorageClasses['Group'] = Group;
 SessionStorageClasses['Animal'] = Animal;
 SessionStorageClasses['Schedule'] = Schedule;
 SessionStorageClasses['Permission'] = Permission;

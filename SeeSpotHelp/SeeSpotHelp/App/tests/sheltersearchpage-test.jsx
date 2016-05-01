@@ -2,7 +2,7 @@
 var ReactTestUtils = require("react-addons-test-utils");
 var expect = require("expect"),
 	Volunteer = require("../core/volunteer"),
-	VolunteerGroup = require("../core/volunteergroup"),
+	Group = require("../core/group"),
 	LoginStore = require("../stores/loginstore"),
 	SearchPage = require("../ui/searchpage.jsx");
 

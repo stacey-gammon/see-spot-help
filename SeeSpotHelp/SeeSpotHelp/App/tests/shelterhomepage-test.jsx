@@ -2,7 +2,7 @@
 var ReactTestUtils = require("react-addons-test-utils");
 var expect = require("expect"),
 	Volunteer = require("../core/volunteer"),
-	VolunteerGroup = require("../core/volunteergroup"),
+	Group = require("../core/group"),
 	LoginStore = require("../stores/loginstore"),
 	GroupHomePage = require("../ui/GroupHomePage.jsx");
 
@@ -29,7 +29,7 @@ describe("GroupHomePage", function () {
 
 	it("ShowDefaultGroupLoggedIn", function () {
 		var volunteer = new Volunteer("Sally", "sally@sally.com", "115");
-		volunteer.groups = [VolunteerGroup.getFakeGroups()["123"]];
+		volunteer.groups = [Group.getFakeGroups()["123"]];
 		LoginStore.user = volunteer;
 		var GroupHomePage = ReactTestUtils.renderIntoDocument(
 			<GroupHomePage/>

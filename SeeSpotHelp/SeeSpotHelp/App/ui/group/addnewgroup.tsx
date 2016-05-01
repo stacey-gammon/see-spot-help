@@ -8,7 +8,7 @@ import EditorElement from '../shared/editor/editorelement';
 // Core components:
 import GroupEditor from '../../core/editor/groupeditor';
 import Utils from '../uiutils';
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import Permission from '../../core/databaseobjects/permission';
 
 // Stores and store helpers:
@@ -92,7 +92,7 @@ export default class AddNewGroup extends React.Component<any, any> {
 	render() {
 		if (!this.state.editor) return null;
 		var extraFields = {
-			userId: LoginStore.getUser()
+			userId: LoginStore.getUser().id
 		}
 		var title = this.state.mode == 'add' ?
 			'Add a new group' : 'Edit ' + this.state.editor.databaseObject.name;

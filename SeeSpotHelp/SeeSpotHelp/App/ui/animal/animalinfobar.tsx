@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import Animal from '../../core/databaseobjects/animal';
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import Permission from '../../core/databaseobjects/permission';
 import PhotoStore from '../../stores/photostore';
 import LoginStore from '../../stores/loginstore';

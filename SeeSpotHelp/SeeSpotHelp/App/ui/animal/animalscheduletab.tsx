@@ -9,7 +9,7 @@ import GroupActionsBox from '../group/groupactionsbox';
 
 import Utils from '../uiutils';
 import Animal from '../../core/databaseobjects/animal';
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import LoginStore from '../../stores/loginstore';
 
 export default class AnimalScheduleTab extends React.Component<any, any> {

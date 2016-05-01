@@ -7,6 +7,7 @@ import Promise = require('bluebird');
 
 import DataServices from '../core/dataservices';
 import DatabaseObject from '../core/databaseobjects/databaseobject';
+import { Status } from '../core/databaseobjects/databaseobject';
 
 var EventEmitter = Events.EventEmitter;
 var CHANGE_EVENT = "change";
@@ -179,6 +180,8 @@ abstract class BaseStore extends EventEmitter {
 		var items = snapshot.val();
 		for (var id in items) {
 			var item = items[id];
+			if (item.status == Status.ARCHIVED) continue;
+
 			if (this.storageMappings[property][value].hasOwnProperty(id)) {
 				// Exists locally, item must be updated.
 				this.itemChanged(property, item);
@@ -330,7 +333,7 @@ abstract class BaseStore extends EventEmitter {
 		this.itemAdded(property, null, null, snapshot.val());
 	}
 
-	onChildChanged(property, value, snapshot) {
+	onChildChanged(property, snapshot) {
 		this.itemChanged(property, snapshot.val());
 	}
 

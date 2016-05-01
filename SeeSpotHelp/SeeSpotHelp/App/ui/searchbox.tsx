@@ -12,7 +12,7 @@ var Button = ReactBootstrap.Button;
 var MenuItem = ReactBootstrap.MenuItem;
 
 import Utils from "./uiutils";
-import VolunteerGroup from "../core/databaseobjects/volunteergroup";
+import Group from "../core/databaseobjects/group";
 import Animal from "../core/databaseobjects/animal";
 import LoginStore from "../stores/loginstore";
 import DataServices from '../core/dataservices';
@@ -47,7 +47,7 @@ var SearchBox = React.createClass({
 		var searchText = this.refs.groupSearchInput.value;
 
 		var path = searchFor == 'groups' ?
-			new VolunteerGroup().firebasePath :
+			new Group().firebasePath :
 			new Animal().firebasePath;
 
 		DataServices.StartStringSearch(path, searchOn, searchText, this.getResults);

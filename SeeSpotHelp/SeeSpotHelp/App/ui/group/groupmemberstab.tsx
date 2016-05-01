@@ -4,14 +4,14 @@ import * as React from 'react';
 var MemberListItem = require('../person/memberlistitem');
 
 import Volunteer from '../../core/databaseobjects/volunteer';
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import VolunteerStore from '../../stores/volunteerstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
 interface MemberTabProperties {
-	group?: VolunteerGroup,
+	group?: Group,
 	permission?: Permission
 }
 

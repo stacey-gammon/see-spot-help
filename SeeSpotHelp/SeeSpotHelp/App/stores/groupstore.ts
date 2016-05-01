@@ -3,7 +3,7 @@
 var Dispatcher = require("../dispatcher/dispatcher");
 var ActionConstants = require('../constants/actionconstants');
 
-import VolunteerGroup from '../core/databaseobjects/volunteergroup';
+import Group from '../core/databaseobjects/group';
 import Animal from '../core/databaseobjects/animal';
 import DatabaseObject from '../core/databaseobjects/databaseobject';
 
@@ -14,7 +14,7 @@ import PermissionsStore from "../stores/permissionsstore";
 import BaseStore from './basestore';
 
 class GroupStore extends BaseStore {
-	protected databaseObject: DatabaseObject = new VolunteerGroup();
+	protected databaseObject: DatabaseObject = new Group();
 
 	constructor() {
 		super();
@@ -51,7 +51,7 @@ class GroupStore extends BaseStore {
 
 	groupAdded(snapshot) {
 		if (snapshot.val()) {
-			var group = VolunteerGroup.castObject(snapshot.val());
+			var group = Group.castObject(snapshot.val());
 			// Wait for the subsequent update to set the id.
 			if (!group.id) return;
 			this.storage[group.id] = group;

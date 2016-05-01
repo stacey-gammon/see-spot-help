@@ -1,5 +1,5 @@
 
-import VolunteerGroup from '../databaseobjects/volunteergroup';
+import Group from '../databaseobjects/group';
 
 import InputField from './inputfield';
 import InputFieldValidation from './inputfieldvalidation';
@@ -13,7 +13,7 @@ var STATES = [
 ];
 
 export default class GroupEditor extends Editor {
-	public databaseObject: VolunteerGroup;
+	public databaseObject: Group;
 
 	constructor(group) {
 		super(group);
@@ -22,7 +22,7 @@ export default class GroupEditor extends Editor {
 	getInputFields() { return this.inputFields; }
 
 	insert(extraFields) {
-		var group = new VolunteerGroup();
+		var group = new Group();
 		group.updateFromInputFields(this.inputFields);
 		group.insert(extraFields.userId);
 		this.databaseObject = group;

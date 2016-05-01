@@ -4,7 +4,7 @@ import * as React from 'react';
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';

@@ -1,11 +1,11 @@
 // ﻿
-// var VolunteerGroup = require('./volunteergroup');
+// var Group = require('./group');
 // var Animal = require('./animal');
 //
 // function FakeData() {}
 //
 // FakeData.getFakeAnimalData = function () {
-// 	var fakeGroups = VolunteerGroup.getFakeGroups();
+// 	var fakeGroups = Group.getFakeGroups();
 // 	return {
 // 		"123": {
 // 			"dogId1": new Animal(

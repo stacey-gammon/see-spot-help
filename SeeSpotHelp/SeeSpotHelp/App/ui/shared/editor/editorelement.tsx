@@ -8,7 +8,7 @@ import InfoBar from '../infobar';
 
 import GroupEditor from '../../../core/editor/groupeditor';
 import Utils from '../../uiutils';
-import VolunteerGroup from '../../../core/databaseobjects/volunteergroup';
+import Group from '../../../core/databaseobjects/group';
 import Permission from '../../../core/databaseobjects/permission';
 import InputField from '../../../core/editor/inputfield';
 import InputFieldValidation from '../../../core/editor/inputfieldvalidation';

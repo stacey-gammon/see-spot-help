@@ -4,7 +4,7 @@ import * as React from 'react';
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-import VolunteerGroup from '../../core/databaseobjects/volunteergroup';
+import Group from '../../core/databaseobjects/group';
 import Volunteer from '../../core/databaseobjects/volunteer';
 import ConstStrings from '../../core/conststrings';
 import DataServices from '../../core/dataservices';
@@ -16,7 +16,7 @@ import PermissionsStore from '../../stores/permissionsstore';
 var MemberListItem = React.createClass({
 	getInitialState: function() {
 		var member = this.props.member
-		var group = this.props.group ? VolunteerGroup.castObject(this.props.group) : null;
+		var group = this.props.group ? Group.castObject(this.props.group) : null;
 		var permission = member && group ?
 			PermissionsStore.getPermission(member.id, group.id) : null;
 		return {
@@ -109,7 +109,7 @@ var MemberListItem = React.createClass({
 	},
 
 	getActions: function () {
-		var group = VolunteerGroup.castObject(this.props.group);
+		var group = Group.castObject(this.props.group);
 		if (!LoginStore.getUser()) return null;
 
 		var userPermission = PermissionsStore.getPermission(LoginStore.getUser().id, group.id);
@@ -132,7 +132,7 @@ var MemberListItem = React.createClass({
 		}
 		if (!LoginStore.getUser()) return null;
 
-		var group = VolunteerGroup.castObject(this.props.group);
+		var group = Group.castObject(this.props.group);
 		var memberPermission = this.state.permission;
 		var userPermission = PermissionsStore.getPermission(LoginStore.getUser().id, group.id);
 
