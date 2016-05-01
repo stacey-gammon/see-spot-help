@@ -4,6 +4,7 @@ var React = require("react");
 
 import DataServices from '../core/dataservices';
 import Photo from '../core/databaseobjects/photo';
+import PhotoActivity from '../core/databaseobjects/photoactivity';
 import LoginStore from '../stores/loginstore';
 
 var TakePhotoButton = React.createClass({
@@ -47,6 +48,9 @@ var TakePhotoButton = React.createClass({
 				photo.groupId = this.props.animal.groupId;
 				photo.userId = LoginStore.getUser().id;
 				photo.insert();
+
+				var activity = new PhotoActivity(photo, LoginStore.getUser());
+				activity.insert();
 			}.bind(this);
 		}.bind(this))(file);
 		reader.readAsDataURL(file);

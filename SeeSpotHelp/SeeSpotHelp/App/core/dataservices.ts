@@ -93,9 +93,9 @@ export default class DataServices {
 		});
 	}
 
-	public static OnChildAdded(path, onSuccess) {
+	public static OnChildAdded(path, onSuccess, timestamp) {
 		var ref = new Firebase(DataServices.FirebaseURL + "/" + path);
-		ref.on("child_added", function (snapshot) {
+		ref.orderByChild('timestamp').startAt(timestamp).on("child_added", function (snapshot) {
 			onSuccess(snapshot);
 		});
 	}

@@ -15,6 +15,8 @@ import AnimalActivityStore from '../../stores/animalactivitystore';
 import Activity from '../../core/databaseobjects/activity';
 import Permission from '../../core/databaseobjects/permission';
 
+import ActivityElement from '../shared/activityelement';
+
 export default class AnimalActivityItem extends React.Component<any, any> {
 	constructor(props) {
 		super(props);

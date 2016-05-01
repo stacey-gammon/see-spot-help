@@ -44,6 +44,7 @@ abstract class BaseStore extends EventEmitter {
 	private promiseResolveCallbacks: Array<any> = [];
 	private propertyListeners: Array<PropertyListener> = [];
 	private itemListeners: Array<PropertyListener> = [];
+	private currentlyDownloading = {};
 
 	// Mapping of EventTypeEnum to an array of object with a callback and potentially an id.
 	private listenerInfo = {
@@ -62,6 +63,7 @@ abstract class BaseStore extends EventEmitter {
 		for (var i = 0; i < this.databaseObject.mappingProperties.length; i++) {
 			var property = this.databaseObject.mappingProperties[i];
 			this.storageMappings[property] = {};
+			this.currentlyDownloading[property] = {};
 		}
 	}
 
@@ -92,12 +94,6 @@ abstract class BaseStore extends EventEmitter {
 		this.on(CHANGE_EVENT, callback);
 	}
 
-	resolvePromises(id) {
-		for (var i = 0; i < this.promiseResolveCallbacks.length; i++) {
-			this.promiseResolveCallbacks[i]();
-		}
-	}
-
 	removeChangeListener(callback) {
 		this.removeListener(CHANGE_EVENT, callback);
 	}
@@ -115,25 +111,11 @@ abstract class BaseStore extends EventEmitter {
 		}
 	}
 
-	// ensurepropertybyvalue(property, value) {
-	// 	return new promise(function(resolve, reject) {
-	// 		var onresolve = function (data) {
-	// 			resolve(data)
-	// 		};
-	// 		var onreject = function (error) {
-	// 			reject(error);
-	// 		};
-	// 		if (!this.storage.hasownproperty(id)) {
-	// 			this.storage[id] = null;
-	// 			this.downloadfrommapping(property, value, onresolve, onreject);
-	// 		} else if (!this.isdownloading){
-	// 			resolve(this.storage[id]);
-	// 		} else {
-	// 			this.promiseresolvecallbacks.push(onresolve);
-	// 		//	reject('already waiting on the download.');
-	// 		}
-	// 	}.bind(this));
-	// }
+	resolvePromises(id) {
+		for (var i = 0; i < this.promiseResolveCallbacks.length; i++) {
+			this.promiseResolveCallbacks[i]();
+		}
+	}
 
 	ensureItemById(id) {
 		var promise = new Promise(function(resolve, reject) {
@@ -165,6 +147,7 @@ abstract class BaseStore extends EventEmitter {
 	}
 
 	deleteFromMapping(mapping, key, deletedId) {
+		if (!mapping[key]) { return; }
 		for (var i = 0; i < mapping[key].length; i++) {
 			var id = mapping[key][i];
 			if (id == deletedId) {
@@ -182,13 +165,44 @@ abstract class BaseStore extends EventEmitter {
 		mapping[key].push(id);
 	}
 
+	itemExistsLocally(property: string, value: string) {
+		if (property == 'id') {
+			return this.storage.hasOwnProperty(value);
+		} else {
+			return this.itemExistsLocally('id', this.storageMappings[property][value]);
+		}
+	}
+
+	itemsDownloaded(property: string, value: string, onSuccess, snapshot) {
+		console.log(this.databaseObject.className + 'Store: itemsDownloaded with value ' + value);
+		var timestamp = 0;
+		var items = snapshot.val();
+		for (var id in items) {
+			var item = items[id];
+			if (this.storageMappings[property][value].hasOwnProperty(id)) {
+				// Exists locally, item must be updated.
+				this.itemChanged(property, item);
+			} else {
+				this.itemAdded(property, null, null, item);
+			}
+			timestamp = item.timestamp;
+		}
+
+		this.currentlyDownloading[property][value] = false;
+		this.addListeners(property, value, timestamp + 1);
+
+		this.emitChange(property, value);
+
+		if (onSuccess) { onSuccess(); }
+	}
+
 	itemDownloaded(id: string, onSuccess, snapshot) {
 		console.log(this.databaseObject.className + 'Store: itemDownloaded with id ' + id);
 		this.isDownloading[id] = false;
 		if (snapshot && snapshot.val() && !this.storage.hasOwnProperty[id]) {
-			this.itemAdded('id', null, null, snapshot);
+			this.itemAdded('id', null, null, snapshot.val());
 		} else if (snapshot && snapshot.val()) {
-			this.itemChanged('id', snapshot);
+			this.itemChanged('id', snapshot.val());
 		} else {
 			this.itemDeletedWithId(id);
 		}
@@ -196,9 +210,9 @@ abstract class BaseStore extends EventEmitter {
 		this.resolvePromises(id);
 	}
 
-	itemAdded(prop, onSuccess, onError, snapshot) {
-		if (snapshot.val()) {
-			var casted = this.databaseObject.castObject(snapshot.val());
+	itemAdded(prop, onSuccess, onError, item) {
+		if (item) {
+			var casted = this.databaseObject.castObject(item);
 			// Wait for the subsequent update to set the id.
 			if (!casted.id) return;
 			if (prop) {
@@ -219,6 +233,16 @@ abstract class BaseStore extends EventEmitter {
 		this.itemDeletedWithId(deletedObject.id);
 	}
 
+	itemDeletedWithProperty(property, value) {
+		if (property == 'id') return this.itemDeletedWithId(value);
+
+		for (var id in this.storageMappings[property][value]) {
+			this.itemDeletedWithId(id);
+		}
+
+		this.emitChange(property, value);
+	}
+
 	itemDeletedWithId(id) {
 		console.log(this.databaseObject.className + 'Store: itemDeleted with id ' + id);
 		var deletedObject = this.storage[id];
@@ -233,7 +257,7 @@ abstract class BaseStore extends EventEmitter {
 	}
 
 	itemChanged(prop, snapshot) {
-		var changedObject = this.databaseObject.castObject(snapshot.val());
+		var changedObject = this.databaseObject.castObject(snapshot);
 		if (this.storage.hasOwnProperty(changedObject.id)) {
 			console.log(this.databaseObject.className + 'Store: itemChanged with id ' + changedObject.id + ' and prop ' + prop);
 			this.storage[changedObject.id] = changedObject;
@@ -286,16 +310,44 @@ abstract class BaseStore extends EventEmitter {
 			this.errorOccurred.bind(this, id, onError));
 	}
 
-	downloadFromMapping(property, propertyValue, onSuccess?, onError?) {
+	areItemsDownloading(property, value) {
+		return this.currentlyDownloading[property][value];
+	}
+
+	downloadFromMapping(property, value, onSuccess?, onError?) {
 		this.resetErrorInfo();
+		this.currentlyDownloading[property][value] = true;
 		var path = DatabaseObject.GetPathToMapping(
 			this.firebasePath,
 			property,
-			propertyValue);
+			value);
 
-		DataServices.OnChildAdded(path, this.itemAdded.bind(this, property, onSuccess, onError));
-		DataServices.OnChildChanged(path, this.itemChanged.bind(this, property));
-		DataServices.OnChildRemoved(path, this.itemDeleted.bind(this));
+		DataServices.DownloadDataOnce(path,
+			this.itemsDownloaded.bind(this, property, value, onSuccess));
+	}
+
+	onChildAdded(property, snapshot) {
+		this.itemAdded(property, null, null, snapshot.val());
+	}
+
+	onChildChanged(property, value, snapshot) {
+		this.itemChanged(property, snapshot.val());
+	}
+
+	onChildRemoved(property, value, snapshot) {
+		this.itemDeleted(snapshot);
+		this.emitChange(property, value);
+	}
+
+	addListeners(property, value, timestamp) {
+		var path = DatabaseObject.GetPathToMapping(
+			this.firebasePath,
+			property,
+			value);
+
+		DataServices.OnChildAdded(path, this.onChildAdded.bind(this, property), timestamp);
+		DataServices.OnChildChanged(path, this.onChildChanged.bind(this, property));
+		DataServices.OnChildRemoved(path, this.onChildRemoved.bind(this, property, value));
 	}
 }
 

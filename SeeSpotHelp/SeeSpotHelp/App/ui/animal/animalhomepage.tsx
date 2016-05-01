@@ -26,11 +26,13 @@ export default class AnimalHomePage extends React.Component<any, any> {
 	constructor(props) {
 		super(props);
 		var animal = Utils.FindPassedInProperty(this, 'animal');
+		var animalId = Utils.FindPassedInProperty(this, 'animalId');
 		var group = Utils.FindPassedInProperty(this, 'group');
+		var groupId = Utils.FindPassedInProperty(this, 'groupId');
 
 		this.state = {
-			animalId: animal.id,
-			groupId: group.id,
+			animalId: animalId || animal.id,
+			groupId: groupId || group.id,
 			permission: Permission.CreateNonMemberPermission(),
 			animalDefaultTabKey: null
 		};

@@ -1,6 +1,6 @@
 
+@import 'colorThemePrimary';
 @import 'mixins';
-@import 'colors';
 @import 'nav';
 @import 'buttons';
 @import 'group';
@@ -131,12 +131,12 @@ p {
     padding: 20px;
 	height: 95%;
 	margin: 20px 10px 20px 10px;
-	background-color: #C1DAD6;
-   	color: #495864;
+	background-color: $private-beta-page-bg-color;
+   	color: $private-beta-page-color;
     border-radius: 25px;
 	font-size: 1.1em;
 	line-height: 1.5em;
-	border: 3px solid #B7AFA3;
+	border: 3px solid $beta-page-border-color;
 }
 
 .loginPage {

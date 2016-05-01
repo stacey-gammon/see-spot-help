@@ -1,7 +1,8 @@
 import DataServices from '../dataservices';
+import Firebase = require('firebase');
 
 abstract class DatabaseObject {
-	public timestamp: number = Date.now();
+	public timestamp: number = Firebase.ServerValue.TIMESTAMP;
 	public id: string;
 	public className: string;
 	public classNameForSessionStorage;
@@ -98,7 +99,7 @@ abstract class DatabaseObject {
 	}
 
 	delete() {
-		DataServices.RemoveFirebaseData(this.firebasePath + this.id);
+		DataServices.RemoveFirebaseData(this.firebasePath + '/' + this.id);
 		for (var i = 0; i < this.mappingProperties.length; i++) {
 			var path = this.getPathToMapping(this.mappingProperties[i]);
 			DataServices.RemoveFirebaseData(path);

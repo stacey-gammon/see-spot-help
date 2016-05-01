@@ -19,7 +19,8 @@ export default class AnimalList extends React.Component<any, any> {
 
 	componentDidMount() {
 		if (this.props.group) {
-			AnimalStore.addPropertyListener(this, 'groupId', this.props.group.id, this.onChange.bind(this));
+			AnimalStore.addPropertyListener(
+				this, 'groupId', this.props.group.id, this.onChange.bind(this));
 		}
 	}
 
@@ -40,7 +41,7 @@ export default class AnimalList extends React.Component<any, any> {
 			animalsUiElements.push(this.generateAnimal(animals[i]));
 		}
 		return (
-			<div className="groupList">
+			<div>
 				{animalsUiElements}
 			</div>
 		);

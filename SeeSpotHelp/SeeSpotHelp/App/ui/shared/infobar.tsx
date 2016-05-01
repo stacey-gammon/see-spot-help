@@ -27,6 +27,7 @@ export default class InfoBar extends React.Component<any, any> {
 		}
 
 		var className = this.props.noTabs ? 'info-top-no-tabs' : 'info-top';
+		className += ' ' + this.props.className;
 
 		return (
 			<div className={className}>

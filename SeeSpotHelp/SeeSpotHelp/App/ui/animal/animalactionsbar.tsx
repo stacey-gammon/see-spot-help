@@ -15,7 +15,7 @@ var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
 // Actions to display on the animal home page, such as Add Activity,
 // Edit and Delete.
-export default class AnimalActionsBox extends React.Component<any, any> {
+export default class AnimalActionsBar extends React.Component<any, any> {
 	constructor(props) {
 		super(props);
 	}

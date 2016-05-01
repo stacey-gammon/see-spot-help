@@ -56,7 +56,7 @@ export default class AnimalInfoBar extends React.Component<any, any> {
 		var imageSrc = photos && photos.length > 0 ? photos[0].src : this.props.animal.getDefaultPhoto();
 		var animal = this.props.animal;
 		return (
-			<InfoBar>
+			<InfoBar className='animal-info-bar'>
 					<img className="media-object"
 						style={{margin: 5 + "px"}}
 						height="100px" width="100px"

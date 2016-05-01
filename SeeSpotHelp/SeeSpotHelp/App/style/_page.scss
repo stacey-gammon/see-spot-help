@@ -1,12 +1,29 @@
+
+@media screen and (min-width: 800px) {
+
+	html {
+		max-width: 800px;
+		margin: 0 auto;
+		background: $html-bg-color;
+		position: relative;
+	}
+
+	body {
+		background-color: $body-bg-color;
+		padding: 20px;
+		margin: 20px;
+	}
+}
+
 .page {
 	margin-right: 2px;
 	margin-left: 2px;
 }
 
 .info-top {
-	border-top: 2px solid $color7;
-	border-left: 2px solid $color7;
-	border-right: 2px solid $color7;
+	border-top: 2px solid $info-top-border-color;
+	border-left: 2px solid $info-top-border-color;
+	border-right: 2px solid $info-top-border-color;
 
 	@include border-top-radius(20px);
 	background-color: $info-top-bg-color;
@@ -14,16 +31,26 @@
 	padding: 15px;
 }
 
+// .animal-info-bar {
+// 	@extend .info-top;
+// 	background-color: $animal-info-top-bg-color;
+// }
+//
+// .group-info-bar {
+// 	@extend .info-top;
+// 	background-color: $group-info-top-bg-color;
+// }
+
 .info-top-no-tabs {
 	@extend .info-top;
-	border-bottom: 1px solid $color7;
+	border-bottom: 1px solid $info-top-border-color;
 }
 
 .nav-tabs {
 	background-color: $info-top-bg-color;
-	border-right: 2px solid $color7;
-	border-left: 2px solid $color7;
-	border-bottom: 1px solid $color7;
+	border-right: 2px solid $info-top-border-color;
+	border-left: 2px solid $info-top-border-color;
+	border-bottom: 1px solid $info-top-border-color;
 	padding-left: 15px;
 }
 
@@ -37,14 +64,14 @@
 		background-color: $inactive-tab-bg-color;
 		@include border-top-radius(10px);
 		border-width: 2px 2px 1px 2px;
-		border-color: $color7;
+		border-color: $info-top-border-color;
 		height: 48px;
 	}
 
 	li.active a {
 		background-color: $page-bg-color;
 		border-width: 2px 2px 0px 2px;
-		border-color: $color7;
+		border-color: $info-top-border-color;
 	}
 }
 
@@ -68,4 +95,8 @@
 .glyphicon-camera {
 	color: white;
 	font-size: 20px;
+}
+
+.glyphicon-edit, .glyphicon-remove-circle {
+	color: rgba(214, 214, 214, .8);
 }

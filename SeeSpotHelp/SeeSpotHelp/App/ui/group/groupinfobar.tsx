@@ -20,7 +20,7 @@ export default class GroupInfoBar extends React.Component<any, any> {
 	render() {
 		return (
 			<div>
-				<InfoBar>
+				<InfoBar className='group-info-bar'>
 					<div/>
 					<GroupInfoBox group={this.props.group} permission={this.props.permission} />
 					<GroupActionsBox permission={this.props.permission} group={this.props.group} />

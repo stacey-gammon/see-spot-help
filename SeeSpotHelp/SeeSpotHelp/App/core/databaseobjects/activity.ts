@@ -11,6 +11,10 @@ export default class Activity extends DatabaseObject {
 	public animalId: string;
 	public groupId: string;
 
+	// For auto-generated activities.
+	public photoId: string;
+	public eventId: string;
+
 	constructor() {
 		super();
 		this.mappingProperties.push('userId');
@@ -23,4 +27,7 @@ export default class Activity extends DatabaseObject {
 	getDateForDisplay() {
 		return dateFormat(new Date(this.timestamp), "mm/dd/yy, h:MM TT");
 	}
+
+	isPhotoActivity() { return false; }
+	editable() { return true; }
 }

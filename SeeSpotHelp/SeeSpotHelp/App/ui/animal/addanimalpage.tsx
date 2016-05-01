@@ -23,13 +23,14 @@ export default class AddAnimalPage extends React.Component<any, any> {
 		super(props);
 		var mode = Utils.FindPassedInProperty(this, 'mode');
 		var group = Utils.FindPassedInProperty(this, 'group');
+		var groupId = Utils.FindPassedInProperty(this, 'groupId');
 		var animal = Utils.FindPassedInProperty(this, 'animal');
 
 		if (!mode) mode = 'add';
 
 		this.state = {
 			errorMessage: null,
-			groupId: group.id,
+			groupId: groupId || group.id,
 			mode: mode,
 			animal: animal
 		};
@@ -89,13 +90,16 @@ export default class AddAnimalPage extends React.Component<any, any> {
 	}
 
 	goToAnimalPage() {
+		var animalId =  this.state.editor.databaseObject.id;
+		var groupId =  this.state.editor.databaseObject.groupId;
 		this.context.router.push(
-			{ pathname: "animalHomePage", state: { animal: this.state.animal } });
+			{ pathname: "animalHomePage", state: { animalId: animalId, groupId: groupId  } });
 	}
 
 	goToGroupPage() {
+		var groupId =  this.state.editor.databaseObject.groupId;
 		this.context.router.push(
-			{ pathname: "groupHomePage", state: { groupId: this.state.animal.groupId } });
+			{ pathname: "groupHomePage", state: { groupId: groupId } });
 	}
 
 	render() {
