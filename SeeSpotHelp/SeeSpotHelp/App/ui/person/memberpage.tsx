@@ -15,8 +15,9 @@ var FacebookLogin = require("../facebooklogin");
 var GroupInfoBox = require("../group/groupinfobox");
 var SearchPage = require("../searchpage");
 
+import UserActivityTab from './useractivitytab';
+
 var UserGroupsTab = require("./usergroupstab");
-var UserActivityTab = require("./useractivitytab");
 var ReactBootstrap = require("react-bootstrap");
 var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
