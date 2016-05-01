@@ -1,0 +1,58 @@
+
+$almostWhite: #FEFEFC;
+$almostBlack: lighten(black, 25%);
+$lightGrey: #D2D2D3;
+$invisible: rgba(1, 1, 1, 0);
+
+$color1: #0E9DD0;
+$color2: #B7AFA3;
+$color3: #50d07d;
+$color4: #C1DAD6;
+
+// COMMON
+
+$html-bg-color: $lightGrey;
+$body-bg-color: $almostWhite;
+$shadow: rgba(153,153,153,.4);
+$list-border-color: lighten($color1, 50%);
+
+// PROFILE PAGE
+
+$group-bg-color: white;
+$group-color: $almostBlack;
+
+// GROUP PAGE
+
+$animal-bg-color: white;
+$animal-color: $almostBlack;
+
+// BUTTONS
+
+$button-color: $color3;
+$button-text-color: white;
+
+// NAV
+
+$nav-bg-color: $almostWhite;
+$nav-item-color: desaturate(lighten($color3, 20%), 50%);
+$nav-item-color-hover: darken($nav-item-color, 25%);
+
+// INFO TOP BAR
+
+$inactive-tab-bg-color: $almostWhite;
+$page-bg-color: $almostWhite;
+$info-top-bg-color: $color1;
+$info-top-color: $almostWhite;
+$info-top-border-color: darken($color1, 15%);
+
+$group-info-top-bg-color: $color3;
+$group-info-top-color: $almostWhite;
+
+$animal-info-top-bg-color: $color4;
+$animal-info-top-color: $almostWhite;
+
+// PRIVATE BETA PAGE
+
+$private-beta-page-bg-color: #C1DAD6;
+$private-beta-page-color: #495864;
+$beta-page-border-color: #B7AFA3;

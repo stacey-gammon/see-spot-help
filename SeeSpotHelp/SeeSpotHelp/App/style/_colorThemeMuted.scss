@@ -1,0 +1,54 @@
+
+$almostWhite: #FEFEFC;
+
+$color1: #C1DAD6;
+$color1Comp: #495864;
+
+$color2: #B7AFA3;
+$color2Complement: #3e3931;
+
+$color3: #6D929B;
+$color4: #57777e;
+$color5: #495864;
+
+// COMMON
+
+$html-bg-color: desaturate(lighten($color1, 10%), 10%);
+$body-bg-color: $almostWhite;
+$shadow: rgba(153,153,153,0.63);
+$list-border-color: rgba(1, 1, 1, 0);
+
+// PROFILE PAGE
+
+$group-bg-color: $color1;
+$group-color: $almostWhite;
+
+// GROUP PAGE
+
+$animal-bg-color: $color1;
+$animal-color: $almostWhite;
+
+// BUTTONS
+
+$button-color: $color5;
+$button-text-color: white;
+
+// NAV
+
+$nav-bg-color: white;
+$nav-item-color: $color2;
+$nav-item-color-hover: darken($color2, 25%);
+
+// INFO TOP BAR
+
+$inactive-tab-bg-color: $almostWhite;
+$page-bg-color: $almostWhite;
+$info-top-bg-color: $color4;
+$info-top-color: $almostWhite;
+$info-top-border-color: $color2;
+
+// PRIVATE BETA PAGE
+
+$private-beta-page-bg-color: #C1DAD6;
+$private-beta-page-color: #495864;
+$beta-page-border-color: #B7AFA3;
