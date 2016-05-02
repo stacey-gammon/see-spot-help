@@ -11,7 +11,8 @@ export default class InputFieldElement extends React.Component<any, any> {
 
 	getValue() {
 		var element = this.refs[this.props.inputField.ref] as any;
-		return element.value;
+		var retval = element.value || element.src;
+		return retval;
 	}
 
 	createTypeOption(option) {
@@ -44,6 +45,12 @@ export default class InputFieldElement extends React.Component<any, any> {
 			</textarea>);
 	}
 
+	getInputPhotoElement(inputField) {
+		return (
+			<img src={inputField.src} height='200px' ref={inputField.ref}/>
+		)
+	}
+
 	getInputTextElement(inputField) {
 		var inputFieldClassName = 'form-control ' + inputField.ref;
 		return (
@@ -61,6 +68,18 @@ export default class InputFieldElement extends React.Component<any, any> {
 			return this.getInputTextAreaElement(inputField);
 		} else if (inputField.type == InputFieldType.LIST) {
 			return this.getInputListElement(inputField);
+		} else if (inputField.type == InputFieldType.PHOTO){
+			return this.getInputPhotoElement(inputField);
+		} else {
+			return null;
+		}
+	}
+
+	getLabel(inputField) {
+		if (inputField.getUserString()) {
+			return (
+				<span className='input-group-addon'>{inputField.getUserString()}</span>
+			);
 		} else {
 			return null;
 		}
@@ -73,7 +92,7 @@ export default class InputFieldElement extends React.Component<any, any> {
 			<div className={inputField.getFormGroupClassName()}>
 				{inputField.getErrorLabel()}
 				<div className='input-group'>
-					<span className='input-group-addon'>{inputField.getUserString()}</span>
+					{this.getLabel(inputField)}
 					{this.getInputElement(inputField)}
 				</div>
 				{inputField.getValidationSpan()}

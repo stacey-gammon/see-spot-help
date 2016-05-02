@@ -78,8 +78,8 @@ export default class Utils {
 	public static LoadStateProp(state, prop) {
 		try {
 			state[prop] = JSON.parse(sessionStorage.getItem(prop));
-			if (state[prop] && state[prop].classNameForSessionStorage) {
-				var ClassName = Utils.GenerateClass(state[prop].classNameForSessionStorage);
+			if (state[prop] && state[prop].className) {
+				var ClassName = Utils.GenerateClass(state[prop].className);
 				var instance = new ClassName();
 				state[prop] = Object.assign(instance, state[prop]);
 			}

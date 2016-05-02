@@ -1,40 +1,47 @@
 ﻿'use strict'
 
-var React = require("react");
+import * as React from 'react';
 
 import DataServices from '../core/dataservices';
 import Photo from '../core/databaseobjects/photo';
-import PhotoActivity from '../core/databaseobjects/photoactivity';
+import Activity from '../core/databaseobjects/activity';
 import LoginStore from '../stores/loginstore';
 
-var TakePhotoButton = React.createClass({
-	getInitialState: function() {
-		return {
+export default class TakePhotoButton extends React.Component<any, any> {
+	public refs: any;
+	public context: any;
+
+	// Required for page transitions via this.context.router.push.
+	static contextTypes = { router: React.PropTypes.object.isRequired }
+
+	constructor(props) {
+		super(props);
+		this.state = {
 			user: LoginStore.getUser()
 		}
-	},
+	}
 
-	componentDidMount: function () {
+	componentDidMount() {
 		LoginStore.addChangeListener(this.onChange);
-	},
+	}
 
-	componentWillUnmount: function () {
+	componentWillUnmount() {
 		LoginStore.removeChangeListener(this.onChange);
-	},
+	}
 
-	onChange: function () {
+	onChange() {
 		this.forceUpdate();
-	},
+	}
 
-	uploadSucceeded: function() {
+	uploadSucceeded() {
 		alert("yay!");
-	},
+	}
 
-	uploadFailed: function(error) {
+	uploadFailed(error) {
 		alert("boo!" + error.responseText);
-	},
+	}
 
-	uploadFile: function (file) {
+	uploadFile(file) {
 		var reader = new FileReader();
 		reader.onload = (function(theFile) {
 			return function(e) {
@@ -47,44 +54,51 @@ var TakePhotoButton = React.createClass({
 				photo.animalId = this.props.animal.id;
 				photo.groupId = this.props.animal.groupId;
 				photo.userId = LoginStore.getUser().id;
-				photo.insert();
-
-				var activity = new PhotoActivity(photo, LoginStore.getUser());
-				activity.insert();
+				this.goToAddPhotoPage(photo);
 			}.bind(this);
 		}.bind(this))(file);
 		reader.readAsDataURL(file);
-	},
+	}
 
-	loadPhoto: function() {
+	goToAddPhotoPage(photo) {
+		this.context.router.push(
+			{
+				pathname: "addPhotoPage",
+				state: {
+					groupId: this.state.groupId,
+					animalId: this.state.animalId,
+					photo: photo
+				}
+			});
+	}
+
+	loadPhoto() {
 		var file = this.refs.addPhotoFileInput.files[0];
 		this.uploadFile(file);
-   },
+	}
 
-	addPhoto: function() {
+	addPhoto() {
 		this.refs.addPhotoFileInput.click();
-	},
+	}
 
-	allowAction: function() {
+	allowAction() {
 		return this.props.permission.inGroup();
-	},
+	}
 
-	render: function () {
+	render() {
 		return (
 			<span>
 				<button className="btn btn-info"
 						disabled={!this.allowAction()}
-						onClick={this.addPhoto}
+						onClick={this.addPhoto.bind(this)}
 						style={this.props.style}>
 					<span className="glyphicon glyphicon-camera"></span>
 				</button>
 				<input type="file" accept="image/*"
-						onChange={this.loadPhoto}
+						onChange={this.loadPhoto.bind(this)}
 						className="addPhotoFileInput"
 						ref="addPhotoFileInput"/>
 			</span>
 		);
 	}
-});
-
-module.exports = TakePhotoButton;
+}

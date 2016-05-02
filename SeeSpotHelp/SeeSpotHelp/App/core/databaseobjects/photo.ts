@@ -2,8 +2,8 @@
 import DatabaseObject from './databaseobject';
 
 export default class Photo extends DatabaseObject {
-	public src: string;
-	public comment: string;
+	public src: string = '';
+	public comment: string = '';
 	public userId: string;
 	public groupId: string;
 	public animalId: string;

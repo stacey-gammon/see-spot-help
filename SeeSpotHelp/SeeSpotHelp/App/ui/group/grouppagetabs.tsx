@@ -6,7 +6,7 @@ var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
 
 import GroupAnimalsTab from './groupanimalstab';
-import GroupActivityTab from './groupactivitytab';
+import ActivityTab from '../shared/tabs/activitytab';
 import GroupMembersTab from './groupmemberstab';
 import GroupScheduleTab from './groupscheduletab';
 
@@ -70,7 +70,7 @@ export default class GroupPageTabs extends React.Component<any, any> {
 					<GroupMembersTab group={this.props.group} permission={this.props.permission}/>
 				</Tab>
 				<Tab className="tab" eventKey={3} title={Utils.getActivityGlyphicon()}>
-					<GroupActivityTab group={this.props.group} permission={this.props.permission}/>
+					<ActivityTab property='groupId' value={this.props.group.id} permission={this.props.permission}/>
 				</Tab>
 				<Tab className="tab" eventKey={4} title={Utils.getCalendarGlyphicon()}>
 					<GroupScheduleTab group={this.props.group} view="group" permission={this.props.permission}/>

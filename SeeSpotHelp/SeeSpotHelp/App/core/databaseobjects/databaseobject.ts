@@ -11,7 +11,6 @@ abstract class DatabaseObject {
 	public timestamp: number = Firebase.ServerValue.TIMESTAMP;
 	public id: string;
 	public className: string;
-	public classNameForSessionStorage;
 	public firebasePath;
 
 	public status: Status = Status.ACTIVE;
@@ -21,7 +20,7 @@ abstract class DatabaseObject {
 	public mappingProperties: Array<string> = [];
 
 	constructor() {
-		this.className = this.classNameForSessionStorage = this.constructor.name;
+		this.className = this.constructor.name;
 		// Nest the paths on firebase for better organization with types that have multiple
 		// mappings.
 		this.firebasePath = this.className + '/' + this.className;

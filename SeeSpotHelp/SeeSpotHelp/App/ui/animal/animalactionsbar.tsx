@@ -9,8 +9,8 @@ import Group from '../../core/databaseobjects/group';
 
 import AddAnimalNote from './addanimalnote';
 import ActionsBar from '../shared/actionsbar';
+import TakePhotoButton from '../takephotobutton';
 
-var TakePhotoButton = require("../takephotobutton");
 var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
 // Actions to display on the animal home page, such as Add Activity,

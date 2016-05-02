@@ -10,10 +10,8 @@ export default class Activity extends DatabaseObject {
 	public userId: string;
 	public animalId: string;
 	public groupId: string;
-
-	// For auto-generated activities.
-	public photoId: string;
-	public eventId: string;
+	public photoId: string = null;
+	public eventId: string = null;
 
 	constructor() {
 		super();
@@ -22,12 +20,21 @@ export default class Activity extends DatabaseObject {
 		this.mappingProperties.push('animalId');
 	}
 
+	public static CreatePhotoActivity(photo) {
+		var activity = new Activity();
+		activity.photoId = photo.id;
+		activity.groupId = photo.groupId;
+		activity.animalId = photo.animalId;
+		activity.userId = photo.userId;
+		activity.description = photo.comment;
+		return activity;
+	}
+
 	createInstance() { return new Activity(); }
 
 	getDateForDisplay() {
 		return dateFormat(new Date(this.timestamp), "mm/dd/yy, h:MM TT");
 	}
 
-	isPhotoActivity() { return false; }
 	editable() { return true; }
 }

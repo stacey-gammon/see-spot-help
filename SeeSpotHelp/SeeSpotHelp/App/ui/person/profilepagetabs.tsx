@@ -7,6 +7,7 @@ var Tabs = ReactBootstrap.Tabs;
 
 var UserGroupsTab = require('./usergroupstab');
 import UserActivityTab from './useractivitytab';
+import ActivityTab from '../shared/tabs/activitytab';
 var MemberScheduleTab = require('./memberscheduletab');
 
 import Utils from '../uiutils';
@@ -36,7 +37,7 @@ export default class ProfilePageTabs extends React.Component<any, any> {
 					<UserGroupsTab user={this.props.user}/>
 				</Tab>
 				<Tab className='tab' eventKey={2} title={Utils.getActivityGlyphicon()}>
-					<UserActivityTab user={this.props.user}/>
+					<ActivityTab property='userId' value={this.props.user.id} />
 				</Tab>
 				<Tab className='tab' eventKey={3} title={Utils.getCalendarGlyphicon()}>
 					<MemberScheduleTab view='profile' user={this.props.user}/>

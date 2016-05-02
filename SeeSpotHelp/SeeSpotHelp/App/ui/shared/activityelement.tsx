@@ -20,7 +20,9 @@ import ActivityBody from './activitybody';
 export default class ActivityElement extends React.Component<any, any> {
 	constructor(props) {
 		super(props);
-		this.state = { memberName: 'loading...' };
+		this.state = {
+			memberName: 'loading...',
+		};
 	}
 
 	componentWillMount() {
@@ -36,8 +38,7 @@ export default class ActivityElement extends React.Component<any, any> {
 	}
 
 	shouldComponentUpdate(newProps, newState) {
-		return newProps.permission != this.props.permission ||
-			newProps.group != this.props.group ||
+		return newState.permission != this.props.permission ||
 			newProps.activity != this.props.activity ||
 			newState.memberName != this.state.memberName;
 	}
@@ -59,9 +60,7 @@ export default class ActivityElement extends React.Component<any, any> {
 		return (
 			<LinkContainer
 				to={{ pathname: "addAnimalNote",
-					state: { animal: this.props.animal,
-							activity: this.props.activity,
-							group: this.props.group,
+					state: { activity: this.props.activity,
 							mode: 'edit' } }}>
 				<span style={{marginLeft: '10px'}} className="glyphicon glyphicon-edit">
 				</span>
@@ -92,28 +91,6 @@ export default class ActivityElement extends React.Component<any, any> {
 		}
 	}
 
-	getHeader() {
-		if (this.props.showAnimalInfo && this.props.group && this.props.animal) {
-			var animalName = this.props.animal.name;
-			return (
-				<h4>{animalName}</h4>
-			);
-		} else {
-			return null;
-		}
-	}
-
-	getAnimalNameHeader() {
-		if (this.props.showAnimalInfo && this.props.group && this.props.animal) {
-			var animalName = this.props.animal.name;
-			return (
-				<h4>{animalName}</h4>
-			);
-		} else {
-			return null;
-		}
-	}
-
 	render() {
 		var date = this.props.activity.getDateForDisplay();
 		var userAndDateInfo = " - " + this.state.memberName + " - " + date;
@@ -121,9 +98,7 @@ export default class ActivityElement extends React.Component<any, any> {
 			<div className="list-group-item">
 				<div className="media">
 					<div className="media-body">
-						{this.getAnimalNameHeader()}
 						<ActivityBody activity={this.props.activity}/>
-
 						<p>
 						<a><LinkContainer
 							to={{ pathname: "/memberPage",

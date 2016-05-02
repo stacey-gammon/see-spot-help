@@ -118,27 +118,6 @@ abstract class BaseStore extends EventEmitter {
 		}
 	}
 
-	ensureItemById(id) {
-		var promise = new Promise(function(resolve, reject) {
-			var onResolve = function (data) {
-				resolve(data)
-			};
-			var onReject = function (error) {
-				reject(error);
-			};
-			if (!this.storage.hasOwnProperty(id)) {
-				this.storage[id] = null;
-				this.downloadItem(id, onResolve, onReject);
-			} else if (!this.isDownloading[id]){
-				resolve(this.storage[id]);
-			} else {
-				this.promiseResolveCallbacks.push(onResolve);
-			//	reject('Already waiting on the download.');
-			}
-		}.bind(this));
-		return promise;
-	}
-
 	getItemById(id) {
 		if (!this.storage.hasOwnProperty(id)) {
 			this.storage[id] = null;
@@ -174,6 +153,36 @@ abstract class BaseStore extends EventEmitter {
 		}
 	}
 
+	/**
+	* Called to retrieve multiple items given the property and value pair.  E.g. download all
+	* anmimals in a certain group by calling this on the AnimalStore with property 'groupId' and
+	* propertyValue with the id of the group.
+	*/
+	getItemsByProperty(property, propertyValue) {
+		var storageMapping = this.storageMappings[property];
+		if (!storageMapping.hasOwnProperty(propertyValue)) {
+			console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');
+			storageMapping[propertyValue] = [];
+			this.downloadFromMapping(property, propertyValue);
+			return [];
+		}
+
+		var items = [];
+		for (var i = 0; i < storageMapping[propertyValue].length; i++) {
+			items.push(this.storage[storageMapping[propertyValue][i]]);
+		}
+		items.sort(function(a,b) {
+			return a.timestamp < b.timestamp ? 1 : -1;
+		});
+		return items;
+	}
+
+	/**
+	* Called when items are downloaded via getItemsByProperty with a property/value pair (e.g.
+	* retrieve all items with property 'groupId' and value 'groupidhere'. All items are
+	* initially downloaded in bulk, after which a listener is set up for subsequent additions,
+	* changes and deletions.
+	*/
 	itemsDownloaded(property: string, value: string, onSuccess, snapshot) {
 		console.log(this.databaseObject.className + 'Store: itemsDownloaded with value ' + value);
 		var timestamp = 0;
@@ -197,6 +206,41 @@ abstract class BaseStore extends EventEmitter {
 		this.emitChange(property, value);
 
 		if (onSuccess) { onSuccess(); }
+	}
+
+	/**
+	* Very similar to downloadItem except returns a promise that will be called once the item is
+	* downloaded.
+	*/
+	ensureItemById(id) {
+		var promise = new Promise(function(resolve, reject) {
+			var onResolve = function (data) {
+				resolve(data)
+			};
+			var onReject = function (error) {
+				reject(error);
+			};
+			if (!this.storage.hasOwnProperty(id)) {
+				this.storage[id] = null;
+				this.downloadItem(id, onResolve, onReject);
+			} else if (!this.isDownloading[id]){
+				resolve(this.storage[id]);
+			} else {
+				this.promiseResolveCallbacks.push(onResolve);
+			//	reject('Already waiting on the download.');
+			}
+		}.bind(this));
+		return promise;
+	}
+
+
+	downloadItem(id, onSuccess?, onError?) {
+		this.isDownloading[id] = true;
+		this.resetErrorInfo();
+		DataServices.DownloadData(
+			this.firebasePath + '/' + id,
+			this.itemDownloaded.bind(this, id, onSuccess),
+			this.errorOccurred.bind(this, id, onError));
 	}
 
 	itemDownloaded(id: string, onSuccess, snapshot) {
@@ -236,16 +280,6 @@ abstract class BaseStore extends EventEmitter {
 		this.itemDeletedWithId(deletedObject.id);
 	}
 
-	itemDeletedWithProperty(property, value) {
-		if (property == 'id') return this.itemDeletedWithId(value);
-
-		for (var id in this.storageMappings[property][value]) {
-			this.itemDeletedWithId(id);
-		}
-
-		this.emitChange(property, value);
-	}
-
 	itemDeletedWithId(id) {
 		console.log(this.databaseObject.className + 'Store: itemDeleted with id ' + id);
 		var deletedObject = this.storage[id];
@@ -270,23 +304,6 @@ abstract class BaseStore extends EventEmitter {
 		}
 	}
 
-	getItemsByProperty(property, propertyValue) {
-		var storageMapping = this.storageMappings[property];
-		if (!storageMapping.hasOwnProperty(propertyValue)) {
-			console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');
-			storageMapping[propertyValue] = [];
-			this.downloadFromMapping(property, propertyValue);
-			return [];
-		}
-
-		var items = [];
-		for (var i = 0; i < storageMapping[propertyValue].length; i++) {
-			items.push(this.storage[storageMapping[propertyValue][i]]);
-		}
-
-		return items;
-	}
-
 	errorOccurred(id, onError, errorObject) {
 		this.isDownloading[id] = false;
 		if (errorObject) {
@@ -302,15 +319,6 @@ abstract class BaseStore extends EventEmitter {
 	resetErrorInfo() {
 		this.errorMessage = '';
 		this.hasError = false;
-	}
-
-	downloadItem(id, onSuccess?, onError?) {
-		this.isDownloading[id] = true;
-		this.resetErrorInfo();
-		DataServices.DownloadData(
-			this.firebasePath + '/' + id,
-			this.itemDownloaded.bind(this, id, onSuccess),
-			this.errorOccurred.bind(this, id, onError));
 	}
 
 	areItemsDownloading(property, value) {

@@ -6,6 +6,7 @@ export enum InputFieldType {
 	TEXT,
 	TEXT_AREA,
 	LIST,
+	PHOTO,
 	HIDDEN
 }
 

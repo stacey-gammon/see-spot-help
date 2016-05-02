@@ -1,63 +1,57 @@
 'use strict'
 
 import * as React from 'react';
+import AnimalActivityItem from './animalactivityitem';
 
-import AnimalActivityItem from '../animal/animalactivityitem';
-
-import Volunteer from '../../core/databaseobjects/volunteer';
-import Group from '../../core/databaseobjects/group';
-import LoginStore from '../../stores/loginstore';
-import GroupStore from '../../stores/groupstore';
-import AnimalStore from '../../stores/animalstore';
 import AnimalActivityStore from '../../stores/animalactivitystore';
-import DataServices from '../../core/dataservices';
+import VolunteerStore from '../../stores/volunteerstore';
 
-export default class UserActivityTab extends React.Component<any, any> {
-	constructor(props) { super(props); }
+import ActivityElement from '../shared/activityelement';
+
+export default class AnimalActivityList extends React.Component<any, any> {
+	constructor(props) {
+		super(props);
+		this.state = {
+			activities: AnimalActivityStore.getItemsByProperty('userId', this.props.userId)
+		}
+	}
 
 	componentDidMount() {
 		AnimalActivityStore.addPropertyListener(
 			this, 'userId', this.props.user.id, this.onChange.bind(this));
-		LoginStore.addChangeListener(this.onChange.bind(this));
+	}
+
+	onChange() {
+		var activities = AnimalActivityStore.getItemsByProperty('userId', this.props.userId);
+		this.setState({ activities: activities });
 	}
 
 	componentWillUnmount() {
 		AnimalActivityStore.removePropertyListener(this);
-		LoginStore.removeChangeListener(this.onChange);
 	}
 
-	shouldComponentUpdate(newProps, newState) {
-		return newProps.permission != this.props.permission ||
-			newProps.group != this.props.group;
-	}
-
-	onChange() {
-		this.forceUpdate();
-	}
-
-	generateActivity(activity) {
+	generateAnimalNote(note) {
 		return (
-			<AnimalActivityItem key={activity.id}
-								activity={activity}
-								user={this.props.user.id}
+			<ActivityElement key={note.id}
+								activity={note}
 								permission={this.props.permission}
 								group={this.props.group}
-								showAnimalInfo="true"/>
+								animal={this.props.animal}/>
 		);
 	}
 
 	render() {
-		var activityElements = [];
-		var animalActivity = AnimalActivityStore.getItemsByProperty('userId', this.props.user.id);
-		animalActivity.sort(function(a,b) {
-			return a.timestamp < b.timestamp ? 1 : -1;
-		});
+		var activityElements = this.state.activities.map(this.generateAnimalNote.bind(this));
 
-		for (var i = 0; i < animalActivity.length; i++) {
-			activityElements.push(this.generateActivity(animalActivity[i]));
+		var text =
+			this.state.activities.length > 0 ? '' : 'Be the first to make a post!';
+		if (AnimalActivityStore.areItemsDownloading('animalId', this.props.animal.id)) {
+			text = 'Loading...';
 		}
+
 		return (
 			<div className="list-group">
+				{text}
 				{activityElements}
 			</div>
 		);

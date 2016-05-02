@@ -27,6 +27,10 @@ export default class AnimalPhotoReel extends React.Component<any, any> {
 	}
 
 	render() {
+		// Hiding the photo reel for now. I'm not 100% sure I like the UI.  May switch to a
+		// photo tab.
+		return null;
+
 		var photos = PhotoStore.getPhotosByAnimalId(this.props.animal.id);
 		if (!photos || photos.length == 0) return null;
 

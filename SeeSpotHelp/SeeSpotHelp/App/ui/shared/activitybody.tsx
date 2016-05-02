@@ -21,7 +21,7 @@ export default class ActivityBody extends React.Component<any, any> {
 	}
 
 	componentDidMount() {
-		if (this.props.activity.isPhotoActivity()) {
+		if (this.props.activity.photoId) {
 			PhotoStore.addPropertyListener(
 				this, 'id', this.props.activity.photoId, this.forceUpdate.bind(this));
 		}
@@ -50,13 +50,7 @@ export default class ActivityBody extends React.Component<any, any> {
 	}
 
 	getActivityBody() {
-		if (!this.props.activity.isPhotoActivity()) {
-			return (
-				<p>
-					{this.props.activity.description}
-					<p>{this.getEditActionButton()}</p>
-				</p>);
-		} else {
+		if (this.props.activity.photoId) {
 			var photo = PhotoStore.getItemById(this.props.activity.photoId);
 			if (!photo) {
 				return <span className="spinner"><i className='fa fa-spinner fa-spin'></i></span>
@@ -64,12 +58,15 @@ export default class ActivityBody extends React.Component<any, any> {
 			return (
 				<img height='200px' src={photo.src} />
 			);
+		} else {
+			return null;
 		}
 	}
 
 	render() {
 		return (
 			<div>
+				<p>{this.props.activity.description} {this.getEditActionButton()} </p>
 				{this.getActivityBody()}
 			</div>
 		);

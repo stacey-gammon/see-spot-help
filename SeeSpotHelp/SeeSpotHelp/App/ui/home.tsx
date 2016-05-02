@@ -19,6 +19,7 @@ import AddAnimalNote from './animal/addanimalnote';
 import AnimalHomePage from './animal/animalHomePage';
 import AddAnimalPage from './animal/addanimalpage';
 
+import AddPhotoPage from './addphotopage';
 var SearchPage = require('./searchpage');
 var MemberPage = require('./person/memberpage');
 var LoginPage = require('./loginpage');
@@ -127,6 +128,7 @@ var routes = (
 		<Route path='userSettingsPage' component={UserSettingsPage} />
 		<Route path='addCalendarEvent' component={AddCalendarEvent} />
 		<Route path='enterBetaCode' component={EnterBetaCode} />
+		<Route path='addPhotoPage' component={AddPhotoPage} />
 	</Router>
 );
 
