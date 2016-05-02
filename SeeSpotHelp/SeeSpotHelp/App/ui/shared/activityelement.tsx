@@ -53,25 +53,10 @@ export default class ActivityElement extends React.Component<any, any> {
 		}
 	}
 
-	getEditActionButton() {
-		if (!LoginStore.getUser() || this.props.activity.userId != LoginStore.getUser().id) {
-			return null;
-		}
-		return (
-			<LinkContainer
-				to={{ pathname: "addAnimalNote",
-					state: { activity: this.props.activity,
-							mode: 'edit' } }}>
-				<span style={{marginLeft: '10px'}} className="glyphicon glyphicon-edit">
-				</span>
-			</LinkContainer>
-		);
-	}
-
 	getDeleteActionButton() {
 		return (
 			<div>
-				<span onClick={this.deleteAction}
+				<span onClick={this.deleteAction.bind(this)}
 					className="glyphicon glyphicon-remove-circle"/>
 			</div>
 		);

@@ -23,6 +23,7 @@ class LoginStore extends BaseStore {
 	private dispatchToken;
 	public userDownloading: boolean = false;
 	public hasUser: boolean = null;
+	public loggedOut: boolean = false;
 
 	private resolveMe = null;
 	private rejectMe = null;
@@ -34,8 +35,6 @@ class LoginStore extends BaseStore {
 			this.handleAction(action);
 		}.bind(this));
 
-		//new Firebase(DataServices.FirebaseURL).onAuth(this.authDataChanged);
-
 		this.checkAuthenticated();
 		if (this.isAuthenticating()) {
 			this.checkAuthenticatedWithRetries(0);
@@ -44,22 +43,6 @@ class LoginStore extends BaseStore {
 
 	isAuthenticating() {
 		return sessionStorage.getItem('loginStoreAuthenticating');
-	}
-
-	authDataChanged(authData) {
-		if (!this) return;
-		console.log('LoginStore.authDataChanged');
-		if (authData) {
-			sessionStorage.setItem('loginStoreAuthenticating', '');
-			console.log("User " + authData.uid + " is logged in with " + authData.provider);
-			// Load the new user associated with the login.
-			new DataServices(this.onUserDownloaded.bind(this), null).GetFirebaseData(
-				"users/" + authData.uid, true);
-		} else if (!this.isAuthenticating()) {
-			// Authdata may be null while we are trying to authenticate due to a race condition
-			// bug, so only log out if we aren't trying to authenticate.
-			this.logout();
-		}
 	}
 
 	// See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes for
@@ -106,6 +89,7 @@ class LoginStore extends BaseStore {
 	addLoggedInChangeListener(callback) {
 		this.addChangeListener(callback, ChangeEventEnum.LOGGED_IN);
 	}
+
 	removedLoggedInChangeListener(callback) {
 		this.removeChangeListener(callback, ChangeEventEnum.LOGGED_IN);
 	}
@@ -126,6 +110,7 @@ class LoginStore extends BaseStore {
 	}
 
 	authenticate() {
+		this.loggedOut = false;
 		// Don't make duplicate calls for authenticating. We have to save these in session storage
 		// rather than class variables because the redirect will cause us to lose all state.
 		// We will expect the onAuth callback to be called once the user is redirected back here and
@@ -139,6 +124,7 @@ class LoginStore extends BaseStore {
 
 	logout () {
 		DataServices.LogOut();
+		this.loggedOut = true;
 		if (this.user) {
 			DataServices.DetachListener(
 				"users/" + this.user.id,
@@ -147,7 +133,6 @@ class LoginStore extends BaseStore {
 		this.user = null;
 		sessionStorage.clear();
 		localStorage.clear();
-		LoginActions.userLoggedOut();
 	}
 
 	onUserDownloaded(data) {
@@ -183,6 +168,9 @@ class LoginStore extends BaseStore {
 	}
 
 	downloadAndAuthenticateUser() {
+		// Don't auto-log the person in if they intentionally logged out.
+		if (this.loggedOut) return;
+
 		var authData = this.checkAuthenticated();
 		if (authData) {
 			this.downloadUser(authData.uid);

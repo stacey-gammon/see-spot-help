@@ -84,10 +84,12 @@
 	float: right;
 }
 
-.dropdownMenuStyle {
-    /* RGBa with 0.6 opacity */
-    background-color: rgba(255, 255, 255, 0.9);
-	border: 2px solid #DCDCDC;
+.sh-dropdown-menu {
+	background-color: rgba(255, 255, 255, 0.9) !important;
+	border: 2px solid #DCDCDC !important;
+	width: 100%;
+	margin-top: 35px;
+	height: 140px;
 }
 
 .dropdownToggleStyle {

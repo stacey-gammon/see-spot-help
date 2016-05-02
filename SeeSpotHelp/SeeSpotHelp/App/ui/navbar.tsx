@@ -2,6 +2,7 @@
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var ReactBootstrap = require('react-bootstrap');
 import LoginStore from '../stores/loginstore';
+var FacebookLogin = require("./facebooklogin");
 
 var Navbar = ReactBootstrap.Navbar;
 var Nav = ReactBootstrap.Nav;
@@ -53,11 +54,13 @@ var MyNavBar = React.createClass({
 								<span className="glyphicon glyphicon-cog nav-item" />
 							</button>
 						</Dropdown.Toggle>
-						<Dropdown.Menu className="dropdownMenuStyle">
+						<Dropdown.Menu className="sh-dropdown-menu">
 							<LinkContainer  to={{ pathname: "userSettingsPage" }}>
-								<MenuItem className="dropdownMenuStyle"
-										  eventKey={3.1}>Settings</MenuItem>
+								<MenuItem eventKey={3.1}>Settings</MenuItem>
 							</LinkContainer>
+							<MenuItem eventKey={3.2}>
+								<FacebookLogin displayInline="true"/>
+							</MenuItem>
 						</Dropdown.Menu>
 				  </Dropdown>
 				</Nav>

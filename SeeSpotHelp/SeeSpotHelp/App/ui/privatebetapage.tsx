@@ -51,7 +51,8 @@ var PrivateBetaPage = React.createClass({
 					{this.getSignupForm()}
 
 					<p>Already recieved an invite?  <a href="#loginpage">Log in here</a></p>
-
+					<br/><br/>
+					<p><a href='mailto:info@theshelterhelper.com'>info@theshelterhelper.com</a></p>
 				</div>
 		);
 	}

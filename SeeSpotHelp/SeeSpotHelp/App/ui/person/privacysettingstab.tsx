@@ -70,7 +70,6 @@ var PrivacySettingsTab = React.createClass({
 					<button className="btn btn-info" onClick={this.updateSettings}>
 						Update
 					</button>
-					<FacebookLogin displayInline="true"/>
 				</div>
 			</div>
 		);
