@@ -40,7 +40,7 @@ export default class ActivityBody extends React.Component<any, any> {
 			<LinkContainer
 				to={{ pathname: "addAnimalNote",
 					state: { animalId: this.props.activity.animalId,
-							activity: this.props.activity,
+							activityId: this.props.activity.id,
 							groupId: this.props.activity.groupId,
 							mode: 'edit' } }}>
 				<span style={{marginLeft: '10px'}} className="glyphicon glyphicon-edit">
