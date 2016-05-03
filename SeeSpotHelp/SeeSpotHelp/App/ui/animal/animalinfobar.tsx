@@ -11,6 +11,7 @@ import PermissionsStore from '../../stores/permissionsstore';
 
 import InfoBar from '../shared/infobar';
 import AnimalPhotoReel from './animalphotoreel';
+import HeadShot from './headshot';
 
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
@@ -26,6 +27,8 @@ export default class AnimalInfoBar extends React.Component<any, any> {
 	componentDidMount() {
 		PhotoStore.addPropertyListener(
 			this, 'animalId', this.props.animal.id, this.forceUpdate.bind(this));
+		PhotoStore.addPropertyListener(
+			this, 'id', this.props.animal.photoId, this.forceUpdate.bind(this));
 	}
 
 	componentWillUnmount() {
@@ -51,16 +54,26 @@ export default class AnimalInfoBar extends React.Component<any, any> {
 		);
 	}
 
+	getHeadShotPhotoSrc() {
+		var photo = null;
+		if (this.props.animal.photoId) {
+			photo = PhotoStore.getItemById(this.props.animal.photoId);
+		} else {
+			var photos = PhotoStore.getPhotosByAnimalId(this.props.animal.id);
+			photo = photos.length > 0 ? photos[0] : null;
+		}
+		return photo ? photo.src : this.props.animal.getDefaultPhoto();
+	}
+
 	render() {
-		var photos = PhotoStore.getPhotosByAnimalId(this.props.animal.id);
-		var imageSrc = photos && photos.length > 0 ? photos[0].src : this.props.animal.getDefaultPhoto();
+		var imageSrc = this.getHeadShotPhotoSrc();
 		var animal = this.props.animal;
 		return (
 			<InfoBar className='animal-info-bar'>
-					<img className="media-object"
-						style={{margin: 5 + "px"}}
-						height="100px" width="100px"
-						src={imageSrc} />
+					<HeadShot src={imageSrc}
+						permission={this.props.permission}
+						animal={animal}
+						group={this.props.group}/>
 					<div>
 						<h1 className="animalInfo">{animal.name}
 						{this.getEditIcon()}

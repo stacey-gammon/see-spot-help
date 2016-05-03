@@ -25,6 +25,7 @@ export default class AddPhotoPage extends React.Component<any, any> {
 		var animalId = Utils.FindPassedInProperty(this, 'animalId');
 		var groupId = Utils.FindPassedInProperty(this, 'groupId');
 		var photo = Utils.FindPassedInProperty(this, 'photo');
+		var headShot = Utils.FindPassedInProperty(this, 'headShot');
 
 		if (!mode) mode = 'add';
 
@@ -32,7 +33,8 @@ export default class AddPhotoPage extends React.Component<any, any> {
 			animalId: animalId,
 			mode: mode,
 			groupId: groupId,
-			photo: photo
+			photo: photo,
+			headShot: headShot
 		};
 		Utils.LoadOrSaveState(this.state);
 		if (mode == 'add') this.state.photoId = null;
@@ -109,6 +111,7 @@ export default class AddPhotoPage extends React.Component<any, any> {
 		var extraFields = {
 			animalId: this.state.animalId,
 			groupId: this.state.groupId,
+			headShot: this.state.headShot,
 			src: this.state.src,
 			userId: LoginStore.getUser().id
 		}
