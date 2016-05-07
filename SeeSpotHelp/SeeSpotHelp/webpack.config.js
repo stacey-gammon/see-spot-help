@@ -24,7 +24,8 @@ module.exports = {
                 loaders: ['react-hot', 'babel'],
                 loader: 'jsx-loader?insertPragma=React.DOM&harmony'
             },
-            { test: /\.css$/, loader: "style-loader!css-loader" }
+            { test: /\.css$/, loader: "style-loader!css-loader" },
+		    { test: /\.json$/, loaders: ['json']},
         ]
     },
     resolve: {

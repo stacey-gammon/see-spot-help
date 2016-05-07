@@ -36,8 +36,6 @@ export default class AddPhotoPage extends React.Component<any, any> {
 			photo: photo,
 			headShot: headShot
 		};
-		Utils.LoadOrSaveState(this.state);
-		if (mode == 'add') this.state.photoId = null;
 	}
 
 	// Required for page transitions via this.context.router.push.

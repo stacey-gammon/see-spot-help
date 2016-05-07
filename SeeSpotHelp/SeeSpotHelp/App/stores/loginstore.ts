@@ -11,255 +11,273 @@ import DataServices from '../core/dataservices';
 import BaseStore from './basestore';
 
 enum ChangeEventEnum {
-	ANY,
-	LOGGED_IN
+  ANY,
+  LOGGED_IN
 };
 
 class LoginStore extends BaseStore {
-	protected databaseObject: DatabaseObject = new Volunteer('', '');
-	private userInBeta: boolean = false;
-	private user: Volunteer = null;
-	private authenticated: boolean = null;
-	private dispatchToken;
-	public userDownloading: boolean = false;
-	public hasUser: boolean = null;
-	public loggedOut: boolean = false;
+  protected databaseObject: DatabaseObject = new Volunteer('', '');
+  private userInBeta: boolean = false;
+  private user: Volunteer = null;
+  private authenticated: boolean = null;
+  private dispatchToken;
+  public userDownloading: boolean = false;
+  public hasUser: boolean = null;
+  public loggedOut: boolean = false;
 
-	private resolveMe = null;
-	private rejectMe = null;
+  private resolveMe = null;
+  private rejectMe = null;
 
-	constructor() {
-		super();
-		this.Init();
-		this.dispatchToken = Dispatcher.register(function (action) {
-			this.handleAction(action);
-		}.bind(this));
+  constructor() {
+    super();
+    this.Init();
+    this.dispatchToken = Dispatcher.register(function (action) {
+      this.handleAction(action);
+    }.bind(this));
 
-		this.checkAuthenticated();
-		if (this.isAuthenticating()) {
-			this.checkAuthenticatedWithRetries(0);
-		}
-	}
+    this.checkAuthenticated();
+    if (this.isAuthenticating()) {
+      this.checkAuthenticatedWithRetries(0);
+    }
+  }
 
-	isAuthenticating() {
-		return sessionStorage.getItem('loginStoreAuthenticating');
-	}
+  isAuthenticating() {
+    return sessionStorage.getItem('loginStoreAuthenticating');
+  }
 
-	// See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes for
-	// the bug we are trying to work around here.
-	checkAuthenticatedWithRetries(retry) {
-		console.log('checkAuthenticatedWithRetries: ' + retry);
-		var authData = this.checkAuthenticated();
-		if (authData) {
-			sessionStorage.setItem('loginStoreAuthenticating', '');
-			this.emitChange();
-			return authData;
-		}
+  // See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes for
+  // the bug we are trying to work around here.
+  checkAuthenticatedWithRetries(retry) {
+    console.log('checkAuthenticatedWithRetries: ' + retry);
+    var authData = this.checkAuthenticated();
+    if (authData) {
+      sessionStorage.setItem('loginStoreAuthenticating', '');
+      this.emitChange();
+      return authData;
+    }
 
-		if (retry && retry >= 4) {
-			console.log('checkAuthenticatedWithRetries: unsuccessful');
-			// No auth data on the third try, give up and set user as logged out.
-			sessionStorage.setItem('loginStoreAuthenticating', '');
-			sessionStorage.setItem('user', '');
-			this.user = null;
-			this.emitChange();
-			return null;
-		}
+    if (retry && retry >= 4) {
+      console.log('checkAuthenticatedWithRetries: unsuccessful');
+      // No auth data on the third try, give up and set user as logged out.
+      sessionStorage.setItem('loginStoreAuthenticating', '');
+      sessionStorage.setItem('user', '');
+      this.user = null;
+      this.emitChange();
+      return null;
+    }
 
-		setTimeout(function() {
-			if (!retry) retry = 0;
-			retry += 1;
-			this.checkAuthenticatedWithRetries(retry);
-		}.bind(this), 500)
-		return null;
-	}
+    setTimeout(function() {
+      if (!retry) retry = 0;
+      retry += 1;
+      this.checkAuthenticatedWithRetries(retry);
+    }.bind(this), 500)
+    return null;
+  }
 
-	checkAuthenticated() {
-		var authData = DataServices.GetAuthData();
-		if (authData) {
-			this.authenticated = true;
-			sessionStorage.setItem('loginStoreAuthenticating', '');
-			console.log("User " + authData.uid + " is logged in with " + authData.provider);
-			return authData;
-		} else {
-			this.authenticated = false;
-		}
-	}
+  checkAuthenticated() {
+    var authData = DataServices.GetAuthData();
+    if (authData) {
+      this.authenticated = true;
+      sessionStorage.setItem('loginStoreAuthenticating', '');
+      console.log("User " + authData.uid + " is logged in with " + authData.provider);
+      return authData;
+    } else {
+      this.authenticated = false;
+    }
+  }
 
-	addLoggedInChangeListener(callback) {
-		this.addChangeListener(callback, ChangeEventEnum.LOGGED_IN);
-	}
+  addLoggedInChangeListener(callback) {
+    this.addChangeListener(callback, ChangeEventEnum.LOGGED_IN);
+  }
 
-	removedLoggedInChangeListener(callback) {
-		this.removeChangeListener(callback, ChangeEventEnum.LOGGED_IN);
-	}
+  removedLoggedInChangeListener(callback) {
+    this.removeChangeListener(callback, ChangeEventEnum.LOGGED_IN);
+  }
 
-	addChangeListener(callback, changeEvent? : ChangeEventEnum) {
-		if (!changeEvent) changeEvent = ChangeEventEnum.ANY;
-		this.on(changeEvent.toString(), callback);
-	}
+  addChangeListener(callback, changeEvent? : ChangeEventEnum) {
+    if (!changeEvent) changeEvent = ChangeEventEnum.ANY;
+    this.on(changeEvent.toString(), callback);
+  }
 
-	// @param {function} callback
-	removeChangeListener(callback, changeEvent? : ChangeEventEnum) {
-		if (!changeEvent) changeEvent = ChangeEventEnum.ANY;
-		this.removeListener(changeEvent.toString(), callback);
-	}
+  // @param {function} callback
+  removeChangeListener(callback, changeEvent? : ChangeEventEnum) {
+    if (!changeEvent) changeEvent = ChangeEventEnum.ANY;
+    this.removeListener(changeEvent.toString(), callback);
+  }
 
-	isLoggedIn() {
-		return this.authenticated && !!this.user;
-	}
+  isLoggedIn() {
+    return this.authenticated && !!this.user;
+  }
 
-	authenticate() {
-		this.loggedOut = false;
-		// Don't make duplicate calls for authenticating. We have to save these in session storage
-		// rather than class variables because the redirect will cause us to lose all state.
-		// We will expect the onAuth callback to be called once the user is redirected back here and
-		// authenticated.
-		// See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes for
-		// some subtle issues around this process.
-		if (sessionStorage.getItem('loginStoreAuthenticating')) return;
-		sessionStorage.setItem('loginStoreAuthenticating', 'true');
-		DataServices.LoginWithFacebookRedirect();
-	}
+  authenticate() {
+    this.loggedOut = false;
+    // Don't make duplicate calls for authenticating. We have to save these in session storage
+    // rather than class variables because the redirect will cause us to lose all state.
+    // We will expect the onAuth callback to be called once the user is redirected back here and
+    // authenticated.
+    // See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes for
+    // some subtle issues around this process.
+    if (sessionStorage.getItem('loginStoreAuthenticating')) return;
+    sessionStorage.setItem('loginStoreAuthenticating', 'true');
+    DataServices.LoginWithFacebookRedirect();
+  }
 
-	logout () {
-		DataServices.LogOut();
-		this.loggedOut = true;
-		if (this.user) {
-			DataServices.DetachListener(
-				"users/" + this.user.id,
-				this.onUserDownloaded.bind(this));
-		}
-		this.user = null;
-		sessionStorage.clear();
-		localStorage.clear();
-	}
+  logout () {
+    DataServices.LogOut();
+    this.loggedOut = true;
+    if (this.user) {
+      DataServices.DetachListener(
+        "users/" + this.user.id,
+        this.onUserDownloaded.bind(this));
+    }
+    this.user = null;
+    sessionStorage.clear();
+    localStorage.clear();
+  }
 
-	onUserDownloaded(data) {
-		var authData = this.checkAuthenticated() as any;
-		// We are authenticated but no user exists for us, insert a new user.
-		if (authData && data.val() == null) {
-			this.user = new Volunteer(authData.facebook.displayName, authData.facebook.email);
-			this.user.id = authData.uid;
-			this.user.insert();
-			this.hasUser = true;
-		} else if (authData && data.val()){
-			this.user = new Volunteer('', '').castObject(data.val());
-			this.hasUser = true;
-		} else {
-			this.hasUser = false;
-		}
-		this.resolve();
-		this.emitChange();
-	}
+  onUserDownloaded(data) {
+    var authData = this.checkAuthenticated() as any;
 
-	isAuthenticated() {
-		return this.authenticated;
-	}
+    if (authData) {
+      AWS.config.region = 'us-east-1'; // Region
+      AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: 'us-east-1:9b886d48-65f2-42da-ad22-ceac8793c8f8',
+        Logins: { // optional tokens, used for authenticated login
+          'graph.facebook.com': authData.facebook.accessToken
+        }
+      });
 
-	getUserFromStorage() {
-		try {
-			return JSON.parse(sessionStorage.getItem("user"));
-		} catch (error) {
-			console.log('Failed to parse user value ' + sessionStorage.getItem("user"));
-			sessionStorage.setItem('user', '');
-			return null;
-		}
-	}
+      // Obtain AWS credentials
+      AWS.config.credentials.get(function(err){
+        // Access AWS resources here.
+        console.log('worked', err);
+      });
+    }
 
-	downloadAndAuthenticateUser() {
-		// Don't auto-log the person in if they intentionally logged out.
-		if (this.loggedOut) return;
 
-		var authData = this.checkAuthenticated();
-		if (authData) {
-			this.downloadUser(authData.uid);
-		} else if (!this.authenticated && !sessionStorage.getItem('loginStoreAuthenticating')) {
-			this.authenticate();
-		} else {
-			this.reject();
-		}
-	}
+    // We are authenticated but no user exists for us, insert a new user.
+    if (authData && data.val() == null) {
+      this.user = new Volunteer(authData.facebook.displayName, authData.facebook.email);
+      this.user.id = authData.uid;
+      this.user.insert();
+      this.hasUser = true;
+    } else if (authData && data.val()){
+      this.user = new Volunteer('', '').castObject(data.val());
+      this.hasUser = true;
+    } else {
+      this.hasUser = false;
+    }
+    this.resolve();
+    this.emitChange();
+  }
 
-	downloadUser(userId) {
-		if (this.userDownloading) return;
-		this.userDownloading = true;
-		DataServices.DownloadData(
-			'users/' + userId,
-			this.onUserDownloaded.bind(this),
-			this.reject.bind(this));
-	}
+  isAuthenticated() {
+    return this.authenticated;
+  }
 
-	getUser() {
-		if (this.user && this.authenticated) return this.user;
-		if (this.userDownloading || this.authenticated === false || this.hasUser === false) {
-			return null;
-		}
-		this.downloadAndAuthenticateUser();
-		return null;
-	}
+  getUserFromStorage() {
+    try {
+      return JSON.parse(sessionStorage.getItem("user"));
+    } catch (error) {
+      console.log('Failed to parse user value ' + sessionStorage.getItem("user"));
+      sessionStorage.setItem('user', '');
+      return null;
+    }
+  }
 
-	clearPromiseFunctions () {
-		this.resolveMe = null;
-		this.rejectMe = null;
-	}
+  downloadAndAuthenticateUser() {
+    // Don't auto-log the person in if they intentionally logged out.
+    if (this.loggedOut) return;
 
-	reject() {
-		if (this.rejectMe) { this.rejectMe(); }
-		this.clearPromiseFunctions();
-		this.userDownloading = false;
-	}
+    var authData = this.checkAuthenticated();
+    if (authData) {
+      this.downloadUser(authData.uid);
+    } else if (!this.authenticated && !sessionStorage.getItem('loginStoreAuthenticating')) {
+      this.authenticate();
+    } else {
+      this.reject();
+    }
+  }
 
-	resolve() {
-		if (this.resolveMe) { this.resolveMe(this.user); }
-		this.clearPromiseFunctions();
-		this.userDownloading = false;
-	}
+  downloadUser(userId) {
+    if (this.userDownloading) return;
+    this.userDownloading = true;
+    DataServices.DownloadData(
+      'users/' + userId,
+      this.onUserDownloaded.bind(this),
+      this.reject.bind(this));
+  }
 
-	ensureUser() {
-		return new Promise(function(resolve, reject) {
-			if (this.user && this.authenticated) {
-				resolve(this.user);
-				return;
-			}
-			this.resolveMe = function (data) {
-				resolve(data)
-			};
-			this.rejectMe = function (error) {
-				reject(error);
-			};
-			return this.getUser();
-		}.bind(this));
-	}
+  getUser() {
+    if (this.user && this.authenticated) return this.user;
+    if (this.userDownloading || this.authenticated === false || this.hasUser === false) {
+      return null;
+    }
+    this.downloadAndAuthenticateUser();
+    return null;
+  }
 
-	emitChange(changeEvent? : ChangeEventEnum) {
-		this.emit(ChangeEventEnum.ANY.toString());
-		if (changeEvent) {
-			this.emit(changeEvent.toString());
-		}
-	}
+  clearPromiseFunctions () {
+    this.resolveMe = null;
+    this.rejectMe = null;
+  }
 
-	handleAction(action) {
-		switch (action.type) {
-			case ActionConstants.LOGIN_USER_SUCCESS:
-				this.user = action.user;
-				sessionStorage.setItem("user", JSON.stringify(this.user));
-				this.emitChange(ChangeEventEnum.LOGGED_IN);
-				break;
+  reject() {
+    if (this.rejectMe) { this.rejectMe(); }
+    this.clearPromiseFunctions();
+    this.userDownloading = false;
+  }
 
-			case ActionConstants.LOGIN_USER_ERROR:
-				this.emitChange();
-				break;
+  resolve() {
+    if (this.resolveMe) { this.resolveMe(this.user); }
+    this.clearPromiseFunctions();
+    this.userDownloading = false;
+  }
 
-			case ActionConstants.LOGOUT_USER:
-				console.log("LoginStore:handleAction:LOGOUT_USER");
-				this.emitChange();
-				break;
+  ensureUser() {
+    return new Promise(function(resolve, reject) {
+      if (this.user && this.authenticated) {
+        resolve(this.user);
+        return;
+      }
+      this.resolveMe = function (data) {
+        resolve(data)
+      };
+      this.rejectMe = function (error) {
+        reject(error);
+      };
+      return this.getUser();
+    }.bind(this));
+  }
 
-			default:
-				break;
-		};
-	}
+  emitChange(changeEvent? : ChangeEventEnum) {
+    this.emit(ChangeEventEnum.ANY.toString());
+    if (changeEvent) {
+      this.emit(changeEvent.toString());
+    }
+  }
+
+  handleAction(action) {
+    switch (action.type) {
+      case ActionConstants.LOGIN_USER_SUCCESS:
+        this.user = action.user;
+        sessionStorage.setItem("user", JSON.stringify(this.user));
+        this.emitChange(ChangeEventEnum.LOGGED_IN);
+        break;
+
+      case ActionConstants.LOGIN_USER_ERROR:
+        this.emitChange();
+        break;
+
+      case ActionConstants.LOGOUT_USER:
+        console.log("LoginStore:handleAction:LOGOUT_USER");
+        this.emitChange();
+        break;
+
+      default:
+        break;
+    };
+  }
 };
 
 export default new LoginStore();
