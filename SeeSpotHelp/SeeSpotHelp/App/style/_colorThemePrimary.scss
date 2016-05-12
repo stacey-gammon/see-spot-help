@@ -1,7 +1,9 @@
 
 $almostWhite: #FEFEFC;
-$almostBlack: lighten(black, 25%);
+$midBlack: lighten(black, 25%);
+$almostBlack: #252525;
 $lightGrey: #D2D2D3;
+$midGrey: #767676;
 $invisible: rgba(1, 1, 1, 0);
 
 $color1: #0E9DD0;
@@ -10,8 +12,9 @@ $color3: #50d07d;
 $color4: #C1DAD6;
 
 // COMMON
-
-$html-bg-color: $lightGrey;
+$footer-bg-color: $almostBlack;
+$footer-color: $midGrey;
+$html-bg-color: #767676;
 $body-bg-color: $almostWhite;
 $shadow: rgba(153,153,153,.4);
 $list-border-color: lighten($color1, 50%);
@@ -33,7 +36,7 @@ $button-text-color: white;
 
 // NAV
 
-$nav-bg-color: $almostWhite;
+$nav-bg-color: $almostBlack;
 $nav-item-color: desaturate(lighten($color3, 20%), 50%);
 $nav-item-color-hover: darken($nav-item-color, 25%);
 
@@ -56,3 +59,5 @@ $animal-info-top-color: $almostWhite;
 $private-beta-page-bg-color: #C1DAD6;
 $private-beta-page-color: #495864;
 $beta-page-border-color: #B7AFA3;
+
+$header-bar-bg-color: black;

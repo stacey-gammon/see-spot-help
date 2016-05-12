@@ -8,12 +8,6 @@ import InputTextAreaField from './inputtextareafield';
 import InputCheckBoxField from './inputcheckboxfield';
 import InputFieldValidation from './inputfieldvalidation';
 import { Editor } from './editor';
-/**
- * Don't hard-code your credentials!
- * Export the following environment variables instead:
- */
-var AWS_ACCESS_KEY_ID='AKIAIUMFKS4SNDR4KS7A';
-var AWS_SECRET_ACCESS_KEY='fhZxKzCC6cYlZQlqoEx0+YRJuydbgEcBVEMKOykX';
 
 export default class PhotoEditor extends Editor {
   public databaseObject: Photo;
@@ -40,7 +34,6 @@ export default class PhotoEditor extends Editor {
     };
 
     s3.putObject(params, function (err, data) {
-      console.log('object putted: ', err);
       if (!err) {
         extraFields.src = 'https://s3.amazonaws.com/theshelterhelper/' + objKey;
         this.insertPhoto(extraFields);

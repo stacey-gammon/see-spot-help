@@ -13,7 +13,7 @@ h1 {
     font-weight: bold;
     margin: 2px;
     letter-spacing: 1px;
-	line-height: 21px;
+  line-height: 21px;
 }
 
 h2 {
@@ -25,9 +25,9 @@ h2 {
 
 
 .email {
-	width: 100% !important;
-	  max-width: 600px;
-	  margin: 5 auto !important;
+  width: 100% !important;
+    max-width: 600px;
+    margin: 5 auto !important;
 }
 
 .input-group-addon {
@@ -36,45 +36,45 @@ h2 {
 }
 
 .input-group {
-	max-width: 600px;
-	margin: 5px auto;
+  max-width: 600px;
+  margin: 5px auto;
 }
 
 .form-control {
-	max-width: 600px;
+  max-width: 600px;
 }
 
 .PostTextArea {
     display: block !important;
-	width: 100%;
-	max-width: 600px;
+  width: 100%;
+  max-width: 600px;
     margin-left: auto;
     margin-right: auto;
     margin: 5px auto !important;
 }
 
 .smallHelpText {
-	font-size: 10px;
-	max-width: 600px;
-	margin: 0 auto;
-	margin-top: -20px;
+  font-size: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+  margin-top: -20px;
 }
 
 
 .glyph-warning {
-	color: red;
+  color: red;
 }
 
 .group-list-glyph {
-	font-size: 1.5em;
-	color: #505050;
+  font-size: 1.5em;
+  color: #505050;
 }
 .group-list-glyph:hover {
-	color: #434343;
+  color: #434343;
 }
 
 .glyph-warning:hover {
-	color: darkred;
+  color: darkred;
 }
 
 
@@ -101,42 +101,42 @@ p {
 }
 
 .betaIntroDiv {
-	max-width: 700px;
-	margin: 0 auto;
-	color: #495864;
+  max-width: 700px;
+  margin: 0 auto;
+  color: #495864;
 }
 
 .betaPageBold1, .betaPageBold2, .betaPageBold3 {
-	/* font-weight: bold; */
-	/* color: #B7AFA3; */
-	font-size: 1.2em;
-	line-height: 29px;
-	text-align: left;
-	margin-left: 50px;
-	display: none;
+  /* font-weight: bold; */
+  /* color: #B7AFA3; */
+  font-size: 1.2em;
+  line-height: 29px;
+  text-align: left;
+  margin-left: 50px;
+  display: none;
 }
 
 .betaPageBold2 {
-	/* letter-spacing: 1.6px; */
+  /* letter-spacing: 1.6px; */
 }
 .betaPageBold3 {
     /* letter-spacing: 2.0px; */
 }
 
 .developedForText {
-	color: white;
+  color: white;
 }
 
 .privateBetaPage {
     padding: 20px;
-	height: 95%;
-	margin: 20px 10px 20px 10px;
-	background-color: $private-beta-page-bg-color;
-   	color: $private-beta-page-color;
+  height: 95%;
+  margin: 20px 10px 20px 10px;
+  background-color: $private-beta-page-bg-color;
+     color: $private-beta-page-color;
     border-radius: 25px;
-	font-size: 1.1em;
-	line-height: 1.5em;
-	border: 3px solid $beta-page-border-color;
+  font-size: 1.1em;
+  line-height: 1.5em;
+  border: 3px solid $beta-page-border-color;
 }
 
 .loginPage {
@@ -145,33 +145,28 @@ p {
 }
 
 .slider-img {
-	margin: 5px;
-	height: 100px;
+  margin: 5px;
+  height: 100px;
 }
 
 .photo-slider {
-	height: 100px;
-	background-color: #fafaf9;
-	margin: 10px 40px;
+  height: 100px;
+  background-color: #fafaf9;
+  margin: 10px 40px;
 }
 
 .slick-next, .slick-prev {
-	background-color: #C1DAD6 !important;
-	color: #495864 !important;
+  background-color: #C1DAD6 !important;
+  color: #495864 !important;
 }
 
 .slick-disabled {
-	background-color: lightgrey;
-	color: #495864;
+  background-color: lightgrey;
+  color: #495864;
 }
 
 .addPhotoFileInput {
     display: none !important;
-}
-
-.padding {
-    margin: 2px;
-    padding: 5px;
 }
 
 .animalImg {
@@ -187,42 +182,6 @@ p {
   background-repeat: no-repeat;
 }
 
-.spinner {
-  display: inline-block;
-  opacity: 0;
-  width: 0;
-
-  -webkit-transition: opacity 0.25s, width 0.25s;
-  -moz-transition: opacity 0.25s, width 0.25s;
-  -o-transition: opacity 0.25s, width 0.25s;
-  transition: opacity 0.25s, width 0.25s;
-}
-
-.has-spinner.active {
-  cursor:progress;
-}
-
-.has-spinner.active .spinner {
-  opacity: 1;
-  width: auto; /* This doesn't work, just fix for unkown width elements */
-}
-
-.has-spinner.btn-mini.active .spinner {
-    width: 10px;
-}
-
-.has-spinner.btn-small.active .spinner {
-    width: 13px;
-}
-
-.has-spinner.btn.active .spinner {
-    width: 16px;
-}
-
-.has-spinner.btn-large.active .spinner {
-    width: 19px;
-}
-
 .photo-upload {
-	cursor: pointer;
+  cursor: pointer;
 }

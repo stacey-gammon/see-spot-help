@@ -1,29 +1,31 @@
 
 .navbar {
-	background-color: $nav-bg-color;
-	margin-bottom: 0px !important;
-	border: 0px solid red !important;
+  background-color: $nav-bg-color;
+  margin-bottom: 0px !important;
+  border: 0px solid red !important;
 }
 
 .nav-item {
-	-webkit-appearance: none;
-	color: $nav-item-color;
-	outline: none;
-	border: 0;
-	background: transparent;
-	margin: 0px;
+  -webkit-appearance: none;
+  color: $nav-item-color;
+  outline: none;
+  border: 0;
+  background: transparent;
+  margin: 0px;
 }
 
 .nav-item:hover {
-	color: $nav-item-color-hover;
+  color: $nav-item-color-hover;
 }
 
 .glyphicon {
-	color: $nav-item-color;
+  color: $nav-item-color;
+  fill: $nav-item-color;
 }
 
 .glyphicon:hover {
-	color: $nav-item-color-hover;
+  color: $nav-item-color-hover;
+  fill: $nav-item-color-hover;
 }
 
 .navbar-custom {
@@ -49,47 +51,47 @@
 
 
 .logo-header {
-	display: inline-block !important;
-	margin: 0 auto !important;
-	height: 40px;
-	width: 130px;
+  display: inline-block !important;
+  margin: 0 auto !important;
+  height: 40px;
+  width: 130px;
 }
 
 .logo-header img {
-	height: 40px;
-	margin-left: 10px !important;
-	margin-top: -15px !important;
-	margin-bottom: 15px !important;
-	width: 130px;
-	margin: 0 auto;
-	display: inline-block;
+  height: 40px;
+  margin-left: 10px !important;
+  margin-top: -15px !important;
+  margin-bottom: 15px !important;
+  width: 130px;
+  margin: 0 auto;
+  display: inline-block;
 }
 
 
 .invisible-button {
-	-webkit-appearance: none;
-	outline: none;
-	border: 0;
-	background: transparent;
+  -webkit-appearance: none;
+  outline: none;
+  border: 0;
+  background: transparent;
 }
 
 .hamburgerDropdown {
-	-webkit-appearance: none;
-	outline: none;
-	border: 0;
-	background: transparent;
-	font-size:1.3em;
-	margin-top: 11px;
-	margin-right: -10px;
-	float: right;
+  -webkit-appearance: none;
+  outline: none;
+  border: 0;
+  background: transparent;
+  font-size:1.3em;
+  margin-top: 11px;
+  margin-right: -10px;
+  float: right;
 }
 
 .sh-dropdown-menu {
-	background-color: rgba(255, 255, 255, 0.9) !important;
-	border: 2px solid #DCDCDC !important;
-	width: 100%;
-	margin-top: 35px;
-	height: 140px;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border: 2px solid #DCDCDC !important;
+  width: 100%;
+  margin-top: 35px;
+  height: 140px;
 }
 
 .dropdownToggleStyle {

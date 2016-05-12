@@ -1,34 +1,33 @@
 
-@media screen and (min-width: 800px) {
+//@media screen and (min-width: 800px) {
 
-	html {
-		max-width: 800px;
-		margin: 0 auto;
-		background: $html-bg-color;
-		position: relative;
-	}
+  html {
+    max-width: 800px;
+    margin: 0 auto;
+    background: $html-bg-color;
+    position: relative;
+  }
 
-	body {
-		background-color: $body-bg-color;
-		padding: 20px;
-		margin: 20px;
-	}
-}
+  body {
+    background-color: $body-bg-color;
+    height: 100%;
+  }
+//}
 
 .page {
-	margin-right: 2px;
-	margin-left: 2px;
+  margin-right: 0px;
+  margin-left: 0px;
 }
 
 .info-top {
-	border-top: 2px solid $info-top-border-color;
-	border-left: 2px solid $info-top-border-color;
-	border-right: 2px solid $info-top-border-color;
+  border-top: 0px solid $info-top-border-color;
+  border-left: 0px solid $info-top-border-color;
+  border-right: 0px solid $info-top-border-color;
 
-	@include border-top-radius(20px);
-	background-color: $info-top-bg-color;
-	color: $info-top-color;
-	padding: 15px;
+  @include border-top-radius(0px);
+  background-color: $info-top-bg-color;
+  color: $info-top-color;
+  padding: 15px;
 }
 
 // .animal-info-bar {
@@ -42,61 +41,103 @@
 // }
 
 .info-top-no-tabs {
-	@extend .info-top;
-	border-bottom: 1px solid $info-top-border-color;
+  @extend .info-top;
+  border-bottom: 1px solid $info-top-border-color;
 }
 
 .nav-tabs {
-	background-color: $info-top-bg-color;
-	border-right: 2px solid $info-top-border-color;
-	border-left: 2px solid $info-top-border-color;
-	border-bottom: 1px solid $info-top-border-color;
-	padding-left: 15px;
+  background-color: $info-top-bg-color;
+  border-right: 0px solid $info-top-border-color;
+  border-left: 0px solid $info-top-border-color;
+  border-bottom: 1px solid $info-top-border-color;
+  padding-left: 15px;
+
+  // I'm not sure why but there is an ultra fine line showing up on the top, interuppting the flow
+  // from the info bar to the tabs, this seems to fix it.
+  margin-top: -1px;
 }
 
 .tab-content {
-	background-color: white;
-	margin: 0px;
+  background-color: white;
+  margin: 0px;
 }
 
 .tabs-area {
-	li a {
-		background-color: $inactive-tab-bg-color;
-		@include border-top-radius(10px);
-		border-width: 2px 2px 1px 2px;
-		border-color: $info-top-border-color;
-		height: 48px;
-	}
+  li a {
+    background-color: $inactive-tab-bg-color;
+    @include border-top-radius(10px);
+    border-width: 2px 2px 1px 2px;
+    border-color: $info-top-border-color;
+    height: 48px;
+  }
 
-	li.active a {
-		background-color: $page-bg-color;
-		border-width: 2px 2px 0px 2px;
-		border-color: $info-top-border-color;
-	}
+  li.active a {
+    background-color: $page-bg-color;
+    border-width: 2px 2px 0px 2px;
+    border-color: $info-top-border-color;
+  }
 }
 
 .tab {
-	background-color: $page-bg-color !important;
+  background-color: $page-bg-color !important;
 }
 
 .large-tab-icon {
-	font-size: 20px;
+  font-size: 20px;
 }
 
 .small-tab-icon {
-	font-size: 15px;
+  font-size: 15px;
 }
 
 .actions-bar {
-	max-width: 600px;
-	margin: 5px 5px !important;
+  max-width: 600px;
+  margin: 5px 5px !important;
 }
 
 .glyphicon-camera {
-	color: white;
-	font-size: 20px;
+  color: white;
+  font-size: 20px;
 }
 
 .glyphicon-edit, .glyphicon-remove-circle {
-	color: rgba(214, 214, 214, .8);
+  color: rgba(214, 214, 214, .8);
+}
+
+.header-bar {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  background-color: $header-bar-bg-color;
+  padding: 20px;
+}
+
+#wrapper {
+  min-height:100%;
+  position:relative;
+}
+
+#content {
+  padding-bottom:60px; /* Height of the footer element */
+}
+
+#footer {
+  width:100%;
+  height:60px;
+  position:absolute;
+  bottom:0;
+  left:0;
+  padding: 20px;
+  background-color: $footer-bg-color;
+  color: $footer-color;
+}
+
+.login-page {
+  padding: 100px 5px 35px 5px;
+  text-align: center;
+}
+
+.loader {
+  background-color: rgba(0, 0, 0, .5);
 }
