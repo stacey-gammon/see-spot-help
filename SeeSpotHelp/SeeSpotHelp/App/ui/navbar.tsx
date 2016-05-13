@@ -57,12 +57,14 @@ var MyNavBar = React.createClass({
               </button>
             </Dropdown.Toggle>
             <Dropdown.Menu className="sh-dropdown-menu">
-              <LinkContainer  to={{ pathname: "userSettingsPage" }}>
+              <LinkContainer to={{ pathname: "userSettingsPage" }}>
                 <MenuItem eventKey={3.1}>Settings</MenuItem>
               </LinkContainer>
+              <LinkContainer to={{ pathname: "loginPage", state: { logout: true }}}>
               <MenuItem eventKey={3.2}>
-                <FacebookLogin displayInline="true"/>
+                Log out
               </MenuItem>
+            </LinkContainer>
             </Dropdown.Menu>
           </Dropdown>
         </Nav>

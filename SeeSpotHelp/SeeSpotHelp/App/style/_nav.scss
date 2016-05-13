@@ -81,17 +81,59 @@
   border: 0;
   background: transparent;
   font-size:1.3em;
-  margin-top: 11px;
-  margin-right: -10px;
+  margin-top: 10px;
+  margin-right: -73px !important;
   float: right;
 }
 
+// Ewww, what horrible usage of !important here!  Unfortunately, I'm mixing in my own styling with
+// react bootstrap navigation so I have to override all of their styling.  I'm sure there is a better
+// way to do this.
 .sh-dropdown-menu {
-  background-color: rgba(255, 255, 255, 0.9) !important;
-  border: 2px solid #DCDCDC !important;
-  width: 100%;
-  margin-top: 35px;
-  height: 140px;
+  position: absolute !important;
+  top: 45px !important;
+  right: 0 !important;
+  left: auto !important;
+  background-color: rgba(0,0,0,0) !important;
+  color: $midGrey;
+  border: 1px solid $almostBlack !important;
+  margin: 0px !important;
+  padding: 0px !important;
+  width: 300px !important;
+  z-index: 9 !important;
+
+    li {
+      a {
+        color: $nav-item-color !important;
+        background: rgba(0,0,0,0) !important;
+      }
+      a:hover {
+        background: rgba(0,0,0,0) !important;
+      }
+      text-align: left;
+      z-index: 99 !important;
+      padding: 5px !important;
+      // Needs latest Compass, add '@import "compass"' to your scss
+      // Permalink - use to edit and share this gradient:
+      // http://colorzilla.com/gradient-editor/#666666+0,252525+100
+      //background-color: #666666; // Old browsers
+      //@include filter-gradient(#666666, $almostBlack, vertical); // IE6-9
+      //@include background-image(linear-gradient(top, #666666 0%,$almostBlack 100%));
+
+      /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#666666+0,252525+100 */
+      background: darken($midGrey, 25%); /* Old browsers */
+      background: -moz-linear-gradient(top, darken($midGrey, 25%) 0%, $almostBlack 100%); /* FF3.6-15 */
+      background: -webkit-linear-gradient(top, darken($midGrey, 25%) 0%,$almostBlack 100%); /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(to bottom, darken($midGrey, 25%) 0%,$almostBlack 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='darken($midGrey, 25%)', endColorstr='$almostBlack',GradientType=0 );
+  }
+    li:hover {
+      background: darken($midGrey, 5%) !important; /* Old browsers */
+      background: -moz-linear-gradient(top, darken($midGrey, 5%) 0%, $almostBlack 100%) !important; /* FF3.6-15 */
+      background: -webkit-linear-gradient(top, darken($midGrey, 5%) 0%,$almostBlack 100%) !important; /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(to bottom, darken($midGrey, 5%) 0%,$almostBlack 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='darken($midGrey, 5%)', endColorstr='$almostBlack',GradientType=0 ) !important;
+  }
 }
 
 .dropdownToggleStyle {

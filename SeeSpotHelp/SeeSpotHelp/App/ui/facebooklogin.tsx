@@ -19,21 +19,31 @@ var FacebookLogin = React.createClass({
     }
   },
 
-  render: function () {
-    var style = {};
-    if (this.props.displayInline) {
-      style = {display: 'inline-block'};
-    }
-    var text = LoginStore.getUser() ? "Log out" : "Login with Facebook";
-    var className = LoginStore.getUser() ? "btn btn-default " : "btn btn-info btn-big";
-
+  createButton(className, text) {
     return (
-      <div style={style} className="text-center">
+      <div className="text-center">
         <button className={className} onClick={this.loginAction} >
           {text}
         </button>
       </div>
-      );
+    );
+  },
+
+  createLinkElement(className, text) {
+      return (
+        <div style={{display: 'inline-block'}} onClick={this.loginAction}>{text}</div>
+    );
+  },
+
+  render: function () {
+    var text = LoginStore.getUser() ? "Log out" : "Login with Facebook";
+    var className = LoginStore.getUser() ? "btn btn-default " : "btn btn-info btn-big";
+
+    if (this.props.useLink) {
+      return this.createLinkElement(className, text);
+    } else {
+      return this.createButton(className, text);
+    }
   }
 });
 

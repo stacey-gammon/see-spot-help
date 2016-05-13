@@ -2,14 +2,17 @@
 
 var React = require("react");
 var FacebookLogin = require("./facebooklogin");
+import Utils from './uiutils';
 import LoginStore from '../stores/loginstore';
 var Loader = require('react-loader');
 
 var LoginPage = React.createClass({
   getInitialState: function () {
+    var logout = Utils.FindPassedInProperty(this, 'logout');
     return {
       loading: false,
-      error: false
+      error: false,
+      logout: logout
     }
   },
 
@@ -49,7 +52,11 @@ var LoginPage = React.createClass({
   },
 
   componentWillMount: function () {
-    this.checkAuthentication();
+    if (this.state.logout) {
+      LoginStore.logout();
+    } else {
+      this.checkAuthentication();
+    }
   },
 
   componentDidMount: function() {

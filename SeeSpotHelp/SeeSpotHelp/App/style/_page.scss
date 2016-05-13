@@ -1,18 +1,15 @@
 
-//@media screen and (min-width: 800px) {
+html {
+  max-width: 800px;
+  margin: 0 auto;
+  background: $html-bg-color;
+  position: relative;
+}
 
-  html {
-    max-width: 800px;
-    margin: 0 auto;
-    background: $html-bg-color;
-    position: relative;
-  }
-
-  body {
-    background-color: $body-bg-color;
-    height: 100%;
-  }
-//}
+body {
+  background-color: $body-bg-color;
+  height: 100%;
+}
 
 .page {
   margin-right: 0px;
