@@ -32,14 +32,14 @@ export default class ProfilePageTabs extends React.Component<any, any> {
   render() {
     var defaultKey = this.state.profileDefaultTabKey ? this.state.profileDefaultTabKey : 1;
     return (
-      <Tabs className='tabs-area' activeKey={defaultKey} onSelect={this.handleTabSelect.bind(this)}>
-        <Tab className='tab' animation={false} eventKey={1} title={Utils.getGroupGlyphicon()}>
+      <Tabs className='tabs-area' animation={false} activeKey={defaultKey} onSelect={this.handleTabSelect.bind(this)}>
+        <Tab className='tab' eventKey={1} title={Utils.getGroupGlyphicon()}>
           <UserGroupsTab user={this.props.user}/>
         </Tab>
-        <Tab className='tab' eventKey={2} title={Utils.getActivityGlyphicon()} animation={false}>
+        <Tab className='tab' eventKey={2} title={Utils.getActivityGlyphicon()}>
           <ActivityTab property='userId' value={this.props.user.id} />
         </Tab>
-        <Tab className='tab' eventKey={3} title={Utils.getCalendarGlyphicon()} animation={false}>
+        <Tab className='tab' eventKey={3} title={Utils.getCalendarGlyphicon()}>
           <MemberScheduleTab view='profile' user={this.props.user}/>
         </Tab>
       </Tabs>

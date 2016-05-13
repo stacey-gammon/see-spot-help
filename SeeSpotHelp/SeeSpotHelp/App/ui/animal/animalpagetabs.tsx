@@ -44,9 +44,9 @@ export default class GroupPageTabs extends React.Component<any, any> {
   render() {
     var defaultTabKey = this.state.animalDefaultTab ? this.state.animalDefaultTab : 1;
     return (
-      <Tabs className="tabs-area" activeKey={defaultTabKey}
+      <Tabs className="tabs-area" animation={false}vactiveKey={defaultTabKey}
         onSelect={this.handleTabSelect.bind(this)}>
-        <Tab animation={false} className="tab" eventKey={1} title={Utils.getActivityGlyphicon()}>
+        <Tab className="tab" eventKey={1} title={Utils.getActivityGlyphicon()}>
           <AnimalActionsBar
             group={this.props.group}
             animal={this.props.animal}
@@ -56,7 +56,7 @@ export default class GroupPageTabs extends React.Component<any, any> {
             animal={this.props.animal}
             permission={this.props.permission}/>
         </Tab>
-        <Tab animation={false} className="tab" eventKey={2} title={Utils.getCalendarGlyphicon()}>
+        <Tab className="tab" eventKey={2} title={Utils.getCalendarGlyphicon()}>
           <AnimalScheduleTab
             group={this.props.group}
             view="animal"
