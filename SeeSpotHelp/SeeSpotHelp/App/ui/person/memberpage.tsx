@@ -15,7 +15,7 @@ var FacebookLogin = require("../facebooklogin");
 var GroupInfoBox = require("../group/groupinfobox");
 var SearchPage = require("../searchpage");
 
-import UserActivityTab from './useractivitytab';
+import ActivityTab from '../shared/tabs/activitytab';
 
 var UserGroupsTab = require("./usergroupstab");
 var ReactBootstrap = require("react-bootstrap");
@@ -89,7 +89,7 @@ var MemberPage = React.createClass({
               <UserGroupsTab user={this.state.member}/>
             </Tab>
             <Tab eventKey={2} title={Utils.getActivityGlyphicon()}>
-              <UserActivityTab user={this.state.member}/>
+              <ActivityTab property='userId' value={this.state.member.id}/>
             </Tab>
             <Tab eventKey={3} title={Utils.getCalendarGlyphicon()}>
               <MemberScheduleTab
