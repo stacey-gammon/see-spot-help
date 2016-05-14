@@ -150,4 +150,15 @@ export default class Utils {
       '  ' + title
     );
   }
+
+  public static getMessageGlyphicon() {
+    var title = screen.width < 600 ? '' : 'Message';
+    var iconSize = screen.width < 600 ? '20px' : '15px';
+    return React.createElement("div", null,
+      React.createElement(
+        "span", { className: "glyphicon glyphicon-comment", style: {fontSize: iconSize}}
+      ),
+      '  ' + title
+    );
+  }
 }

@@ -21,7 +21,7 @@ import AddAnimalPage from './animal/addanimalpage';
 
 import AddPhotoPage from './addphotopage';
 var SearchPage = require('./searchpage');
-var MemberPage = require('./person/memberpage');
+import MemberPage from './person/memberpage';
 var LoginPage = require('./loginpage');
 var PrivateBetaPage = require('./privatebetapage');
 var EnterBetaCode = require('./enterbetacode');

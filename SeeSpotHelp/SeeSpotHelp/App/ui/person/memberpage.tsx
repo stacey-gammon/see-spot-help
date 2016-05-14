@@ -1,6 +1,7 @@
 "use strict";
 
-var React = require("react");
+import * as React from 'react';
+
 import Permission from "../../core/databaseobjects/permission";
 import Volunteer from "../../core/databaseobjects/volunteer";
 import Group from "../../core/databaseobjects/group";
@@ -24,33 +25,38 @@ var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
 var ReactRouterBootstrap = require("react-router-bootstrap");
 
-var MemberPage = React.createClass({
-  contextTypes: {
+export default class MemberPage extends React.Component<any, any> {
+  // Required for page transitions via this.context.router.push.
+  static contextTypes = {
     router: React.PropTypes.object.isRequired
-  },
+  }
 
-  getInitialState: function () {
+  constructor(props) {
+    super(props);
     var member = Utils.FindPassedInProperty(this, 'member') || LoginStore.getUser();
-    var state = {
-      member: member
-    };
-    Utils.LoadOrSaveState(state);
-    return state;
-  },
+    var groupId = Utils.FindPassedInProperty(this, 'groupId');
 
-  componentDidMount: function () {
+    this.state = {
+      member: member,
+      groupId: groupId
+    };
+
+    Utils.LoadOrSaveState(this.state);
+  }
+
+  componentDidMount() {
     LoginStore.addChangeListener(this.onChange);
     GroupStore.addChangeListener(this.onChange);
     PermissionsStore.addChangeListener(this.onChange);
-  },
+  }
 
-  componentWillUnmount: function () {
+  componentWillUnmount() {
     LoginStore.removeChangeListener(this.onChange);
     GroupStore.removeChangeListener(this.onChange);
     PermissionsStore.removeChangeListener(this.onChange);
-  },
+  }
 
-  onChange: function () {
+  onChange() {
     var id;
     if (this.state.member) {
       id = this.state.member.id;
@@ -61,34 +67,39 @@ var MemberPage = React.createClass({
       {
         member: VolunteerStore.getVolunteerById(id)
       });
-  },
+  }
 
-  handleTabSelect: function(key) {
+  handleTabSelect(key) {
     this.setState({memberDefaultTabKey : key});
     // We aren't supposed to manipulate state directly, but it doesn't yet have the newly
     // selected tab that we want to save to local storage.
     var stateDuplicate = this.state;
     stateDuplicate.memberDefaultTabKey = key;
     Utils.LoadOrSaveState(stateDuplicate);
-  },
+  }
 
-  render: function () {
+  render() {
+    var group = GroupStore.getGroupById(this.state.groupId);
     if (!LoginStore.getUser() || !this.state.member) return null;
-    var heading = this.state.member.displayName ?
+    var memberName = this.state.member.displayName ?
       this.state.member.displayName : this.state.member.name;
     if (this.state.member) {
       var defaultKey = this.state.memberDefaultTabKey ? this.state.memberDefaultTabKey : 1;
       return (
         <div className='page'>
-          <InfoBar><h1>{heading}</h1></InfoBar>
-          <Tabs className="tabs-area" activeKey={defaultKey} onSelect={this.handleTabSelect}>
-            <Tab eventKey={1} title={Utils.getGroupGlyphicon()}>
-              <UserGroupsTab user={this.state.member}/>
-            </Tab>
-            <Tab eventKey={2} title={Utils.getActivityGlyphicon()}>
+          <InfoBar title={group.name}>
+          <h2>{memberName}</h2>
+          </InfoBar>
+          <Tabs className="tabs-area"
+                activeKey={defaultKey}
+                onSelect={this.handleTabSelect.bind(this)}>
+          <Tab eventKey={3} title={Utils.getMessageGlyphicon()}>
+            TODO
+          </Tab>
+            <Tab eventKey={1} title={Utils.getActivityGlyphicon()}>
               <ActivityTab property='userId' value={this.state.member.id}/>
             </Tab>
-            <Tab eventKey={3} title={Utils.getCalendarGlyphicon()}>
+            <Tab eventKey={2} title={Utils.getCalendarGlyphicon()}>
               <MemberScheduleTab
                 memberId={this.state.member.id}
                 view="member"/>
@@ -99,6 +110,4 @@ var MemberPage = React.createClass({
       );
     }
   }
-});
-
-module.exports = MemberPage;
+}

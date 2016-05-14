@@ -140,3 +140,13 @@ body {
 .loader {
   background-color: rgba(0, 0, 0, .5);
 }
+
+.info-bar-back {
+  cursor: pointer;
+  font-size: 10px;
+  float: left;
+  position: absolute;
+  top: 52;
+  left: 4;
+  color: transparentize($almostWhite, .5);
+}

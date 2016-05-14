@@ -3,47 +3,66 @@
 import * as React from 'react';
 
 export default class InfoBar extends React.Component<any, any> {
-	constructor(props) {
-		super(props);
-	}
+  public context: any;
+  constructor(props) {
+    super(props);
+  }
+  // Required for page transitions via this.context.router.push.
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
 
-	render() {
-		var mediaLeft = "";
-		var mediaCenter = "";
-		var mediaRight = "";
-		if (!Array.isArray(this.props.children)) {
-			mediaCenter = this.props.children;
-		} else if (this.props.children.length >= 2) {
-			mediaLeft = this.props.children[0];
-			mediaCenter = this.props.children[1];
-		}
-		if (this.props.children.length == 3) {
-			mediaRight = this.props.children[2];
-		}
+  goBack() {
+    this.context.router.goBack();
+  }
 
-		var additionalChildren = [];
-		for (var i = 3; i < this.props.children.length; i++) {
-			additionalChildren.push(this.props.children[i]);
-		}
+  getTitle() {
+    if (this.props.title) {
+      return <h1>{this.props.title}</h1>;
+    } else {
+      return null;
+    }
+  }
 
-		var className = this.props.noTabs ? 'info-top-no-tabs' : 'info-top';
-		className += ' ' + this.props.className;
+  render() {
+    var mediaLeft = "";
+    var mediaCenter = "";
+    var mediaRight = "";
+    if (!Array.isArray(this.props.children)) {
+      mediaCenter = this.props.children;
+    } else if (this.props.children.length >= 2) {
+      mediaLeft = this.props.children[0];
+      mediaCenter = this.props.children[1];
+    }
+    if (this.props.children.length == 3) {
+      mediaRight = this.props.children[2];
+    }
 
-		return (
-			<div className={className}>
-				<div className='media'>
-					<div className='media-left'>
-						{mediaLeft}
-					</div>
-					<div className='media-body'>
-						{mediaCenter}
-					</div>
-					<div className='media-right'>
-						{mediaRight}
-					</div>
-				</div>
-				{additionalChildren}
-			</div>
-		);
-	}
+    var additionalChildren = [];
+    for (var i = 3; i < this.props.children.length; i++) {
+      additionalChildren.push(this.props.children[i]);
+    }
+
+    var className = this.props.noTabs ? 'info-top-no-tabs' : 'info-top';
+    className += ' ' + this.props.className;
+
+    return (
+      <div className={className}>
+        <a className='info-bar-back' onClick={this.goBack.bind(this)}>back</a>
+        {this.getTitle()}
+        <div className='media'>
+          <div className='media-left'>
+            {mediaLeft}
+          </div>
+          <div className='media-body'>
+            {mediaCenter}
+          </div>
+          <div className='media-right'>
+            {mediaRight}
+          </div>
+        </div>
+        {additionalChildren}
+      </div>
+    );
+  }
 }
