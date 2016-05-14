@@ -16,6 +16,7 @@ var GroupInfoBox = require("../group/groupinfobox");
 var SearchPage = require("../searchpage");
 
 import ActivityTab from '../shared/tabs/activitytab';
+import InfoBar from '../shared/infobar';
 
 var UserGroupsTab = require("./usergroupstab");
 var ReactBootstrap = require("react-bootstrap");
@@ -78,12 +79,8 @@ var MemberPage = React.createClass({
     if (this.state.member) {
       var defaultKey = this.state.memberDefaultTabKey ? this.state.memberDefaultTabKey : 1;
       return (
-        <div>
-          <div className="media padding">
-            <div className="media-body">
-            <h1>{heading}</h1>
-            </div>
-          </div>
+        <div className='page'>
+          <InfoBar><h1>{heading}</h1></InfoBar>
           <Tabs className="tabs-area" activeKey={defaultKey} onSelect={this.handleTabSelect}>
             <Tab eventKey={1} title={Utils.getGroupGlyphicon()}>
               <UserGroupsTab user={this.state.member}/>
