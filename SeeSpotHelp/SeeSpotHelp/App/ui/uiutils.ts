@@ -116,12 +116,13 @@ export default class Utils {
 
   public static getAnimalsTabIcon() {
     var title = screen.width < 600 ? '' : 'Animals';
-    var iconSize = screen.width < 600 ? '20px' : '15px';
+    var iconWidth = screen.width < 600 ? 35 : 25;
+    var iconHeight = iconWidth - 11;
     return React.createElement("div", null,
       React.createElement(
-        "object", { className: "glyphicon",
-          data: "fonts/silhouettes_sm.svg",
-          style: {width: '30px', height: '20px'}
+        "img", { className: "glyphicon",
+          src: "images/silhouettes.png",
+          style: {width: iconWidth + 'px', height: iconHeight + 'px'}
         }
       ),
       '  ' + title

@@ -1,18 +1,31 @@
 "use strict"
 
-var React = require("react");
+import * as React from 'react';
+var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
-var Intro = React.createClass({
-	render: function () {
-		return (<div className="loginPage" style={{margin: '0 auto', maxWidth: '600px'}}>
-					<h1>To get started with The Shelter Helper</h1>
-					<br/>
-					<p style={{textAlign: 'center'}}><a href="#searchpage">Search Adotpables</a></p>
-					<p style={{textAlign: 'center'}}><a href="#searchpage">Search Volunteer Groups</a></p>
-					<p style={{textAlign: 'center'}}><a href="#addNewGroup">Start your own volunteer group</a></p>
-				</div>
-		);
-	}
-});
+export default class Intro extends React.Component<any, any> {
+  constructor(props) { super(props); }
 
-module.exports = Intro;
+  render() {
+    return (
+      <div className="loginPage" style={{margin: '0 auto', maxWidth: '600px'}}>
+          <h1>Get started with The Shelter Helper</h1>
+          <br/>
+          <p style={{textAlign: 'center'}}>
+            <LinkContainer to='searchpage'>
+              <button className='btn btn-info btn-big'>
+                Search Groups
+              </button>
+            </LinkContainer>
+          </p>
+          <p style={{textAlign: 'center'}}>
+            <LinkContainer to='addNewGroup'>
+              <button className='btn btn-info btn-big'>
+                Start a New Group
+              </button>
+            </LinkContainer>
+          </p>
+        </div>
+    );
+  }
+}

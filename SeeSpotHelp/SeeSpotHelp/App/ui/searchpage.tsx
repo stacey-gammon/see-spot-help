@@ -5,14 +5,14 @@ var SearchBox = require('./searchbox');
 import InfoBar from './shared/infobar';
 
 var SearchPage = React.createClass({
-	render: function() {
-		return (
-			<div className='page'>
-				<InfoBar noTabs='true'><h1>Search</h1></InfoBar>
-				<SearchBox />
-			</div>
-		);
-	}
+  render: function() {
+    return (
+      <div className='page'>
+        <InfoBar noTabs='true'><h1>Search for a Group to Join</h1></InfoBar>
+        <SearchBox />
+      </div>
+    );
+  }
 });
 
 module.exports = SearchPage;
