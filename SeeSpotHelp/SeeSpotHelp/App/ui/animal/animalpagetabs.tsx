@@ -14,7 +14,7 @@ import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
-export default class GroupPageTabs extends React.Component<any, any> {
+export default class AnimalPageTabs extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = { animalDefaultTab: null };
@@ -44,7 +44,7 @@ export default class GroupPageTabs extends React.Component<any, any> {
   render() {
     var defaultTabKey = this.state.animalDefaultTab ? this.state.animalDefaultTab : 1;
     return (
-      <Tabs className="tabs-area" animation={false}vactiveKey={defaultTabKey}
+      <Tabs className="tabs-area" animation={false} activeKey={defaultTabKey}
         onSelect={this.handleTabSelect.bind(this)}>
         <Tab className="tab" eventKey={1} title={Utils.getActivityGlyphicon()}>
           <AnimalActionsBar

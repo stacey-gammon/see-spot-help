@@ -9,6 +9,8 @@ html {
 body {
   background-color: $body-bg-color;
   height: 100%;
+  outline: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
 
 .page {
@@ -66,12 +68,17 @@ body {
     border-width: 2px 2px 1px 2px;
     border-color: $info-top-border-color;
     height: 48px;
+    outline: none;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   }
 
   li.active a {
     background-color: $page-bg-color;
     border-width: 2px 2px 0px 2px;
+    margin-bottom: -1px;
     border-color: $info-top-border-color;
+    outline: none;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   }
 }
 
@@ -116,6 +123,7 @@ body {
 }
 
 #content {
+  background-color: $page-bg-color;
   padding-bottom:60px; /* Height of the footer element */
 }
 
