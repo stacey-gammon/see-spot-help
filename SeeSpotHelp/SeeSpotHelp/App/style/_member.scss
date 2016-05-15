@@ -1,0 +1,12 @@
+@import 'base';
+
+.member-list-item {
+  @extend .base-list-element;
+  border: 3px solid $member-border-color !important;
+  min-height: 50px;
+}
+
+.head-shot {
+  height: 75px;
+  width: 75px;
+}

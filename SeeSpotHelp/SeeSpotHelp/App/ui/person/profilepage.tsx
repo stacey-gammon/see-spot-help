@@ -8,7 +8,7 @@ var SearchPage = require('../searchpage');
 var LoginPage = require('../loginpage');
 
 import ProfilePageTabs from './profilepagetabs';
-import InfoBar from '../shared/infobar';
+import UserInfoBar from './userinfobar';
 
 import Utils from '../uiutils';
 import Volunteer from '../../core/databaseobjects/volunteer';
@@ -43,7 +43,6 @@ export default class ProfilePage extends React.Component<any, any> {
 
   componentDidMount() {
     LoginStore.addChangeListener(this.onChange);
-    this.loadFacebookPhoto();
   }
 
   componentWillUnmount() {
@@ -57,28 +56,12 @@ export default class ProfilePage extends React.Component<any, any> {
     this.forceUpdate();
   }
 
-  loadFacebookPhoto() {
-    if (!LoginStore.fbLoaded) return;
-    FB.api(
-       '/' + LoginStore.getUser().id.substring(9) + '/picture?width=75&height=75',
-       function (response) {
-         if (response && !response.error) {
-           LoginStore.getUser().imgUrl = response.data.url;
-           this.setState({imgUrl: response.data.url});
-         }
-       }.bind(this)
-   );
-  }
-
   render() {
     if (!LoginStore.getUser()) return null;
     var heading = 'Hello, ' + LoginStore.getUser().name;
     return (
       <div className='page'>
-        <InfoBar>
-          <img src={this.state.imgUrl} className='head-shot'/>
-          <h1 style={{textAlign: 'left !important'}}>{heading}</h1>
-        </InfoBar>
+        <UserInfoBar user={LoginStore.getUser()} />
         <ProfilePageTabs user={LoginStore.getUser()}/>
       </div>
     );

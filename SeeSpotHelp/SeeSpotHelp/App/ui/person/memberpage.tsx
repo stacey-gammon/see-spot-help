@@ -17,7 +17,7 @@ var GroupInfoBox = require("../group/groupinfobox");
 var SearchPage = require("../searchpage");
 
 import ActivityTab from '../shared/tabs/activitytab';
-import InfoBar from '../shared/infobar';
+import UserInfoBar from './userinfobar';
 
 import UserGroupsTab from './usergroupstab';
 var ReactBootstrap = require("react-bootstrap");
@@ -87,12 +87,7 @@ export default class MemberPage extends React.Component<any, any> {
       var defaultKey = this.state.memberDefaultTabKey ? this.state.memberDefaultTabKey : 1;
       return (
         <div className='page'>
-          <InfoBar title={group.name}>
-            <div className='media-left'>
-              <img src={this.state.member.imgUrl} className='head-shot'/>
-            </div>
-            <h2>{memberName}</h2>
-          </InfoBar>
+          <UserInfoBar group={group} user={this.state.member}/>
           <Tabs className="tabs-area"
                 activeKey={defaultKey}
                 onSelect={this.handleTabSelect.bind(this)}>
