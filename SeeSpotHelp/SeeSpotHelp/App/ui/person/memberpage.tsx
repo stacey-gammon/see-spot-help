@@ -19,7 +19,7 @@ var SearchPage = require("../searchpage");
 import ActivityTab from '../shared/tabs/activitytab';
 import InfoBar from '../shared/infobar';
 
-var UserGroupsTab = require("./usergroupstab");
+import UserGroupsTab from './usergroupstab';
 var ReactBootstrap = require("react-bootstrap");
 var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
@@ -93,9 +93,6 @@ export default class MemberPage extends React.Component<any, any> {
           <Tabs className="tabs-area"
                 activeKey={defaultKey}
                 onSelect={this.handleTabSelect.bind(this)}>
-          <Tab eventKey={3} title={Utils.getMessageGlyphicon()}>
-            TODO
-          </Tab>
             <Tab eventKey={1} title={Utils.getActivityGlyphicon()}>
               <ActivityTab property='userId' value={this.state.member.id}/>
             </Tab>
@@ -103,6 +100,9 @@ export default class MemberPage extends React.Component<any, any> {
               <MemberScheduleTab
                 memberId={this.state.member.id}
                 view="member"/>
+            </Tab>
+            <Tab eventKey={3} title={Utils.getMessageGlyphicon()}>
+              Messaging feature coming soon!
             </Tab>
           </Tabs>
           <br/><br/>

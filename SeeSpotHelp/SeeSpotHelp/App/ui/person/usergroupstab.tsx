@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 var Link = require("react-router").Link;
+var Loader = require('react-loader');
 
 import Intro from '../intro';
 import GroupListItem from '../group/grouplistitem';
@@ -12,50 +13,32 @@ import GroupStore from '../../stores/groupstore';
 import VolunteerStore from '../../stores/volunteerstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
-var UserGroupsTab = React.createClass({
-  getInitialState: function () {
-    var user = Utils.FindPassedInProperty(this, 'user') || LoginStore.getUser();
-    return { user: user }
-  },
+export default class UserGroupsTab extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
+    this.state = this.getState();
+  }
 
-  onChange: function () {
-    var user;
-    if (!this.state.user) {
-      user = LoginStore.getUser()
-    } else {
-      user = VolunteerStore.getVolunteerById(this.state.user.id);
-      user = user ? user : this.state.user;
-    }
-    this.setState({ user: user });
-  },
+  componentDidMount() {
+    LoginStore.addChangeListener(this.onChange.bind(this));
+    PermissionsStore.addPropertyListener(
+        this, 'userId', this.props.user.id, this.onChange.bind(this));
+  }
 
-  componentWillReceiveProps: function(nextProps) {
-    this.setState({ user: nextProps.user });
-  },
+  componentWillUnmount() {
+    LoginStore.removeChangeListener(this.onChange.bind(this));
+    GroupStore.removePropertyListener(this);
+    PermissionsStore.removePropertyListener(this);
+  }
 
-  componentDidMount: function () {
-    LoginStore.addChangeListener(this.onChange);
-    GroupStore.addChangeListener(this.onChange);
-    VolunteerStore.addChangeListener(this.onChange);
-    PermissionsStore.addChangeListener(this.onChange);
-  },
-
-  componentWillUnmount: function () {
-    LoginStore.removeChangeListener(this.onChange);
-    GroupStore.removeChangeListener(this.onChange);
-    VolunteerStore.removeChangeListener(this.onChange);
-    PermissionsStore.removeChangeListener(this.onChange);
-  },
-
-  getGroupElement: function(group) {
+  getGroupElement(group) {
     return (
       <GroupListItem key={group.id} group={group}/>
     );
-  },
+  }
 
-  getSearchOrAddText: function() {
-    if (!this.state.user) return null;
-    if (this.state.user.id != LoginStore.getUser().id) return null;
+  getSearchOrAddText() {
+    if (this.props.user.id != LoginStore.getUser().id) return null;
     return (
       <div className="text-center">
         <p>
@@ -64,35 +47,51 @@ var UserGroupsTab = React.createClass({
         </p>
       </div>
     );
-  },
+  }
 
-  getGroupsForUser: function () {
+  getGroup(groupId) {
+    GroupStore.addPropertyListener(
+        this, 'id', groupId, this.onChange.bind(this));
+    return GroupStore.getGroupById(groupId);
+  }
+
+  onChange() {
+    this.setState(this.getState());
+  }
+
+  getState() {
     var groups = [];
-    var permissions = PermissionsStore.getPermissionsByUserId(this.state.user.id);
+    var permissions = PermissionsStore.getPermissionsByUserId(this.props.user.id);
+    var loading = PermissionsStore.areItemsDownloading('userId', this.props.user.id);
+
     for (var i = 0; i < permissions.length; i++) {
       if (permissions[i].inGroup()) {
-        var group = GroupStore.getGroupById(permissions[i].groupId);
-        if (group) groups.push(group);
+        var group = this.getGroup(permissions[i].groupId);
+        if (group) {
+          groups.push(group);
+        } else {
+          loading = true;
+        }
       }
     }
-    return groups;
-  },
 
-  getGroupElements: function() {
-    if (!this.state.user) return null;
-    var groups = this.getGroupsForUser();
-    if (groups.length == 0 && this.state.user.id != LoginStore.getUser().id) {
+    return {groups: groups, loading: loading};
+  }
+
+  getGroupElements() {
+    if (!this.state.groups) return null;
+    if (this.state.groups.length == 0 && this.props.user.id != LoginStore.getUser().id) {
       return (
         <div>This user does not currently belong to any groups.</div>
       );
     }
 
-    if (!groups.length) {
+    if (!this.state.groups.length) {
       return ( <Intro /> );
     }
 
-    if (groups.length) {
-      var groupElements = groups.map(this.getGroupElement);
+    if (this.state.groups.length) {
+      var groupElements = this.state.groups.map(this.getGroupElement);
       return (
         <div className="text-center groupList">
           {groupElements}
@@ -104,13 +103,13 @@ var UserGroupsTab = React.createClass({
     }
 
     return null;
-  },
+  }
 
-  render: function () {
+  render() {
     return (
-      <div> {this.getGroupElements()} </div>
+      <Loader loaded={!this.state.loading} color="rgba(0,0,0,0.2)">
+        {this.getGroupElements()}
+      </Loader>
     );
   }
-});
-
-module.exports = UserGroupsTab;
+}

@@ -5,7 +5,7 @@ var ReactBootstrap = require('react-bootstrap');
 var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
 
-var UserGroupsTab = require('./usergroupstab');
+import UserGroupsTab from './usergroupstab';
 import ActivityTab from '../shared/tabs/activitytab';
 var MemberScheduleTab = require('./memberscheduletab');
 

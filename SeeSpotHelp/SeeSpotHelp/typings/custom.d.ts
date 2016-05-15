@@ -1,4 +1,5 @@
 interface JQuery { fullcalendar: any; timepicker: any }
+declare var AWS : any;
 interface moment { }
 
 interface ObjectConstructor {

@@ -10,7 +10,6 @@ import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
 import InfoBar from '../shared/infobar';
-import AnimalPhotoReel from './animalphotoreel';
 import HeadShot from './headshot';
 
 var ReactRouterBootstrap = require('react-router-bootstrap');
@@ -84,10 +83,6 @@ export default class AnimalInfoBar extends React.Component<any, any> {
             <p className="animalInfo">{animal.description}</p>
           </div>
           <div/>
-          <AnimalPhotoReel
-            group={this.props.group}
-            permission={this.props.permission}
-            animal={animal} />
         </InfoBar>
     );
   }

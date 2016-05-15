@@ -7,56 +7,52 @@ import LoginStore from '../../stores/loginstore';
 import PhotoStore from '../../stores/photostore';
 
 export default class AnimalPhotoReel extends React.Component<any, any> {
-	constructor(props) {
-		super(props);
-	}
+  constructor(props) {
+    super(props);
+  }
 
-	componentDidMount() {
-		PhotoStore.addPropertyListener(
-			this, 'animalId', this.props.animal.id, this.forceUpdate.bind(this));
-	}
+  componentDidMount() {
+    PhotoStore.addPropertyListener(
+      this, 'animalId', this.props.animal.id, this.forceUpdate.bind(this));
+  }
 
-	componentWillUnmount() {
-		PhotoStore.removePropertyListener(this);
-	}
+  componentWillUnmount() {
+    PhotoStore.removePropertyListener(this);
+  }
 
-	generateImage(photo) {
-		return (
-			<div><img className="slider-img" src={photo.src}/></div>
-		);
-	}
+  generateImage(photo) {
+    return (
+      <div><img className="slider-img" src={photo.src}/></div>
+    );
+  }
 
-	render() {
-		// Hiding the photo reel for now. I'm not 100% sure I like the UI.  May switch to a
-		// photo tab.
-		return null;
+  render() {
+    var photos = PhotoStore.getPhotosByAnimalId(this.props.animal.id);
+    if (!photos || photos.length == 0) return null;
 
-		var photos = PhotoStore.getPhotosByAnimalId(this.props.animal.id);
-		if (!photos || photos.length == 0) return null;
+    var photoImgs = [];
+    for (var i = 0; i < photos.length; i++) {
+      photoImgs.push(this.generateImage(photos[i]));
+    }
 
-		var photoImgs = [];
-		for (var i = 0; i < photos.length; i++) {
-			photoImgs.push(this.generateImage(photos[i]));
-		}
+    var settings = {
+      dots: false,
+      arrows: true,
+      infinite: false,
+      centerMode: false,
+      swipe: true,
+      slidestoScroll: 1,
+      slidesToShow: 3,
+      variableWidth: true,
+      adaptiveHeight: false
+    };
 
-		var settings = {
-			dots: false,
-			arrows: true,
-			infinite: false,
-			centerMode: false,
-			swipe: true,
-			slidestoScroll: 1,
-			slidesToShow: 3,
-			variableWidth: true,
-			adaptiveHeight: false
-		};
-
-		return (
-			<div className="photo-slider">
-				<Slider {...settings}>
-					{photoImgs}
-				</Slider>
-			</div>
-		);
-	}
+    return (
+      <div className="photo-slider">
+        <Slider {...settings}>
+          {photoImgs}
+        </Slider>
+      </div>
+    );
+  }
 }
