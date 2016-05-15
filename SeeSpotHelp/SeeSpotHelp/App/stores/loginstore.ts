@@ -28,6 +28,9 @@ class LoginStore extends BaseStore {
   private resolveMe = null;
   private rejectMe = null;
 
+  // Will be set to true once the FB sdk is loaded.
+  public fbLoaded = false;
+
   constructor() {
     super();
     this.Init();
@@ -135,6 +138,7 @@ class LoginStore extends BaseStore {
     localStorage.clear();
   }
 
+
   onUserDownloaded(data) {
     var authData = this.checkAuthenticated() as any;
 
@@ -167,6 +171,7 @@ class LoginStore extends BaseStore {
     } else {
       this.hasUser = false;
     }
+
     this.resolve();
     this.emitChange();
   }

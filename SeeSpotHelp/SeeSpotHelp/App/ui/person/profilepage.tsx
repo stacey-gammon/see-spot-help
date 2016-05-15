@@ -22,6 +22,9 @@ export default class ProfilePage extends React.Component<any, any> {
 
   constructor(props) {
     super(props);
+    this.state = {
+      imgUrl: null
+    }
   }
 
   static contextTypes = {
@@ -40,6 +43,7 @@ export default class ProfilePage extends React.Component<any, any> {
 
   componentDidMount() {
     LoginStore.addChangeListener(this.onChange);
+    this.loadFacebookPhoto();
   }
 
   componentWillUnmount() {
@@ -53,12 +57,28 @@ export default class ProfilePage extends React.Component<any, any> {
     this.forceUpdate();
   }
 
+  loadFacebookPhoto() {
+    if (!LoginStore.fbLoaded) return;
+    FB.api(
+       '/' + LoginStore.getUser().id.substring(9) + '/picture?width=75&height=75',
+       function (response) {
+         if (response && !response.error) {
+           LoginStore.getUser().imgUrl = response.data.url;
+           this.setState({imgUrl: response.data.url});
+         }
+       }.bind(this)
+   );
+  }
+
   render() {
     if (!LoginStore.getUser()) return null;
     var heading = 'Hello, ' + LoginStore.getUser().name;
     return (
       <div className='page'>
-        <InfoBar><h1>{heading}</h1></InfoBar>
+        <InfoBar>
+          <img src={this.state.imgUrl} className='head-shot'/>
+          <h1 style={{textAlign: 'left !important'}}>{heading}</h1>
+        </InfoBar>
         <ProfilePageTabs user={LoginStore.getUser()}/>
       </div>
     );

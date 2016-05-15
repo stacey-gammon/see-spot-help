@@ -36,7 +36,6 @@ var Home = React.createClass({
   },
 
   getInitialState: function() {
-    console.log('Home:getInitialState');
     return {};
   },
 
@@ -47,7 +46,9 @@ var Home = React.createClass({
         xfbml: true,
         version: 'v2.5'
       });
-    };
+      LoginStore.fbLoaded = true;
+      this.context.router.push('/profilePage');
+    }.bind(this);
 
     (function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];

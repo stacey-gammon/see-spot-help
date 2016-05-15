@@ -88,7 +88,10 @@ export default class MemberPage extends React.Component<any, any> {
       return (
         <div className='page'>
           <InfoBar title={group.name}>
-          <h2>{memberName}</h2>
+            <div className='media-left'>
+              <img src={this.state.member.imgUrl} className='head-shot'/>
+            </div>
+            <h2>{memberName}</h2>
           </InfoBar>
           <Tabs className="tabs-area"
                 activeKey={defaultKey}

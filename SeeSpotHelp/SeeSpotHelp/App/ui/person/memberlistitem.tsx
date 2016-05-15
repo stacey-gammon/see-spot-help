@@ -22,7 +22,8 @@ var MemberListItem = React.createClass({
     return {
       member: member,
       group: group,
-      permission: permission
+      permission: permission,
+      imgUrl: null
     };
   },
 
@@ -31,6 +32,8 @@ var MemberListItem = React.createClass({
     GroupStore.addChangeListener(this.onChange);
     VolunteerStore.addChangeListener(this.onChange);
     PermissionsStore.addChangeListener(this.onChange);
+
+    this.loadMemberPhoto();
   },
 
   componentWillUnmount: function () {
@@ -123,6 +126,18 @@ var MemberListItem = React.createClass({
     );
   },
 
+  loadMemberPhoto() {
+    FB.api(
+       '/' + this.props.member.id.substring(9) + '/picture?width=75&height=75',
+       function (response) {
+         if (response && !response.error) {
+           this.props.member.imgUrl = response.data.url;
+           this.setState({imgUrl: response.data.url});
+         }
+       }.bind(this)
+   );
+ },
+
   render: function () {
     if (PermissionsStore.hasError || LoginStore.hasError) {
       var message = PermissionsStore.errorMessage || LoginStore.errorMessage;
@@ -172,6 +187,9 @@ var MemberListItem = React.createClass({
         <LinkContainer to={{ pathname: "memberPage" ,
           state: { member: this.props.member, groupId: this.props.group.id} }}>
           <div className="media">
+            <div className='media-left'>
+              <img src={this.state.imgUrl} className='head-shot'/>
+            </div>
             <div className="media-body">
               <h2>{this.props.member.name} {extraInfo}</h2>
             </div>
