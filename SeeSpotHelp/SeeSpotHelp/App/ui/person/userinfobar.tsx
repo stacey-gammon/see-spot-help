@@ -3,6 +3,7 @@
 import * as React from 'react';
 
 import InfoBar from '../shared/infobar';
+import ProfilePic from './profilepic';
 import LoginStore from '../../stores/loginstore';
 
 export default class UserInfoBar extends React.Component<any, any> {
@@ -31,33 +32,11 @@ export default class UserInfoBar extends React.Component<any, any> {
     }
   }
 
-  loadFacebookPhoto() {
-    if (!LoginStore.fbLoaded) return;
-    FB.api(
-       '/' + LoginStore.getUser().id.substring(9) + '/picture?width=75&height=75',
-       function (response) {
-         if (response && !response.error) {
-           this.props.user.imgUrl = response.data.url;
-           this.setState({profileUrl: response.data.url});
-         }
-       }.bind(this)
-   );
-  }
-
-  getProfileImage() {
-    if (this.state.profileUrl) {
-      return this.state.profileUrl;
-    } else {
-      this.loadFacebookPhoto();
-      return null;
-    }
-  }
-
   render() {
     return (
       <div>
         <InfoBar className='group-info-bar' title={this.getTitle()}>
-          <img src={this.getProfileImage()} className='head-shot'/>
+          <ProfilePic user={this.props.user}/>
           {this.getHeader()}
         </InfoBar>
       </div>

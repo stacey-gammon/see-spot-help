@@ -25,6 +25,10 @@ var MyNavBar = React.createClass({
     this.forceUpdate();
   },
 
+  goToAboutPage: function() {
+    window.location.href = "http://www.theshelterhelper.com";
+  },
+
   // Code to put the logo back in the nav bar.  I'm uncertain if I like it there so I took it out.
   // <Nav className="nav navbar-nav logo-header" style={{display: 'inline-block'}}>
   //   <NavItem className="nav-item">
@@ -61,10 +65,9 @@ var MyNavBar = React.createClass({
                 <MenuItem eventKey={3.1}>Settings</MenuItem>
               </LinkContainer>
               <LinkContainer to={{ pathname: "loginPage", state: { logout: true }}}>
-              <MenuItem eventKey={3.2}>
-                Log out
-              </MenuItem>
-            </LinkContainer>
+                <MenuItem eventKey={3.2}>Log out</MenuItem>
+              </LinkContainer>
+              <MenuItem eventKey={3.3} onClick={this.goToAboutPage.bind(this)}>About Us</MenuItem>
             </Dropdown.Menu>
           </Dropdown>
         </Nav>

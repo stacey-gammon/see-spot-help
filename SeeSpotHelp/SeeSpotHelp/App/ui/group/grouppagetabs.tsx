@@ -73,7 +73,7 @@ export default class GroupPageTabs extends React.Component<any, any> {
         <Tab className="tab" eventKey={3} title={Utils.getActivityGlyphicon()}>
           <ActivityTab property='groupId' value={this.props.group.id} permission={this.props.permission}/>
         </Tab>
-        <Tab animation={false} className="tab" eventKey={4} title={Utils.getCalendarGlyphicon()}>
+        <Tab className="tab" eventKey={4} title={Utils.getCalendarGlyphicon()}>
           <GroupScheduleTab group={this.props.group} view="group" permission={this.props.permission}/>
         </Tab>
       </Tabs>

@@ -4,6 +4,10 @@ import * as React from 'react';
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
+import Utils from '../uiutils';
+
+import ProfilePic from './profilepic';
+
 import Group from '../../core/databaseobjects/group';
 import Volunteer from '../../core/databaseobjects/volunteer';
 import ConstStrings from '../../core/conststrings';
@@ -13,76 +17,51 @@ import GroupStore from '../../stores/groupstore';
 import VolunteerStore from '../../stores/volunteerstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
-var MemberListItem = React.createClass({
-  getInitialState: function() {
-    var member = this.props.member
-    var group = this.props.group ? Group.castObject(this.props.group) : null;
-    var permission = member && group ?
-      PermissionsStore.getPermission(member.id, group.id) : null;
-    return {
-      member: member,
-      group: group,
-      permission: permission,
+export default class MemberListItem extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
+    this.state = {
       imgUrl: null
     };
-  },
+  }
 
-  componentDidMount: function () {
+  componentDidMount() {
     LoginStore.addChangeListener(this.onChange);
-    GroupStore.addChangeListener(this.onChange);
-    VolunteerStore.addChangeListener(this.onChange);
-    PermissionsStore.addChangeListener(this.onChange);
+  }
 
-    this.loadMemberPhoto();
-  },
-
-  componentWillUnmount: function () {
+  componentWillUnmount() {
     LoginStore.removeChangeListener(this.onChange);
-    GroupStore.removeChangeListener(this.onChange);
-    VolunteerStore.removeChangeListener(this.onChange);
-    PermissionsStore.removeChangeListener(this.onChange);
-  },
+  }
 
-  onChange: function () {
-    var group = this.state.group ?
-      GroupStore.getGroupById(this.state.group.id) : null;
-    var member = this.props.member ?
-      VolunteerStore.getVolunteerById(this.props.member.id) : null;
-    var permission = member && group ?
-      PermissionsStore.getPermission(member.id, group.id) : null;
-    this.setState(
-      {
-        member: member,
-        group: group,
-        permission: permission
-      });
-  },
+  onChange() {
+    this.setState({});
+  }
 
-  approveMembership: function () {
+  approveMembership() {
     // This is a hack because a parent LinkContainer element is
     // redirecting the user to another page.
     event.stopPropagation();
-    this.state.permission.setMember();
-    this.state.permission.update();
+    this.props.memberPermission.setMember();
+    this.props.memberPermission.update();
     DataServices.PushFirebaseData('emails/tasks',
       {
         eventType: 'REQUEST_APPROVED',
-        userEmail: this.state.member.email,
-        groupName: this.state.group.name
+        userEmail: this.props.member.email,
+        groupName: this.props.group.name
        });
-  },
+  }
 
-  denyMembership: function () {
+  denyMembership() {
     // This is a hack because a parent LinkContainer element is
     // redirecting the user to another page.
     event.stopPropagation();
 
-    this.state.permission.setDenied();
-    this.state.permission.update();
-  },
+    this.props.memberPermission.setDenied();
+    this.props.memberPermission.update();
+  }
 
-  getApproveMembershipButton: function() {
-    var text = this.state.permission.pending() ? "Approve" : "";
+  getApproveMembershipButton() {
+    var text = this.props.memberPermission.pending() ? "Approve" : "";
     if (text != "") {
       return (
         <div>
@@ -94,62 +73,47 @@ var MemberListItem = React.createClass({
     } else {
       return null;
     }
-  },
+  }
 
-  getBootMembershipButton: function() {
-    if (!this.state.permission || this.state.permission.notInGroup()) return null;
-
-    var text = this.state.permission.pending() ? "Deny" : "Ban";
-    if (this.state.permission.pending() || this.state.permission.member()) {
+  getBootMembershipButton() {
+    var text = this.props.memberPermission.pending() ? "Deny" : "Remove";
+    if (this.props.memberPermission.pending() || this.props.memberPermission.member()) {
       return (
         <div>
-        <button className="btn btn-warning" onClick={this.denyMembership}>{text}</button>
+          <button className="btn btn-warning" onClick={this.denyMembership}>{text}</button>
         </div>
       );
     } else {
       return null;
     }
-  },
+  }
 
-  getActions: function () {
-    var group = Group.castObject(this.props.group);
-    if (!LoginStore.getUser()) return null;
+  getActions() {
+    var buttons = [];
+    var approveButton = this.getApproveMembershipButton();
+    if (approveButton) { buttons.push(approveButton); }
 
-    var userPermission = PermissionsStore.getPermission(LoginStore.getUser().id, group.id);
-    if (!userPermission || !userPermission.admin()) return null;
+    if ((this.props.manageMode || approveButton) && this.props.permission.admin()) {
+      var removeButton = this.getBootMembershipButton();
+      if (removeButton) { buttons.push(removeButton); }
+    }
 
-    return (
-      <div className="media-right">
-        {this.getApproveMembershipButton()}
-        {this.getBootMembershipButton()}
-      </div>
-    );
-  },
-
-  loadMemberPhoto() {
-    FB.api(
-       '/' + this.props.member.id.substring(9) + '/picture?width=75&height=75',
-       function (response) {
-         if (response && !response.error) {
-           this.props.member.imgUrl = response.data.url;
-           this.setState({imgUrl: response.data.url});
-         }
-       }.bind(this)
-   );
- },
-
-  render: function () {
-    if (PermissionsStore.hasError || LoginStore.hasError) {
-      var message = PermissionsStore.errorMessage || LoginStore.errorMessage;
+    if (buttons.length == 0) {
+      return null;
+    } else {
       return (
-        <div className='alert alert-danger'> {message} </div>
+        <div className="media-right">
+          {buttons}
+        </div>
       );
     }
+  }
+
+  render() {
     if (!LoginStore.getUser()) return null;
 
-    var group = Group.castObject(this.props.group);
-    var memberPermission = this.state.permission;
-    var userPermission = PermissionsStore.getPermission(LoginStore.getUser().id, group.id);
+    var memberPermission = this.props.memberPermission;
+    var userPermission = this.props.permission;
 
     if (!userPermission || !memberPermission || memberPermission.notInGroup()) return null;
 
@@ -188,7 +152,7 @@ var MemberListItem = React.createClass({
           state: { member: this.props.member, groupId: this.props.group.id} }}>
           <div className="media">
             <div className='media-left'>
-              <img src={this.state.imgUrl} className='head-shot'/>
+              <ProfilePic user={this.props.member}/>
             </div>
             <div className="media-body">
               <h2>{this.props.member.name} {extraInfo}</h2>
@@ -199,6 +163,4 @@ var MemberListItem = React.createClass({
       </a>
     );
   }
-});
-
-module.exports = MemberListItem;
+}
