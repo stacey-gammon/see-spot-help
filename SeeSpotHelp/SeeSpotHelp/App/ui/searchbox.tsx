@@ -35,7 +35,7 @@ var SearchBox = React.createClass({
     });
   },
 
-  shelterSearch: function() {
+  shelterSearch: function(viewAll, event) {
     var searchFor = this.state.searchForValue;
     var stringToGroupAttribute = {
       'zip code': 'zipCode'
@@ -45,6 +45,7 @@ var SearchBox = React.createClass({
       searchOn = stringToGroupAttribute[searchOn];
     }
     var searchText = this.refs.groupSearchInput.value;
+    if (viewAll) searchText = '';
 
     var path = searchFor == 'groups' ?
       new Group().firebasePath :
@@ -195,7 +196,10 @@ var SearchBox = React.createClass({
         {this.getAddGroupHelpText()}
         <div className="input-group searchInputBox">
           <button type="button" className="btn btn-info"
-            onClick={this.shelterSearch}>Search
+            onClick={this.shelterSearch.bind(this, false)}>Search
+          </button>
+          <button type="button" className="btn btn-info"
+            onClick={this.shelterSearch.bind(this, true)}>View All
           </button>
         </div>
           {noResultsFoundText}
