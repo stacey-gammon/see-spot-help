@@ -1,56 +1,44 @@
-﻿var React = require('react');
+﻿import * as React from 'react';
 var Router = require('react-router');
 var LinkContainer = require('react-router-bootstrap').LinkContainer;
 import LoginStore from '../stores/loginstore';
 import GroupListItem from './group/grouplistitem';
+import Animal from '../core/databaseobjects/animal';
+import Group from '../core/databaseobjects/group';
 var AnimalThumbnail = require("./animal/animalthumbnail");
-var Animal = require("../core/animal");
 
-var ShelterSearchResults = React.createClass({
-	getInitialState: function () {
-		return {
-			user: LoginStore.getUser()
-		}
-	},
-	componentDidMount: function () {
-		LoginStore.addChangeListener(this.onChange);
-	},
+export default class ShelterSearchResults extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
+  }
 
-	componentWillUnmount: function () {
-		LoginStore.removeChangeListener(this.onChange);
-	},
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
 
-	onChange: function () {
-		this.setState(
-			{
-				user: LoginStore.getUser()
-			});
-	},
+  generateResult(result) {
+    if (this.props.searchForValue == 'groups') {
+      var group = Group.castObject(result);
+      if (!group.isArchived()) {
+        return <GroupListItem key={result.id} group={group}/>
+      } else {
+        return null;
+      }
+    } else {
+      result = Animal.castObject(result);
+      return <AnimalThumbnail animal={result} user={LoginStore.getUser()}/>
+    }
+  }
 
-	contextTypes: {
-		router: React.PropTypes.object.isRequired
-	},
-
-	generateResult: function(result) {
-		if (this.props.searchForValue == 'groups') {
-			return <GroupListItem key={result.id} group={result}/>
-		} else {
-			result = Animal.castObject(result);
-			return <AnimalThumbnail animal={result} user={LoginStore.getUser()}/>
-		}
-	},
-
-	render: function () {
-		var items = [];
-		for (var groupId in this.props.results) {
-			items.push(this.generateResult(this.props.results[groupId]));
-		}
-		return (
-			<div>
-				{items}
-			</div>
-		);
-	}
-});
-
-module.exports = ShelterSearchResults;
+  render() {
+    var items = [];
+    for (var groupId in this.props.results) {
+      items.push(this.generateResult(this.props.results[groupId]));
+    }
+    return (
+      <div>
+        {items}
+      </div>
+    );
+  }
+}

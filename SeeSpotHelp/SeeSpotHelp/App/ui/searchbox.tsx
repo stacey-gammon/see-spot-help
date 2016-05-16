@@ -4,7 +4,7 @@ var React = require("react");
 var ReactBootstrap = require("react-bootstrap");
 var Link = require("react-router").Link;
 var LinkContainer = require("react-router-bootstrap").LinkContainer;
-var ShelterSearchResults = require("./searchresults");
+import ShelterSearchResults from "./searchresults";
 var DropdownMenu = ReactBootstrap.DropdownMenu;
 var ButtonGroup = ReactBootstrap.ButtonGroup;
 var DropdownButton = ReactBootstrap.DropdownButton;
