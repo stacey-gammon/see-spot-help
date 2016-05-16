@@ -31,91 +31,91 @@ import { Status } from './databaseobject';
 // @param zipCode {string} The zip code the shelter resides in.
 // @param id {string} the id of the group.
 export default class Group extends DatabaseObject {
-	public name: string = '';
-	public shelter: string = '';
-	public address: string = '';
-	public city: string = '';
-	public state: string = '';
-	public zipCode: string = '';
-	// Unfortunately, I don't know anyway to generate this dynamically.
+  public name: string = '';
+  public shelter: string = '';
+  public address: string = '';
+  public city: string = '';
+  public state: string = '';
+  public zipCode: string = '';
+  // Unfortunately, I don't know anyway to generate this dynamically.
 
-	constructor() {
-		super();
-	}
+  constructor() {
+    super();
+  }
 
-	createInstance() { return new Group(); }
+  createInstance() { return new Group(); }
 
-	public static FromJSON(json) {
-		var group = Group.castObject(json);
-		return group;
-	}
+  public static FromJSON(json) {
+    var group = Group.castObject(json);
+    return group;
+  }
 
-	RemoveAnimalColor(color) {
-		//this.availableAnimalColors.RemoveColor(color);
-	}
+  RemoveAnimalColor(color) {
+    //this.availableAnimalColors.RemoveColor(color);
+  }
 
-	RemoveVolunteerColor(color) {
-		//this.availableMemberColors.RemoveColor(color);
-	}
+  RemoveVolunteerColor(color) {
+    //this.availableMemberColors.RemoveColor(color);
+  }
 
-	GetColorForVolunteer() {
-		return Color.GetAvailableColor();
-		//return this.availableMemberColors.GetAvailableColor();
-	}
+  GetColorForVolunteer() {
+    return Color.GetAvailableColor();
+    //return this.availableMemberColors.GetAvailableColor();
+  }
 
-	GetColorForAnimal() {
-		return Color.GetAvailableColor();
-		//return this.availableAnimalColors.GetAvailableColor();
-	}
+  GetColorForAnimal() {
+    return Color.GetAvailableColor();
+    //return this.availableAnimalColors.GetAvailableColor();
+  }
 
-	// Casts the given obj as a volunteer group.  Careful -
-	// obj must have originally been a type of Group
-	// for this to work as expected.  Helpful when passing around
-	// objects via React state and props.  Can use this to restore the
-	// original class, complete with functions, from an object with only
-	// properties.
-	public static castObject(obj) {
-		var group = new Group();
-		group = Object.assign(group, obj);
-		return group;
-	}
+  // Casts the given obj as a volunteer group.  Careful -
+  // obj must have originally been a type of Group
+  // for this to work as expected.  Helpful when passing around
+  // objects via React state and props.  Can use this to restore the
+  // original class, complete with functions, from an object with only
+  // properties.
+  public static castObject(obj) {
+    var group = new Group();
+    group = Object.assign(group, obj);
+    return group;
+  }
 
-	copyFieldsFrom(other) {
-		for (var prop in other) {
-			this[prop] = other[prop];
-		}
-	}
+  copyFieldsFrom(other) {
+    for (var prop in other) {
+      this[prop] = other[prop];
+    }
+  }
 
-	memberCount() {
-		return 'fixme';
-	}
+  public static PermissionsEnum = Object.freeze(
+    {
+      MEMBER: 0,
+      NONMEMBER: 1,
+      ADMIN: 2,
+      PENDINGMEMBERSHIP: 3,
+      MEMBERSHIPDENIED: 4
+    }
+  )
 
-	public static PermissionsEnum = Object.freeze(
-		{
-			MEMBER: 0,
-			NONMEMBER: 1,
-			ADMIN: 2,
-			PENDINGMEMBERSHIP: 3,
-			MEMBERSHIPDENIED: 4
-		}
-	)
+  isArchived() {
+    return this.status == Status.ARCHIVED;
+  }
 
-	delete() {
-		this.status = Status.ARCHIVED;
-		this.update();
-	}
+  delete() {
+    this.status = Status.ARCHIVED;
+    this.update();
+  }
 
-	// Attempts to insert the current instance into the database as
-	// a new volunteer group.
-	// @param callback {Function(Group, ServerResponse) }
-	//	 callback is expected to take as a first argument the potentially
-	//	 inserted volunteer group (null on failure) and a server
-	//	 response to hold error and success information.
-	insert(userId?) {
-		var inserts = this.getInserts();
-		var permission = Permission.CreateAdminPermission(userId, this.id);
-		Object.assign(inserts, permission.getInserts());
+  // Attempts to insert the current instance into the database as
+  // a new volunteer group.
+  // @param callback {Function(Group, ServerResponse) }
+  //	 callback is expected to take as a first argument the potentially
+  //	 inserted volunteer group (null on failure) and a server
+  //	 response to hold error and success information.
+  insert(userId?) {
+    var inserts = this.getInserts();
+    var permission = Permission.CreateAdminPermission(userId, this.id);
+    Object.assign(inserts, permission.getInserts());
 
-		DataServices.UpdateMultiple(inserts);
-	}
+    DataServices.UpdateMultiple(inserts);
+  }
 }

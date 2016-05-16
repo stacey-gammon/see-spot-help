@@ -36,6 +36,11 @@ var MyNavBar = React.createClass({
   //   </NavItem>
   // </Nav>
 
+  // Code to put back settings link.  The page isn't ready yet so hiding.
+  // <LinkContainer to={{ pathname: "userSettingsPage" }}>
+  //   <MenuItem eventKey={3.1}>Settings</MenuItem>
+  // </LinkContainer>
+
   render: function() {
     return (
       <Navbar ref="mynavbar" className="navbar navbar-light bg-faded sh-navbar">
@@ -61,9 +66,6 @@ var MyNavBar = React.createClass({
               </button>
             </Dropdown.Toggle>
             <Dropdown.Menu className="sh-dropdown-menu">
-              <LinkContainer to={{ pathname: "userSettingsPage" }}>
-                <MenuItem eventKey={3.1}>Settings</MenuItem>
-              </LinkContainer>
               <LinkContainer to={{ pathname: "loginPage", state: { logout: true }}}>
                 <MenuItem eventKey={3.2}>Log out</MenuItem>
               </LinkContainer>

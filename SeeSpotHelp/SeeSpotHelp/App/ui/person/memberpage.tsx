@@ -99,9 +99,6 @@ export default class MemberPage extends React.Component<any, any> {
                 memberId={this.state.member.id}
                 view="member"/>
             </Tab>
-            <Tab eventKey={3} title={Utils.getMessageGlyphicon()}>
-              Messaging feature coming soon!
-            </Tab>
           </Tabs>
           <br/><br/>
         </div>

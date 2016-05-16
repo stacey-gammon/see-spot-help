@@ -7,9 +7,10 @@ import DatabaseObject from './databaseobject';
 var ServerResponse = require('../serverresponse');
 
 class Volunteer extends DatabaseObject {
-  public name: string;
-  public displayName: string;
-  public email: string;
+  public name: string = '';
+  public displayName: string = '';
+  public email: string = '';
+  public aboutMe: string = '';
   public inBeta: boolean;
   public betaCode: string;
   public firebasePath: string = 'users';

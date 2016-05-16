@@ -68,7 +68,7 @@ export default class UserGroupsTab extends React.Component<any, any> {
       if (permissions[i].inGroup()) {
         var group = this.getGroup(permissions[i].groupId);
         if (group) {
-          groups.push(group);
+          if (!group.isArchived()) { groups.push(group); }
         } else {
           loading = true;
         }

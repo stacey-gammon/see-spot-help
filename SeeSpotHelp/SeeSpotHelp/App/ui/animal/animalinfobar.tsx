@@ -73,14 +73,18 @@ export default class AnimalInfoBar extends React.Component<any, any> {
             permission={this.props.permission}
             animal={animal}
             group={this.props.group}/>
-          <div>
-            <h1 className="animalInfo">{animal.name}
-            {this.getEditIcon()}
-            </h1>
-            <h2 className="animalInfo">{animal.age} years old</h2>
-            <h2 className="animalInfo">{animal.status}</h2>
-            <h2 className="animalInfo">{animal.breed}</h2>
-            <p className="animalInfo">{animal.description}</p>
+          <div className='media'>
+            <div className='media-left'>
+              <h1 className="animalInfo">{animal.name}
+              {this.getEditIcon()}
+              </h1>
+              <p className="animalInfo">{animal.age} years old</p>
+              <p className="animalInfo">{animal.status}</p>
+              <p className="animalInfo">{animal.breed}</p>
+            </div>
+            <div className='media-body'>
+              <p className="animalInfo">{animal.description}</p>
+            </div>
           </div>
           <div/>
         </InfoBar>

@@ -3,7 +3,7 @@
 
 
 .animalListElement:hover {
-	color: #B7AFA3 !important;
+  color: #B7AFA3 !important;
 };
 
 .animalListInfo {
@@ -11,9 +11,13 @@
 }
 
 .animalListElement {
-	@extend .base-list-element;
-	background-color: $animal-bg-color;
-	color: $animal-color !important;
+  @extend .base-list-element;
+  background-color: $animal-bg-color;
+  color: $animal-color !important;
+}
+
+.animal-thumbnail-info-left {
+  min-width: 90px;
 }
 
 .animalInfo {
@@ -28,4 +32,12 @@
 .animalThumbnailImg {
     width: 75px;
     height: 75px;
+}
+
+.animal-thumbnail-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

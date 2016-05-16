@@ -14,6 +14,7 @@ var User = require('../core/volunteer');
 
 import GroupHomePage from './group/grouphomepage';
 import ProfilePage from './person/profilepage';
+import EditProfile from './person/editprofile';
 import AddNewGroup from './group/addnewgroup';
 import AddAnimalNote from './animal/addanimalnote';
 import AnimalHomePage from './animal/animalHomePage';
@@ -88,7 +89,6 @@ var Home = React.createClass({
   },
 
   render: function() {
-    console.log('Home:render');
     if (((!LoginStore.getUser() && !LoginStore.userDownloading) ||
        (LoginStore.getUser() && !LoginStore.getUser().inBeta)) &&
       this.props.location.pathname != '/privatebetapage' &&
@@ -130,6 +130,7 @@ var routes = (
     <Route path='addCalendarEvent' component={AddCalendarEvent} />
     <Route path='enterBetaCode' component={EnterBetaCode} />
     <Route path='addPhotoPage' component={AddPhotoPage} />
+    <Route path='editProfile' component={EditProfile} />
   </Router>
 );
 

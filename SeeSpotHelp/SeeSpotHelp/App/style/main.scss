@@ -25,13 +25,6 @@ h2 {
     letter-spacing: 1px;
 }
 
-
-.email {
-  width: 100% !important;
-    max-width: 600px;
-    margin: 5 auto !important;
-}
-
 .input-group-addon {
     min-width:100px;// if you want width please write here //
     text-align:left;
@@ -47,12 +40,12 @@ h2 {
 }
 
 .PostTextArea {
-    display: block !important;
+  display: block !important;
   width: 100%;
   max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    margin: 5px auto !important;
+  margin-left: auto;
+  margin-right: auto;
+  margin: 5px auto !important;
 }
 
 .smallHelpText {
