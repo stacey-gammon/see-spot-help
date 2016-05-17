@@ -37,6 +37,7 @@ export default class Group extends DatabaseObject {
   public city: string = '';
   public state: string = '';
   public zipCode: string = '';
+  public photoId: string = '';
   // Unfortunately, I don't know anyway to generate this dynamically.
 
   constructor() {

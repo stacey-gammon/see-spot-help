@@ -11,6 +11,7 @@ class Volunteer extends DatabaseObject {
   public displayName: string = '';
   public email: string = '';
   public aboutMe: string = '';
+  public photoId: string = '';
   public inBeta: boolean;
   public betaCode: string;
   public firebasePath: string = 'users';

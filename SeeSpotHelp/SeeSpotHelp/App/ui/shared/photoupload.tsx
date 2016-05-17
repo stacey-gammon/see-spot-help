@@ -33,14 +33,6 @@ export default class TakePhotoButton extends React.Component<any, any> {
     this.forceUpdate();
   }
 
-  uploadSucceeded() {
-    alert("yay!");
-  }
-
-  uploadFailed(error) {
-    alert("boo!" + error.responseText);
-  }
-
   uploadFile(file) {
     var reader = new FileReader();
     reader.onload = (function(theFile) {

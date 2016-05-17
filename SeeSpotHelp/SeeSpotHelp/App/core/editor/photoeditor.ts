@@ -2,6 +2,8 @@
 import Photo from '../databaseobjects/photo';
 import Activity from '../databaseobjects/activity';
 import AnimalStore from '../../stores/animalstore';
+import GroupStore from '../../stores/groupstore';
+import LoginStore from '../../stores/loginstore';
 
 import InputPhotoField from './inputphotofield';
 import InputTextAreaField from './inputtextareafield';
@@ -50,10 +52,23 @@ export default class PhotoEditor extends Editor {
     photo.src = extraFields.src;
     photo.insert();
 
-    var animal = AnimalStore.getAnimalById(photo.animalId);
-    if (animal) {
-      animal.photoId = photo.id;
-      animal.update();
+    if (extraFields.headShot) {
+      if (photo.animalId) {
+        var animal = AnimalStore.getAnimalById(photo.animalId);
+        if (animal) {
+          animal.photoId = photo.id;
+          animal.update();
+        }
+      } else if (photo.groupId) {
+          var group = GroupStore.getItemById(photo.groupId);
+          if (group) {
+            group.photoId = photo.id;
+            group.update();
+          }
+      } else {
+        LoginStore.getUser().photoId = photo.id;
+        LoginStore.getUser().update();
+      }
     }
 
     var activity = Activity.CreatePhotoActivity(photo);

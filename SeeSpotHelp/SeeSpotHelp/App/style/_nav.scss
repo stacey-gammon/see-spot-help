@@ -3,6 +3,7 @@
   background-color: $nav-bg-color;
   margin-bottom: 0px !important;
   border: 0px solid red !important;
+  @include border-radius(0px);
 }
 
 .nav-item {
