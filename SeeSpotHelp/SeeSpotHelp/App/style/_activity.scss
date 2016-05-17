@@ -1,0 +1,36 @@
+.activity-dropdown {
+
+  .btn {
+    min-width: 0px;
+    border: 1px solid rgba(0, 0, 0, 0);
+    height: 25px;
+    margin-top: -5px;
+    margin-right: -5px;
+    margin-bottom: -1px;
+    z-index: 1;
+    color: grey;
+    font-size: 40px;
+  }
+  .btn-default:hover {
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  .dropdown-menu {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    left: -130px !important;
+    z-index: 999 !important;
+    @include border-radius(0px);
+  }
+
+  a {
+    max-height: 39px;
+    padding: 9px 15px !important;
+    @include border-radius(0px);
+  }
+
+  li {
+    border-bottom: 1px solid $lightGrey;
+  }
+  li:last-child { border-bottom: none; }
+}
