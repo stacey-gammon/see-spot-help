@@ -76,13 +76,20 @@ body {
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   }
 
-  li.active a {
+  li.active {
+    a {
     background-color: $page-bg-color;
     border-width: 2px 2px 0px 2px;
     margin-bottom: -1px;
     border-color: $info-top-border-color;
     outline: none;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    }
+    a:focus {
+      border-width: 2px 2px 0px 2px;
+      margin-bottom: -1px;
+      border-color: $info-top-border-color;
+    }
   }
 }
 
