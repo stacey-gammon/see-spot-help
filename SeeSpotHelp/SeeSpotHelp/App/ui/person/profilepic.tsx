@@ -36,6 +36,7 @@ export default class ProfilePic extends React.Component<any, any> {
   }
 
   render() {
+    if ()
     return <img src={this.getProfileImage()} className='head-shot'/>
   }
 }

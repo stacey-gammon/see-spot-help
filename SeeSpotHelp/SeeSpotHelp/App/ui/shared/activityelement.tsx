@@ -111,7 +111,7 @@ export default class ActivityElement extends React.Component<any, any> {
     var date = this.props.activity.getDateForDisplay();
     var userAndDateInfo = " - " + this.state.memberName + " - " + date;
     return (
-      <div className="list-group-item">
+      <div className="list-group-item activity-list-item">
         <div className="media">
           <div className="media-body">
             <ActivityBody activity={this.props.activity}/>
