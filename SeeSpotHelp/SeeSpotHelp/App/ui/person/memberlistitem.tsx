@@ -18,6 +18,11 @@ import VolunteerStore from '../../stores/volunteerstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
 export default class MemberListItem extends React.Component<any, any> {
+  // Required for page transitions via this.context.router.push.
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -37,7 +42,7 @@ export default class MemberListItem extends React.Component<any, any> {
     this.setState({});
   }
 
-  approveMembership() {
+  approveMembership(event) {
     // This is a hack because a parent LinkContainer element is
     // redirecting the user to another page.
     event.stopPropagation();
@@ -51,7 +56,7 @@ export default class MemberListItem extends React.Component<any, any> {
        });
   }
 
-  denyMembership() {
+  denyMembership(event) {
     // This is a hack because a parent LinkContainer element is
     // redirecting the user to another page.
     event.stopPropagation();
@@ -65,7 +70,7 @@ export default class MemberListItem extends React.Component<any, any> {
     if (text != "") {
       return (
         <div>
-          <button className="btn btn-info" onClick={this.approveMembership }>
+          <button className="btn btn-info" onClick={this.approveMembership.bind(this) }>
           {text}
           </button>
         </div>

@@ -8,21 +8,23 @@
 @import 'animal';
 @import 'page';
 @import 'search';
+@import 'activity';
+
 
 h1 {
-    font-size: 15px;
-    text-align: center;
-    font-weight: bold;
-    margin: 2px;
-    letter-spacing: 1px;
+  font-size: 15px;
+  text-align: center;
+  font-weight: bold;
+  margin: 2px;
+  letter-spacing: 1px;
   line-height: 21px;
 }
 
 h2 {
-    font-size: 12px;
-    text-align: center;
-    margin: 2px;
-    letter-spacing: 1px;
+  font-size: 12px;
+  text-align: center;
+  margin: 2px;
+  letter-spacing: 1px;
 }
 
 .input-group-addon {
@@ -179,4 +181,9 @@ p {
 
 .photo-upload {
   cursor: pointer;
+}
+
+.media, .media-body {
+    overflow: visible;
+    zoom: 1;
 }

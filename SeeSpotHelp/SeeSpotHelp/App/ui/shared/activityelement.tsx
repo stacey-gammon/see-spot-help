@@ -4,6 +4,12 @@ import * as React from 'react';
 
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
+var ReactBootstrap = require('react-bootstrap');
+var DropdownMenu = ReactBootstrap.DropdownMenu;
+var ButtonGroup = ReactBootstrap.ButtonGroup;
+var DropdownButton = ReactBootstrap.DropdownButton;
+var Button = ReactBootstrap.Button;
+var MenuItem = ReactBootstrap.MenuItem;
 
 import Volunteer from '../../core/databaseobjects/volunteer';
 import ConstStrings from '../../core/conststrings';
@@ -18,6 +24,11 @@ import Permission from '../../core/databaseobjects/permission';
 import ActivityBody from './activitybody';
 
 export default class ActivityElement extends React.Component<any, any> {
+  // Required for page transitions via this.context.router.push.
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -53,6 +64,26 @@ export default class ActivityElement extends React.Component<any, any> {
     }
   }
 
+  editAction() {
+    this.context.router.push({
+      pathname: "addAnimalNote",
+      state: { animalId: this.props.activity.animalId,
+               activityId: this.props.activity.id,
+               groupId: this.props.activity.groupId,
+               mode: 'edit' } });
+  }
+
+  getActionDropDown() {
+    return (
+      <div className='dropdown activity-dropdown'>
+        <DropdownButton title="">
+          <MenuItem eventKey="1" onClick={this.editAction.bind(this)}>Edit</MenuItem>
+          <MenuItem eventKey="2" onClick={this.deleteAction.bind(this)}>Delete</MenuItem>
+        </DropdownButton>
+      </div>
+    );
+  }
+
   getDeleteActionButton() {
     return (
       <div>
@@ -68,7 +99,7 @@ export default class ActivityElement extends React.Component<any, any> {
       this.props.permission.admin()) {
       return (
         <div className="media-right">
-          {this.getDeleteActionButton()}
+          {this.getActionDropDown()}
         </div>
       );
     } else {
