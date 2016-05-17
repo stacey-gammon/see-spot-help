@@ -17,7 +17,5 @@
 }
 
 .group-info-bar {
-  .media {
-    margin-top: 0px !important;
-  }
+  @extend .info-bar;
 }

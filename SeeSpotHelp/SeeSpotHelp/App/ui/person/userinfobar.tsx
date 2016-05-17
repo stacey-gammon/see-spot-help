@@ -21,7 +21,7 @@ export default class UserInfoBar extends React.Component<any, any> {
     if (this.props.user == LoginStore.getUser()) {
       return <h1 style={style}>{'Hello, ' + LoginStore.getUser().name}  {this.getEditIcon()} </h1>;
     } else {
-      return <h2 style={style}>{this.props.user.getDisplayName()}</h2>;
+      return <h1 style={style}>{this.props.user.getDisplayName()}</h1>;
     }
   }
 
@@ -57,12 +57,14 @@ export default class UserInfoBar extends React.Component<any, any> {
   render() {
     return (
       <div>
-        <InfoBar className='group-info-bar' title={this.getTitle()}>
+        <InfoBar className='member-info-bar' title={this.getTitle()}>
           <ProfilePic user={this.props.user}/>
           <div>
             {this.getHeader()}
+            <p>
             {this.getMessageLink()}
-            <div>{this.props.user.aboutMe}</div>
+            </p>
+            <p>{this.props.user.aboutMe}</p>
           </div>
         </InfoBar>
       </div>

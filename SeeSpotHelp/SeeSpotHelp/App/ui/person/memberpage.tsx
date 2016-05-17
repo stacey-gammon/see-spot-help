@@ -92,7 +92,9 @@ export default class MemberPage extends React.Component<any, any> {
                 activeKey={defaultKey}
                 onSelect={this.handleTabSelect.bind(this)}>
             <Tab eventKey={1} title={Utils.getActivityGlyphicon()}>
-              <ActivityTab property='userId' value={this.state.member.id}/>
+              <ActivityTab property='userId'
+                           value={this.state.member.id}
+                           permission={Permission.CreateNonMemberPermission()}/>
             </Tab>
             <Tab eventKey={2} title={Utils.getCalendarGlyphicon()}>
               <MemberScheduleTab

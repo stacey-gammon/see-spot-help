@@ -14,14 +14,25 @@
   @extend .base-list-element;
   background-color: $animal-bg-color;
   color: $animal-color !important;
+
+  h4 {
+    margin-top: 3px;
+  }
+
+  .media-object {
+    margin: 5px;
+    height: 80px;
+  }
 }
 
 .animal-thumbnail-info-left {
   min-width: 90px;
+  padding-right: 3px;
 }
 
 .animalInfo {
     text-align: left;
+    margin: 0px;
 }
 
 .animalThumbnailText {
@@ -32,6 +43,7 @@
 .animalThumbnailImg {
     width: 75px;
     height: 75px;
+
 }
 
 .animal-thumbnail-description {

@@ -27,6 +27,10 @@ body {
   background-color: $info-top-bg-color;
   color: $info-top-color;
   padding: 15px;
+  a {
+    color: $almostWhite;
+    font-decoration: underline !important;
+  }
 }
 
 // .animal-info-bar {

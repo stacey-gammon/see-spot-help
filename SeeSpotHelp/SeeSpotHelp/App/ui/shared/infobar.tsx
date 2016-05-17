@@ -49,7 +49,7 @@ export default class InfoBar extends React.Component<any, any> {
     return (
       <div className={className}>
         <a className='info-bar-back' onClick={this.goBack.bind(this)}>back</a>
-        {this.getTitle()}
+        <a href="#groupHomePage">{this.getTitle()}</a>
         <div className='media'>
           <div className='media-left'>
             {mediaLeft}

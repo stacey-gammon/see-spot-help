@@ -9,3 +9,9 @@
   border: 3px solid $list-border-color;
   max-height: 125px;
 }
+
+.info-bar {
+  .media {
+    margin-top: 0px !important;
+  }
+}

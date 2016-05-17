@@ -10,3 +10,15 @@
   height: 75px;
   width: 75px;
 }
+
+.member-info-bar {
+  @extend .info-bar;
+  p {
+    margin: 2px;
+    font-size: 12px;
+  }
+  a {
+    color: $almostWhite;
+    text-decoration: underline;
+  }
+}

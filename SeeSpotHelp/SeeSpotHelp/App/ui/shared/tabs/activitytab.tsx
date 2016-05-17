@@ -30,7 +30,7 @@ export default class ActivityTab extends React.Component<any, any> {
 
   generateAnimalNote(note) {
     return (
-      <ActivityElement key={note.id} activity={note}/>
+      <ActivityElement key={note.id} activity={note} permission={this.props.permission}/>
     );
   }
 
