@@ -85,6 +85,9 @@ body {
     outline: none;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
     }
+    a:hover {
+      border-width: 2px 2px 0px 2px;
+    }
     a:focus {
       border-width: 2px 2px 0px 2px;
       margin-bottom: -1px;
