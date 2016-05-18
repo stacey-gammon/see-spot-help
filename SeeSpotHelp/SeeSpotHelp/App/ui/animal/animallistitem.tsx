@@ -8,7 +8,7 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 import PhotoStore from '../../stores/photostore';
 import AnimalStore from '../../stores/animalstore';
 
-import HeadShot from './headshot';
+import AnimalHeadShot from './animalheadshot';
 
 // A small representation of an animal to be displayed in the animal
 // list. Clicking on the thumbnail will direct the user to the chosen
@@ -34,15 +34,13 @@ export default class AnimalListItem extends React.Component<any, any> {
   }
 
   render() {
-    var photos = PhotoStore.getPhotosByAnimalId(this.props.animal.id);
-    var imageSrc = photos && photos.length > 0 ? photos[0].src : this.props.animal.getDefaultPhoto();
     return (
       <a href='#' key={this.props.animal.id} className='list-group-item animalListElement'>
         <LinkContainer to={{ pathname: 'animalHomePage' ,
                  state: { user: this.props.user, group: this.props.group, animal: this.props.animal} }}>
           <div className='media'>
             <div className='media-left'>
-              <HeadShot src={imageSrc}
+              <AnimalHeadShot
                 permission={this.props.permission}
                 animal={this.props.animal}
                 group={this.props.group}/>

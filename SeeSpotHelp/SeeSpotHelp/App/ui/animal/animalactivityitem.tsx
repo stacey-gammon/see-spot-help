@@ -26,8 +26,7 @@ export default class AnimalActivityItem extends React.Component<any, any> {
   componentWillMount() {
     VolunteerStore.ensureItemById(this.props.activity.userId).then(function() {
       var member = VolunteerStore.getVolunteerById(this.props.activity.userId);
-      var memberName = member.displayName ? member.displayName : member.name;
-      this.setState({ memberName: memberName });
+      this.setState({ memberName: member.name });
     }.bind(this));
   }
 

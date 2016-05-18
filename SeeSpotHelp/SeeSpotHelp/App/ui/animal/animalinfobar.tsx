@@ -10,7 +10,7 @@ import LoginStore from '../../stores/loginstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
 import InfoBar from '../shared/infobar';
-import HeadShot from './headshot';
+import AnimalHeadShot from './animalheadshot';
 
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
@@ -21,17 +21,6 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 export default class AnimalInfoBar extends React.Component<any, any> {
   constructor(props) {
     super(props);
-  }
-
-  componentDidMount() {
-    PhotoStore.addPropertyListener(
-      this, 'animalId', this.props.animal.id, this.forceUpdate.bind(this));
-    PhotoStore.addPropertyListener(
-      this, 'id', this.props.animal.photoId, this.forceUpdate.bind(this));
-  }
-
-  componentWillUnmount() {
-    PhotoStore.removePropertyListener(this);
   }
 
   shouldAllowUserToEdit() {
@@ -69,7 +58,7 @@ export default class AnimalInfoBar extends React.Component<any, any> {
     var animal = this.props.animal;
     return (
       <InfoBar className='animal-info-bar' title={this.props.group.name}>
-          <HeadShot src={imageSrc}
+          <AnimalHeadShot
             permission={this.props.permission}
             animal={animal}
             group={this.props.group}/>

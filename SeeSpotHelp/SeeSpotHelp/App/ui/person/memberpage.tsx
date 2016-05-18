@@ -34,9 +34,16 @@ export default class MemberPage extends React.Component<any, any> {
   constructor(props) {
     super(props);
     var member = Utils.FindPassedInProperty(this, 'member') || LoginStore.getUser();
+    var userId = Utils.FindPassedInProperty(this, 'userId');
     var groupId = Utils.FindPassedInProperty(this, 'groupId');
 
+    if (userId) {
+      member = VolunteerStore.getItemById(userId);
+      VolunteerStore.addPropertyListener(this, 'id', userId, this.onChange.bind(this));
+    }
+
     this.state = {
+      userId: userId,
       member: member,
       groupId: groupId
     };
@@ -46,27 +53,28 @@ export default class MemberPage extends React.Component<any, any> {
 
   componentDidMount() {
     LoginStore.addChangeListener(this.onChange);
-    GroupStore.addChangeListener(this.onChange);
-    PermissionsStore.addChangeListener(this.onChange);
+    GroupStore.addPropertyListener(this, 'id', this.state.groupId, this.onChange.bind(this));
+    PermissionsStore.addPropertyListener(
+        this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
   }
 
   componentWillUnmount() {
     LoginStore.removeChangeListener(this.onChange);
-    GroupStore.removeChangeListener(this.onChange);
-    PermissionsStore.removeChangeListener(this.onChange);
+    PermissionsStore.removePropertyListener(this);
+    GroupStore.removePropertyListener(this);
+    VolunteerStore.removePropertyListener(this);
   }
 
   onChange() {
     var id;
     if (this.state.member) {
       id = this.state.member.id;
+    } else if (this.state.userId) {
+      id = this.state.userId;
     } else if (LoginStore.getUser()){
       id = LoginStore.getUser().id;
     }
-    this.setState(
-      {
-        member: VolunteerStore.getVolunteerById(id)
-      });
+    this.setState({ member: VolunteerStore.getVolunteerById(id) });
   }
 
   handleTabSelect(key) {
@@ -81,8 +89,7 @@ export default class MemberPage extends React.Component<any, any> {
   render() {
     var group = GroupStore.getGroupById(this.state.groupId);
     if (!LoginStore.getUser() || !this.state.member) return null;
-    var memberName = this.state.member.displayName ?
-      this.state.member.displayName : this.state.member.name;
+    var memberName = this.state.member.name;
     if (this.state.member) {
       var defaultKey = this.state.memberDefaultTabKey ? this.state.memberDefaultTabKey : 1;
       return (

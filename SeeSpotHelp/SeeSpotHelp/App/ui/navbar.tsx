@@ -66,10 +66,10 @@ var MyNavBar = React.createClass({
               </button>
             </Dropdown.Toggle>
             <Dropdown.Menu className="sh-dropdown-menu">
+              <MenuItem eventKey={3.3} onClick={this.goToAboutPage.bind(this)}>About Us</MenuItem>
               <LinkContainer to={{ pathname: "loginPage", state: { logout: true }}}>
                 <MenuItem eventKey={3.2}>Log out</MenuItem>
               </LinkContainer>
-              <MenuItem eventKey={3.3} onClick={this.goToAboutPage.bind(this)}>About Us</MenuItem>
             </Dropdown.Menu>
           </Dropdown>
         </Nav>

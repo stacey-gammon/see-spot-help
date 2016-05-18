@@ -39,8 +39,7 @@ export default class ActivityElement extends React.Component<any, any> {
   componentWillMount() {
     VolunteerStore.ensureItemById(this.props.activity.userId).then(function() {
       var member = VolunteerStore.getVolunteerById(this.props.activity.userId);
-      var memberName = member.displayName ? member.displayName : member.name;
-      this.setState({ memberName: memberName });
+      this.setState({ memberName: member.name });
     }.bind(this));
   }
 
@@ -119,7 +118,7 @@ export default class ActivityElement extends React.Component<any, any> {
             <a><LinkContainer
               to={{ pathname: "/memberPage",
                 state: {
-                  memberId: this.props.activity.userId,
+                  userId: this.props.activity.userId,
                   groupId: this.props.activity.groupId
                 } }}>
               <button className="invisible-button">{this.state.memberName}</button>

@@ -12,8 +12,8 @@ export default class InfoBar extends React.Component<any, any> {
     router: React.PropTypes.object.isRequired
   }
 
-  goBack() {
-    this.context.router.goBack();
+  goBackToShelter() {
+   this.context.router.push('groupHomePage');
   }
 
   getTitle() {
@@ -22,6 +22,11 @@ export default class InfoBar extends React.Component<any, any> {
     } else {
       return null;
     }
+  }
+
+  getBackButton() {
+    // TODO: only show on member and animal home pages...
+    return <a className='info-bar-back' onClick={this.goBackToShelter.bind(this)}>back</a>;
   }
 
   render() {
@@ -48,7 +53,7 @@ export default class InfoBar extends React.Component<any, any> {
 
     return (
       <div className={className}>
-        <a className='info-bar-back' onClick={this.goBack.bind(this)}>back</a>
+        {this.getBackButton()}
         <a href="#groupHomePage">{this.getTitle()}</a>
         <div className='media'>
           <div className='media-left'>
