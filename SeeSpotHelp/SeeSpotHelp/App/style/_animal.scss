@@ -47,6 +47,7 @@
 }
 
 .animal-info-bar {
+  @extend .info-bar;
   .media-object {
     margin: 5px;
     height: 80px;
