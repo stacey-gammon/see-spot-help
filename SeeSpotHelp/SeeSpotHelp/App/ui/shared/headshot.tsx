@@ -41,12 +41,13 @@ export default class HeadShot extends React.Component<any, any> {
     console.log('loaded: ' + loaded);
     return (
       <PhotoUpload
+        editable={this.props.editable}
         headShot="true"
         group={this.props.group}
         permission={this.props.permission}
         animal={this.props.animal}>
         <Loader loaded={loaded} >
-          <img className="media-object" src={src} />
+          <img className="media-object head-shot" src={src} />
         </Loader>
       </PhotoUpload>
     );

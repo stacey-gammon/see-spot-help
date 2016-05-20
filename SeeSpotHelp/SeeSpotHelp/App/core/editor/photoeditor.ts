@@ -36,7 +36,7 @@ export default class PhotoEditor extends Editor {
     };
 
     s3.putObject(params, function (err, data) {
-      if (false && !err) {
+      if (!err) {
         extraFields.src = 'https://s3.amazonaws.com/theshelterhelper/' + objKey;
         this.insertPhoto(extraFields, onError, onSuccess);
       } else {
@@ -73,8 +73,10 @@ export default class PhotoEditor extends Editor {
       }
     }
 
-    var activity = Activity.CreatePhotoActivity(photo);
-    activity.insert();
+    if (photo.animalId) {
+      var activity = Activity.CreatePhotoActivity(photo);
+      activity.insert();
+    }
 
     this.databaseObject = photo;
     onSuccess();

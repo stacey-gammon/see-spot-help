@@ -31,8 +31,10 @@ export default class AnimalHeadShot extends React.Component<any, any> {
   }
 
   render() {
+    var editable = this.props.permission.inGroup();
     return (
-      <HeadShot src={this.getHeadShotPhotoSrc()}
+      <HeadShot editable={editable}
+                src={this.getHeadShotPhotoSrc()}
                 photoId={this.props.animal.photoId}
                 permission={this.props.permission}
                 animal={this.props.animal}

@@ -72,7 +72,9 @@ export default class TakePhotoButton extends React.Component<any, any> {
   }
 
   addPhoto() {
-    this.refs.addPhotoFileInput.click();
+    if (this.props.editable) {
+      this.refs.addPhotoFileInput.click();
+    }
   }
 
   allowAction() {

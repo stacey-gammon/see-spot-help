@@ -22,7 +22,7 @@ export default class UserInfoBar extends React.Component<any, any> {
     if (this.props.user == LoginStore.getUser()) {
       return <h1 style={style}>{'Hello, ' + LoginStore.getUser().name}  {this.getEditIcon()} </h1>;
     } else {
-      return <h1 style={style}>{this.props.user.getDisplayName()}</h1>;
+      return <h1 style={style}>{this.props.user.name}</h1>;
     }
   }
 
@@ -60,7 +60,7 @@ export default class UserInfoBar extends React.Component<any, any> {
       <div>
         <InfoBar className='member-info-bar' title={this.getTitle()}>
             <MemberHeadShot
-              editable={false} // This will take some work.  Hold off for now.
+              editable={this.props.user == LoginStore.getUser()}
               user={this.props.user}
               permission={this.props.permission}/>
             <div>

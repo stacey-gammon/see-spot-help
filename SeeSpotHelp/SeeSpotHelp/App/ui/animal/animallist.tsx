@@ -17,6 +17,7 @@ export default class AnimalList extends React.Component<any, any> {
       <AnimalListItem
         key={animal.id}
         animal={animal}
+        permission={this.props.permission}
         user={this.props.user}
         group={this.props.group }/>
     );
