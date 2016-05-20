@@ -3,52 +3,52 @@ import DatabaseObject from '../databaseobjects/databaseobject';
 import InputField from './inputfield';
 
 export abstract class Editor {
-	protected databaseObject: DatabaseObject;
-	protected inputFields: {}
+  protected databaseObject: DatabaseObject;
+  protected inputFields: {}
 
-	constructor(databaseObject) {
-		this.databaseObject = databaseObject;
-		this.init();
-	}
+  constructor(databaseObject) {
+    this.databaseObject = databaseObject;
+    this.init();
+  }
 
-	init() {
-		this.createInputFields();
+  init() {
+    this.createInputFields();
 
-		// Store the ref name on the input field without manually
-		// writing it out twice.
-		for (var field in this.inputFields) {
-			this.inputFields[field].ref = field;
-		}
+    // Store the ref name on the input field without manually
+    // writing it out twice.
+    for (var field in this.inputFields) {
+      this.inputFields[field].ref = field;
+    }
 
-		if (this.databaseObject) {
-			for (var field in this.inputFields) {
-				this.inputFields[field].value = this.databaseObject[field];
-			}
-		}
-	}
+    if (this.databaseObject) {
+      for (var field in this.inputFields) {
+        this.inputFields[field].value = this.databaseObject[field];
+      }
+    }
+  }
 
-	abstract createInputFields();
+  abstract createInputFields();
 
-	abstract getInputFields(): {};
+  abstract getInputFields(): {};
 
-	abstract insert(extraFields);
+  abstract insert(extraFields, onError, onSuccess);
 
-	abstract update();
+  abstract update(extraFields, onError, onSuccess);
 
-	delete() {
-		this.databaseObject.delete();
-	}
+  delete(onError, onSuccess) {
+    this.databaseObject.delete();
+  }
 
-	validateFields() {
-		var errorFound = false;
-		for (var key in this.inputFields) {
-			var field = this.inputFields[key];
-			field.validate();
-			if (field.hasError) {
-				console.log('Error found with field ' + field.ref);
-				errorFound = true;
-			}
-		}
-		return !errorFound;
-	}
+  validateFields() {
+    var errorFound = false;
+    for (var key in this.inputFields) {
+      var field = this.inputFields[key];
+      field.validate();
+      if (field.hasError) {
+        console.log('Error found with field ' + field.ref);
+        errorFound = true;
+      }
+    }
+    return !errorFound;
+  }
 }

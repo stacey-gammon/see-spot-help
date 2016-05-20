@@ -43,8 +43,8 @@ export default class TakePhotoButton extends React.Component<any, any> {
         var photo = new Photo();
         photo.src = filePayload;
         photo.file = file;
-        photo.animalId = this.props.animal.id;
-        photo.groupId = this.props.animal.groupId;
+        photo.animalId = this.props.animal ? this.props.animal.id : null;
+        photo.groupId =this.props.animal ? this.props.animal.groupId : this.props.groupId;
         photo.userId = LoginStore.getUser().id;
         this.goToAddPhotoPage(photo);
       }.bind(this);
@@ -58,9 +58,9 @@ export default class TakePhotoButton extends React.Component<any, any> {
       {
         pathname: "addPhotoPage",
         state: {
-          groupId: this.props.animal.groupId,
+          groupId: this.props.animal ? this.props.animal.groupId : this.props.groupId,
           headShot: this.props.headShot,
-          animalId: this.props.animal.id,
+          animalId: this.props.animal ? this.props.animal.id : null,
           photo: photo
         }
       });

@@ -10,7 +10,7 @@ class StoreStateHelper {
   public static GetPermission(state) {
     if (!state) {
       console.log('WARN: No state to generate permission with');
-      Permission.CreateNonMemberPermission();
+      return Permission.CreateNonMemberPermission();
     }
     var groupId = null;
     if (state.groupId) {

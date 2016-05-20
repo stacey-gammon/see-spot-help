@@ -10,33 +10,19 @@ import LoginStore from '../../stores/loginstore';
 var Calendar = require("../calendar");
 
 var GroupScheduleTab = React.createClass({
-	getInitialState: function() {
-		return {
-			refreshCalendar: false,
-		}
-	},
+  getInitialState: function() {
+    return {
+      refreshCalendar: false,
+    }
+  },
 
-	getLegend: function() {
-		return (<h1>Legend:</h1>);
-	},
-
-	componentWillReceiveProps: function(nextProps) {
-		var props = $.extend(nextProps, {refreshCalendar : true});
-		this.setState(props);
-	},
-
-	render: function() {
-		return (
-			<div>
-				{this.getLegend()}
-				<Calendar
-					propToForceRefresh={this.state.refreshCalendar}
-					view={this.props.view}
-					memberId={this.props.memberId}
-					group={this.props.group} />
-			</div>
-		);
-	}
+  render: function() {
+    return (
+      <div>
+        <Calendar view={this.props.view} memberId={this.props.memberId} group={this.props.group} />
+      </div>
+    );
+  }
 });
 
 module.exports = GroupScheduleTab;

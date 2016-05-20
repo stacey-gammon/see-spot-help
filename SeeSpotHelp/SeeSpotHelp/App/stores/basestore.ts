@@ -224,8 +224,10 @@ abstract class BaseStore extends EventEmitter {
         this.storage[id] = null;
         this.downloadItem(id, onResolve, onReject);
       } else if (!this.isDownloading[id]){
+        console.log('resolving callback because it isn\'t downloading');
         resolve(this.storage[id]);
       } else {
+        console.log('Adding callback');
         this.promiseResolveCallbacks.push(onResolve);
       //	reject('Already waiting on the download.');
       }

@@ -37,8 +37,12 @@ export default class ActivityElement extends React.Component<any, any> {
   }
 
   componentWillMount() {
-    VolunteerStore.ensureItemById(this.props.activity.userId).then(function() {
+    VolunteerStore.ensureItemById(this.props.activity.userId).then(function(val) {
       var member = VolunteerStore.getVolunteerById(this.props.activity.userId);
+      if (!member) {
+        console.log('ERROR: ensured promised to get volunter with id ' + this.props.activity.userId + ' failed with val ', val);
+        return;
+      }
       this.setState({ memberName: member.name });
     }.bind(this));
   }

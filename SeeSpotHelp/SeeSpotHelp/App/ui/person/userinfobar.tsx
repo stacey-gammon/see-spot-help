@@ -1,10 +1,11 @@
 'use strict';
 
 import * as React from 'react';
+var Loader = require('react-loader');
 
 import InfoBar from '../shared/infobar';
 import EditIcon from '../shared/editor/editicon';
-import ProfilePic from './profilepic';
+import MemberHeadShot from './memberheadshot';
 import LoginStore from '../../stores/loginstore';
 
 export default class UserInfoBar extends React.Component<any, any> {
@@ -58,14 +59,17 @@ export default class UserInfoBar extends React.Component<any, any> {
     return (
       <div>
         <InfoBar className='member-info-bar' title={this.getTitle()}>
-          <ProfilePic user={this.props.user}/>
-          <div>
-            {this.getHeader()}
-            <p>
-            {this.getMessageLink()}
-            </p>
-            <p>{this.props.user.aboutMe}</p>
-          </div>
+            <MemberHeadShot
+              editable={false} // This will take some work.  Hold off for now.
+              user={this.props.user}
+              permission={this.props.permission}/>
+            <div>
+              {this.getHeader()}
+              <p>
+              {this.getMessageLink()}
+              </p>
+              <p>{this.props.user.aboutMe}</p>
+            </div>
         </InfoBar>
       </div>
     );

@@ -15,35 +15,14 @@ var addCalendarEvent = require("./addcalendarevent");
 
 var Calendar = React.createClass({
   getInitialState: function() {
-    var animalId = Utils.FindPassedInProperty(this, 'animalId');
-    var memberId = Utils.FindPassedInProperty(this, 'memberId');
-    var group = Utils.FindPassedInProperty(this, 'group');
-    var view = Utils.FindPassedInProperty(this, 'view');
-
     var state = {
-      animalId: animalId,
-      memberId: memberId,
-      group: group,
-      view: view,
-      colorByAnimal: true,
       defaultView: null
     };
-    Utils.LoadOrSaveState(state);
     return state;
   },
 
   contextTypes: {
     router: React.PropTypes.object.isRequired
-  },
-
-  componentWillReceiveProps: function(nextProps) {
-    this.setState({
-      group: nextProps.group,
-      memberId: nextProps.memberId,
-      view: nextProps.view,
-      animalId: nextProps.animalId
-    });
-    this.onChange();
   },
 
   componentDidMount: function() {
@@ -68,8 +47,11 @@ var Calendar = React.createClass({
   },
 
   onChange: function() {
+    console.log('removing events');
     $('#calendar').fullCalendar('removeEvents');
-    $('#calendar').fullCalendar('addEventSource', this.getEvents());
+    var events = this.getEvents();
+    console.log('adding event source with ', events);
+    $('#calendar').fullCalendar('addEventSource', events);
   },
 
   getColorForVolunteer: function (volunteer, group) {
@@ -93,13 +75,13 @@ var Calendar = React.createClass({
   getEvents: function() {
     var schedule;
 
-    if (this.state.view == 'animal' && this.state.animalId) {
-      schedule = ScheduleStore.getScheduleByAnimalId(this.state.animalId);
-    } else if (this.state.view == 'group' && this.state.group) {
-      schedule = ScheduleStore.getScheduleByGroup(this.state.group.id);
-    } else if (this.state.view == 'member' && this.state.memberId) {
-      schedule = ScheduleStore.getScheduleByMember(this.state.memberId);
-    } else if (this.state.view == 'profile' && LoginStore.getUser()) {
+    if (this.props.view == 'animal' && this.props.animalId) {
+      schedule = ScheduleStore.getScheduleByAnimalId(this.props.animalId);
+    } else if (this.props.view == 'group' && this.props.group) {
+      schedule = ScheduleStore.getScheduleByGroup(this.props.group.id);
+    } else if (this.props.view == 'member' && this.props.memberId) {
+      schedule = ScheduleStore.getScheduleByMember(this.props.memberId);
+    } else if (this.props.view == 'profile' && LoginStore.getUser()) {
       schedule = ScheduleStore.getScheduleByMember(LoginStore.getUser().id);
     }
 
@@ -115,16 +97,16 @@ var Calendar = React.createClass({
       // We'll have to wait for them to be downloaded.
       if (!volunteer || !animal) return null;
 
-      var showingGroupCalendar = this.state.animalId < 0 && this.state.memberId < 0;
+      var showingGroupCalendar = this.props.animalId < 0 && this.props.memberId < 0;
 
       if (showingGroupCalendar) {
         event.title = animal.name;
-        if (this.state.colorByAnimal) {
+        if (this.props.colorByAnimal) {
           event.color = this.getColorForAnimal(animal, group);
         } else {
           event.color = this.getColorForVolunteer(volunteer, group);
         }
-      } else if (!this.state.memberId) {
+      } else if (!this.props.memberId) {
         // We are showing only an animals events, color by member.
         event.color = this.getColorForVolunteer(volunteer, group);
         event.title = volunteer.getDisplayName();
@@ -145,11 +127,13 @@ var Calendar = React.createClass({
   },
 
   initializeCalendar: function() {
+    var events = this.getEvents();
+    console.log('initializeCalendar with events: ', events);
     var outer = this;
     var defaultView = this.state.defaultView ? this.state.defaultView : 'month';
     $('#calendar').fullCalendar({
       height: 'auto',
-      events: outer.getEvents(),
+      events: events,
 
       defaultView: defaultView,
 
@@ -164,8 +148,8 @@ var Calendar = React.createClass({
         this.context.router.push({
           pathname: "addCalendarEvent",
           state: {
-            group: this.state.group,
-            animalId: this.state.animalId,
+            group: this.props.group,
+            animalId: this.props.animalId,
             mode: 'edit',
             scheduleId: event.id,
             startDate: moment(event.start).format('MM-DD-YYYY'),
@@ -176,14 +160,14 @@ var Calendar = React.createClass({
       }.bind(this),
 
       dayClick: function(date) {
-        if (this.state.view == "member") return;
+        if (this.props.view == "member") return;
         this.context.router.push({
           pathname: "addCalendarEvent",
           state: {
             mode: 'add',
             scheduleId: -1,  // Just avoid pulling schedule from local storage,
-            group: this.state.group,
-            animalId: this.state.animalId,
+            group: this.props.group,
+            animalId: this.props.animalId,
             startDate: date.format('MM-DD-YYYY'),
             startTime: date.format('hh:mm a'),
             endTime: date.format('hh:mm a')
@@ -206,11 +190,13 @@ var Calendar = React.createClass({
     // and because of the tabs, it isn't visible at first.  There isn't any react call that
     // I can find that will be called after everything is display on a tab.
     setTimeout(function() {
+      console.log('re-rendering calendar');
       calendar.fullCalendar('render');
     }.bind(this), 300);
   },
 
   render: function() {
+    console.log('Calendar: render');
     return (
       <div className="calendar-container" ref="calendar" id="calendar"></div>
     );

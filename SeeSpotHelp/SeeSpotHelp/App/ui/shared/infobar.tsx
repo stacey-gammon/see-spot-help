@@ -13,7 +13,7 @@ export default class InfoBar extends React.Component<any, any> {
   }
 
   goBackToShelter() {
-   this.context.router.push('groupHomePage');
+   this.context.router.goBack();
   }
 
   getTitle() {

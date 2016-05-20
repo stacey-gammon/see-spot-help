@@ -45,8 +45,12 @@ export default class AddPhotoPage extends React.Component<any, any> {
 
   ensureRequiredState() {
     var promises = [];
-    promises.push(GroupStore.ensureItemById(this.state.groupId));
-    promises.push(AnimalStore.ensureItemById(this.state.animalId));
+    if (this.state.groupId) {
+      promises.push(GroupStore.ensureItemById(this.state.groupId));
+    }
+    if (this.state.animalId) {
+      promises.push(AnimalStore.ensureItemById(this.state.animalId));
+    }
 
     Promise.all(promises).then(
       function () {
@@ -54,13 +58,11 @@ export default class AddPhotoPage extends React.Component<any, any> {
         var animal = AnimalStore.getItemById(this.state.animalId);
         var permission = StoreStateHelper.GetPermission(this.state);
         var editor = new PhotoEditor(this.state.photo);
-        if (group && animal) {
-          this.setState({
-            permission: permission,
-            editor: editor
-          });
-          this.addChangeListeners(group);
-        }
+        this.setState({
+          permission: permission,
+          editor: editor
+        });
+        this.addChangeListeners(group);
       }.bind(this)
     );
   }

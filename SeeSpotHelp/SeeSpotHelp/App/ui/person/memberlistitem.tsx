@@ -6,7 +6,7 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 import Utils from '../uiutils';
 
-import ProfilePic from './profilepic';
+import MemberHeadShot from './memberheadshot';
 
 import Group from '../../core/databaseobjects/group';
 import Volunteer from '../../core/databaseobjects/volunteer';
@@ -28,14 +28,6 @@ export default class MemberListItem extends React.Component<any, any> {
     this.state = {
       imgUrl: null
     };
-  }
-
-  componentDidMount() {
-    LoginStore.addChangeListener(this.onChange);
-  }
-
-  componentWillUnmount() {
-    LoginStore.removeChangeListener(this.onChange);
   }
 
   onChange() {
@@ -157,10 +149,11 @@ export default class MemberListItem extends React.Component<any, any> {
           state: { member: this.props.member, groupId: this.props.group.id} }}>
           <div className="media">
             <div className='media-left'>
-              <ProfilePic user={this.props.member}/>
+              <MemberHeadShot editable={false} user={this.props.member} permission={this.props.permission}/>
             </div>
             <div className="media-body">
               <h2>{this.props.member.name} {extraInfo}</h2>
+              <p>{this.props.member.aboutMe}</p>
             </div>
             {this.getActions()}
           </div>

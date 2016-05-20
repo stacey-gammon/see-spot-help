@@ -20,7 +20,7 @@ export default class PhotoEditor extends Editor {
 
   getInputFields() { return this.inputFields; }
 
-  insert(extraFields) {
+  insert(extraFields, onError, onSuccess) {
     var s3 = new AWS.S3();
 
     var objKey = 'facebook-' + extraFields.userId + '/' +
@@ -36,14 +36,16 @@ export default class PhotoEditor extends Editor {
     };
 
     s3.putObject(params, function (err, data) {
-      if (!err) {
+      if (false && !err) {
         extraFields.src = 'https://s3.amazonaws.com/theshelterhelper/' + objKey;
-        this.insertPhoto(extraFields);
+        this.insertPhoto(extraFields, onError, onSuccess);
+      } else {
+        onError(err);
       }
      }.bind(this));
   }
 
-  insertPhoto(extraFields) {
+  insertPhoto(extraFields, onError, onSuccess) {
     var photo = new Photo()
     photo.updateFromInputFields(this.inputFields);
     photo.groupId = extraFields.groupId;
@@ -75,6 +77,7 @@ export default class PhotoEditor extends Editor {
     activity.insert();
 
     this.databaseObject = photo;
+    onSuccess();
   }
 
   update() {
