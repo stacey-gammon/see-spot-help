@@ -44,6 +44,10 @@ export default class DataServices {
     Firebase.auth().signOut();
   }
 
+  public static OnAuthStateChanged(callback) {
+    Firebase.auth().onAuthStateChanged(callback);
+  }
+
   public static LoginWithFacebookPopUp(onSuccess, onError) {
     var ref = this.database.ref();
     var provider = new Firebase.auth.FacebookAuthProvider();

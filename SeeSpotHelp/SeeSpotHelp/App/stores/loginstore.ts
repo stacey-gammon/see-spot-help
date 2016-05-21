@@ -42,6 +42,17 @@ class LoginStore extends BaseStore {
     if (this.isAuthenticating()) {
       this.checkAuthenticatedWithRetries(0);
     }
+    DataServices.OnAuthStateChanged(this.onAuthStateChanged);
+  }
+
+  /**
+   * Displays the signed-in user information in the UI or hides it and displays the
+   * "Sign-In" button if the user isn't signed-in.
+   */
+  onAuthStateChanged(user) {
+    if (user) {
+      window.location.reloadPage();
+    }
   }
 
   isAuthenticating() {

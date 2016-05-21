@@ -1,6 +1,7 @@
 'use strict'
 
 import * as React from 'react';
+var Loader = require('react-loader');
 
 import InputFields from './inputfields';
 import AddOrEditButtonBar from './addoreditbuttonbar';
@@ -21,7 +22,7 @@ export default class EditorElement extends React.Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = {hasError: false};
+    this.state = {hasError: false, loaded: true};
   }
 
   validateFields() {
@@ -37,6 +38,7 @@ export default class EditorElement extends React.Component<any, any> {
   edit() {
     this.refs.inputFields.fillWithValues(this.props.editor.getInputFields());
     if (this.validateFields()) {
+      this.setState({loaded: false});
       this.props.editor.update(
         this.props.extraFields,
         this.onError.bind(this),
@@ -47,6 +49,7 @@ export default class EditorElement extends React.Component<any, any> {
   insert() {
     this.refs.inputFields.fillWithValues(this.props.editor.getInputFields());
     if (this.validateFields()) {
+      this.setState({loaded: false});
       this.props.editor.insert(
         this.props.extraFields,
         this.onError.bind(this),
@@ -67,13 +70,15 @@ export default class EditorElement extends React.Component<any, any> {
       <div className='page'>
         <InfoBar noTabs='true'><h1>{this.props.title}</h1></InfoBar>
         <Error error={this.state.hasError} message={this.state.errorMessage} />
-        <InputFields ref='inputFields' fields={this.props.editor.getInputFields()}/>
-        <AddOrEditButtonBar
-          mode={this.props.mode}
-          permission={this.props.permission}
-          onAdd={this.insert.bind(this)}
-          onEdit={this.edit.bind(this)}
-          onDelete={this.delete.bind(this)}/>
+        <Loader loaded={this.state.loaded}>
+          <InputFields ref='inputFields' fields={this.props.editor.getInputFields()}/>
+          <AddOrEditButtonBar
+            mode={this.props.mode}
+            permission={this.props.permission}
+            onAdd={this.insert.bind(this)}
+            onEdit={this.edit.bind(this)}
+            onDelete={this.delete.bind(this)}/>
+          </Loader>
       </div>
     );
   }

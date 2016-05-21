@@ -35,7 +35,8 @@ export default class AddPhotoPage extends React.Component<any, any> {
       mode: mode,
       groupId: groupId,
       file: file,
-      headShot: headShot
+      headShot: headShot,
+      loaded: false
     };
     this.uploadFile(file);
   }
@@ -47,6 +48,7 @@ export default class AddPhotoPage extends React.Component<any, any> {
 
   ensureRequiredState() {
     var promises = [];
+    promises.push(this.uploadFile(this.state.file));
     if (this.state.groupId) {
       promises.push(GroupStore.ensureItemById(this.state.groupId));
     }
@@ -54,14 +56,12 @@ export default class AddPhotoPage extends React.Component<any, any> {
       promises.push(AnimalStore.ensureItemById(this.state.animalId));
     }
 
-    promises.push(this.uploadFile(this.state.file));
-
     Promise.all(promises).then(
       function (results) {
         var group = GroupStore.getGroupById(this.state.groupId);
         var animal = AnimalStore.getItemById(this.state.animalId);
         var permission = StoreStateHelper.GetPermission(this.state);
-        var photo = results[2];
+        var photo = results[0];
         var editor = new PhotoEditor(photo);
         this.setState({
           permission: permission,
@@ -121,13 +121,12 @@ export default class AddPhotoPage extends React.Component<any, any> {
   }
 
   render() {
-    if (!this.state.editor) return null;
     var extraFields = {
       animalId: this.state.animalId,
       groupId: this.state.groupId,
       headShot: this.state.headShot,
       src: this.state.src,
-      userId: LoginStore.getUser().id
+      userId: LoginStore.getUser() ? LoginStore.getUser().id : null
     }
 
     var title = this.state.mode == 'add' ?

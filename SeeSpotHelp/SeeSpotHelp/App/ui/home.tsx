@@ -10,7 +10,7 @@ var hashHistory = ReactRouter.hashHistory;
 var IndexRoute = ReactRouter.IndexRoute;
 
 var MyNavBar = require('./navbar');
-var User = require('../core/volunteer');
+import DataServices from '../core/dataservices';
 
 import GroupHomePage from './group/grouphomepage';
 import ProfilePage from './person/profilepage';
@@ -61,7 +61,16 @@ var Home = React.createClass({
     }(document, 'script', 'facebook-jssdk'));
   },
 
+  onAuthChanged(user) {
+    if (user) {
+      LoginStore.authenticated = true;
+      var myUser = LoginStore.getUser();
+      this.setState({user: myUser});
+    }
+  },
+
   componentDidMount: function() {
+    DataServices.OnAuthStateChanged(this.onAuthChanged.bind(this));
     LoginStore.ensureUser().then(
       function() {
         if (this.isMounted()) {
