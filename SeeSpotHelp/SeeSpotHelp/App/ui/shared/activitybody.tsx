@@ -55,8 +55,9 @@ export default class ActivityBody extends React.Component<any, any> {
       if (!photo) {
         return <span className="spinner"><i className='fa fa-spinner fa-spin'></i></span>
       }
+      var src = photo.midSizeUrl || photo.src;
       return (
-        <img height='200px' src={photo.src} />
+        <img height='200px' src={src} />
       );
     } else {
       return null;

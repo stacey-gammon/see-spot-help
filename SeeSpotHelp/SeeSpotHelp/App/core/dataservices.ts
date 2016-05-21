@@ -62,7 +62,6 @@ export default class DataServices {
   }
 
   public static GetAuthData() {
-    //Firebase.initializeApp(config);
     return Firebase.auth().currentUser;
   }
 
@@ -212,7 +211,7 @@ export default class DataServices {
     }
   }
 
-  public static UploadPhoto(fullBlob, thumbBlob, fileName, userId) {
+  public static UploadPhoto(thumbBlob, listBlob, fullBlob, fileName, userId) {
     // Start the pic file upload to Firebase Storage.
     let picRef = Firebase.storage().ref(`${userId}/full/${Date.now()}/${fileName}`);
     let metadata = {
@@ -245,6 +244,20 @@ export default class DataServices {
       thumbCompleter.resolve(url);
     });
 
-    return Promise.all([picCompleter.promise(), thumbCompleter.promise()]);
+    var listUrl = `${userId}/list/${Date.now()}/${fileName}`;
+    let listRef = Firebase.storage().ref(listUrl);
+    var listUploadTask = listRef.put(listBlob, metadata);
+    let listCompleter = new $.Deferred();
+    listUploadTask.on('state_changed', null, error => {
+      listCompleter.reject(error);
+      console.error('Error while uploading new list', error);
+    }, () => {
+      console.log('New list uploaded. Size:', listUploadTask.snapshot.totalBytes, 'bytes.');
+      let url = listUploadTask.snapshot.metadata.downloadURLs[0];
+      console.log('File available at', url);
+      listCompleter.resolve(url);
+    });
+
+    return Promise.all([thumbCompleter.promise(), listCompleter.promise(), picCompleter.promise()]);
   }
 }

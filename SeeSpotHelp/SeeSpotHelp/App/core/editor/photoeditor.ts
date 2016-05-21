@@ -20,9 +20,14 @@ const FULL_SIZE = {
   quality: 0.9
 };
 
+const LIST_SIZE = {
+  maxDimension: 300,
+  quality: 0.9
+};
+
 const THUMBNAIL_SIZE = {
   maxDimension: 100,
-  quality: 0.6
+  quality: 0.9
 };
 
 export default class PhotoEditor extends Editor {
@@ -94,6 +99,15 @@ export default class PhotoEditor extends Editor {
         }, 'image/jpeg', THUMBNAIL_SIZE.quality);
     });
 
+    var listPromise = new Promise(function(resolve, reject) {
+        // Generate thumb.
+        let maxListDimension = LIST_SIZE.maxDimension
+        let listCanvas = PhotoEditor._getScaledCanvas(image, maxListDimension);
+        listCanvas.toBlob(function(blob) {
+          resolve(blob);
+        }, 'image/jpeg', LIST_SIZE.quality);
+    });
+
     var fullPromise = new Promise(function(resolve, reject) {
         // Generate full sized image.
         let maxFullDimension = FULL_SIZE.maxDimension;
@@ -103,7 +117,7 @@ export default class PhotoEditor extends Editor {
         }, 'image/jpeg', FULL_SIZE.quality);
     });
 
-    var promise = Promise.all([thumbPromise, fullPromise]);
+    var promise = Promise.all([thumbPromise, listPromise, fullPromise]);
     return promise;
   }
 
@@ -126,10 +140,11 @@ export default class PhotoEditor extends Editor {
   insert(extraFields, onError, onSuccess) {
     var photo = this.databaseObject;
     this.generateImages(photo.file).then(function(blobs) {
-      DataServices.UploadPhoto(blobs[0], blobs[1], photo.file.name, extraFields.userId).then(
+      DataServices.UploadPhoto(blobs[0], blobs[1], blobs[2], photo.file.name, extraFields.userId).then(
         function(result) {
-          extraFields.fullUrl = result[0];
-          extraFields.thumbUrl = result[1];
+          extraFields.thumbUrl = result[0];
+          extraFields.midSizeUrl = result[1];
+          extraFields.fullUrl = result[2];
           this.insertPhoto(extraFields, onError, onSuccess);
       }.bind(this));
     }.bind(this));
@@ -142,6 +157,7 @@ export default class PhotoEditor extends Editor {
     photo.animalId = extraFields.animalId;
     photo.userId = extraFields.userId;
     photo.fullSizeUrl = extraFields.fullUrl;
+    photo.midSizeUrl = extraFields.midSizeUrl;
     photo.thumbnailUrl = extraFields.thumbUrl;
     photo.insert();
 

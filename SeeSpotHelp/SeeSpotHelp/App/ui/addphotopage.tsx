@@ -61,7 +61,7 @@ export default class AddPhotoPage extends React.Component<any, any> {
         var group = GroupStore.getGroupById(this.state.groupId);
         var animal = AnimalStore.getItemById(this.state.animalId);
         var permission = StoreStateHelper.GetPermission(this.state);
-        var photo = results[0];
+        var photo = results[2];
         var editor = new PhotoEditor(photo);
         this.setState({
           permission: permission,

@@ -29,7 +29,7 @@ export default class HeadShot extends React.Component<any, any> {
     var photo = PhotoStore.getItemById(this.props.photoId);
     if (photo) {
       var src = photo.thumbnailUrl || photo.src;
-      this.setState({src: photo.src, loaded: true});
+      this.setState({src: src, loaded: true});
     } else if (!PhotoStore.isItemDownloading(this.props.photoId)) {
       this.setState({loaded: true, src: 'images/no-photo-available.jpg'});
     }
@@ -38,8 +38,9 @@ export default class HeadShot extends React.Component<any, any> {
   render() {
     var src = this.props.src || this.state.src;
     var loaded = this.state.loaded || !!src;
-    src = src || 'images/no-photo-available.jpg';
-    console.log('loaded: ' + loaded);
+    if (!loaded) {
+      return <span className="spinner"><i className='fa fa-spinner fa-spin'></i></span>
+    }
     return (
       <PhotoUpload
         editable={this.props.editable}
