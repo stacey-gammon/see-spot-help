@@ -1,7 +1,7 @@
 ﻿"use strict"
 
 var React = require("react");
-var FacebookLogin = require("./facebooklogin");
+import FacebookLogin from "./facebooklogin";
 import Utils from './uiutils';
 import LoginStore from '../stores/loginstore';
 var Loader = require('react-loader');
@@ -100,7 +100,6 @@ var LoginPage = React.createClass({
   getLoginButton: function () {
     return (
       <div>
-        {this.getMessage()}
         <FacebookLogin />
       </div>
     );

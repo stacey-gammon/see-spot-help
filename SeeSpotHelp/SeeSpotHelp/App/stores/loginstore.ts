@@ -112,7 +112,7 @@ class LoginStore extends BaseStore {
     return this.authenticated && !!this.user;
   }
 
-  authenticate() {
+  authenticate(onSuccess, onError) {
     this.loggedOut = false;
     // Don't make duplicate calls for authenticating. We have to save these in session storage
     // rather than class variables because the redirect will cause us to lose all state.
@@ -122,7 +122,13 @@ class LoginStore extends BaseStore {
     // some subtle issues around this process.
     if (sessionStorage.getItem('loginStoreAuthenticating')) return;
     sessionStorage.setItem('loginStoreAuthenticating', 'true');
-    DataServices.LoginWithFacebookRedirect();
+    DataServices.LoginWithFacebookPopUp(this.onAuthenticated.bind(this, onSuccess), onError);
+  }
+
+  onAuthenticated(onSuccess) {
+    var authData = this.checkAuthenticated();
+    this.downloadUser(authData.uid);
+    if (onSuccess) { onSuccess(); }
   }
 
   logout () {
@@ -142,26 +148,9 @@ class LoginStore extends BaseStore {
   onUserDownloaded(data) {
     var authData = this.checkAuthenticated() as any;
 
-    if (authData) {
-      AWS.config.region = 'us-east-1'; // Region
-      AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-        IdentityPoolId: 'us-east-1:9b886d48-65f2-42da-ad22-ceac8793c8f8',
-        Logins: { // optional tokens, used for authenticated login
-          'graph.facebook.com': authData.facebook.accessToken
-        }
-      });
-
-      // Obtain AWS credentials
-      AWS.config.credentials.get(function(err){
-        // Access AWS resources here.
-        console.log('worked', err);
-      });
-    }
-
-
     // We are authenticated but no user exists for us, insert a new user.
     if (authData && data.val() == null) {
-      this.user = new Volunteer(authData.facebook.displayName, authData.facebook.email);
+      this.user = new Volunteer(authData.displayName, authData.email);
       this.user.id = authData.uid;
       this.user.insert();
       this.hasUser = true;

@@ -28,6 +28,7 @@ export default class HeadShot extends React.Component<any, any> {
   getHeadShotPhotoSrc() {
     var photo = PhotoStore.getItemById(this.props.photoId);
     if (photo) {
+      var src = photo.thumbnailUrl || photo.src;
       this.setState({src: photo.src, loaded: true});
     } else if (!PhotoStore.isItemDownloading(this.props.photoId)) {
       this.setState({loaded: true, src: 'images/no-photo-available.jpg'});

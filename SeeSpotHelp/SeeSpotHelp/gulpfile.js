@@ -17,31 +17,31 @@ var sass = require('gulp-sass');
 var watch = require('gulp-watch');
 
 gulp.task('webpack', ['transpile'], function() {
-	return gulp.src('./Output/ui/home.js')
+  return gulp.src('./Output/ui/home.js')
       .pipe(webpack(require('./webpack.config.js')))
       .pipe(gulp.dest('public/Built'));
 });
 
 gulp.task('transpile', function() {
-	var paths = ['typings/main.d.ts', 'App/**/*.ts', 'App/**/*.tsx'];
-	return gulp.src(paths)
-		.pipe(ts({
-			noImplicitAny: false,
-			jsx: 'react'
-		}))
-		.pipe(gulp.dest('Output'));
+  var paths = ['typings/index.d.ts', 'App/**/*.ts', 'App/**/*.tsx'];
+  return gulp.src(paths)
+    .pipe(ts({
+      noImplicitAny: false,
+      jsx: 'react'
+    }))
+    .pipe(gulp.dest('Output'));
 });
 
 gulp.task('sass', function () {
-	var input = 'App/**/*.scss';
-	var output = 'public';
-	return gulp
-		// Find all `.scss` files from the `stylesheets/` folder
-		.src(input)
-		// Run Sass on those files
-		.pipe(sass())
-		// Write the resulting CSS in the output folder
-		.pipe(gulp.dest(output));
+  var input = 'App/**/*.scss';
+  var output = 'public';
+  return gulp
+    // Find all `.scss` files from the `stylesheets/` folder
+    .src(input)
+    // Run Sass on those files
+    .pipe(sass())
+    // Write the resulting CSS in the output folder
+    .pipe(gulp.dest(output));
 });
 
 gulp.task('default', ['transpile', 'webpack', 'sass']);

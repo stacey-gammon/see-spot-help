@@ -2,7 +2,7 @@
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var ReactBootstrap = require('react-bootstrap');
 import LoginStore from '../stores/loginstore';
-var FacebookLogin = require("./facebooklogin");
+import FacebookLogin from "./facebooklogin";
 
 var Navbar = ReactBootstrap.Navbar;
 var Nav = ReactBootstrap.Nav;

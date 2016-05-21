@@ -12,7 +12,6 @@ import PermissionsStore from "../../stores/permissionsstore";
 import VolunteerStore from "../../stores/volunteerstore";
 
 var MemberScheduleTab = require("./memberscheduletab");
-var FacebookLogin = require("../facebooklogin");
 var GroupInfoBox = require("../group/groupinfobox");
 var SearchPage = require("../searchpage");
 

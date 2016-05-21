@@ -7,7 +7,6 @@ var Tabs = ReactBootstrap.Tabs;
 
 import BasicSettingsTab from './basicsettingstab';
 var PrivacySettingsTab = require("./privacysettingstab");
-var FacebookLogin = require("../facebooklogin");
 
 import Volunteer from '../../core/databaseobjects/volunteer';
 import LoginStore from '../../stores/loginstore';

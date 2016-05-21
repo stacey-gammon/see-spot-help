@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 var Link = require('react-router').Link;
-var FacebookLogin = require('../facebooklogin');
+import FacebookLogin from '../facebooklogin';
 
 import InfoBar from '../shared/infobar';
 

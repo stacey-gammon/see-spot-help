@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import Promise = require('bluebird');
+var Loader = require('react-loader');
 
 import EditorElement from './shared/editor/editorelement';
 
@@ -24,7 +25,7 @@ export default class AddPhotoPage extends React.Component<any, any> {
     var mode = Utils.FindPassedInProperty(this, 'mode');
     var animalId = Utils.FindPassedInProperty(this, 'animalId');
     var groupId = Utils.FindPassedInProperty(this, 'groupId');
-    var photo = Utils.FindPassedInProperty(this, 'photo');
+    var file = Utils.FindPassedInProperty(this, 'file');
     var headShot = Utils.FindPassedInProperty(this, 'headShot');
 
     if (!mode) mode = 'add';
@@ -33,9 +34,10 @@ export default class AddPhotoPage extends React.Component<any, any> {
       animalId: animalId,
       mode: mode,
       groupId: groupId,
-      photo: photo,
+      file: file,
       headShot: headShot
     };
+    this.uploadFile(file);
   }
 
   // Required for page transitions via this.context.router.push.
@@ -52,15 +54,20 @@ export default class AddPhotoPage extends React.Component<any, any> {
       promises.push(AnimalStore.ensureItemById(this.state.animalId));
     }
 
+    promises.push(this.uploadFile(this.state.file));
+
     Promise.all(promises).then(
-      function () {
+      function (results) {
         var group = GroupStore.getGroupById(this.state.groupId);
         var animal = AnimalStore.getItemById(this.state.animalId);
         var permission = StoreStateHelper.GetPermission(this.state);
-        var editor = new PhotoEditor(this.state.photo);
+        var photo = results[0];
+        var editor = new PhotoEditor(photo);
         this.setState({
           permission: permission,
-          editor: editor
+          editor: editor,
+          photo: photo,
+          loaded: true
         });
         this.addChangeListeners(group);
       }.bind(this)
@@ -68,7 +75,7 @@ export default class AddPhotoPage extends React.Component<any, any> {
   }
 
   addChangeListeners() {
-    LoginStore.addChangeListener(this.onChange);
+    LoginStore.addChangeListener(this.onChange.bind(this));
     if (LoginStore.getUser()) {
       PermissionsStore.addPropertyListener(
         this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
@@ -79,8 +86,30 @@ export default class AddPhotoPage extends React.Component<any, any> {
     this.ensureRequiredState();
   }
 
+  uploadFile(file) {
+    let me = this;
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = (function(theFile) {
+        return function(e) {
+          var filePayload = e.target.result;
+          // Generate a location that can't be guessed using the file's contents and a random number
+          var hash = CryptoJS.SHA256(Math.random() + '' + CryptoJS.SHA256(filePayload));
+          var photo = new Photo();
+          photo.src = filePayload;
+          photo.file = file;
+          photo.animalId = me.state.animalId;
+          photo.groupId = me.state.groupId;
+          photo.userId = LoginStore.getUser().id;
+          resolve(photo);
+        };
+      })(file);
+      reader.readAsDataURL(file);
+    });
+  }
+
   componentWillUnmount() {
-    GroupStore.removeChangeListener(this.onChange);
+    GroupStore.removeChangeListener(this.onChange.bind(this));
   }
 
   onChange() {
@@ -89,23 +118,6 @@ export default class AddPhotoPage extends React.Component<any, any> {
 
   goBackToPage() {
     this.context.router.goBack();
-
-    // if (this.state.animalId) {
-    //   this.context.router.push(
-    //     {
-    //       pathname: 'animalHomePage',
-    //       state: {
-    //         groupId: this.state.groupId,
-    //         animalId: this.state.animalId
-    //       }
-    //     });
-    // } else {
-    //   this.context.router.push(
-    //     {
-    //       pathname: 'groupHomePage',
-    //       state: { groupId: this.state.groupId }
-    //     });
-    // }
   }
 
   render() {
@@ -121,14 +133,16 @@ export default class AddPhotoPage extends React.Component<any, any> {
     var title = this.state.mode == 'add' ?
       'Add a photo' : 'Edit your photo';
     return (
-      <EditorElement
-        title={title}
-        extraFields={extraFields}
-        mode={this.state.mode}
-        permission={this.state.permission}
-        onEditOrInsert={this.goBackToPage.bind(this)}
-        onDelete={this.goBackToPage.bind(this)}
-        editor={this.state.editor} />
+      <Loader loaded={this.state.loaded}>
+        <EditorElement
+          title={title}
+          extraFields={extraFields}
+          mode={this.state.mode}
+          permission={this.state.permission}
+          onEditOrInsert={this.goBackToPage.bind(this)}
+          onDelete={this.goBackToPage.bind(this)}
+          editor={this.state.editor} />
+      </Loader>
     );
   }
 }
