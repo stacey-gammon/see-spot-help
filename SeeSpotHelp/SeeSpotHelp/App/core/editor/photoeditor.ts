@@ -135,21 +135,41 @@ export default class PhotoEditor extends Editor {
     });
   }
 
-  insert(extraFields, onError, onSuccess) {
-    var photo = this.databaseObject;
-    this.generateImages(photo.file).then(function(blobs) {
-      DataServices.UploadPhoto(blobs[0], blobs[1], blobs[2], photo.file.name, extraFields.userId).then(
-        function(result) {
-          extraFields.thumbUrl = result[0];
-          extraFields.midSizeUrl = result[1];
-          extraFields.fullUrl = result[2];
-          this.insertPhoto(extraFields, onError, onSuccess);
-      }.bind(this));
-    }.bind(this));
+  insert(extraFields) : Promise<any> {
+    let me = this;
+    let photo = this.databaseObject;
+    return new Promise(function (resolve, reject) {
+      me.generateImages(photo.file).then(function(blobs) {
+        DataServices.UploadPhoto(
+            blobs[0],
+            blobs[1],
+            blobs[2],
+            photo.file.name,
+            extraFields.userId).then(
+          function(result) {
+            extraFields.thumbUrl = result[0];
+            extraFields.midSizeUrl = result[1];
+            extraFields.fullUrl = result[2];
+            me.insertPhoto(extraFields).then(resolve, reject);
+          });
+        });
+      });
+
+    // var photo = this.databaseObject;
+    // this.generateImages(photo.file).then(function(blobs) {
+    //   DataServices.UploadPhoto(blobs[0], blobs[1], blobs[2], photo.file.name, extraFields.userId).then(
+    //     function(result) {
+    //       extraFields.thumbUrl = result[0];
+    //       extraFields.midSizeUrl = result[1];
+    //       extraFields.fullUrl = result[2];
+    //       return this.insertPhoto(extraFields, onError, onSuccess);
+    //   }.bind(this));
+    // }.bind(this));
   }
 
-  insertPhoto(extraFields, onError, onSuccess) {
-    var photo = new Photo()
+  insertPhoto(extraFields) : Promise<any> {
+    let promises = [];
+    var photo = new Photo();
     photo.updateFromInputFields(this.inputFields);
     photo.groupId = extraFields.groupId;
     photo.animalId = extraFields.animalId;
@@ -158,34 +178,36 @@ export default class PhotoEditor extends Editor {
     photo.fullSizeUrl = extraFields.fullUrl;
     photo.midSizeUrl = extraFields.midSizeUrl;
     photo.thumbnailUrl = extraFields.thumbUrl;
-    photo.insert();
+    promises.push(photo.insert());
 
     if (extraFields.headShot) {
       if (photo.animalId) {
         var animal = AnimalStore.getAnimalById(photo.animalId);
         if (animal) {
           animal.photoId = photo.id;
-          animal.update();
+          promises.push(animal.update());
         }
       } else if (photo.groupId) {
           var group = GroupStore.getItemById(photo.groupId);
           if (group) {
             group.photoId = photo.id;
-            group.update();
+            promises.push(group.update());
           }
       } else {
         LoginStore.getUser().photoId = photo.id;
-        LoginStore.getUser().update();
+        promises.push(LoginStore.getUser().update());
       }
     }
 
     if (photo.animalId) {
       var activity = Activity.CreatePhotoActivity(photo);
-      activity.insert();
+      promises.push(
+        activity.insert()
+      );
     }
 
     this.databaseObject = photo;
-    onSuccess();
+    return Promise.all(promises);
   }
 
   update() {

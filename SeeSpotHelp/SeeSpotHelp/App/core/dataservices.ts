@@ -180,7 +180,7 @@ export default class DataServices {
     return value;
   }
 
-  public static UpdateMultiple(updates) {
+  public static UpdateMultiple(updates) : Promise<any> {
     var ref = this.database.ref();
     return ref.update(updates);
   }

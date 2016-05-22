@@ -22,8 +22,9 @@ export default class AnimalEditor extends Editor {
     animal.groupId = extraFields.groupId;
     animal.copyGroupFields(extraFields);
     animal.userId = extraFields.userId;
-    animal.insert();
+    var promise = animal.insert();
     this.databaseObject = animal;
+    return promise;
   }
 
   update() {

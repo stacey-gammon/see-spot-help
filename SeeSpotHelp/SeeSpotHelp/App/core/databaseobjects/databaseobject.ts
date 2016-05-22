@@ -77,7 +77,7 @@ abstract class DatabaseObject {
 
   insert() {
     var inserts = this.getInserts();
-    DataServices.UpdateMultiple(inserts);
+    return DataServices.UpdateMultiple(inserts);
   }
 
   getInserts(): Object {
@@ -114,30 +114,6 @@ abstract class DatabaseObject {
   }
 
   deleteExternalReferences(externalInstances) {
-    // TODO: Think about how to handle soft vs hard deletes.  For now, taking the easiest
-    // course of action and not propagating deletes to external reference items.
-
-    // var deleteData = function(snapshot) {
-    // 	for (var id in snapshot.val()) {
-    // 		var item = snapshot.val()[id];
-    // 		DataServices.RemoveFirebaseData(item.firebasePath + '/' + id);
-    //
-    // 		for (var i = 0; i < item.mappingProperties.length; i++) {
-    // 			var mapping = item.mappingProperties[i];
-    // 			var ref = instance.getPathToMapping(mapping);
-    // 			DataServices.RemoveFirebaseData(ref + '/' + id);
-    // 		}
-    // 	}
-    // };
-    //
-    // var externalId = this.className.toLowerCase() + 'Id';
-    // for (var i = 0; i < externalInstances.length; i++) {
-    // 	var instance = externalInstances[i];
-    // 	if (instance.mappingProperties.indexOf(externalId) >= 0) {
-    // 		var ref = DatabaseObject.GetPathToMapping(instance.firebasePath, externalId, this.id);
-    // 		DataServices.DownloadDataOnce(ref, deleteData);
-    // 	}
-    // }
   }
 }
 export default DatabaseObject;

@@ -21,7 +21,7 @@ export default class ProfileEditor extends Editor {
 
   update() {
     this.databaseObject.updateFromInputFields(this.inputFields);
-    this.databaseObject.update();
+    return this.databaseObject.update();
   }
 
   createInputFields() {
