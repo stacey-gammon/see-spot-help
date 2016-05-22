@@ -39,7 +39,7 @@ export default class HeadShot extends React.Component<any, any> {
     var src = this.props.src || this.state.src;
     var loaded = this.state.loaded || !!src;
     if (!loaded) {
-      return <span className="spinner"><i className='fa fa-spinner fa-spin'></i></span>
+      return <span className="spinner"><i className='fa fa-spinner fa-spin fa-4x'></i></span>
     }
     return (
       <PhotoUpload

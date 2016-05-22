@@ -26,12 +26,12 @@ class StoreStateHelper {
 
   public static AddChangeListeners(stores, reactClass) {
     for (var i = 0; i < stores.length; i++) {
-      stores[i].addChangeListener(reactClass.onChange);
+      stores[i].addChangeListener(reactClass.onChange.bind(reactClass));
     }
   }
   public static RemoveChangeListeners(stores, reactClass) {
     for (var i = 0; i < stores.length; i++) {
-      stores[i].removeChangeListener(reactClass.onChange);
+      stores[i].removeChangeListener(reactClass.onChange.bind(reactClass));
     }
   }
 

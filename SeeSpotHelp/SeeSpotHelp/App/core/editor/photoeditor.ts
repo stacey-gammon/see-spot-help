@@ -45,7 +45,6 @@ export default class PhotoEditor extends Editor {
   // Taken from FriendlyPix firebase sample:
   addPolyfills() {
     // Polyfill for canvas.toBlob().
-    //if (!HTMLCanvasElement.prototype.toBlob) {
       Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
         value: function(callback, type, quality) {
           var binStr = atob(this.toDataURL(type, quality).split(',')[1]);
@@ -59,7 +58,6 @@ export default class PhotoEditor extends Editor {
           callback(new Blob([arr], {type: type || 'image/png'}));
         }
       });
-  //  }
   }
 
   /**
@@ -156,6 +154,7 @@ export default class PhotoEditor extends Editor {
     photo.groupId = extraFields.groupId;
     photo.animalId = extraFields.animalId;
     photo.userId = extraFields.userId;
+    photo.src = ''; // Make sure we aren't saving the base 64 data.
     photo.fullSizeUrl = extraFields.fullUrl;
     photo.midSizeUrl = extraFields.midSizeUrl;
     photo.thumbnailUrl = extraFields.thumbUrl;

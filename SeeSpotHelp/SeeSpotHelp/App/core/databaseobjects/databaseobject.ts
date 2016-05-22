@@ -91,7 +91,7 @@ abstract class DatabaseObject {
 
   update() {
     var updates = this.getUpdates();
-    DataServices.UpdateMultiple(updates);
+    return DataServices.UpdateMultiple(updates);
   }
 
   getUpdates(): Object {

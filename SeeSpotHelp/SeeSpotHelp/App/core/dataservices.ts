@@ -182,7 +182,7 @@ export default class DataServices {
 
   public static UpdateMultiple(updates) {
     var ref = this.database.ref();
-    ref.update(updates);
+    return ref.update(updates);
   }
 
   public static UpdateFirebaseData(path, value) {

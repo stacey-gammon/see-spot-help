@@ -6,6 +6,7 @@ export default class Photo extends DatabaseObject {
   public comment: string = '';
   public thumbnailUrl: string = '';
   public fullSizeUrl: string = '';
+  public midSizeUrl: string = '';
   public userId: string;
   public groupId: string;
   public animalId: string;

@@ -39,10 +39,15 @@ export default class EditorElement extends React.Component<any, any> {
     this.refs.inputFields.fillWithValues(this.props.editor.getInputFields());
     if (this.validateFields()) {
       this.setState({loaded: false});
-      this.props.editor.update(
+      var promise = this.props.editor.update(
         this.props.extraFields,
         this.onError.bind(this),
         this.props.onEditOrInsert);
+      if (promise) {
+        promise.then(this.props.onEditOrInsert, this.onError.bind(this));
+      } else {
+        console.log('Please update the editor to return a promise.', this.props.editor);
+      }
     }
   }
 

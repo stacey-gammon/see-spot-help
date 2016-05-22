@@ -16,22 +16,8 @@ import AnimalHeadShot from './animalheadshot';
 export default class AnimalListItem extends React.Component<any, any> {
   constructor(props) {
     super(props);
-    this.state = { imageSrc: null }
   }
 
-  componentDidMount() {
-    if (this.props.animal) {
-      PhotoStore.addPropertyListener(this, 'animalId', this.props.animal.id, this.onChange.bind(this));
-    }
-  }
-
-  componentWillUnmount() {
-    PhotoStore.removePropertyListener(this);
-  }
-
-  onChange() {
-    this.forceUpdate();
-  }
 
   render() {
     return (

@@ -256,6 +256,7 @@ abstract class BaseStore extends EventEmitter {
       this.itemDeletedWithId(id);
     }
     if (onSuccess) { onSuccess(); }
+    this.emitChange('id', id);
     this.resolvePromises(id);
   }
 
