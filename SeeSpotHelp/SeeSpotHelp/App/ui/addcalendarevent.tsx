@@ -1,6 +1,6 @@
 "use strict";
 
-var React = require("react");
+import * as React from 'react';
 var Router = require("react-router");
 var DatePicker = require('react-datepicker');
 var moment = require('moment');
@@ -18,8 +18,12 @@ var TimePicker = require('bootstrap-timepicker/js/bootstrap-timepicker.js');
 require('bootstrap-timepicker/css/bootstrap-timepicker.css');
 require('react-datepicker/dist/react-datepicker.css');
 
-var AddCalendarEvent = React.createClass({
-  getInitialState: function() {
+export default class AddCalendarEvent extends React.Component<any, any> {
+  public refs: any;
+  public context: any;
+
+  constructor(props) {
+    super(props);
     var startDate = Utils.FindPassedInProperty(this, 'startDate');
     var group = Utils.FindPassedInProperty(this, 'group');
     var animalId = Utils.FindPassedInProperty(this, 'animalId');
@@ -33,7 +37,7 @@ var AddCalendarEvent = React.createClass({
 
     if (scheduleId == -1 || !mode) mode = 'add';
 
-    var state = {
+    this.state = {
       startDate: moment(startDate, 'MM-DD-YYYY'),
       group: group,
       animalId: animalId,
@@ -46,11 +50,10 @@ var AddCalendarEvent = React.createClass({
       allowAnimalChange: allowAnimalChange,
       allowGroupChange: allowGroupChange
     }
-    Utils.LoadOrSaveState(state);
-    return state;
-  },
+    Utils.LoadOrSaveState(this.state);
+  }
 
-  saveFieldsIntoSchedule: function(schedule) {
+  saveFieldsIntoSchedule(schedule) {
     if (this.refs.startTime.value && this.refs.endTime.value) {
       schedule.start = this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.startTime.value;
       schedule.end = this.state.startDate.format('MM-DD-YYYY') + ' ' + this.refs.endTime.value;
@@ -61,10 +64,10 @@ var AddCalendarEvent = React.createClass({
     schedule.userId = LoginStore.getUser().id;
     schedule.groupId = this.getGroup().id;
     schedule.animalId = this.getAnimal().id;
-  },
+  }
 
   // Returns true if an error was found.
-  validateFields: function() {
+  validateFields() {
     if (!this.getGroup()) {
       $('#error').html('Sorry, you need to join a group before you can add an event.');
       return true;
@@ -102,9 +105,9 @@ var AddCalendarEvent = React.createClass({
     $('#endTimeDiv').removeClass('has-error');
     $('#error').html('');
     return false;
-  },
+  }
 
-  scheduleEvent: function() {
+  scheduleEvent() {
     var errorFound = this.validateFields();
     if (!errorFound) {
       if (this.state.mode == 'edit') {
@@ -118,14 +121,25 @@ var AddCalendarEvent = React.createClass({
         this.context.router.goBack();
       }
     }
-  },
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     LoginStore.addChangeListener(this.onChange);
     PermissionsStore.addChangeListener(this.onChange);
-    GroupStore.addChangeListener(this.onChange);
-    VolunteerStore.addChangeListener(this.onChange);
-    AnimalStore.addChangeListener(this.onChange);
+
+    if (this.state.group) {
+      GroupStore.addPropertyListener(this, 'id', this.state.group.id, this.onChange.bind(this));
+    } else if (LoginStore.getUser()) {
+      GroupStore.addPropertyListener(this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+    }
+
+    if (this.state.schedule) {
+      VolunteerStore.addPropertyListener(this,
+                                         'id',
+                                         this.state.schedule.userId,
+                                         this.onChange.bind(this));
+    }
+    AnimalStore.addPropertyListener(this, 'id', this.state.animalId, this.onChange.bind(this));
 
     // A day click defaults the time to 12 am, lets reset that to a full day event.
     if (this.state.startTime == '12:00 am' && this.state.startTime == this.state.endTime) {
@@ -155,47 +169,48 @@ var AddCalendarEvent = React.createClass({
       showMeridian: true,
       defaultTime: endTime
     });
-  },
+  }
 
-  clickedStartTime: function() {
+  componentWillUnmount() {
+    LoginStore.removeChangeListener(this.onChange);
+    PermissionsStore.removeChangeListener(this.onChange);
+
+    GroupStore.removePropertyListener(this);
+    AnimalStore.removePropertyListener(this);
+    VolunteerStore.removePropertyListener(this);
+  }
+
+  clickedStartTime() {
     var defaultStartTime = this.state.startTime ? this.state.startTime : false;
     if (defaultStartTime == '' && this.refs.startTime.value == '') {
       $('#startTime').timepicker('setTime', '12:00pm');
     }
     $('#startTime').timepicker('showWidget');
-  },
+  }
 
-  clickedEndTime: function() {
+  clickedEndTime() {
     var defaultEndTime = this.state.endTime ? this.state.endTime : false;
     if (defaultEndTime == '' && this.refs.endTime.value == '') {
       $('#endTime').timepicker('setTime', '12:30pm');
     }
     $('#endTime').timepicker('showWidget');
-  },
+  }
 
-  componentWillUnmount: function() {
-    LoginStore.removeChangeListener(this.onChange);
-    PermissionsStore.removeChangeListener(this.onChange);
-    GroupStore.removeChangeListener(this.onChange);
-    AnimalStore.removeChangeListener(this.onChange);
-    VolunteerStore.removeChangeListener(this.onChange);
-  },
-
-  onChange: function() {
+  onChange() {
     var newGroup = this.state.group ? GroupStore.getGroupById(this.state.group.id) : null;
     var group = newGroup ? newGroup : this.state.group;
     this.setState({
       group: group
     });
-  },
+  }
 
-  handleDateChange: function(date) {
+  handleDateChange(date) {
     this.setState({
       startDate: date
     })
-  },
+  }
 
-  deleteSchedule: function() {
+  deleteSchedule() {
     if (confirm("Are you sure you want to permanently delete this event?")) {
       this.state.schedule.delete();
       this.context.router.push(
@@ -208,23 +223,23 @@ var AddCalendarEvent = React.createClass({
         }
       );
     }
-  },
+  }
 
-  getDisableEditing: function() {
+  getDisableEditing() {
     return !LoginStore.getUser() ||
       (this.state.schedule && this.state.schedule.userId != LoginStore.getUser().id);
-  },
+  }
 
-  getDeleteButton: function() {
+  getDeleteButton() {
     if (this.state.mode == 'add' || this.getDisableEditing()) return null;
     return (
       <button className="btn btn-warning" onClick={this.deleteSchedule}>
         Delete
       </button>
     );
-  },
+  }
 
-  getUserField: function() {
+  getUserField() {
     if (!this.state.schedule) return null;
     if (this.getDisableEditing()) {
       var member = VolunteerStore.getVolunteerById(this.state.schedule.userId);
@@ -237,17 +252,17 @@ var AddCalendarEvent = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  contextTypes: {
+  static contextTypes = {
     router: React.PropTypes.object.isRequired
-  },
+  }
 
-  goBack: function() {
+  goBack() {
     this.context.router.goBack();
-  },
+  }
 
-  getAnimal: function() {
+  getAnimal() {
     if (this.state.animalId) {
       if (!this.state.group) return null;
       return AnimalStore.getAnimalById(this.state.animalId);
@@ -257,15 +272,15 @@ var AddCalendarEvent = React.createClass({
     } else {
       return null;
     }
-  },
+  }
 
-  createOptionElement: function (option) {
+  createOptionElement(option) {
     return (
       <option value={option.id}>{option.name}</option>
     );
-  },
+  }
 
-  createGroupDropDown: function () {
+  createGroupDropDown() {
     if (!LoginStore.getUser()) return null;
     var groups = GroupStore.getGroupsByUser(LoginStore.getUser());
     var options = groups.map(this.createOptionElement);
@@ -283,9 +298,9 @@ var AddCalendarEvent = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
-  getGroupInputField: function() {
+  getGroupInputField() {
     if (this.state.group) {
       return (
         <div className="input-group">
@@ -297,17 +312,17 @@ var AddCalendarEvent = React.createClass({
     } else {
       return this.createGroupDropDown();
     }
-  },
+  }
 
-  getGroup: function () {
+  getGroup() {
     var group = this.state.group;
     if (!group && this.refs && this.refs.groupChoice && this.refs.groupChoice.value) {
       group = GroupStore.getGroupById(this.refs.groupChoice.value);
     }
     return group;
-  },
+  }
 
-  fillAnimalDropDown: function () {
+  fillAnimalDropDown() {
     var group = this.getGroup();
     if (!group) return null;
 
@@ -319,10 +334,9 @@ var AddCalendarEvent = React.createClass({
       $('#animalChoice').append(
         '<option value=' + animals[i].id + '>' + animals[i].name + '</option>');
     }
+  }
 
-  },
-
-  createAnimalDropDown: function () {
+  createAnimalDropDown() {
     var group = this.getGroup();
     if (!group) return null;
 
@@ -346,24 +360,28 @@ var AddCalendarEvent = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
-  getAnimalInputField: function() {
+  getAnimalInputField() {
     if (this.state.animalId) {
       var animal = this.getAnimal();
-      return (
-        <div className="input-group">
-          <span className="input-group-addon">Animal:</span>
-          <input className="form-control" disabled value={animal.name}
-            type='text' id='animal' ref='animal'/>
-        </div>
-      );
+      if (animal) {
+        return (
+          <div className="input-group">
+            <span className="input-group-addon">Animal:</span>
+            <input className="form-control" disabled value={animal.name}
+              type='text' id='animal' ref='animal'/>
+          </div>
+        );
+      } else {
+        return null;
+      }
     } else {
       return this.createAnimalDropDown();
     }
-  },
+  }
 
-  render: function() {
+  render() {
     var header = "Schedule an Event";
     var buttonText = "Schedule";
     if (this.state.updated) header = "Event successfully updated";
@@ -432,6 +450,4 @@ var AddCalendarEvent = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = AddCalendarEvent;
+}

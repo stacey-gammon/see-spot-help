@@ -1,6 +1,5 @@
 import DataServices from '../dataservices';
 import Firebase = require('firebase');
-//import Util from './util';
 
 export enum Status {
   ACTIVE,
@@ -75,7 +74,7 @@ abstract class DatabaseObject {
       this.id);
   }
 
-  insert() {
+  insert() : Promise<any> {
     var inserts = this.getInserts();
     return DataServices.UpdateMultiple(inserts);
   }
@@ -89,7 +88,7 @@ abstract class DatabaseObject {
     return this.getUpdates();
   }
 
-  update() {
+  update() : Promise<any> {
     var updates = this.getUpdates();
     return DataServices.UpdateMultiple(updates);
   }
@@ -105,15 +104,15 @@ abstract class DatabaseObject {
     return updates;
   }
 
-  delete() {
-    DataServices.RemoveFirebaseData(this.firebasePath + '/' + this.id);
+  delete() : Promise<any> {
+    var promises = [];
+    promises.push(DataServices.RemoveFirebaseData(this.firebasePath + '/' + this.id));
     for (var i = 0; i < this.mappingProperties.length; i++) {
       var path = this.getPathToMapping(this.mappingProperties[i]);
-      DataServices.RemoveFirebaseData(path);
+      promises.push(DataServices.RemoveFirebaseData(path));
     }
+    return Promise.all(promises);
   }
 
-  deleteExternalReferences(externalInstances) {
-  }
 }
 export default DatabaseObject;

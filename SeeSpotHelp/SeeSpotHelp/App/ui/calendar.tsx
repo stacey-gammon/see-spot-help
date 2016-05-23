@@ -26,24 +26,14 @@ var Calendar = React.createClass({
   },
 
   componentDidMount: function() {
-    // TODO: We may only care about a subset of changes - for instance if the
-    // animal who's schedule that is currently showing gets deleted or downloaded.
-    // We can probably be more efficient here!
-    LoginStore.addChangeListener(this.onChange);
-    ScheduleStore.addChangeListener(this.onChange);
-    VolunteerStore.addChangeListener(this.onChange);
-    AnimalStore.addChangeListener(this.onChange);
-    GroupStore.addChangeListener(this.onChange);
-
     this.initializeCalendar();
   },
 
   componentWillUnmount: function() {
-    LoginStore.removeChangeListener(this.onChange);
-    ScheduleStore.removeChangeListener(this.onChange);
-    VolunteerStore.removeChangeListener(this.onChange);
-    AnimalStore.removeChangeListener(this.onChange);
-    GroupStore.removeChangeListener(this.onChange);
+    ScheduleStore.removePropertyListener(this);
+    VolunteerStore.removePropertyListener(this);
+    AnimalStore.removePropertyListener(this);
+    GroupStore.removePropertyListener(this);
   },
 
   onChange: function() {
@@ -77,12 +67,24 @@ var Calendar = React.createClass({
 
     if (this.props.view == 'animal' && this.props.animalId) {
       schedule = ScheduleStore.getScheduleByAnimalId(this.props.animalId);
+      if (!schedule) {
+        ScheduleStore.addPropertyListener(this, 'animalId', this.props.animalId, this.onChange.bind(this));
+      }
     } else if (this.props.view == 'group' && this.props.group) {
       schedule = ScheduleStore.getScheduleByGroup(this.props.group.id);
+      if (!schedule) {
+        ScheduleStore.addPropertyListener(this, 'groupId', this.props.group.id, this.onChange.bind(this));
+      }
     } else if (this.props.view == 'member' && this.props.memberId) {
       schedule = ScheduleStore.getScheduleByMember(this.props.memberId);
+      if (!schedule) {
+        ScheduleStore.addPropertyListener(this, 'userId', this.props.memberId, this.onChange.bind(this));
+      }
     } else if (this.props.view == 'profile' && LoginStore.getUser()) {
       schedule = ScheduleStore.getScheduleByMember(LoginStore.getUser().id);
+      if (!schedule) {
+        ScheduleStore.addPropertyListener(this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+      }
     }
 
     if (!schedule) return [];
@@ -90,12 +92,24 @@ var Calendar = React.createClass({
     // Dynamically generate the title in case the animal's or the user's name changes.
     for (var i = 0; i < schedule.length; i++) {
       var event = schedule[i];
+
       var volunteer = VolunteerStore.getVolunteerById(event.userId);
+      if (!volunteer) {
+        VolunteerStore.addPropertyListener(this, 'id', event.userId, this.onChange.bind(this));
+      }
+
       var animal = AnimalStore.getAnimalById(event.animalId);
+      if (!animal) {
+        AnimalStore.addPropertyListener(this, 'id', event.animalId, this.onChange.bind(this));
+      }
+
       var group = GroupStore.getGroupById(event.groupId);
+      if (!group) {
+        GroupStore.addPropertyListener(this, 'id', event.groupId, this.onChange.bind(this));
+      }
 
       // We'll have to wait for them to be downloaded.
-      if (!volunteer || !animal) return null;
+      if (!volunteer || !animal || !group) return null;
 
       var showingGroupCalendar = this.props.animalId < 0 && this.props.memberId < 0;
 

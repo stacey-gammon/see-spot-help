@@ -19,3 +19,13 @@
 .group-info-bar {
   @extend .info-bar;
 }
+
+.leave-group-link {
+  cursor: pointer;
+  font-size: 11px;
+  float: left;
+  position: absolute;
+  top: 52;
+  right: 4;
+  color: transparentize($almostWhite, .5) !important;
+}

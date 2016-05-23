@@ -15,11 +15,12 @@
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true
     },
-	"outDir": "./atom_bin",
-    "exclude": [
-        "node_modules",
-        "typings/browser",
-        "typings/browser.d.ts"
+    "outDir": "./atom_bin",
+    "filesGlob": [
+        "App/**/*.ts",
+        "App/**/*.tsx",
+        "typings/index.d.ts",
+        "typings/custom.d.ts"
     ],
     "compileOnSave": false,
     "buildOnSave": false,

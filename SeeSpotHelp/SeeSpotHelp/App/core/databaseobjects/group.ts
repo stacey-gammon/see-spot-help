@@ -101,9 +101,9 @@ export default class Group extends DatabaseObject {
     return this.status == Status.ARCHIVED;
   }
 
-  delete() {
+  delete() : Promise<any> {
     this.status = Status.ARCHIVED;
-    this.update();
+    return this.update();
   }
 
   // Attempts to insert the current instance into the database as
@@ -112,11 +112,11 @@ export default class Group extends DatabaseObject {
   //	 callback is expected to take as a first argument the potentially
   //	 inserted volunteer group (null on failure) and a server
   //	 response to hold error and success information.
-  insert(userId?) {
+  insert(userId?) : Promise<any> {
     var inserts = this.getInserts();
     var permission = Permission.CreateAdminPermission(userId, this.id);
     Object.assign(inserts, permission.getInserts());
 
-    DataServices.UpdateMultiple(inserts);
+    return DataServices.UpdateMultiple(inserts);
   }
 }

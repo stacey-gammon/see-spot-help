@@ -26,8 +26,8 @@ const LIST_SIZE = {
 };
 
 const THUMBNAIL_SIZE = {
-  maxDimension: 100,
-  quality: 0.9
+  maxDimension: 150,
+  quality: .9
 };
 
 export default class PhotoEditor extends Editor {

@@ -16,21 +16,6 @@ export default class PhotoUpload extends React.Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = {
-      user: LoginStore.getUser()
-    }
-  }
-
-  componentDidMount() {
-    LoginStore.addChangeListener(this.onChange);
-  }
-
-  componentWillUnmount() {
-    LoginStore.removeChangeListener(this.onChange);
-  }
-
-  onChange() {
-    this.forceUpdate();
   }
 
   goToAddPhotoPage(file) {

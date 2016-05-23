@@ -156,10 +156,10 @@ export default class DataServices {
     ref.set(value);
   };
 
-  public static RemoveFirebaseData(path, callback?) {
+  public static RemoveFirebaseData(path, callback?) : Promise<any> {
     console.log('DataServices.RemovingFirebaseData at ' + path);
     var ref = this.database.ref('/' + path);
-    ref.remove(callback);
+    return ref.remove(callback);
   }
 
   public static PushFirebaseData(path, value) {
