@@ -12,7 +12,7 @@ import Utils from '../../uiutils';
 import Error from '../error';
 import Group from '../../../core/databaseobjects/group';
 import Permission from '../../../core/databaseobjects/permission';
-import InputField from '../../../core/editor/inputfield';
+import InputField from '../../../core/editor/inputfields/inputfield';
 import InputFieldValidation from '../../../core/editor/inputfieldvalidation';
 
 import LoginStore from '../../../stores/loginstore';

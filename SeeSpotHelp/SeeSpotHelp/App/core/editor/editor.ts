@@ -1,6 +1,6 @@
 
 import DatabaseObject from '../databaseobjects/databaseobject';
-import InputField from './inputfield';
+import InputField from './inputfields/inputfield';
 
 export abstract class Editor {
   protected databaseObject: DatabaseObject;

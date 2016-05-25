@@ -20,6 +20,7 @@ export default class Animal extends DatabaseObject {
   public name: string = '';
   public type: string = 'Dog';
   public description: string = '';
+  public gender: string = '';
   public breed: string = '';
   public age: number = null;
   public status: number = Status.ACTIVE;
@@ -65,8 +66,8 @@ export default class Animal extends DatabaseObject {
     }
   }
 
-  delete() {
+  delete() : Promise<any> {
     this.status = Status.ARCHIVED;
-    this.update();
+    return this.update();
   }
 }

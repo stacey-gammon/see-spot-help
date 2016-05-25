@@ -1,9 +1,9 @@
 
 import Animal from '../databaseobjects/animal';
 
-import InputField from './inputfield';
-import InputListField from './inputlistfield';
-import InputTextAreaField from './inputtextareafield';
+import InputField from './inputfields/inputfield';
+import InputListField from './inputfields/inputlistfield';
+import InputTextAreaField from './inputfields/inputtextareafield';
 import InputFieldValidation from './inputfieldvalidation';
 import { Editor } from './editor';
 
@@ -39,10 +39,11 @@ export default class AnimalEditor extends Editor {
     var IFV = InputFieldValidation;
     this.inputFields = {
       "name": new InputField([IFV.validateNotEmpty]),
+      "gender": new InputListField(["Male", "Female"], [IFV.validateNotEmpty]),
       "type": new InputListField(["Dog", "Cat", "Other"], [IFV.validateNotEmpty]),
       "status": new InputListField(statusListItems, [IFV.validateNotEmpty]),
       "breed": new InputField(),
-      "age": new InputField([IFV.validateNumber]),
+      "age": new InputField(),
       "description": new InputTextAreaField()
     };
   }

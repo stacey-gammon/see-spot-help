@@ -6,9 +6,9 @@ import AnimalStore from '../../stores/animalstore';
 import GroupStore from '../../stores/groupstore';
 import LoginStore from '../../stores/loginstore';
 
-import InputPhotoField from './inputphotofield';
-import InputTextAreaField from './inputtextareafield';
-import InputCheckBoxField from './inputcheckboxfield';
+import InputPhotoField from './inputfields/inputphotofield';
+import InputTextAreaField from './inputfields/inputtextareafield';
+import InputCheckBoxField from './inputfields/inputcheckboxfield';
 import InputFieldValidation from './inputfieldvalidation';
 import { Editor } from './editor';
 

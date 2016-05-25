@@ -1,4 +1,5 @@
 
+@import 'assets/stylesheets/bootstrap';
 @import 'colorThemePrimary';
 @import 'mixins';
 @import 'nav';
@@ -9,7 +10,7 @@
 @import 'page';
 @import 'search';
 @import 'activity';
-
+@import 'autosuggest';
 
 h1 {
   font-size: 15px;

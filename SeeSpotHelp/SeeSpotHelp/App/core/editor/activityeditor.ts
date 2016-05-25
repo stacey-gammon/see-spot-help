@@ -1,7 +1,7 @@
 
 import Activity from '../databaseobjects/activity';
 
-import InputTextAreaField from './inputtextareafield';
+import InputTextAreaField from './inputfields/inputtextareafield';
 import InputFieldValidation from './inputfieldvalidation';
 import { Editor } from './editor';
 

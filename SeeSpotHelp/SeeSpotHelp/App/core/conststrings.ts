@@ -15,6 +15,7 @@ var ConstStrings = {
   Name: 'Name',
   Breed: 'Breed',
   Type: 'Type',
+  Gender: 'Gender',
   Age: 'Age',
   Description: 'Description',
   Status: 'Status',

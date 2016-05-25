@@ -1,8 +1,8 @@
 
 import Volunteer from '../databaseobjects/volunteer';
 
-import InputTextAreaField from './inputtextareafield';
-import InputTextField from './inputfield';
+import InputTextAreaField from './inputfields/inputtextareafield';
+import InputTextField from './inputfields/inputfield';
 import InputFieldValidation from './inputfieldvalidation';
 import { Editor } from './editor';
 

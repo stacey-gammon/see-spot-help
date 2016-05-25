@@ -1,8 +1,9 @@
 import * as React from 'react';
 
-import InputField from '../../../core/editor/inputfield';
-import InputListField from '../../../core/editor/inputlistfield';
-import { InputFieldType } from '../../../core/editor/inputfield';
+import InputField from '../../../core/editor/inputfields/inputfield';
+import InputListField from '../../../core/editor/inputfields/inputlistfield';
+import InputAutoSuggestField from './inputautosuggestfield';
+import { InputFieldType } from '../../../core/editor/inputfields/inputfield';
 
 export default class InputFieldElement extends React.Component<any, any> {
   constructor(props) {
@@ -71,6 +72,8 @@ export default class InputFieldElement extends React.Component<any, any> {
       return this.getInputListElement(inputField);
     } else if (inputField.type == InputFieldType.PHOTO){
       return this.getInputPhotoElement(inputField);
+    } else if (inputField.type == InputFieldType.AUTO_SUGGEST) {
+      return <InputAutoSuggestField inputField={inputField} />
     } else {
       return null;
     }
