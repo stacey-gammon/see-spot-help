@@ -8,16 +8,11 @@ import StateData from '../statedata';
 export default class InputStateField extends InputListField {
   public type: InputFieldType = InputFieldType.AUTO_SUGGEST;
   public listItems: Array<any> = [];
-  public defaultListItemIndex: number = 0;
 
-  constructor (listItems, validations?) {
-    super(validations);
+  constructor (validations?) {
+    super('', validations);
     for (var props in StateData) {
       this.listItems.push(StateData[props]);
     }
-  }
-
-  getDefaultValue() {
-    return '';
   }
 }

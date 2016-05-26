@@ -64,8 +64,11 @@ var Home = React.createClass({
   onAuthChanged(user) {
     if (user) {
       LoginStore.authenticated = true;
-      var myUser = LoginStore.getUser();
-      this.setState({user: myUser});
+
+      this.context.router.goBack();
+      //var myUser = LoginStore.getUser();
+
+      //this.setState({user: myUser});
     }
   },
 

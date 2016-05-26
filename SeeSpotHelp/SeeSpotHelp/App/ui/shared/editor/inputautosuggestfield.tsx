@@ -28,8 +28,10 @@ function renderSuggestion(suggestion) {
 export default class InputAutoSuggestField extends React.Component<any, any> {
   constructor(props) {
     super(props);
+    var value = this.props.inputField.value || '';
     this.state = {
-      vaue: this.props.inputField.defaultValue || ''
+      value: value,
+      suggestions: getSuggestions(value, this.props.inputField.listItems)
     };
   }
 

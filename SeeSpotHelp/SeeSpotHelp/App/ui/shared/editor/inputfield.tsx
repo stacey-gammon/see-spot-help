@@ -12,7 +12,7 @@ export default class InputFieldElement extends React.Component<any, any> {
 
   getValue() {
     var element = this.refs[this.props.inputField.ref] as any;
-    var retval = element.value || element.src;
+    var retval = element.value || element.src || element.getValue();
     return retval;
   }
 
@@ -73,7 +73,7 @@ export default class InputFieldElement extends React.Component<any, any> {
     } else if (inputField.type == InputFieldType.PHOTO){
       return this.getInputPhotoElement(inputField);
     } else if (inputField.type == InputFieldType.AUTO_SUGGEST) {
-      return <InputAutoSuggestField inputField={inputField} />
+      return <InputAutoSuggestField ref={inputField.ref} inputField={inputField} />
     } else {
       return null;
     }

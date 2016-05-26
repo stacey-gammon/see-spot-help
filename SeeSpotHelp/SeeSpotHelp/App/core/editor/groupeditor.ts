@@ -35,7 +35,7 @@ export default class GroupEditor extends Editor {
       'shelter': new InputField([IFV.validateNotEmpty]),
       'address': new InputField([IFV.validateNotEmpty]),
       'city': new InputField([IFV.validateNotEmpty]),
-      'state': new InputStateField([IFV.validateNotEmpty]),
+      'state': new InputStateField([IFV.validateListItem]),
       'zipCode': new InputField([IFV.validateNotEmpty])
     };
   }

@@ -25,8 +25,8 @@ class Volunteer extends DatabaseObject {
   public createInstance() { return new Volunteer('', ''); };
 
   // We don't push data for inserts so override base implementation.
-  insert() {
-    DataServices.SetFirebaseData(this.firebasePath + '/' + this.id, this);
+  insert() : Promise<any> {
+    return DataServices.SetFirebaseData(this.firebasePath + '/' + this.id, this);
   }
 
   getDisplayName() {

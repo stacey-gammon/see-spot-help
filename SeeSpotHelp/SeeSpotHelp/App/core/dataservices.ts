@@ -151,9 +151,9 @@ export default class DataServices {
     );
   }
 
-  public static SetFirebaseData(path, value) {
+  public static SetFirebaseData(path, value) : Promise<any> {
     var ref = this.database.ref("/" + path);
-    ref.set(value);
+    return ref.set(value);
   };
 
   public static RemoveFirebaseData(path, callback?) : Promise<any> {
