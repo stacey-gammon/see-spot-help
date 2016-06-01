@@ -1,0 +1,36 @@
+
+.fc {
+  h2 {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+.fc-toolbar {
+  margin-top: 0px;
+}
+
+.fc-button {
+  @extend .btn;
+  @extend .btn-info;
+
+  border-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+  height: 40px !important;
+  min-width: 55px !important;
+}
+
+.fc-prev-button, .fc-next-button {
+  min-width: 40px !important;
+  width: 40px;
+  padding: 0px !important;
+}
+
+.fc-icon {
+  margin: 0px !important;
+}
+
+.fc-today-button {
+  margin-left: 0px !important;
+}

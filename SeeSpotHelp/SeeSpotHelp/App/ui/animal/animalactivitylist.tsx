@@ -9,51 +9,52 @@ import VolunteerStore from '../../stores/volunteerstore';
 import ActivityElement from '../shared/activityelement';
 
 export default class AnimalActivityList extends React.Component<any, any> {
-	constructor(props) {
-		super(props);
-		this.state = {
-			activities: AnimalActivityStore.getActivityByAnimalId(this.props.animal.id)
-		}
-	}
+  constructor(props) {
+    super(props);
+    this.state = {
+      activities: AnimalActivityStore.getActivityByAnimalId(this.props.animal.id)
+    }
+  }
 
-	componentDidMount() {
-		AnimalActivityStore.addPropertyListener(
-			this, 'animalId', this.props.animal.id, this.onChange.bind(this));
-	}
+  componentDidMount() {
+    AnimalActivityStore.addPropertyListener(
+      this, 'animalId', this.props.animal.id, this.onChange.bind(this));
+  }
 
-	onChange() {
-		var activities = AnimalActivityStore.getActivityByAnimalId(this.props.animal.id);
-		this.setState({ activities: activities });
-	}
+  onChange() {
+    var activities = AnimalActivityStore.getActivityByAnimalId(this.props.animal.id);
+    this.setState({ activities: activities });
+  }
 
-	componentWillUnmount() {
-		AnimalActivityStore.removePropertyListener(this);
-	}
+  componentWillUnmount() {
+    AnimalActivityStore.removePropertyListener(this);
+  }
 
-	generateAnimalNote(note) {
-		return (
-			<ActivityElement key={note.id}
-								activity={note}
-								permission={this.props.permission}
-								group={this.props.group}
-								animal={this.props.animal}/>
-		);
-	}
+  generateAnimalNote(note) {
+    return (
+      <ActivityElement key={note.id}
+                activity={note}
+                view={'animal'}
+                permission={this.props.permission}
+                group={this.props.group}
+                animal={this.props.animal}/>
+    );
+  }
 
-	render() {
-		var activityElements = this.state.activities.map(this.generateAnimalNote.bind(this));
+  render() {
+    var activityElements = this.state.activities.map(this.generateAnimalNote.bind(this));
 
-		var text =
-			this.state.activities.length > 0 ? '' : 'Be the first to make a post!';
-		if (AnimalActivityStore.areItemsDownloading('animalId', this.props.animal.id)) {
-			text = 'Loading...';
-		}
+    var text =
+      this.state.activities.length > 0 ? '' : 'Be the first to make a post!';
+    if (AnimalActivityStore.areItemsDownloading('animalId', this.props.animal.id)) {
+      text = 'Loading...';
+    }
 
-		return (
-			<div className="list-group">
-				{text}
-				{activityElements}
-			</div>
-		);
-	}
+    return (
+      <div className="list-group">
+        {text}
+        {activityElements}
+      </div>
+    );
+  }
 }

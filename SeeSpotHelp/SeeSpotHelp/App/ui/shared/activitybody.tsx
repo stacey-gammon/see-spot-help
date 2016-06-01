@@ -14,6 +14,7 @@ import PermissionsStore from '../../stores/permissionsstore';
 import AnimalActivityStore from '../../stores/animalactivitystore';
 import Activity from '../../core/databaseobjects/activity';
 import Permission from '../../core/databaseobjects/permission';
+import LightboxImage from './lightboximage';
 
 export default class ActivityBody extends React.Component<any, any> {
   constructor(props) {
@@ -57,7 +58,14 @@ export default class ActivityBody extends React.Component<any, any> {
       }
       var src = photo.midSizeUrl || photo.src;
       return (
-        <img height='200px' src={src} />
+        <LightboxImage
+          photoId={this.props.activity.photoId}
+          height='200px'
+          src={src}
+          view={this.props.view}
+          animalId={this.props.activity.animalId}
+          groupId={this.props.activity.groupId}
+          userId={this.props.activity.userId}/>
       );
     } else {
       return null;

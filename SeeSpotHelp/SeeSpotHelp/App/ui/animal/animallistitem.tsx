@@ -5,9 +5,6 @@ import * as React from 'react';
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-import PhotoStore from '../../stores/photostore';
-import AnimalStore from '../../stores/animalstore';
-
 import AnimalHeadShot from './animalheadshot';
 
 // A small representation of an animal to be displayed in the animal
@@ -17,7 +14,6 @@ export default class AnimalListItem extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }
-
 
   render() {
     return (

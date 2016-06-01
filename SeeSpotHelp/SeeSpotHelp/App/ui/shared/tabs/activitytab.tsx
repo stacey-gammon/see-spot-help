@@ -29,8 +29,14 @@ export default class ActivityTab extends React.Component<any, any> {
   }
 
   generateAnimalNote(note) {
+    var view = 'user';
+    if (this.props.property == 'groupId') {
+      view = 'group'
+    } else if (this.props.property == 'animalId') {
+      view = 'animal';
+    }
     return (
-      <ActivityElement key={note.id} activity={note} permission={this.props.permission}/>
+      <ActivityElement key={note.id} view={view} activity={note} permission={this.props.permission}/>
     );
   }
 

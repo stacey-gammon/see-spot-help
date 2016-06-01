@@ -117,7 +117,9 @@ export default class ActivityElement extends React.Component<any, any> {
       <div className="list-group-item activity-list-item">
         <div className="media">
           <div className="media-body">
-            <ActivityBody activity={this.props.activity}/>
+            <ActivityBody
+              activity={this.props.activity}
+              view={this.props.view}/>
             <p>
             <a><LinkContainer
               to={{ pathname: "/memberPage",
