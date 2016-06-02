@@ -82,9 +82,10 @@
   border: 0;
   background: transparent;
   font-size:1.3em;
-  margin-top: 10px;
-  margin-right: -73px !important;
+  margin-top: -6px;
+  margin-right: -5px !important;
   float: right;
+  visibility: visible;
 }
 
 // Ewww, what horrible usage of !important here!  Unfortunately, I'm mixing in my own styling with
