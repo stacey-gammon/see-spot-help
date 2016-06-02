@@ -12,6 +12,7 @@
 @import 'activity';
 @import 'autosuggest';
 @import 'fullcalendar';
+@import 'event';
 
 h1 {
   font-size: 15px;
@@ -41,6 +42,8 @@ h2 {
 
 .form-control {
   max-width: 600px;
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
 }
 
 .PostTextArea {

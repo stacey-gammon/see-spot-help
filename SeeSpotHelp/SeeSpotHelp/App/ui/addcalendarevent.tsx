@@ -421,7 +421,7 @@ export default class AddCalendarEvent extends React.Component<any, any> {
             <span className="input-group-addon">Start time:</span>
             <input className="form-control input-small" type='text'
               disabled={disableEditing}
-              onClick={this.clickedStartTime}
+              onClick={this.clickedStartTime.bind(this)}
               defaultValue={defaultStartTime} id='startTime' ref='startTime'/>
           </div>
           <div className="input-group bootstrap-timepicker timepicker" id="endTimeDiv"
@@ -429,7 +429,7 @@ export default class AddCalendarEvent extends React.Component<any, any> {
             <span className="input-group-addon">End time:</span>
             <input type='text' disabled={disableEditing}
               defaultValue={defaultEndTime} className="form-control input-small"
-              onClick={this.clickedEndTime}
+              onClick={this.clickedEndTime.bind(this)}
               id='endTime' ref='endTime'/>
           </div>
           <div className="input-group">

@@ -1,5 +1,11 @@
 
 .calendar-container {
-	max-width: 600px;
-	margin: 0px auto;
+  max-width: 600px;
+  margin: 0px auto;
+}
+
+.react-datepicker__input-container {
+  width: 100% !important;
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
 }
