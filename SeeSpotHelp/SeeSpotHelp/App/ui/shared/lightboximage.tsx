@@ -25,7 +25,7 @@ export default class LightboxImage extends React.Component<any, any> {
   }
 
   openLightbox() {
-      this.setState({ isOpen: true });
+      this.setState({ isOpen: true, index: this.getDefaultIndex(this.state.images) });
   }
 
   closeLightbox() {
@@ -126,8 +126,9 @@ export default class LightboxImage extends React.Component<any, any> {
   render() {
       return (
         <div>
-          <Loader loaded={this.state.images}>
-            <img onClick={this.openLightbox.bind(this)}
+          <Loader loaded={!!this.state.images}>
+            <img className='lightbox-image'
+                 onClick={this.openLightbox.bind(this)}
                  src={this.props.src}
                  height={this.props.height}/>
             {this.getLightbox()}

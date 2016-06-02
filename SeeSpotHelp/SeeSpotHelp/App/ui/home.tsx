@@ -26,7 +26,7 @@ import MemberPage from './person/memberpage';
 var LoginPage = require('./loginpage');
 var PrivateBetaPage = require('./privatebetapage');
 var EnterBetaCode = require('./enterbetacode');
-var AddCalendarEvent = require('./addcalendarevent');
+import AddCalendarEvent from './addcalendarevent';
 var UserSettingsPage = require('./person/usersettingspage');
 
 import LoginStore from '../stores/loginstore';
@@ -62,8 +62,10 @@ var Home = React.createClass({
   },
 
   onAuthChanged(user) {
+    console.log('onAuthChanged with user ', user);
     if (user) {
       LoginStore.authenticated = true;
+      this.forceUpdate();
     }
   },
 
@@ -122,22 +124,22 @@ var Home = React.createClass({
 
 var routes = (
   <Router path='/' component={Home}>
-    <IndexRoute component={ProfilePage} />
-    <Route path='searchPage' component={SearchPage}/>
-    <Route path='groupHomePage' component={GroupHomePage}/>
-    <Route path='animalHomePage' component={AnimalHomePage} />
-    <Route path='addNewGroup' component={AddNewGroup} />
-    <Route path='addAnimalPage' component={AddAnimalPage} />
-    <Route path='profilePage' component={ProfilePage} />
-    <Route path='memberPage' component={MemberPage} />
-    <Route path='privateBetaPage' component={PrivateBetaPage} />
-    <Route path='loginPage' component={LoginPage} />
-    <Route path='addAnimalNote' component={AddAnimalNote} />
-    <Route path='userSettingsPage' component={UserSettingsPage} />
-    <Route path='addCalendarEvent' component={AddCalendarEvent} />
-    <Route path='enterBetaCode' component={EnterBetaCode} />
-    <Route path='addPhotoPage' component={AddPhotoPage} />
-    <Route path='editProfile' component={EditProfile} />
+      <IndexRoute component={ProfilePage} />
+      <Route path='searchPage' component={SearchPage}/>
+      <Route path='groupHomePage' component={GroupHomePage}/>
+      <Route path='animalHomePage' component={AnimalHomePage} />
+      <Route path='addNewGroup' component={AddNewGroup} />
+      <Route path='addAnimalPage' component={AddAnimalPage} />
+      <Route path='profilePage' component={ProfilePage} />
+      <Route path='memberPage' component={MemberPage} />
+      <Route path='privateBetaPage' component={PrivateBetaPage} />
+      <Route path='loginPage' component={LoginPage} />
+      <Route path='addAnimalNote' component={AddAnimalNote} />
+      <Route path='userSettingsPage' component={UserSettingsPage} />
+      <Route path='addCalendarEvent' component={AddCalendarEvent} />
+      <Route path='enterBetaCode' component={EnterBetaCode} />
+      <Route path='addPhotoPage' component={AddPhotoPage} />
+      <Route path='editProfile' component={EditProfile} />
   </Router>
 );
 

@@ -41,11 +41,11 @@ export default class ProfilePage extends React.Component<any, any> {
   }
 
   componentDidMount() {
-    LoginStore.addChangeListener(this.onChange);
+    LoginStore.addChangeListener(this.onChange.bind(this));
   }
 
   componentWillUnmount() {
-    LoginStore.removeChangeListener(this.onChange);
+    LoginStore.removeChangeListener(this.onChange.bind(this));
   }
 
   onChange() {

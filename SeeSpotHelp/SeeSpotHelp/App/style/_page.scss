@@ -2,13 +2,14 @@
 html {
   max-width: 800px;
   margin: 0 auto;
+  height: calc(100%);
   background: $html-bg-color;
   position: relative;
 }
 
 body {
   background-color: $body-bg-color;
-  height: 100%;
+  height: calc(100%);
   outline: none;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }

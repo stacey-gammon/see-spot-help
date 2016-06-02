@@ -38,3 +38,24 @@
 .activity-list-item {
   margin: 10px 0px;
 }
+
+.lightbox-image {
+  cursor: pointer;
+}
+
+#react-image-lightbox-portal {
+  .outer {
+    width: 100vw !important;
+  }
+  .toolbar {
+    position: fixed !important;
+    width: 100vw !important;
+  }
+
+  .image-next {
+    display: none;
+  }
+  .image-prev {
+    display: none;
+  }
+}
