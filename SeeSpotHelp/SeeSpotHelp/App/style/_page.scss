@@ -1,17 +1,21 @@
 
 html {
   max-width: 800px;
+  min-width: 100%;
   margin: 0 auto;
   height: calc(100%);
   background: $html-bg-color;
   position: relative;
+  overflow-x: hidden;
 }
 
 body {
   background-color: $body-bg-color;
   height: calc(100%);
+  min-width: 100%;
   outline: none;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  overflow-x: hidden;
 }
 
 .page {
