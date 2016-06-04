@@ -8,49 +8,63 @@ import DataServices from '../../core/dataservices';
 import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 
+import ErrorPopup from '../shared/errorpopup';
+
 export default class JoinGroupButton extends React.Component<any, any> {
-	public refs: any;
-	constructor(props) { super(props); }
+  public refs: any;
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null
+    };
+  }
 
-	requestToJoin() {
-		if (!this.props.group || !LoginStore.getUser()|| !this.props.permission) {
-			return null;
-		}
+  requestToJoin() {
+    if (!this.props.group || !LoginStore.getUser()|| !this.props.permission) {
+      return null;
+    }
 
-		var permission = this.props.permission;
-		if (permission.pending()) {
-			permission.permission = Group.PermissionsEnum.NONMEMBER;
-			permission.update();
-			this.refs.requestToJoinButton.innerHTML = ConstStrings.RequestToJoin;
-		} else {
-			permission.permission = Group.PermissionsEnum.PENDINGMEMBERSHIP;
-			permission.update();
-			DataServices.PushFirebaseData('emails/tasks',
-				{
-					eventType: 'NEW_REQUEST_PENDING',
-					adminId: LoginStore.getUser().id,
-					groupName: this.props.group.name
-				 });
-			this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
-		}
-	}
+    var permission = this.props.permission;
+    if (permission.pending()) {
+      permission.permission = Group.PermissionsEnum.NONMEMBER;
+      permission.update().catch(this.onError.bind(this));
+      this.refs.requestToJoinButton.innerHTML = ConstStrings.RequestToJoin;
+    } else {
+      permission.permission = Group.PermissionsEnum.PENDINGMEMBERSHIP;
+      permission.update().catch(this.onError.bind(this));
+      DataServices.PushFirebaseData('emails/tasks',
+        {
+          eventType: 'NEW_REQUEST_PENDING',
+          adminId: LoginStore.getUser().id,
+          groupName: this.props.group.name
+         }).catch(this.onError.bind(this));
+      this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
+    }
+  }
 
-	render() {
-		if (!LoginStore.getUser()) return null;
+  onError(error) {
+    this.setState({error: true, errorMessage: error.message});
+  }
 
-		if (this.props.permission.inGroup()) {
-			return null;
-		}
+  render() {
+    if (!LoginStore.getUser()) return null;
 
-		var text = this.props.permission.pending() ?
-			ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
-		var helperText = this.props.permission.pending() ? 'click to cancel' : '';
-		return (
-			<button className="btn btn-warning requestToJoinButton buttonPadding"
-					ref="requestToJoinButton"
-					onClick={this.requestToJoin.bind(this)}>
-				{text}
-			</button>
-		);
-	}
+    if (this.props.permission.inGroup()) {
+      return null;
+    }
+
+    var text = this.props.permission.pending() ?
+      ConstStrings.JoinRequestPending : ConstStrings.RequestToJoin;
+    var helperText = this.props.permission.pending() ? 'click to cancel' : '';
+    return (
+      <div>
+        <ErrorPopup error={this.state.error} errorMessage={this.state.errorMessage}/>
+        <button className="btn btn-warning requestToJoinButton buttonPadding"
+            ref="requestToJoinButton"
+            onClick={this.requestToJoin.bind(this)}>
+          {text}
+        </button>
+      </div>
+    );
+  }
 }

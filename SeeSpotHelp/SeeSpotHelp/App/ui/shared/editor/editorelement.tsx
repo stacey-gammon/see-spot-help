@@ -31,46 +31,35 @@ export default class EditorElement extends React.Component<any, any> {
     return validated;
   }
 
-  onError(errorMessage) {
-    this.setState({hasError: true, errorMessage: errorMessage});
+  onError(error) {
+    this.setState({errorMessage: error.message, hasError: true, loaded: true});
   }
 
   edit() {
     this.refs.inputFields.fillWithValues(this.props.editor.getInputFields());
     if (this.validateFields()) {
       this.setState({loaded: false});
-      var promise = this.props.editor.update(this.props.extraFields);
-      if (promise) {
-        promise.then(this.props.onEditOrInsert, this.onError.bind(this));
-      } else {
-        console.log('Please update the editor to return a promise.', this.props.editor);
-      }
+      this.props.editor.update(this.props.extraFields).then(
+        this.props.onEditOrInsert.bind(this),
+        this.onError.bind(this));
     }
   }
 
   insert() {
-    var me = this;
     this.refs.inputFields.fillWithValues(this.props.editor.getInputFields());
     if (this.validateFields()) {
       this.setState({loaded: false});
-      var promise = this.props.editor.insert(this.props.extraFields);
-      if (promise) {
-        promise.then(function() {
-          me.props.onEditOrInsert();
-        }, function (err) {
-          me.onError.bind(this);
-        });
-      } else {
-        console.log('Please update the editor to return a promise.', this.props.editor);
-      }
+      this.props.editor.insert(this.props.extraFields).then(
+        this.props.onEditOrInsert.bind(this),
+        this.onError.bind(this));
     }
   }
 
   delete() {
     if (confirm('Are you sure you wish to permanently delete?')) {
-      this.props.editor.delete(
-        this.onError.bind(this),
-        this.props.onDelete);
+      this.props.editor.delete().then(
+        this.props.onDelete.bind(this),
+        this.onError.bind(this));
     }
   }
 
@@ -78,7 +67,7 @@ export default class EditorElement extends React.Component<any, any> {
     return (
       <div className='page'>
         <InfoBar noTabs='true'><h1>{this.props.title}</h1></InfoBar>
-        <Error error={this.state.hasError} message={this.state.errorMessage} />
+        <Error error={this.state.hasError} errorMessage={this.state.errorMessage} />
         <Loader loaded={this.state.loaded}>
           <InputFields ref='inputFields' fields={this.props.editor.getInputFields()}/>
           <AddOrEditButtonBar

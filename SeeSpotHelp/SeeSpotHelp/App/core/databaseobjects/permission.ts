@@ -55,7 +55,7 @@ export default class Permission extends DatabaseObject {
   }
 
   leave() {
-    return this.permission == PermissionsEnum.NONMEMBER;
+    this.permission = PermissionsEnum.NONMEMBER;
   }
 
   inGroup() {

@@ -83,7 +83,7 @@ export default class InputField {
     if (this.hasError) {
       formName = "form-group has-error has-feedback";
     } else if (this.validated) {
-      formName = "form-group has-success has-feedback";
+      formName = "form-group";
     }
     formName += " " + this.ref + "FormGroup";
     return formName;

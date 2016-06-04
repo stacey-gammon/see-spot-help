@@ -35,8 +35,8 @@ export abstract class Editor {
 
   abstract update(extraFields, onError, onSuccess);
 
-  delete(onError, onSuccess) {
-    this.databaseObject.delete();
+  delete() : Promise<any> {
+    return this.databaseObject.delete();
   }
 
   validateFields() {
