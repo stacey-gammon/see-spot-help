@@ -65,7 +65,7 @@ export default class UserGroupsTab extends React.Component<any, any> {
     var loading = PermissionsStore.areItemsDownloading('userId', this.props.user.id);
 
     for (var i = 0; i < permissions.length; i++) {
-      if (permissions[i].inGroup()) {
+      if (permissions[i].inGroup() || permissions[i].pending()) {
         var group = this.getGroup(permissions[i].groupId);
         if (group) {
           if (!group.isArchived()) { groups.push(group); }

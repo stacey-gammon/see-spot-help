@@ -5,6 +5,7 @@ var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
 import Utils from '../uiutils';
+import ErrorPopup from '../shared/errorpopup';
 
 import MemberHeadShot from './memberheadshot';
 
@@ -34,18 +35,29 @@ export default class MemberListItem extends React.Component<any, any> {
     this.setState({});
   }
 
+  onSuccess() {
+    this.setState({error: false, errorMessage: null});
+  }
+  onError(error) {
+    this.setState({error: true, errorMessage: error.message});
+  }
+
   approveMembership(event) {
     // This is a hack because a parent LinkContainer element is
     // redirecting the user to another page.
+    if (!event) { event = window.event }
+    event.cancelBubble = true;
     event.stopPropagation();
+    event.preventDefault();
     this.props.memberPermission.setMember();
-    this.props.memberPermission.update();
+    this.props.memberPermission.update().then(this.onSuccess.bind(this), this.onError.bind(this));
     DataServices.PushFirebaseData('emails/tasks',
       {
         eventType: 'REQUEST_APPROVED',
         userEmail: this.props.member.email,
         groupName: this.props.group.name
-       });
+      }).then(this.onSuccess.bind(this), this.onError.bind(this));
+    return false;
   }
 
   denyMembership(event) {
@@ -54,11 +66,13 @@ export default class MemberListItem extends React.Component<any, any> {
     event.stopPropagation();
 
     this.props.memberPermission.setDenied();
-    this.props.memberPermission.update();
+    this.props.memberPermission.update().then(this.onSuccess.bind(this), this.onError.bind(this));
   }
 
   getApproveMembershipButton() {
-    var text = this.props.memberPermission.pending() ? "Approve" : "";
+    var text =
+      this.props.permission.admin() &&
+      this.props.memberPermission.pending() ? "Approve" : "";
     if (text != "") {
       return (
         <div>
@@ -145,6 +159,7 @@ export default class MemberListItem extends React.Component<any, any> {
     }
     return (
       <a href="#" className="list-group-item member-list-item">
+        <ErrorPopup error={this.state.error} errorMessage={this.state.errorMessage}/>
         <LinkContainer to={{ pathname: "memberPage" ,
           state: { member: this.props.member, groupId: this.props.group.id} }}>
           <div className="media">

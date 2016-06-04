@@ -169,7 +169,12 @@ abstract class BaseStore extends EventEmitter {
 
     var items = [];
     for (var i = 0; i < storageMapping[propertyValue].length; i++) {
-      items.push(this.storage[storageMapping[propertyValue][i]]);
+      var item = this.storage[storageMapping[propertyValue][i]];
+      if (item) {
+        items.push(item);
+      } else {
+        console.log('WARN: item in storage is null... are we downloading it?');
+      }
     }
     items.sort(function(a,b) {
       return a.timestamp < b.timestamp ? 1 : -1;
@@ -286,7 +291,6 @@ abstract class BaseStore extends EventEmitter {
   itemDeletedWithId(id) {
     console.log(this.databaseObject.className + 'Store: itemDeleted with id ' + id);
     var deletedObject = this.storage[id];
-    this.storage[id] = null;
 
     if (deletedObject) {
       for (var prop in this.storageMappings) {
@@ -294,6 +298,7 @@ abstract class BaseStore extends EventEmitter {
           this.storageMappings[prop], deletedObject[prop], id);
       }
     }
+    delete this.storage[id];
   }
 
   itemChanged(prop, snapshot) {

@@ -115,7 +115,7 @@ function generatePermissionRules() {
 
   // New members can apply for membership.
   var newMemberRequestRule =
-    `(${ensureNotAMemberPermissionRule()} && ${isAuthRule} && newData.child('permission').val() == ${PENDING})`;
+    `(!data.exists() && ${isAuthRule} && newData.child('permission').val() == ${PENDING})`;
   var existingMemberLeaveRule =
     `(data.exists() && ${isAuthRule} && (newData.child('permission').val() == ${NONMEMBER} || !newData.exists()))`;
   var adminRule = `(root.child(${userPermissionByGroupId()}).val() == ${ADMIN})`;
@@ -128,12 +128,12 @@ function generatePermissionRules() {
       "$userId": groupPermissionRules
     }
   };
-
-  rules["Permission"].PermissionByUserId = {
-    "$userId": {
-      "$groupId": groupPermissionRules
-    }
-  };
+  //
+  // rules["Permission"].PermissionByUserId = {
+  //   "$userId": {
+  //     "$groupId": groupPermissionRules
+  //   }
+  // };
 
   // Rules directly on the Permission table, keyed by permission id, are different because we
   // don't have $groupId and $userId

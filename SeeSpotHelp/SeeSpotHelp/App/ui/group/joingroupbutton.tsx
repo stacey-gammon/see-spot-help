@@ -27,21 +27,23 @@ export default class JoinGroupButton extends React.Component<any, any> {
     var permission = this.props.permission;
     if (permission.pending()) {
       permission.permission = Group.PermissionsEnum.NONMEMBER;
-      permission.update().catch(this.onError.bind(this));
+      permission.update().then(this.onSuccess.bind(this), this.onError.bind(this));
       this.refs.requestToJoinButton.innerHTML = ConstStrings.RequestToJoin;
     } else {
       permission.permission = Group.PermissionsEnum.PENDINGMEMBERSHIP;
-      permission.update().catch(this.onError.bind(this));
+      permission.update().then(this.onSuccess.bind(this), this.onError.bind(this));
       DataServices.PushFirebaseData('emails/tasks',
         {
           eventType: 'NEW_REQUEST_PENDING',
           adminId: LoginStore.getUser().id,
           groupName: this.props.group.name
-         }).catch(this.onError.bind(this));
+        }).then(this.onSuccess.bind(this), this.onError.bind(this));
       this.refs.requestToJoinButton.innerHTML = ConstStrings.JoinRequestPending;
     }
   }
-
+  onSuccess() {
+    this.setState({error: false, errorMessage: null});
+  }
   onError(error) {
     this.setState({error: true, errorMessage: error.message});
   }

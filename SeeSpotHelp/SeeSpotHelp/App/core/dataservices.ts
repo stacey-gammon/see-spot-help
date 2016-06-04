@@ -170,13 +170,13 @@ export default class DataServices {
       if (err) {
         console.log("error!: ", err);
       } else {
-        console.log('updating ' + path + "/" + newPath.key() + ' with id val');
-        DataServices.UpdateFirebaseData(path + "/" + newPath.key(), {id: newPath.key()});
+        console.log('updating ' + path + "/" + newPath.key + ' with id val');
+        DataServices.UpdateFirebaseData(path + "/" + newPath.key, {id: newPath.key});
       }
     }
     // Override the default typing, this should work correctly.
     var newPath = ref.push(value, onComplete) as { 'key': any };
-    value.id = newPath.key();
+    value.id = newPath.key;
     return value;
   }
 
@@ -186,14 +186,6 @@ export default class DataServices {
   }
 
   public static UpdateFirebaseData(path, value) {
-    var authref = this.database.ref();
-    var authData = authref.getAuth();
-    if (authData) {
-      console.log("User " + authData.uid + " is logged in with " + authData.provider);
-    } else {
-      console.log("User is logged out");
-    }
-
     var ref = new Firebase("/" + path);
     var onComplete = function (err) {
 
