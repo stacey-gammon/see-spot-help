@@ -1,6 +1,6 @@
 ﻿'use strict';
 
-var React = require('react');
+import * as React from 'react';
 var ReactDOM = require('react-dom');
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
@@ -9,7 +9,7 @@ var DefaultRoute = ReactRouter.DefaultRoute;
 var hashHistory = ReactRouter.hashHistory;
 var IndexRoute = ReactRouter.IndexRoute;
 
-var MyNavBar = require('./navbar');
+import MyNavBar from './navbar';
 import DataServices from '../core/dataservices';
 
 import GroupHomePage from './group/grouphomepage';
@@ -32,18 +32,21 @@ var UserSettingsPage = require('./person/usersettingspage');
 import LoginStore from '../stores/loginstore';
 
 // Comment out for debugging logs.
-console.log = function() {}
+// console.log = function() {}
 
-var Home = React.createClass({
-  contextTypes: {
+export default class Home extends React.Component<any, any> {
+  public props: any;
+  public context: any;
+
+  static contextTypes = {
     router: React.PropTypes.object.isRequired
-  },
+  };
 
-  getInitialState: function() {
-    return {};
-  },
+  constructor(props) {
+    super(props);
+  }
 
-  componentWillMount: function() {
+  componentWillMount() {
     window.fbAsyncInit = function() {
       FB.init({
         appId: '1021154377958416',
@@ -62,7 +65,7 @@ var Home = React.createClass({
       js.src = '//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=1021154377958416';
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
-  },
+  }
 
   onAuthChanged(user) {
     console.log('onAuthChanged with user ', user);
@@ -70,37 +73,25 @@ var Home = React.createClass({
       LoginStore.authenticated = true;
       this.forceUpdate();
     }
-  },
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     DataServices.OnAuthStateChanged(this.onAuthChanged.bind(this));
     LoginStore.ensureUser().then(
       function() {
-        if (this.isMounted()) {
-          this.setState({
-            user: LoginStore.getUser()
-          });
-          // If we don't have a user, we don't care about changes since a login event
-          // cause an entire page refresh and then it will register.
-          LoginStore.addChangeListener(this.onChange);
-        }
+        this.forceUpdate();
+        // If we don't have a user, we don't care about changes since a login event
+        // cause an entire page refresh and then it will register.
+        LoginStore.addChangeListener(this.forceUpdate);
       }.bind(this)
     )
-  },
+  }
 
-  componentWillUnmount: function() {
-    LoginStore.removeChangeListener(this.onChange);
-  },
+  componentWillUnmount() {
+    LoginStore.removeChangeListener(this.forceUpdate.bind(this));
+  }
 
-  onChange: function() {
-    this.setState(
-      {
-        user: LoginStore.getUser()
-      }
-    );
-  },
-
-  render: function() {
+  render() {
     if (((!LoginStore.getUser() && !LoginStore.userDownloading) ||
        (LoginStore.getUser() && !LoginStore.getUser().inBeta)) &&
       this.props.location.pathname != '/privatebetapage' &&
@@ -123,7 +114,7 @@ var Home = React.createClass({
       <div> {this.props.children} </div>
     );
   }
-});
+}
 
 var routes = (
   <Router path='/' component={Home}>

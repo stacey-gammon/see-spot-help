@@ -13,7 +13,8 @@ import PermissionsStore from '../../stores/permissionsstore';
 interface MemberTabProperties {
   group?: Group,
   permission?: Permission,
-  manageMode?: boolean
+  manageMode?: boolean,
+  activeTab?: boolean
 }
 
 export default class GroupMembersTab extends React.Component<MemberTabProperties, any> {
@@ -95,7 +96,6 @@ export default class GroupMembersTab extends React.Component<MemberTabProperties
   }
 
   render() {
-    console.log('GroupMembersTab:render');
     if (!this.props.group) return null;
     var memberPermissions = PermissionsStore.getPermissionsByGroupId(this.props.group.id);
     if (!memberPermissions) return null;

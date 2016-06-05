@@ -18,7 +18,7 @@ import LoginStore from '../../stores/loginstore';
 
 export default class ProfilePage extends React.Component<any, any> {
   context = { router: null };
-
+  private mounted: boolean = false;
   constructor(props) {
     super(props);
     this.state = {
@@ -42,13 +42,16 @@ export default class ProfilePage extends React.Component<any, any> {
 
   componentDidMount() {
     LoginStore.addChangeListener(this.onChange.bind(this));
+    this.mounted = true;
   }
 
   componentWillUnmount() {
     LoginStore.removeChangeListener(this.onChange.bind(this));
+    this.mounted = false;
   }
 
   onChange() {
+    if (!this.mounted) return;
     if (!LoginStore.getUser() && !LoginStore.userDownloading) {
       this.context.router.push('/loginpage');
     }

@@ -52,9 +52,11 @@ export default class MemberPage extends React.Component<any, any> {
 
   componentDidMount() {
     LoginStore.addChangeListener(this.onChange);
-    GroupStore.addPropertyListener(this, 'id', this.state.groupId, this.onChange.bind(this));
-    PermissionsStore.addPropertyListener(
-        this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+    if (LoginStore.getUser()) {
+      GroupStore.addPropertyListener(this, 'id', this.state.groupId, this.onChange.bind(this));
+      PermissionsStore.addPropertyListener(
+          this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+    }
   }
 
   componentWillUnmount() {

@@ -7,6 +7,7 @@ var Tabs = ReactBootstrap.Tabs;
 
 import UserGroupsTab from './usergroupstab';
 import ActivityTab from '../shared/tabs/activitytab';
+import OptimizedTab from '../shared/tabs/optimizedtab';
 var MemberScheduleTab = require('./memberscheduletab');
 
 import Utils from '../uiutils';
@@ -24,7 +25,7 @@ export default class ProfilePageTabs extends React.Component<any, any> {
     // We aren't supposed to manipulate state directly, but it doesn't yet have the newly
     // selected tab that we want to save to local storage.
     var stateDuplicate = this.state;
-    stateDuplicate.groupDefaultTabKey = key;
+    stateDuplicate.profileDefaultTabKey = key;
     Utils.LoadOrSaveState(stateDuplicate);
   }
 
@@ -32,15 +33,15 @@ export default class ProfilePageTabs extends React.Component<any, any> {
     var defaultKey = this.state.profileDefaultTabKey ? this.state.profileDefaultTabKey : 1;
     return (
       <Tabs className='tabs-area' animation={false} activeKey={defaultKey} onSelect={this.handleTabSelect.bind(this)}>
-        <Tab className='tab' eventKey={1} title={Utils.getGroupGlyphicon()}>
+        <OptimizedTab eventKey={1} title={Utils.getGroupGlyphicon()} activeKey={defaultKey}>
           <UserGroupsTab user={this.props.user}/>
-        </Tab>
-        <Tab className='tab' eventKey={2} title={Utils.getActivityGlyphicon()}>
+        </OptimizedTab>
+        <OptimizedTab eventKey={2} title={Utils.getActivityGlyphicon()} activeKey={defaultKey}>
           <ActivityTab property='userId' value={this.props.user.id} />
-        </Tab>
-        <Tab className='tab' eventKey={3} title={Utils.getCalendarGlyphicon()}>
+        </OptimizedTab>
+        <OptimizedTab eventKey={3} title={Utils.getCalendarGlyphicon()} activeKey={defaultKey}>
           <MemberScheduleTab view='profile' user={this.props.user}/>
-        </Tab>
+        </OptimizedTab>
       </Tabs>
     );
   }

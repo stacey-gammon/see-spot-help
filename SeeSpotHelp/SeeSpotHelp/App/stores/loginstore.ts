@@ -19,7 +19,11 @@ class LoginStore extends BaseStore {
   protected databaseObject: DatabaseObject = new Volunteer('', '');
   private userInBeta: boolean = false;
   private user: Volunteer = null;
-  private authenticated: boolean = null;
+
+  // Should probably be private but I'm setting it directly in the home class when listening to
+  // the authentication call back.  Should be cleaned up.
+  public authenticated: boolean = null;
+
   private dispatchToken;
   public userDownloading: boolean = false;
   public hasUser: boolean = null;

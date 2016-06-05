@@ -4,6 +4,7 @@ import * as React from 'react';
 var ReactBootstrap = require("react-bootstrap");
 var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
+import OptimizedTab from '../shared/tabs/optimizedtab';
 
 import GroupAnimalsTab from './groupanimalstab';
 import AnimalsIcon from '../shared/animalsicon';
@@ -63,19 +64,18 @@ export default class GroupPageTabs extends React.Component<any, any> {
     return (
       <Tabs animation={false} className="tabs-area" activeKey={defaultTabKey}
           onSelect={this.handleTabSelect.bind(this)}>
-        <Tab className="tab" eventKey={1} title={Utils.getAnimalsTabIcon()}>
+        <OptimizedTab eventKey={1} title={Utils.getAnimalsTabIcon()} activeKey={defaultTabKey}>
           <GroupAnimalsTab group={this.props.group} permission={this.props.permission}/>
-        </Tab>
-        <Tab className="tab" ref="groupMembersTab" eventKey={2}
-          title={this.getMembersTabTitle(this.props.group)}>
+        </OptimizedTab>
+        <OptimizedTab eventKey={2} title={this.getMembersTabTitle(this.props.group)} activeKey={defaultTabKey}>
           <GroupMembersTab group={this.props.group} permission={this.props.permission}/>
-        </Tab>
-        <Tab className="tab" eventKey={3} title={Utils.getActivityGlyphicon()}>
+        </OptimizedTab>
+        <OptimizedTab eventKey={3} title={Utils.getActivityGlyphicon()} activeKey={defaultTabKey}>
           <ActivityTab property='groupId' value={this.props.group.id} permission={this.props.permission}/>
-        </Tab>
-        <Tab className="tab" eventKey={4} title={Utils.getCalendarGlyphicon()}>
+        </OptimizedTab>
+        <OptimizedTab eventKey={4} title={Utils.getCalendarGlyphicon()} activeKey={defaultTabKey}>
           <GroupScheduleTab group={this.props.group} view="group" permission={this.props.permission}/>
-        </Tab>
+        </OptimizedTab>
       </Tabs>
     );
   }

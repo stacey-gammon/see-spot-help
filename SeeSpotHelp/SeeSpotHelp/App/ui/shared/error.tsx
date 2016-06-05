@@ -7,22 +7,6 @@ export default class Error extends React.Component<any, any> {
     super(props);
   }
 
-  get(errorMessage) {
-    return <div className="alert alert-danger">Oops. Something went wrong.</div>
-  }
-
-  componentDidMount() {
-    if (this.props.error && this.props.makeModal) {
-      $('#errMessage').dialog();
-    }
-  }
-
-  componentWillReceiveProps(newProps) {
-    if (newProps.error && newProps.makeModal) {
-      $('#errMessage').dialog();
-    }
-  }
-
   render() {
     if (!this.props.error) return null;
     var className = 'alert alert-danger';

@@ -6,6 +6,8 @@ import VolunteerStore from '../../../stores/volunteerstore';
 
 import ActivityElement from '../activityelement';
 
+var Loader = require('react-loader');
+
 export default class ActivityTab extends React.Component<any, any> {
   constructor(props) {
     super(props);
@@ -40,28 +42,27 @@ export default class ActivityTab extends React.Component<any, any> {
     );
   }
 
+  getNoActivityDisplay() {
+    if (this.state.activities.length == 0) {
+      return <div className='no-activity-display'>No Activity to Report</div>
+    } else {
+      return null;
+    }
+  }
+
   render() {
     var activityElements = this.state.activities.map(this.generateAnimalNote.bind(this));
-
-    var text;
-    if (this.state.activities.length == 0) {
-      if (this.props.value == 'animalId') {
-        text = 'Be the first to make a post!';
-      } else if (this.props.value == 'groupId') {
-        text = 'This group has no activity yet.';
-      } else {
-        text = 'This user has no activity yet.';
-      }
-    }
-
+    var loaded = true;
     if (AnimalActivityStore.areItemsDownloading(this.props.property, this.props.value)) {
-      text = 'Loading...';
+      loaded = false;
     }
 
     return (
       <div className="list-group">
-        {text}
+        <Loader loaded={loaded}>
+        {this.getNoActivityDisplay()}
         {activityElements}
+        </Loader>
       </div>
     );
   }

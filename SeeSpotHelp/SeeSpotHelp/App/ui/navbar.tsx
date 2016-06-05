@@ -1,4 +1,4 @@
-﻿var React = require('react');
+﻿import * as React from 'react';
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var ReactBootstrap = require('react-bootstrap');
 import LoginStore from '../stores/loginstore';
@@ -13,21 +13,24 @@ var MenuItem = ReactBootstrap.MenuItem;
 var Glyphicon = ReactBootstrap.Glyphicon;
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-var MyNavBar = React.createClass({
-  componentDidMount: function () {
+export default class MyNavBar extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
+  }
+  componentDidMount() {
     LoginStore.addChangeListener(this.onChange);
-  },
-  componentWillUnmount: function () {
+  }
+  componentWillUnmount() {
     LoginStore.removeChangeListener(this.onChange);
-  },
+  }
 
-  onChange: function () {
+  onChange() {
     this.forceUpdate();
-  },
+  }
 
-  goToAboutPage: function() {
+  goToAboutPage() {
     window.location.href = "http://www.theshelterhelper.com";
-  },
+  }
 
   // Code to put the logo back in the nav bar.  I'm uncertain if I like it there so I took it out.
   // <Nav className="nav navbar-nav logo-header" style={{display: 'inline-block'}}>
@@ -41,7 +44,7 @@ var MyNavBar = React.createClass({
   //   <MenuItem eventKey={3.1}>Settings</MenuItem>
   // </LinkContainer>
 
-  render: function() {
+  render() {
     return (
       <Navbar ref="mynavbar" className="navbar navbar-light bg-faded sh-navbar">
         <Nav className="nav navbar-nav navbar-custom">
@@ -76,6 +79,4 @@ var MyNavBar = React.createClass({
       </Navbar>
     );
   }
-});
-
-module.exports = MyNavBar;
+}

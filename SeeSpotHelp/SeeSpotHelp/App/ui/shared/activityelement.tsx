@@ -36,7 +36,7 @@ export default class ActivityElement extends React.Component<any, any> {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     VolunteerStore.ensureItemById(this.props.activity.userId).then(function(val) {
       var member = VolunteerStore.getVolunteerById(this.props.activity.userId);
       if (!member) {
@@ -78,8 +78,8 @@ export default class ActivityElement extends React.Component<any, any> {
 
   getActionDropDown() {
     return (
-      <div className='dropdown activity-dropdown'>
-        <DropdownButton title="">
+      <div className='dropdown activity-dropdown' id='actionDropDown'>
+        <DropdownButton title="" id='actionDropDownButton'>
           <MenuItem eventKey="1" onClick={this.editAction.bind(this)}>Edit</MenuItem>
           <MenuItem eventKey="2" onClick={this.deleteAction.bind(this)}>Delete</MenuItem>
         </DropdownButton>
