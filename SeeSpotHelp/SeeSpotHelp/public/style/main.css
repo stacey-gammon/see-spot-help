@@ -6105,6 +6105,8 @@ button.close {
 .member-list-item {
   border: 3px solid #c9f0d7 !important;
   min-height: 50px; }
+  .member-list-item .media {
+    margin-top: 0px !important; }
 
 .member-info-bar p {
   margin: 2px;

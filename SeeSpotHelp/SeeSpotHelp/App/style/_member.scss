@@ -4,6 +4,9 @@
   @extend .base-list-element;
   border: 3px solid $member-border-color !important;
   min-height: 50px;
+  .media {
+    margin-top: 0px !important;
+  }
 }
 
 .member-info-bar {
