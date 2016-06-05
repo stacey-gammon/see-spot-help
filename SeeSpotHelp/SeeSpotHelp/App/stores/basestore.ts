@@ -243,7 +243,7 @@ abstract class BaseStore extends EventEmitter {
 
   downloadItem(id, onSuccess?, onError?) {
     if (!id) {
-      throw new Error('Id is null';)
+      throw new Error('Id is null');
     }
     this.isDownloading[id] = true;
     this.resetErrorInfo();
@@ -265,8 +265,11 @@ abstract class BaseStore extends EventEmitter {
     } else if (snapshot && snapshot.val()) {
       this.itemChanged('id', snapshot.val());
     } else {
-      this.itemDeletedWithId(id);
+      // Data requested that doesn't exist.
+      console.log('WARN: Data requested that doesn\'t exist.');
+      this.itemAdded('id', null, null, null);
     }
+
     if (onSuccess) { onSuccess(); }
     this.emitChange('id', id);
     this.resolvePromises(id);

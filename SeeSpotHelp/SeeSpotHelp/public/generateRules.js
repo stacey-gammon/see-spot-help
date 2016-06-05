@@ -74,6 +74,10 @@ function addReadRule(rules, rule) {
   rules[".read"] = rule;
 }
 
+function addIndexOn(rules, index) {
+  rules[".indexOn"] = index;
+}
+
 function authId() {
   return "auth.uid";
 }
@@ -125,6 +129,7 @@ function generateAnimalRules() {
 
   var membersCanWriteRule = `${getAllowAccessRule(MEMBER)} || ${getAllowAccessRule(ADMIN)}`;
   addWriteRule(animalRules, membersCanWriteRule);
+  addIndexOn(animalRules, "timestamp");
 
   rules["Animal"].AnimalByGroupId = {
     "$groupId": {
@@ -150,6 +155,7 @@ function generateBasicTableRules(table) {
   var usersCanAddTheirOwn = `(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid)`;
 
   addWriteRule(tableRules, `${adminsCanWriteRule} || ${usersCanAddTheirOwn} || ${usersCanUpdateTheirOwn}`);
+  addIndexOn(tableRules, "timestamp");
 
   rules[table][table] = {
     "$tableId": tableRules
@@ -181,6 +187,7 @@ function generatePermissionRules() {
 
   addWriteRule(groupPermissionRules,
     `${newMemberRequestRule} || ${existingMemberLeaveRule} || ${adminRule}`);
+  addIndexOn(groupPermissionRules, "timestamp");
 
   rules["Permission"].PermissionByGroupId = {
     "$groupId": {
@@ -245,6 +252,7 @@ function generateUserRules() {
   var userId = "$userId";
   addReadRule(userRules, "auth != null");
   addWriteRule(userRules, `(${userId} == ${authId()})`);
+  addIndexOn(userRules, "timestamp");
   rules["users"] = {
       '$userId': userRules
     };
