@@ -169,6 +169,7 @@ body {
 }
 
 .info-bar-back {
+  display: none; // Hide for now, not sure I like it.
   cursor: pointer;
   font-size: 11px;
   float: left;

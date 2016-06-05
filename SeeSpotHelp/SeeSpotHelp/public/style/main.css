@@ -6326,6 +6326,7 @@ body {
   background-color: rgba(0, 0, 0, 0.5); }
 
 .info-bar-back {
+  display: none;
   cursor: pointer;
   font-size: 11px;
   float: left;

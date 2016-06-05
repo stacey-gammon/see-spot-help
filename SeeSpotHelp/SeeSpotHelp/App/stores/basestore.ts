@@ -142,7 +142,11 @@ abstract class BaseStore extends EventEmitter {
     if (!mapping[key]) {
       mapping[key] = [];
     }
-    mapping[key].push(id);
+    if (mapping[key].indexOf(id) >= 0) {
+      console.log('WARN: attempting to insert duplicate element with id ' + id + ' and key ' + key);
+    } else {
+      mapping[key].push(id);
+    }
   }
 
   itemExistsLocally(property: string, value: string) {
