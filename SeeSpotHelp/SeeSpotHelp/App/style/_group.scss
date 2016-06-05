@@ -29,3 +29,14 @@
   right: 4;
   color: transparentize($almostWhite, .5) !important;
 }
+
+.shelterInfoBox {
+  position: relative;
+  padding: 0px 25px;
+}
+
+.edit-group-button {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+}

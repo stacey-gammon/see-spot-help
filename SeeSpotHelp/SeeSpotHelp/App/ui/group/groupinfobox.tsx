@@ -31,8 +31,7 @@ class GroupInfoBox extends React.Component<any, any> {
       return null;
     }
     return (
-      <span style={{marginLeft: 10 + 'px'}} onClick={this.editGroup.bind(this)}
-        className="glyphicon glyphicon-edit">
+      <span className='edit-group-button glyphicon glyphicon-edit' onClick={this.editGroup.bind(this)}>
       </span>
     );
   }
@@ -40,7 +39,8 @@ class GroupInfoBox extends React.Component<any, any> {
   render() {
     return (
       <div className="shelterInfoBox">
-        <h1>{this.props.group.name}{this.getEditButton()}</h1>
+          {this.getEditButton()}
+        <h1>{this.props.group.name}</h1>
         <h2>{this.props.group.shelter}</h2>
         <h2>{this.props.group.address}</h2>
         <h2>{this.props.group.city}, {this.props.group.state} {this.props.group.zipCode}</h2>

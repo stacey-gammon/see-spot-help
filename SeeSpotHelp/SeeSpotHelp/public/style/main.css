@@ -6065,6 +6065,15 @@ button.close {
   right: 4;
   color: rgba(254, 254, 252, 0.5) !important; }
 
+.shelterInfoBox {
+  position: relative;
+  padding: 0px 25px; }
+
+.edit-group-button {
+  position: absolute;
+  top: 2px;
+  right: 0px; }
+
 .base-list-element, .groupListElement, .member-list-item, .animalListElement {
   padding: 10px;
   margin: 10px;
@@ -6085,6 +6094,13 @@ button.close {
 .info-bar a, .group-info-bar a, .member-info-bar a, .animal-info-bar a {
   color: #FEFEFC;
   text-decoration: underline; }
+
+.list-item-description, .member-list-item-about-me {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; }
 
 .member-list-item {
   border: 3px solid #c9f0d7 !important;
@@ -6097,6 +6113,9 @@ button.close {
 .member-info-bar .media-object {
   padding-top: 5px; }
 
+.member-list-item-about-me {
+  -webkit-line-clamp: 4 !important; }
+
 .base-list-element, .groupListElement, .member-list-item, .animalListElement {
   padding: 10px;
   margin: 10px;
@@ -6117,6 +6136,13 @@ button.close {
 .info-bar a, .group-info-bar a, .member-info-bar a, .animal-info-bar a {
   color: #FEFEFC;
   text-decoration: underline; }
+
+.list-item-description, .member-list-item-about-me {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; }
 
 .animalListElement:hover {
   color: #B7AFA3 !important; }
@@ -6155,13 +6181,6 @@ button.close {
 
 .animal-info-bar .media-left {
   min-width: 90px; }
-
-.animal-thumbnail-description {
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis; }
 
 html {
   max-width: 800px;

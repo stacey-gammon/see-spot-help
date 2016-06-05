@@ -16,3 +16,8 @@
     padding-top: 5px;
   }
 }
+
+.member-list-item-about-me {
+  @extend .list-item-description;
+  -webkit-line-clamp: 4 !important;
+}

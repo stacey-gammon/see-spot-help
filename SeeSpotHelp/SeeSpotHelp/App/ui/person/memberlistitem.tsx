@@ -168,7 +168,7 @@ export default class MemberListItem extends React.Component<any, any> {
             </div>
             <div className="media-body">
               <h2>{this.props.member.name} {extraInfo}</h2>
-              <p>{this.props.member.aboutMe}</p>
+              <p className='member-list-item-about-me'>{this.props.member.aboutMe}</p>
             </div>
             {this.getActions()}
           </div>

@@ -35,7 +35,7 @@ export default class AnimalListItem extends React.Component<any, any> {
                 <div className='animalThumbnailText'>{this.props.animal.age} years old</div>
               </div>
               <div className='media-body'>
-                <div className='animal-thumbnail-description'>
+                <div className='list-item-description'>
                   {this.props.animal.description}
                 </div>
               </div>
