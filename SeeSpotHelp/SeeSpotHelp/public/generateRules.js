@@ -119,10 +119,6 @@ function getAllowAccessRule(permission) {
   return `(${allowAccessExistingData} || ${allowAccessNewData})`;
 }
 
-function getAllowMemberAccessRules() {
-
-}
-
 function generateAnimalRules() {
   var animalRules = {};
   addReadRule(animalRules, "auth != null");
@@ -221,7 +217,7 @@ function generatePermissionRules() {
   newMemberRequestRule =
     `(!data.exists() && newData.child('userId').val() == auth.uid && newData.child('permission').val() == ${PENDING})`;
   existingMemberLeaveRule =
-    `(data.exists() && newData.child('userId').val() == auth.uid && (newData.child('permission').val() == ${NONMEMBER} || !newData.exists()))`;
+    `(data.exists() && data.child('userId').val() == auth.uid && (newData.child('permission').val() == ${NONMEMBER} || !newData.exists()))`;
   adminRule =
     `(root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
 

@@ -164,20 +164,7 @@ export default class DataServices {
 
   public static PushFirebaseData(path, value) {
     var ref = this.database.ref('/' + path);
-    var newPath = { 'key': null };
-    var onComplete = function (err) {
-      console.log('pushing new data completed with ', err);
-      if (err) {
-        console.log("error!: ", err);
-      } else {
-        console.log('updating ' + path + "/" + newPath.key + ' with id val');
-        DataServices.UpdateFirebaseData(path + "/" + newPath.key, {id: newPath.key});
-      }
-    }
-    // Override the default typing, this should work correctly.
-    var newPath = ref.push(value, onComplete) as { 'key': any };
-    value.id = newPath.key;
-    return value;
+    return ref.push(value);
   }
 
   public static UpdateMultiple(updates) : Promise<any> {
@@ -185,14 +172,9 @@ export default class DataServices {
     return ref.update(updates);
   }
 
-  public static UpdateFirebaseData(path, value) {
-    var ref = new Firebase("/" + path);
-    var onComplete = function (err) {
-
-      console.log('UpdateFirebaseData to set ' + path + ' equal to ' + value + ' completed with ', err);
-    }
-    var newPath = ref.update(value, onComplete);
-    return value;
+  public static DeleteMultiple(deletes) : Promise<any> {
+    var ref = this.database.ref();
+    return ref.update(deletes);
   }
 
   public onSuccess = function (response) {

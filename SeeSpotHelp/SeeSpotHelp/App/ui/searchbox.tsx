@@ -11,6 +11,8 @@ var DropdownButton = ReactBootstrap.DropdownButton;
 var Button = ReactBootstrap.Button;
 var MenuItem = ReactBootstrap.MenuItem;
 
+var Loader = require('react-loader');
+
 import Utils from "./uiutils";
 import Group from "../core/databaseobjects/group";
 import Animal from "../core/databaseobjects/animal";
@@ -22,7 +24,8 @@ var SearchBox = React.createClass({
     var state = {
       results: {},
       searchForValue: 'groups',
-      searchOnType: 'Name'
+      searchOnType: 'Name',
+      searching: false
     }
 
     Utils.LoadOrSaveState(state);
@@ -31,7 +34,8 @@ var SearchBox = React.createClass({
 
   getResults: function(results) {
     this.setState({
-      results: results
+      results: results,
+      searching: false
     });
   },
 
@@ -51,6 +55,7 @@ var SearchBox = React.createClass({
       new Group().firebasePath :
       new Animal().firebasePath;
 
+    this.setState({searching: true});
     DataServices.StartStringSearch(path, searchOn, searchText, this.getResults);
   },
 
@@ -203,9 +208,11 @@ var SearchBox = React.createClass({
           </button>
         </div>
           {noResultsFoundText}
+        <Loader loaded={!this.state.searching}>
         <ShelterSearchResults searchForValue={this.state.searchForValue}
           results={this.state.results}
           type={this.state.searchForValue}/>
+        </Loader>
       </div>
     );
   }

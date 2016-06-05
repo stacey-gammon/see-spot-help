@@ -12,6 +12,11 @@ export default class ErrorPopup extends React.Component<any, any> {
     }
   }
 
+  shouldComponentUpdate(newProps, newState) {
+    return newProps.error != this.props.error ||
+           newProps.errorMessage != this.props.errorMessage;
+  }
+
   componentWillReceiveProps(newProps) {
     if (newProps.error) {
       this.refs.errorPopup.show();

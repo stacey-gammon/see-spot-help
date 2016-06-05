@@ -105,13 +105,14 @@ abstract class DatabaseObject {
   }
 
   delete() : Promise<any> {
+    var deletes = {};
     var promises = [];
-    promises.push(DataServices.RemoveFirebaseData(this.firebasePath + '/' + this.id));
+    deletes[this.firebasePath + '/' + this.id] = null;
     for (var i = 0; i < this.mappingProperties.length; i++) {
       var path = this.getPathToMapping(this.mappingProperties[i]);
-      promises.push(DataServices.RemoveFirebaseData(path));
+      deletes[path] = null;
     }
-    return Promise.all(promises);
+    return DataServices.DeleteMultiple(deletes);
   }
 
 }
