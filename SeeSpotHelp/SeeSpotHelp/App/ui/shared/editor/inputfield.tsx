@@ -12,7 +12,7 @@ export default class InputFieldElement extends React.Component<any, any> {
 
   getValue() {
     var element = this.refs[this.props.inputField.ref] as any;
-    var retval = element.value || element.src || element.getValue();
+    var retval = element.value || element.src || (element.hasOwnProperty("getValue") && element.getValue());
     return retval;
   }
 

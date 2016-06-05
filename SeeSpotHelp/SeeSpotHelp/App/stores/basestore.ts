@@ -242,6 +242,9 @@ abstract class BaseStore extends EventEmitter {
 
 
   downloadItem(id, onSuccess?, onError?) {
+    if (!id) {
+      throw new Error('Id is null';)
+    }
     this.isDownloading[id] = true;
     this.resetErrorInfo();
     DataServices.DownloadData(
@@ -251,6 +254,10 @@ abstract class BaseStore extends EventEmitter {
   }
 
   itemDownloaded(id: string, onSuccess, snapshot) {
+    if (!id) {
+      console.log('WARN: itemDownloaded being passed undefined id');
+      return;
+    }
     console.log(this.databaseObject.className + 'Store: itemDownloaded with id ' + id);
     this.isDownloading[id] = false;
     if (snapshot && snapshot.val() && !this.storage.hasOwnProperty[id]) {

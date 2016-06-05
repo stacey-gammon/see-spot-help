@@ -16,8 +16,10 @@ export default class HeadShot extends React.Component<any, any> {
   componentDidMount() {
     PhotoStore.addPropertyListener(
       this, 'id', this.props.photoId, this.getHeadShotPhotoSrc.bind(this));
-    if (!this.props.src) {
+    if (!this.props.src && this.props.photoId) {
       this.getHeadShotPhotoSrc();
+    } else {
+      this.setState({loaded: true, src: 'images/no-photo-available.jpg'});
     }
   }
 

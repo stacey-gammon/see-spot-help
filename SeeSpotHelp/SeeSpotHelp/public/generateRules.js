@@ -2,8 +2,8 @@ var rules = {
   ".read": "auth != null",
 
   "emails": {
-    ".read" : true,
-    ".write": true
+    ".read" : "true",
+    ".write": "true"
   },
 
   "inviteCodes": {
@@ -107,6 +107,65 @@ function ensureNotAMemberPermissionRule() {
   return `(${noDataInPermissionTable} && ${noDataInPermissionByUserIdTable} && ${noDataInPermissionByGroupIdTable})`;
 }
 
+function getAllowAccessRule(permission) {
+  var allowAccessExistingData =
+    `(data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == ${permission}))`;
+  var allowAccessNewData =
+    `(newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${permission}))`;
+  return `(${allowAccessExistingData} || ${allowAccessNewData})`;
+}
+
+function getAllowMemberAccessRules() {
+
+}
+
+function generateAnimalRules() {
+  var animalRules = {};
+  addReadRule(animalRules, "auth != null");
+
+  var membersCanWriteRule = `${getAllowAccessRule(MEMBER)} || ${getAllowAccessRule(ADMIN)}`;
+  addWriteRule(animalRules, membersCanWriteRule);
+
+  rules["Animal"].AnimalByGroupId = {
+    "$groupId": {
+      "$userId": animalRules
+    }
+  };
+  rules["Animal"].AnimalByUserId = {
+    "$userId": {
+      "$groupId": animalRules
+    }
+  };
+  rules["Animal"].Animal = {
+    "$animalId": animalRules
+  };
+}
+
+function generateBasicTableRules(table) {
+  var tableRules = {};
+  addReadRule(tableRules, 'auth != null');
+
+  var adminsCanWriteRule = getAllowAccessRule(ADMIN);
+  var usersCanUpdateTheirOwn = `(data.exists() && data.child('userId').val() == auth.uid)`;
+  var usersCanAddTheirOwn = `(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid)`;
+
+  addWriteRule(tableRules, `${adminsCanWriteRule} || ${usersCanAddTheirOwn} || ${usersCanUpdateTheirOwn}`);
+
+  rules[table][table] = {
+    "$tableId": tableRules
+  }
+  rules[table][table + 'ByGroupId'] = {
+    "$groupId": {
+      "$tableId": tableRules
+    }
+  }
+  rules[table][table + 'ByUserId'] = {
+    "$userId": {
+      "$tableId": tableRules
+    }
+  }
+}
+
 function generatePermissionRules() {
   var groupPermissionRules = {};
   addReadRule(groupPermissionRules, 'auth != null');
@@ -128,12 +187,12 @@ function generatePermissionRules() {
       "$userId": groupPermissionRules
     }
   };
-  //
-  // rules["Permission"].PermissionByUserId = {
-  //   "$userId": {
-  //     "$groupId": groupPermissionRules
-  //   }
-  // };
+
+  rules["Permission"].PermissionByUserId = {
+    "$userId": {
+      "$groupId": groupPermissionRules
+    }
+  };
 
   // Rules directly on the Permission table, keyed by permission id, are different because we
   // don't have $groupId and $userId
@@ -149,9 +208,9 @@ function generatePermissionRules() {
   addReadRule(permissionIdRules, 'auth != null');
   addWriteRule(permissionIdRules,
     `${newMemberRequestRule} || ${existingMemberLeaveRule} || ${adminRule}`);
-  // rules["Permission"].Permission = {
-  //   "$permissionId": permissionIdRules
-  // };
+  rules["Permission"].Permission = {
+    "$permissionId": permissionIdRules
+  };
 }
 
 function newRoot() {
@@ -196,6 +255,11 @@ function generateRules () {
   generateUserRules();
   generateGroupRules();
   generatePermissionRules();
+  generateAnimalRules();
+  generateBasicTableRules('Photo');
+  generateBasicTableRules('Activity');
+  generateBasicTableRules('Schedule');
+
   var superRules = {
     "rules": rules
   };
