@@ -133,16 +133,19 @@ function generateAnimalRules() {
 
   rules["Animal"].AnimalByGroupId = {
     "$groupId": {
-      "$userId": animalRules
+      "$userId": animalRules,
+      ".indexOn": "timestamp"
     }
   };
   rules["Animal"].AnimalByUserId = {
     "$userId": {
-      "$groupId": animalRules
+      "$groupId": animalRules,
+      ".indexOn": "timestamp"
     }
   };
   rules["Animal"].Animal = {
-    "$animalId": animalRules
+    "$animalId": animalRules,
+    ".indexOn": "timestamp"
   };
 }
 
@@ -158,16 +161,25 @@ function generateBasicTableRules(table) {
   addIndexOn(tableRules, "timestamp");
 
   rules[table][table] = {
-    "$tableId": tableRules
+    "$tableId": tableRules,
+    ".indexOn": "timestamp"
   }
   rules[table][table + 'ByGroupId'] = {
     "$groupId": {
-      "$tableId": tableRules
+      "$tableId": tableRules,
+      ".indexOn": "timestamp"
+    }
+  }
+  rules[table][table + 'ByAnimalId'] = {
+    "$groupId": {
+      "$tableId": tableRules,
+      ".indexOn": "timestamp"
     }
   }
   rules[table][table + 'ByUserId'] = {
     "$userId": {
-      "$tableId": tableRules
+      "$tableId": tableRules,
+      ".indexOn": "timestamp"
     }
   }
 }
@@ -191,13 +203,15 @@ function generatePermissionRules() {
 
   rules["Permission"].PermissionByGroupId = {
     "$groupId": {
-      "$userId": groupPermissionRules
+      "$userId": groupPermissionRules,
+      ".indexOn": "timestamp"
     }
   };
 
   rules["Permission"].PermissionByUserId = {
     "$userId": {
-      "$groupId": groupPermissionRules
+      "$groupId": groupPermissionRules,
+      ".indexOn": "timestamp"
     }
   };
 
