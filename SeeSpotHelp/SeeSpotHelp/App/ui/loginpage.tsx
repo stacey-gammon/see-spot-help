@@ -51,15 +51,12 @@ var LoginPage = React.createClass({
     }
   },
 
-  componentWillMount: function () {
+  componentDidMount: function () {
     if (this.state.logout) {
       LoginStore.logout();
     } else {
       this.checkAuthentication();
     }
-  },
-
-  componentDidMount: function() {
     LoginStore.addChangeListener(this.onChange);
   },
 

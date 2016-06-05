@@ -53,6 +53,11 @@ export default class AnimalInfoBar extends React.Component<any, any> {
     return photo ? photo.src : this.props.animal.getDefaultPhoto();
   }
 
+  getAgeDisplay() {
+    if (!this.props.animal.age) return null;
+    return <p className="animalInfo">Age: {this.props.animal.age}</p>
+  }
+
   render() {
     var imageSrc = this.getHeadShotPhotoSrc();
     var animal = this.props.animal;
@@ -67,7 +72,7 @@ export default class AnimalInfoBar extends React.Component<any, any> {
               <h1 className="animalInfo">{animal.name}
               {this.getEditIcon()}
               </h1>
-              <p className="animalInfo">{animal.age} years old</p>
+              {this.getAgeDisplay()}
               <p className="animalInfo">{animal.status}</p>
               <p className="animalInfo">{animal.breed}</p>
             </div>

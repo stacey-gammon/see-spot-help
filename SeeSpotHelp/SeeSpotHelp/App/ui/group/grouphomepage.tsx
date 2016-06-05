@@ -16,6 +16,8 @@ import PermissionsStore from '../../stores/permissionsstore';
 import StoreStateHelper from '../../stores/storestatehelper';
 
 export default class GroupHomePage extends React.Component<any, any> {
+  public mounted: boolean = false;
+
   constructor(props) {
     super(props);
     var groupId = Utils.FindPassedInProperty(this, 'groupId');
@@ -23,13 +25,15 @@ export default class GroupHomePage extends React.Component<any, any> {
     Utils.LoadOrSaveState(this.state);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.loadFromServer();
+    this.mounted = true;
   }
 
   componentWillUnmount() {
     StoreStateHelper.RemoveChangeListeners([LoginStore, GroupStore], this);
     PermissionsStore.removePropertyListener(this);
+    this.mounted = false;
   }
 
   loadFromServer() {
@@ -48,6 +52,8 @@ export default class GroupHomePage extends React.Component<any, any> {
 
     GroupStore.ensureItemById(groupId).then(
       function () {
+        if (!this.mounted) return;
+
         var group = GroupStore.getGroupById(groupId);
         var permission = StoreStateHelper.GetPermission(this.state);
         if (group) {

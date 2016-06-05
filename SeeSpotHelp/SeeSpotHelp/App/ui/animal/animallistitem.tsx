@@ -14,7 +14,10 @@ export default class AnimalListItem extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }
-
+  getAgeDisplay() {
+    if (!this.props.animal.age) return null;
+    return <div className='animalThumbnailText'>Age: {this.props.animal.age}</div>
+  }
   render() {
     return (
       <a href='#' key={this.props.animal.id} className='list-group-item animalListElement'>
@@ -32,7 +35,7 @@ export default class AnimalListItem extends React.Component<any, any> {
                 <h4>{this.props.animal.name}</h4>
                 <div className='animalThumbnailText'>{this.props.animal.status}</div>
                 <div className='animalThumbnailText'>{this.props.animal.breed}</div>
-                <div className='animalThumbnailText'>{this.props.animal.age} years old</div>
+                {this.getAgeDisplay()}
               </div>
               <div className='media-body'>
                 <div className='list-item-description'>

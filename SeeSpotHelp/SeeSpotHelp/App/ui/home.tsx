@@ -31,6 +31,9 @@ var UserSettingsPage = require('./person/usersettingspage');
 
 import LoginStore from '../stores/loginstore';
 
+// Comment out for debugging logs.
+console.log = function() {}
+
 var Home = React.createClass({
   contextTypes: {
     router: React.PropTypes.object.isRequired
