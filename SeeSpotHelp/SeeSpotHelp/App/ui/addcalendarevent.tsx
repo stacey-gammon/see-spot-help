@@ -440,9 +440,9 @@ export default class AddCalendarEvent extends React.Component<any, any> {
           </div>
           <div style={{textAlign: 'center'}}>
             <button className="btn btn-info" disabled={disableEditing}
-              onClick={this.scheduleEvent}>{buttonText}</button>
+              onClick={this.scheduleEvent.bind(this)}>{buttonText}</button>
             {this.getDeleteButton()}
-            <button className="btn btn-default" onClick={this.goBack}>
+            <button className="btn btn-default" onClick={this.goBack.bind(this)}>
               Back
             </button>
           </div>
