@@ -37,7 +37,7 @@ var Calendar = React.createClass({
   },
 
   onChange: function() {
-    console.log('removing events');
+    console.log('Calendar:onChange');
     $('#calendar').fullCalendar('removeEvents');
     var events = this.getEvents();
     console.log('adding event source with ', events);
@@ -66,25 +66,17 @@ var Calendar = React.createClass({
     var schedule;
 
     if (this.props.view == 'animal' && this.props.animalId) {
+      ScheduleStore.addPropertyListener(this, 'animalId', this.props.animalId, this.onChange.bind(this));
       schedule = ScheduleStore.getScheduleByAnimalId(this.props.animalId);
-      if (!schedule) {
-        ScheduleStore.addPropertyListener(this, 'animalId', this.props.animalId, this.onChange.bind(this));
-      }
     } else if (this.props.view == 'group' && this.props.group) {
+      ScheduleStore.addPropertyListener(this, 'groupId', this.props.group.id, this.onChange.bind(this));
       schedule = ScheduleStore.getScheduleByGroup(this.props.group.id);
-      if (!schedule) {
-        ScheduleStore.addPropertyListener(this, 'groupId', this.props.group.id, this.onChange.bind(this));
-      }
     } else if (this.props.view == 'member' && this.props.memberId) {
+      ScheduleStore.addPropertyListener(this, 'userId', this.props.memberId, this.onChange.bind(this));
       schedule = ScheduleStore.getScheduleByMember(this.props.memberId);
-      if (!schedule) {
-        ScheduleStore.addPropertyListener(this, 'userId', this.props.memberId, this.onChange.bind(this));
-      }
     } else if (this.props.view == 'profile' && LoginStore.getUser()) {
+      ScheduleStore.addPropertyListener(this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
       schedule = ScheduleStore.getScheduleByMember(LoginStore.getUser().id);
-      if (!schedule) {
-        ScheduleStore.addPropertyListener(this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
-      }
     }
 
     if (!schedule) return [];
