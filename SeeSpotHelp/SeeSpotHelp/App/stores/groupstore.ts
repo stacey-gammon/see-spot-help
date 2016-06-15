@@ -6,6 +6,7 @@ var ActionConstants = require('../constants/actionconstants');
 import Group from '../core/databaseobjects/group';
 import Animal from '../core/databaseobjects/animal';
 import DatabaseObject from '../core/databaseobjects/databaseobject';
+import { Status } from '../core/databaseobjects/databaseobject';
 
 import DataServices from '../core/dataservices';
 import VolunteerStore from "../stores/volunteerstore";
@@ -37,7 +38,7 @@ class GroupStore extends BaseStore {
         var group = this.storage[permissions[i].groupId];
         if (!group) {
           this.downloadItem(permissions[i].groupId);
-        } else {
+        } else if (group.status != Status.ARCHIVED) {
           groupsForUser.push(this.storage[permissions[i].groupId]);
         }
       }

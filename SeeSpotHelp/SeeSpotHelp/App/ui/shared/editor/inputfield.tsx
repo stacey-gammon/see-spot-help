@@ -1,9 +1,15 @@
 import * as React from 'react';
 
+var DatePicker = require('react-datepicker');
+
 import InputField from '../../../core/editor/inputfields/inputfield';
 import InputListField from '../../../core/editor/inputfields/inputlistfield';
-import InputAutoSuggestField from './inputautosuggestfield';
 import { InputFieldType } from '../../../core/editor/inputfields/inputfield';
+
+import TimeInputField from './timeinputfield';
+import InputAutoSuggestField from './inputautosuggestfield';
+import GroupSelectFieldUI from './groupselectfieldui';
+import AnimalSelectFieldUI from './animalselectfieldui';
 
 export default class InputFieldElement extends React.Component<any, any> {
   constructor(props) {
@@ -12,14 +18,15 @@ export default class InputFieldElement extends React.Component<any, any> {
 
   getValue() {
     var element = this.refs[this.props.inputField.ref] as any;
-    var retval = element.value || element.src || (element.hasOwnProperty("getValue") && element.getValue());
+    var retval = element.value || element.src;
+    if (!retval && element.getValue) {
+      retval = element.getValue();
+    }
     return retval;
   }
 
   createTypeOption(option) {
-    return (
-      <option value={option}>{option}</option>
-    );
+    return <option value={option}>{option}</option>
   }
 
   getInputListElement(inputField: InputListField) {
@@ -63,6 +70,20 @@ export default class InputFieldElement extends React.Component<any, any> {
          defaultValue={inputField.value}/>);
   }
 
+  getDateInputElement(inputField) {
+    return (
+      <DatePicker
+        className="form-control"
+        style={{display: 'inline-block', margin: '0px 3px', width: '300px'}}
+        id="datePicker"
+        ref="date"
+        disabled={inputField.disabled}
+        selected={inputField.value}
+        onChange={inputField.onChange}
+        placeholderText="Start Date"/>
+    );
+  }
+
   getInputElement(inputField) {
     if (inputField.type == InputFieldType.TEXT) {
       return this.getInputTextElement(inputField);
@@ -74,6 +95,14 @@ export default class InputFieldElement extends React.Component<any, any> {
       return this.getInputPhotoElement(inputField);
     } else if (inputField.type == InputFieldType.AUTO_SUGGEST) {
       return <InputAutoSuggestField ref={inputField.ref} inputField={inputField} />
+    } else if (inputField.type == InputFieldType.GROUP_SELECT) {
+      return <GroupSelectFieldUI ref={inputField.ref} inputField={inputField} />
+    } else if (inputField.type == InputFieldType.ANIMAL_SELECT) {
+      return <AnimalSelectFieldUI ref={inputField.ref} inputField={inputField} />
+    } else if (inputField.type == InputFieldType.DATE){
+      return this.getDateInputElement(inputField);
+    }  else if (inputField.type == InputFieldType.TIME){
+      return <TimeInputField ref={inputField.ref} inputField={inputField}/>
     } else {
       return null;
     }

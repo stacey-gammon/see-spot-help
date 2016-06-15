@@ -27,7 +27,9 @@ export default class EditorElement extends React.Component<any, any> {
 
   validateFields() {
     var validated = this.props.editor.validateFields();
-    if (!validated) { this.forceUpdate(); }
+    if (!validated) {
+      this.setState({errorMessage: this.props.editor.errorMessage });
+    }
     return validated;
   }
 

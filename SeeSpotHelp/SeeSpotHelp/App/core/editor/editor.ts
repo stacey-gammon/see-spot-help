@@ -5,6 +5,7 @@ import InputField from './inputfields/inputfield';
 export abstract class Editor {
   protected databaseObject: DatabaseObject;
   protected inputFields: {}
+  public errorMessage: string;
 
   constructor(databaseObject) {
     this.databaseObject = databaseObject;
@@ -39,7 +40,7 @@ export abstract class Editor {
     return this.databaseObject.delete();
   }
 
-  validateFields() {
+  validateFields() : boolean {
     var errorFound = false;
     for (var key in this.inputFields) {
       var field = this.inputFields[key];

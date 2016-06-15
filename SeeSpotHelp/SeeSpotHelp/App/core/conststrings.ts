@@ -21,7 +21,12 @@ var ConstStrings = {
   Status: 'Status',
   Comment: 'Comment',
   AboutMe: 'About Me',
-  Email: 'Email'
+  Email: 'Email',
+  StartTime: 'Start Time',
+  EndTime: 'End Time',
+  Date: 'Date',
+  Group: 'Group',
+  Animal: 'Animal'
 };
 
 export default ConstStrings;

@@ -15,7 +15,6 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin()
     ],
-  	devtool: 'source-map',
     module: {
         loaders: [
             {
@@ -25,7 +24,7 @@ module.exports = {
                 loader: 'jsx-loader?insertPragma=React.DOM&harmony'
             },
             { test: /\.css$/, loader: "style-loader!css-loader" },
-		    { test: /\.json$/, loaders: ['json']},
+        { test: /\.json$/, loaders: ['json']},
         ]
     },
     resolve: {

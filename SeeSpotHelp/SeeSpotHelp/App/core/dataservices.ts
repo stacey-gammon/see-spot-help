@@ -196,7 +196,7 @@ export default class DataServices {
       contentType: fullBlob.type
     };
     var picUploadTask = picRef.put(fullBlob, metadata);
-    let picCompleter = new $.Deferred();
+    let picCompleter = $.Deferred();
     picUploadTask.on('state_changed', null, error => {
       picCompleter.reject(error);
       console.error('Error while uploading new pic', error);
@@ -211,7 +211,7 @@ export default class DataServices {
     // Start the thumb file upload to Firebase Storage.
     let thumbRef = Firebase.storage().ref(thumbUrl);
     var tumbUploadTask = thumbRef.put(thumbBlob, metadata);
-    let thumbCompleter = new $.Deferred();
+    let thumbCompleter = $.Deferred();
     tumbUploadTask.on('state_changed', null, error => {
       thumbCompleter.reject(error);
       console.error('Error while uploading new thumb', error);
@@ -225,7 +225,7 @@ export default class DataServices {
     var listUrl = `${userId}/list/${Date.now()}/${fileName}`;
     let listRef = Firebase.storage().ref(listUrl);
     var listUploadTask = listRef.put(listBlob, metadata);
-    let listCompleter = new $.Deferred();
+    let listCompleter = $.Deferred();
     listUploadTask.on('state_changed', null, error => {
       listCompleter.reject(error);
       console.error('Error while uploading new list', error);

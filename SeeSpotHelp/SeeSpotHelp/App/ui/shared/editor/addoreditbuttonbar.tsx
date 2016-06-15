@@ -37,11 +37,11 @@ export default class AddOrEditButtonBar extends React.Component<any, any> {
 
     return (
       <div className='center-block button-bar'>
-        <button className='btn btn-info' disabled={editDisabled} onClick={onAddOrEdit}>
+        {this.getDeleteGroupButton()}
+        <button className='btn btn-info pull-right' disabled={editDisabled} onClick={onAddOrEdit}>
           {addOrEditText}
         </button>
-        {this.getDeleteGroupButton()}
-        <button className='btn btn-info' onClick={this.cancel.bind(this)}>
+        <button className='btn btn-info pull-right' onClick={this.cancel.bind(this)}>
           Cancel
         </button>
       </div>

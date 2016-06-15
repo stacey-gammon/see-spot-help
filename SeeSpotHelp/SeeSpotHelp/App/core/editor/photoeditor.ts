@@ -92,7 +92,7 @@ export default class PhotoEditor extends Editor {
         // Generate thumb.
         let maxThumbDimension = THUMBNAIL_SIZE.maxDimension
         let thumbCanvas = PhotoEditor._getScaledCanvas(image, maxThumbDimension);
-        thumbCanvas.toBlob(function(blob) {
+      (thumbCanvas as any).toBlob(function(blob) {
           resolve(blob);
         }, 'image/jpeg', THUMBNAIL_SIZE.quality);
     });
@@ -101,7 +101,7 @@ export default class PhotoEditor extends Editor {
         // Generate thumb.
         let maxListDimension = LIST_SIZE.maxDimension
         let listCanvas = PhotoEditor._getScaledCanvas(image, maxListDimension);
-        listCanvas.toBlob(function(blob) {
+        (listCanvas as any).toBlob(function(blob) {
           resolve(blob);
         }, 'image/jpeg', LIST_SIZE.quality);
     });
@@ -110,7 +110,7 @@ export default class PhotoEditor extends Editor {
         // Generate full sized image.
         let maxFullDimension = FULL_SIZE.maxDimension;
         let fullCanvas = PhotoEditor._getScaledCanvas(image, maxFullDimension);
-        fullCanvas.toBlob(function(blob) {
+        (fullCanvas as any).toBlob(function(blob) {
           resolve(blob);
         }, 'image/jpeg', FULL_SIZE.quality);
     });

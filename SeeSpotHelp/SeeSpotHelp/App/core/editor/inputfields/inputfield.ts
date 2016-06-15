@@ -9,6 +9,10 @@ export enum InputFieldType {
   PHOTO,
   AUTO_SUGGEST,
   CHECKBOX,
+  DATE,
+  TIME,
+  GROUP_SELECT,
+  ANIMAL_SELECT,
   HIDDEN
 }
 
@@ -23,9 +27,11 @@ export default class InputField {
   public ref: string = '';
   public type: InputFieldType = InputFieldType.TEXT;
   public validations: Array<any> = [];
+  public onChange: any;
 
-  constructor (validations?) {
+  constructor (validations?, type?) {
     this.validations = validations ? validations : [];
+    this.type = type ? type : InputFieldType.TEXT;
   }
 
   getUserString() {

@@ -56,14 +56,8 @@ var UserSettingsPage = React.createClass({
           <br/><br/>
         </div>
       );
-    } else {
-      return (
-        <div>
-          <h1>To get started, log in with facebook</h1>
-          <FacebookLogin />
-        </div>
-      );
     }
+    return null;
   }
 });
 
