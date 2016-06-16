@@ -14,7 +14,8 @@ export default class AnimalSelectFieldUI extends React.Component<any, any> {
   }
 
   getValue() {
-    return this.refs[this.props.inputField.ref].value;
+    var element = this.refs[this.props.inputField.ref];
+    return element ? element.value : this.props.inputField.value || this.props.inputField.getDefaultValue();
   }
 
   componentDidMount() {
@@ -47,8 +48,10 @@ export default class AnimalSelectFieldUI extends React.Component<any, any> {
     var defaultValue = inputField.value ? inputField.value : inputField.getDefaultValue();
     return (
       <select defaultValue={defaultValue}
-          className={inputFieldClassName}
-          id={inputField.ref} ref={inputField.ref}>
+              className={inputFieldClassName}
+              disabled={inputField.disabled}
+              id={inputField.ref}
+              ref={inputField.ref}>
         {options}
       </select>);
   }

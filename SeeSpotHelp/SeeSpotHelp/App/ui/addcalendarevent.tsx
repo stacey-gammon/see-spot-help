@@ -5,8 +5,6 @@ var Router = require("react-router");
 var Loader = require('react-loader');
 
 import EditorElement from './shared/editor/editorelement';
-import GroupSelectFieldUI from './shared/editor/groupselectfield';
-import AnimalSelectFieldUI from './shared/editor/animalselectfield';
 
 import Utils from './uiutils';
 import LoginStore from '../stores/loginstore';
@@ -16,6 +14,7 @@ import VolunteerStore from '../stores/volunteerstore';
 import AnimalStore from '../stores/animalstore';
 import PermissionsStore from '../stores/permissionsstore';
 import Schedule from '../core/databaseobjects/schedule';
+import Volunteer from '../core/databaseobjects/volunteer';
 import ScheduleEditor from '../core/editor/scheduleeditor';
 
 import StoreStateHelper from '../stores/storestatehelper';
@@ -70,12 +69,36 @@ export default class AddCalendarEvent extends React.Component<any, any> {
   componentWillUnmount() {
   }
 
+  viewOnly() {
+    return !LoginStore.getUser() ||
+      (this.state.schedule && this.state.schedule.userId != LoginStore.getUser().id);
+  }
+
   ensureRequiredState() {
     var editor = this.props.mode == 'add' ?
         new ScheduleEditor(null) : new ScheduleEditor(this.state.schedule);
+
+    editor.inputFields['animal'].value = this.state.animalId;
+    editor.inputFields['group'].value = this.state.group ? this.state.group.id : '';
+    editor.inputFields['date'].value = this.state.startDate;
+
+    // A day click defaults the time to 12 am, lets reset that to a full day event.
+    if (this.state.startTime == '12:00 am' && this.state.startTime == this.state.endTime) {
+      this.state.startTime = this.state.endTime = '';
+    }
+
+    editor.inputFields['startTime'].value = this.state.startTime;
+    editor.inputFields['endTime'].value = this.state.endTime;
     var permission = StoreStateHelper.GetPermission(this.state.group);
 
-    this.setState({ permission: permission, editor: editor });
+    if (this.viewOnly() && this.state.schedule) {
+      VolunteerStore.ensureItemById(this.state.schedule.userId).then(function(user: Volunteer) {
+        editor.inputFields['member'].value = user.name;
+        this.setState({ permission: permission, editor: editor });
+      }.bind(this));
+    } else {
+      this.setState({ permission: permission, editor: editor });
+    }
   }
 
   goBack() {
@@ -87,6 +110,9 @@ export default class AddCalendarEvent extends React.Component<any, any> {
       return <Loader loaded="false"/>
     }
       var title = this.state.mode == 'add' ? 'Add Event' : 'Edit Event';
+      if (this.viewOnly() && this.state.schedule) {
+        title = 'View Event';
+      }
       var extraFields = {
         animalId: this.state.animalId
       };

@@ -7,6 +7,7 @@ import { InputFieldType } from "./inputfield";
 import GroupStore from '../../../stores/groupstore';
 import LoginStore from '../../../stores/loginstore';
 import PermissionsStore from '../../../stores/permissionsstore';
+import { Status } from '../../databaseobjects/databaseobject';
 
 // Represents an input form field of the drop down list type.
 export default class GroupSelectField extends InputField {
@@ -41,9 +42,9 @@ export default class GroupSelectField extends InputField {
     for (var i = 0; i < permissions.length; i++) {
       if (permissions[i].inGroup) {
         let groupId = permissions[i].groupId;
-        GroupStore.addPropertyListener(this, 'groupId', groupId, this.populate.bind(this));
+        GroupStore.addPropertyListener(this, 'id', groupId, this.populate.bind(this));
         let group = GroupStore.getGroupById(groupId);
-        if (group) { groups.push(group); }
+        if (group && group.status !== Status.ARCHIVED) { groups.push(group); }
         this.loading = this.loading || GroupStore.isItemDownloading(groupId);
       }
     }
@@ -52,7 +53,7 @@ export default class GroupSelectField extends InputField {
       for (let i = 0; i < groups.length; i++) {
         this.options.push({ name: groups[i].name, value: groups[i].id });
       }
-      this.onLoad();
+      if (this.onLoad) { this.onLoad(); }
     }
   }
 }

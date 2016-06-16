@@ -174,13 +174,11 @@ abstract class BaseStore extends EventEmitter {
     var items = [];
     for (var i = 0; i < storageMapping[propertyValue].length; i++) {
       var item = this.storage[storageMapping[propertyValue][i]];
-      if (item) {
+      if (item && item.status !== Status.ARCHIVED) {
         items.push(item);
-      } else {
-        console.log('WARN: item in storage is null... are we downloading it?');
       }
     }
-    items.sort(function(a,b) {
+    items.sort(function(a, b) {
       return a.timestamp < b.timestamp ? 1 : -1;
     });
     return items;

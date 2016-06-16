@@ -37,8 +37,20 @@ export default class SchedulEditor extends Editor {
     return this.databaseObject.update();
   }
 
+  getShowMemberField() {
+    return this.databaseObject && LoginStore.getUser().id != this.databaseObject.userId;
+  }
+
+  createMemberInputField() {
+    var inputField = new InputField([],
+        this.getShowMemberField() ? InputFieldType.TEXT : InputFieldType.HIDDEN);
+    inputField.disabled = true;
+    return inputField;
+  }
+
   createInputFields() {
     this.inputFields = {
+      'member': this.createMemberInputField(),
       'group': this.createGroupSelectField(),
       'animal': new AnimalSelectField([InputFieldValidation.validateNotEmpty]),
       'date': new InputField([InputFieldValidation.validateNotEmpty], InputFieldType.DATE),
@@ -46,8 +58,11 @@ export default class SchedulEditor extends Editor {
       'endTime': new InputField([], InputFieldType.TIME),
       'description': new InputTextAreaField([])
     };
-    if (this.databaseObject) {
-      this.inputFields['user'] = new InputField([]);
+
+    if (this.getShowMemberField()) {
+      for (var prop in this.inputFields) {
+        this.inputFields[prop].disabled = true;
+      }
     }
   }
 

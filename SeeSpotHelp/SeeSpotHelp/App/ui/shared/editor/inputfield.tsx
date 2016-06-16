@@ -6,6 +6,7 @@ import InputField from '../../../core/editor/inputfields/inputfield';
 import InputListField from '../../../core/editor/inputfields/inputlistfield';
 import { InputFieldType } from '../../../core/editor/inputfields/inputfield';
 
+import InputDateField from './inputdatefield';
 import TimeInputField from './timeinputfield';
 import InputAutoSuggestField from './inputautosuggestfield';
 import GroupSelectFieldUI from './groupselectfieldui';
@@ -49,6 +50,7 @@ export default class InputFieldElement extends React.Component<any, any> {
         ref={inputField.ref}
         id={inputField.ref}
         rows="5"
+        disabled={inputField.disabled}
         defaultValue={inputField.value}>
       </textarea>);
   }
@@ -64,52 +66,40 @@ export default class InputFieldElement extends React.Component<any, any> {
     var inputFieldClassName = 'form-control ' + inputField.ref;
     return (
       <input type='text'
+         disabled={inputField.disabled}
          ref={inputField.ref}
          id={inputField.ref}
          className={inputFieldClassName}
          defaultValue={inputField.value}/>);
   }
 
-  getDateInputElement(inputField) {
-    return (
-      <DatePicker
-        className="form-control"
-        style={{display: 'inline-block', margin: '0px 3px', width: '300px'}}
-        id="datePicker"
-        ref="date"
-        disabled={inputField.disabled}
-        selected={inputField.value}
-        onChange={inputField.onChange}
-        placeholderText="Start Date"/>
-    );
-  }
-
   getInputElement(inputField) {
-    if (inputField.type == InputFieldType.TEXT) {
-      return this.getInputTextElement(inputField);
-    } else if (inputField.type == InputFieldType.TEXT_AREA) {
-      return this.getInputTextAreaElement(inputField);
-    } else if (inputField.type == InputFieldType.LIST) {
-      return this.getInputListElement(inputField);
-    } else if (inputField.type == InputFieldType.PHOTO){
-      return this.getInputPhotoElement(inputField);
-    } else if (inputField.type == InputFieldType.AUTO_SUGGEST) {
-      return <InputAutoSuggestField ref={inputField.ref} inputField={inputField} />
-    } else if (inputField.type == InputFieldType.GROUP_SELECT) {
-      return <GroupSelectFieldUI ref={inputField.ref} inputField={inputField} />
-    } else if (inputField.type == InputFieldType.ANIMAL_SELECT) {
-      return <AnimalSelectFieldUI ref={inputField.ref} inputField={inputField} />
-    } else if (inputField.type == InputFieldType.DATE){
-      return this.getDateInputElement(inputField);
-    }  else if (inputField.type == InputFieldType.TIME){
-      return <TimeInputField ref={inputField.ref} inputField={inputField}/>
-    } else {
-      return null;
+    switch (inputField.type) {
+      case InputFieldType.TEXT:
+        return this.getInputTextElement(inputField);
+      case InputFieldType.TEXT_AREA:
+        return this.getInputTextAreaElement(inputField);
+      case InputFieldType.LIST:
+        return this.getInputListElement(inputField);
+      case InputFieldType.PHOTO:
+        return this.getInputPhotoElement(inputField);
+      case InputFieldType.AUTO_SUGGEST:
+        return <InputAutoSuggestField ref={inputField.ref} inputField={inputField} />
+      case InputFieldType.GROUP_SELECT:
+        return <GroupSelectFieldUI ref={inputField.ref} inputField={inputField} />
+      case InputFieldType.ANIMAL_SELECT:
+        return <AnimalSelectFieldUI ref={inputField.ref} inputField={inputField} />
+      case InputFieldType.DATE:
+        return <InputDateField ref={inputField.ref} inputField={inputField}/>
+      case InputFieldType.TIME:
+        return <TimeInputField ref={inputField.ref} inputField={inputField}/>
+      default:
+        return null;
     }
   }
 
   getLabel(inputField) {
-    if (inputField.getUserString()) {
+    if (inputField.getUserString() && inputField.type != InputFieldType.HIDDEN) {
       return (
         <span className='input-group-addon'>{inputField.getUserString()}</span>
       );

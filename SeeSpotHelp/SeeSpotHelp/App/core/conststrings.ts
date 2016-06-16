@@ -26,7 +26,8 @@ var ConstStrings = {
   EndTime: 'End Time',
   Date: 'Date',
   Group: 'Group',
-  Animal: 'Animal'
+  Animal: 'Animal',
+  Member: 'Member'
 };
 
 export default ConstStrings;

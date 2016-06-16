@@ -4,7 +4,7 @@ import InputField from './inputfields/inputfield';
 
 export abstract class Editor {
   protected databaseObject: DatabaseObject;
-  protected inputFields: {}
+  public inputFields: {}
   public errorMessage: string;
 
   constructor(databaseObject) {

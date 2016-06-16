@@ -29,7 +29,7 @@ export default class TimeInputField extends React.Component<any, any> {
   }
 
   clickedTime() {
-    var defaultTime = this.props.inputField.defaultValue
+    var defaultTime = this.props.inputField.value
     if (defaultTime == '' && this.getValue() == '') {
       $('#' + this.props.inputField.ref).timepicker('setTime', '12:00pm');
     }
@@ -46,9 +46,9 @@ export default class TimeInputField extends React.Component<any, any> {
            data-modal-backdrop="true"  >
         <input className="form-control input-small"
                type='text'
-               disabled={this.props.disableEditing}
+               disabled={this.props.inputField.disabled}
                onClick={this.clickedTime.bind(this)}
-               defaultValue={this.props.inputField.defaultValue}
+               defaultValue={this.props.inputField.value}
                id={this.props.inputField.ref}
                ref={this.props.inputField.ref} />
       </div>

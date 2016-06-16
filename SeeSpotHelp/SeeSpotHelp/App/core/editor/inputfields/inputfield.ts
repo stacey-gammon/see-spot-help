@@ -28,6 +28,7 @@ export default class InputField {
   public type: InputFieldType = InputFieldType.TEXT;
   public validations: Array<any> = [];
   public onChange: any;
+  public disabled: boolean = false;
 
   constructor (validations?, type?) {
     this.validations = validations ? validations : [];
