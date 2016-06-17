@@ -84,6 +84,14 @@ export default class AddCalendarEvent extends React.Component<any, any> {
       this.state.startTime = this.state.endTime = '';
     }
 
+    if (this.state.group) {
+      editor.inputFields['groupId'].disabled = true;
+      editor.inputFields['groupId'].value = this.state.group.id;
+    }
+    if (this.state.animalId) {
+      editor.inputFields['animalId'].disabled = true;
+      editor.inputFields['animalId'].value = this.state.animalId;
+    }
     editor.inputFields['startTime'].value = this.state.startTime;
     editor.inputFields['endTime'].value = this.state.endTime;
     var permission = StoreStateHelper.GetPermission(this.state);
