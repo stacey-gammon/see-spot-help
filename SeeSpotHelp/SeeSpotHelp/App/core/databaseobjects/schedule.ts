@@ -25,8 +25,8 @@ export default class Schedule extends DatabaseObject {
     super.updateFromInputFields(inputFields);
     var inputEndField = inputFields['endTime'];
     var inputStartField = inputFields['startTime'];
+    var start = moment(inputFields['date'].value);
     if (inputStartField.value && inputEndField.value) {
-      var start = moment(inputFields['date'].value);
       this.start = start.format('MM-DD-YYYY') + ' ' + inputStartField.value;
       this.end = start.format('MM-DD-YYYY') + ' ' + inputEndField.value;
     } else {

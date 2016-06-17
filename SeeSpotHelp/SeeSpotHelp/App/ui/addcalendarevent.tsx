@@ -80,7 +80,8 @@ export default class AddCalendarEvent extends React.Component<any, any> {
     editor.inputFields['date'].value = this.state.startDate.format('MM-DD-YYYY');
 
     // A day click defaults the time to 12 am, lets reset that to a full day event.
-    if (this.state.startTime == '12:00 am' && this.state.startTime == this.state.endTime) {
+    if (this.state.startTime == '12:00 am' && (
+          this.state.startTime == this.state.endTime || this.state.endTime == 'Invalid date')) {
       this.state.startTime = this.state.endTime = '';
     }
 

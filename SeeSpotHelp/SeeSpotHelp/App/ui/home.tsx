@@ -32,7 +32,7 @@ var UserSettingsPage = require('./person/usersettingspage');
 import LoginStore from '../stores/loginstore';
 
 // Comment out for debugging logs.
-// console.log = function() {}
+console.log = function() {}
 
 export default class Home extends React.Component<any, any> {
   public props: any;

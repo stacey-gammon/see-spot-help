@@ -20,7 +20,7 @@ export default class TimeInputField extends React.Component<any, any> {
       modalBackdrop: true,
       showSeconds: false,
       showMeridian: true,
-      defaultTime: this.props.inputField.defaultValue
+      defaultTime: this.props.inputField.value
     });
   }
 
