@@ -50,9 +50,10 @@ export default class SchedulEditor extends Editor {
 
   createInputFields() {
     this.inputFields = {
-      'member': this.createMemberInputField(),
-      'group': this.createGroupSelectField(),
-      'animal': new AnimalSelectField([InputFieldValidation.validateNotEmpty]),
+      'userId': this.createMemberInputField(),
+      'groupId': this.createGroupSelectField(),
+      'animalId': this.createAnimalSelectField(),
+      'animalId': new AnimalSelectField([InputFieldValidation.validateNotEmpty]),
       'date': new InputField([InputFieldValidation.validateNotEmpty], InputFieldType.DATE),
       'startTime': new InputField([], InputFieldType.TIME),
       'endTime': new InputField([], InputFieldType.TIME),
@@ -69,18 +70,29 @@ export default class SchedulEditor extends Editor {
   createGroupSelectField() {
     var inputField = new GroupSelectField([InputFieldValidation.validateNotEmpty]);
     inputField.onChange = this.fillAnimalDropDown.bind(this);
+    if (this.databaseObject) {
+      inputField.value = this.databaseObject.groupId;
+    }
+    return inputField;
+  }
+
+  createAnimalSelectField() {
+    var inputField = new AnimalSelectField([InputFieldValidation.validateNotEmpty]);
+    if (this.databaseObject) {
+      inputField.value = this.databaseObject.animalId;
+    }
     return inputField;
   }
 
   fillAnimalDropDown() {
-    this.inputFields['animal'].populate(this.inputFields['group'].value);
+    this.inputFields['animalId'].populate(this.inputFields['groupId'].value);
   }
 
   validateFields() : boolean {
     this.errorMessage = null;
-    var errorFound = super.validateFields();
-    var startTimeInputField = this.inputFields['endTime'];
-    var endTimeInputField = this.inputFields['startTime'];
+    var errorFound = !super.validateFields();
+    var startTimeInputField = this.inputFields['startTime'];
+    var endTimeInputField = this.inputFields['endTime'];
 
     if ((endTimeInputField.value && !startTimeInputField.value) ||
         (!endTimeInputField.value && startTimeInputField.value)) {
@@ -94,10 +106,10 @@ export default class SchedulEditor extends Editor {
       var endDate =
           moment(date.format('MM-DD-YYYY') + ' ' + endTimeInputField.value, 'MM-DD-YYYY hh:mm a');
 
-      if (endDate.isBefore(startDate)) {
+      if (!startDate.isBefore(endDate)) {
         this.errorMessage = 'Start time must be before end time.';
       }
     }
-    return errorFound || !!this.errorMessage;
+    return !errorFound && !this.errorMessage;
   }
 }

@@ -6,8 +6,11 @@ var DatePicker = require('react-datepicker');
 export default class InputDateField extends React.Component<any, any> {
   constructor(props) {
     super(props);
+    if (!this.props.inputField.value) {
+      this.props.inputField.value = this.props.inputField.defaultValue;
+    }
     this.state = {
-      date: this.props.inputField.value || this.props.inputField.defaultValue
+      date: moment(this.props.inputField.value, 'MM-DD-YYYY')
     }
   }
 
@@ -15,6 +18,10 @@ export default class InputDateField extends React.Component<any, any> {
     this.setState({
       date: date
     })
+  }
+
+  getValue() {
+    return this.state.date.format('MM-DD-YYYY');
   }
 
   render() {
@@ -25,8 +32,8 @@ export default class InputDateField extends React.Component<any, any> {
         id="datePicker"
         ref="date"
         disabled={this.props.inputField.disabled}
-        selected={this.state.date}
         onChange={this.onChange.bind(this)}
+        selected={this.state.date}
         placeholderText="Start Date"/>
     );
   }

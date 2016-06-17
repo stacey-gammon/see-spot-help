@@ -18,6 +18,9 @@ export default class InputFieldElement extends React.Component<any, any> {
   }
 
   getValue() {
+    if (this.props.inputField.type == InputFieldType.HIDDEN) {
+      return this.props.inputField.value;
+    }
     var element = this.refs[this.props.inputField.ref] as any;
     var retval = element.value || element.src;
     if (!retval && element.getValue) {

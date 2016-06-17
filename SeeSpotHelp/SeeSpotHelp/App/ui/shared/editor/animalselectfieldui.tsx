@@ -30,6 +30,7 @@ export default class AnimalSelectFieldUI extends React.Component<any, any> {
   }
 
   onChange() {
+    this.props.inputField.value = this.getValue();
     this.setState({
       loaded: !this.props.inputField.loading
     });

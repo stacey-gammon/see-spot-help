@@ -77,10 +77,7 @@ export default class AddCalendarEvent extends React.Component<any, any> {
   ensureRequiredState() {
     var editor = this.props.mode == 'add' ?
         new ScheduleEditor(null) : new ScheduleEditor(this.state.schedule);
-
-    editor.inputFields['animal'].value = this.state.animalId;
-    editor.inputFields['group'].value = this.state.group ? this.state.group.id : '';
-    editor.inputFields['date'].value = this.state.startDate;
+    editor.inputFields['date'].value = this.state.startDate.format('MM-DD-YYYY');
 
     // A day click defaults the time to 12 am, lets reset that to a full day event.
     if (this.state.startTime == '12:00 am' && this.state.startTime == this.state.endTime) {
@@ -89,7 +86,7 @@ export default class AddCalendarEvent extends React.Component<any, any> {
 
     editor.inputFields['startTime'].value = this.state.startTime;
     editor.inputFields['endTime'].value = this.state.endTime;
-    var permission = StoreStateHelper.GetPermission(this.state.group);
+    var permission = StoreStateHelper.GetPermission(this.state);
 
     if (this.viewOnly() && this.state.schedule) {
       VolunteerStore.ensureItemById(this.state.schedule.userId).then(function(user: Volunteer) {

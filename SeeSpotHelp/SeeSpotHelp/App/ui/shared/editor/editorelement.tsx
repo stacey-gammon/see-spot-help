@@ -44,6 +44,8 @@ export default class EditorElement extends React.Component<any, any> {
       this.props.editor.update(this.props.extraFields).then(
         this.props.onEditOrInsert.bind(this),
         this.onError.bind(this));
+    } else if (this.props.editor.errorMessage) {
+      this.onError({ message: this.props.editor.errorMessage});
     }
   }
 
@@ -54,6 +56,8 @@ export default class EditorElement extends React.Component<any, any> {
       this.props.editor.insert(this.props.extraFields).then(
         this.props.onEditOrInsert.bind(this),
         this.onError.bind(this));
+    } else if (this.props.editor.errorMessage) {
+      this.onError({ message: this.props.editor.errorMessage});
     }
   }
 
