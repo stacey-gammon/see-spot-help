@@ -42,18 +42,16 @@ export default class SchedulEditor extends Editor {
   }
 
   createMemberInputField() {
-    var inputField = new InputField([],
-        this.getShowMemberField() ? InputFieldType.TEXT : InputFieldType.HIDDEN);
+    var inputField = new InputField([], InputFieldType.TEXT);
     inputField.disabled = true;
     return inputField;
   }
 
   createInputFields() {
     this.inputFields = {
-      'userId': this.createMemberInputField(),
+      'member': this.createMemberInputField(),
       'groupId': this.createGroupSelectField(),
       'animalId': this.createAnimalSelectField(),
-      'animalId': new AnimalSelectField([InputFieldValidation.validateNotEmpty]),
       'date': new InputField([InputFieldValidation.validateNotEmpty], InputFieldType.DATE),
       'startTime': new InputField([], InputFieldType.TIME),
       'endTime': new InputField([], InputFieldType.TIME),

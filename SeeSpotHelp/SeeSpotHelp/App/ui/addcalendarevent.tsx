@@ -15,6 +15,7 @@ import AnimalStore from '../stores/animalstore';
 import PermissionsStore from '../stores/permissionsstore';
 import Schedule from '../core/databaseobjects/schedule';
 import Volunteer from '../core/databaseobjects/volunteer';
+import Permission from '../core/databaseobjects/permission';
 import ScheduleEditor from '../core/editor/scheduleeditor';
 
 import StoreStateHelper from '../stores/storestatehelper';
@@ -96,15 +97,14 @@ export default class AddCalendarEvent extends React.Component<any, any> {
     editor.inputFields['startTime'].value = this.state.startTime;
     editor.inputFields['endTime'].value = this.state.endTime;
     var permission = StoreStateHelper.GetPermission(this.state);
-
-    if (this.viewOnly() && this.state.schedule) {
-      VolunteerStore.ensureItemById(this.state.schedule.userId).then(function(user: Volunteer) {
-        editor.inputFields['member'].value = user.name;
-        this.setState({ permission: permission, editor: editor });
-      }.bind(this));
-    } else {
-      this.setState({ permission: permission, editor: editor });
+    if (this.state.schedule &&
+        this.state.schedule.userId == LoginStore.getUser().id) {
+      permission = Permission.CreateAdminPermission(this.state.schedule.userId, '');
     }
+    VolunteerStore.ensureItemById(this.state.schedule.userId).then(function(user: Volunteer) {
+      editor.inputFields['member'].value = user.name;
+      this.setState({ permission: permission, editor: editor });
+    }.bind(this));
   }
 
   goBack() {

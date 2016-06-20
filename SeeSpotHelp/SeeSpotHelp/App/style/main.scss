@@ -31,22 +31,6 @@ h2 {
   letter-spacing: 1px;
 }
 
-.input-group-addon {
-    min-width:100px;// if you want width please write here //
-    text-align:left;
-}
-
-.input-group {
-  max-width: 600px;
-  margin: 5px auto;
-}
-
-.form-control {
-  max-width: 600px;
-  border-top-right-radius: 4px !important;
-  border-bottom-right-radius: 4px !important;
-}
-
 .PostTextArea {
   display: block !important;
   width: 100%;
@@ -62,7 +46,6 @@ h2 {
   margin: 0 auto;
   margin-top: -20px;
 }
-
 
 .glyph-warning {
   color: red;

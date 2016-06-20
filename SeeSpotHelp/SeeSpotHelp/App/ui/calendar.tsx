@@ -112,15 +112,15 @@ var Calendar = React.createClass({
         } else {
           event.color = this.getColorForVolunteer(volunteer, group);
         }
-      } else if (!this.props.memberId) {
-        // We are showing only an animals events, color by member.
-        event.color = this.getColorForVolunteer(volunteer, group);
-        event.title = volunteer.getDisplayName();
-      } else {
+      } else if (!this.props.animalId) {
         // We are on a member's tab, color by animal.  Colors might be the same if the user
         // belongs to more than one group.
         event.color = this.getColorForAnimal(animal, group);
         event.title = animal.name;
+      } else {
+        // We are showing only an animals events, color by member.
+        event.color = this.getColorForVolunteer(volunteer, group);
+        event.title = volunteer.getDisplayName();
       }
 
       event.start = moment(event.start);

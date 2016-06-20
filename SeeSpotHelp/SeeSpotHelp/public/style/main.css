@@ -6488,10 +6488,20 @@ body {
   border-bottom-left-radius: 0 !important;
   border-top-left-radius: 0 !important;
   border-bottom-right-radius: 4px !important;
-  border-top-right-radius: 4px !important; }
+  border-top-right-radius: 4px !important;
+  max-width: 600px; }
 
 .bootstrap-timepicker {
   margin: 0px !important; }
+
+.input-group-addon {
+  min-width: 100px;
+  text-align: left; }
+
+.input-group {
+  max-width: 600px;
+  margin: 5px auto;
+  width: 100%; }
 
 h1 {
   font-size: 15px;
@@ -6506,19 +6516,6 @@ h2 {
   text-align: center;
   margin: 2px;
   letter-spacing: 1px; }
-
-.input-group-addon {
-  min-width: 100px;
-  text-align: left; }
-
-.input-group {
-  max-width: 600px;
-  margin: 5px auto; }
-
-.form-control, .react-autosuggest__input {
-  max-width: 600px;
-  border-top-right-radius: 4px !important;
-  border-bottom-right-radius: 4px !important; }
 
 .PostTextArea {
   display: block !important;

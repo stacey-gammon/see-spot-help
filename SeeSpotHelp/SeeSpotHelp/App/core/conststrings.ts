@@ -28,6 +28,7 @@ var ConstStrings = {
   GroupId: 'Group',
   AnimalId: 'Animal',
   UserId: 'Member'
+  Member: 'Member'
 };
 
 export default ConstStrings;
