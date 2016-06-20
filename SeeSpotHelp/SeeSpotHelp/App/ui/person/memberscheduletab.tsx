@@ -7,7 +7,7 @@ import Utils from '../uiutils';
 import Animal from '../../core/databaseobjects/animal';
 import Group from '../../core/databaseobjects/group';
 import LoginStore from '../../stores/loginstore';
-var Calendar = require("../calendar");
+import Calendar from '../calendar';
 
 var GroupScheduleTab = React.createClass({
   getInitialState: function() {

@@ -3,8 +3,7 @@
 import * as React from 'react';
 import $ = require('jquery');
 
-var Calendar = require('../calendar');
-
+import Calendar from '../calendar';
 import LoginStore from '../../stores/loginstore';
 
 export default class GroupScheduleTab extends React.Component<any, any> {

@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require("react");
+import * as React from 'react';
 
 import Utils from './uiutils';
 import ScheduleStore from '../stores/schedulestore';
@@ -13,56 +13,57 @@ import moment = require('moment');
 
 var addCalendarEvent = require("./addcalendarevent");
 
-var Calendar = React.createClass({
-  getInitialState: function() {
-    var state = {
+export default class Calendar extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
+    this.state = {
       defaultView: null
     };
-    return state;
-  },
+    Utils.LoadOrSaveState(this.state);
+  }
 
-  contextTypes: {
+  static contextTypes = {
     router: React.PropTypes.object.isRequired
-  },
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.initializeCalendar();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     ScheduleStore.removePropertyListener(this);
     VolunteerStore.removePropertyListener(this);
     AnimalStore.removePropertyListener(this);
     GroupStore.removePropertyListener(this);
-  },
+  }
 
-  onChange: function() {
+  onChange() {
     console.log('Calendar:onChange');
     $('#calendar').fullCalendar('removeEvents');
     var events = this.getEvents();
     console.log('adding event source with ', events);
     $('#calendar').fullCalendar('addEventSource', events);
-  },
+  }
 
-  getColorForVolunteer: function (volunteer, group) {
+  getColorForVolunteer (volunteer, group) {
     if (!volunteer.color) {
       volunteer.color = group.GetColorForVolunteer();
       volunteer.update();
       group.update();
     }
     return volunteer.color;
-  },
+  }
 
-  getColorForAnimal: function (animal, group) {
+  getColorForAnimal (animal, group) {
     if (!animal.color) {
       animal.color = group.GetColorForAnimal();
       animal.update();
       group.update();
     }
     return animal.color;
-  },
+  }
 
-  getEvents: function() {
+  getEvents () {
     var schedule;
 
     if (this.props.view == 'animal' && this.props.animalId) {
@@ -130,9 +131,9 @@ var Calendar = React.createClass({
       }
     }
     return schedule;
-  },
+  }
 
-  initializeCalendar: function() {
+  initializeCalendar () {
     var events = this.getEvents();
     console.log('initializeCalendar with events: ', events);
     var outer = this;
@@ -140,7 +141,8 @@ var Calendar = React.createClass({
     $('#calendar').fullCalendar({
       height: 'auto',
       events: events,
-
+      minTime: '06:00:00',
+      maxTime: '22:00:00',
       defaultView: defaultView,
 
       header: {
@@ -188,9 +190,9 @@ var Calendar = React.createClass({
         Utils.LoadOrSaveState(stateDuplicate);
       }.bind(this)
     });
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate () {
     var calendar: JQuery = $("#calendar");
     // This is a really crappy hack. Full Calendar will not render if it's not visible
     // and because of the tabs, it isn't visible at first.  There isn't any react call that
@@ -199,15 +201,12 @@ var Calendar = React.createClass({
       console.log('re-rendering calendar');
       calendar.fullCalendar('render');
     }.bind(this), 300);
-  },
+  }
 
-  render: function() {
+  render () {
     console.log('Calendar: render');
     return (
       <div className="calendar-container" ref="calendar" id="calendar"></div>
     );
   }
-
-});
-
-module.exports = Calendar;
+}

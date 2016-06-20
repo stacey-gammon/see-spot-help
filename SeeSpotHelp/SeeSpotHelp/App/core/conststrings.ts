@@ -27,7 +27,7 @@ var ConstStrings = {
   Date: 'Date',
   GroupId: 'Group',
   AnimalId: 'Animal',
-  UserId: 'Member'
+  UserId: 'Member',
   Member: 'Member'
 };
 
