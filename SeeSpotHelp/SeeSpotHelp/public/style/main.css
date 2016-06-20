@@ -6502,6 +6502,10 @@ body {
   max-width: 600px;
   margin: 5px auto;
   width: 100%; }
+  .input-group select {
+    border-bottom-left-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+    -webkit-appearance: none; }
 
 h1 {
   font-size: 15px;
