@@ -76,11 +76,19 @@ export default class ActivityElement extends React.Component<any, any> {
                mode: 'edit' } });
   }
 
+  getEditMenuItem() {
+    if (this.props.activity.userId == LoginStore.getUser().id) {
+      return <MenuItem eventKey="1" onClick={this.editAction.bind(this)}>Edit</MenuItem>
+    } else {
+      return null;
+    }
+  }
+
   getActionDropDown() {
     return (
       <div className='dropdown activity-dropdown' id='actionDropDown'>
         <DropdownButton title="" id='actionDropDownButton'>
-          <MenuItem eventKey="1" onClick={this.editAction.bind(this)}>Edit</MenuItem>
+          {this.getEditMenuItem()}
           <MenuItem eventKey="2" onClick={this.deleteAction.bind(this)}>Delete</MenuItem>
         </DropdownButton>
       </div>
@@ -99,7 +107,7 @@ export default class ActivityElement extends React.Component<any, any> {
   getActions() {
     if (!LoginStore.getUser()) return null;
     if (this.props.activity.userId == LoginStore.getUser().id ||
-      this.props.permission.admin()) {
+        this.props.permission.admin()) {
       return (
         <div className="media-right">
           {this.getActionDropDown()}
