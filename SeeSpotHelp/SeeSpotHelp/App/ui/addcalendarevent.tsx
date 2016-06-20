@@ -96,10 +96,12 @@ export default class AddCalendarEvent extends React.Component<any, any> {
     }
     editor.inputFields['startTime'].value = this.state.startTime;
     editor.inputFields['endTime'].value = this.state.endTime;
+
     var permission = StoreStateHelper.GetPermission(this.state);
-    if (this.state.schedule &&
-        this.state.schedule.userId == LoginStore.getUser().id) {
-      permission = Permission.CreateAdminPermission(this.state.schedule.userId, '');
+    if (this.state.schedule) {
+      permission = this.state.schedule.userId == LoginStore.getUser().id ?
+          Permission.CreateAdminPermission(this.state.schedule.userId, '') :
+          Permission.CreateNonMemberPermission(this.state.schedule.userId, '');
     }
     VolunteerStore.ensureItemById(this.state.schedule.userId).then(function(user: Volunteer) {
       editor.inputFields['member'].value = user.name;
