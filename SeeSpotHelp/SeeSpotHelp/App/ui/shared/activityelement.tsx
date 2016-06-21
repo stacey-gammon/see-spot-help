@@ -16,6 +16,7 @@ import ConstStrings from '../../core/conststrings';
 import LoginStore from '../../stores/loginstore';
 import VolunteerStore from '../../stores/volunteerstore';
 import AnimalStore from '../../stores/animalstore';
+import PhotoStore from '../../stores/photostore';
 import PermissionsStore from '../../stores/permissionsstore';
 import AnimalActivityStore from '../../stores/animalactivitystore';
 import Activity from '../../core/databaseobjects/activity';
@@ -63,6 +64,12 @@ export default class ActivityElement extends React.Component<any, any> {
 
   deleteAction(event) {
     if (confirm("Are you sure you want to delete this post?")) {
+      if (this.props.activity.photoId) {
+        var photo = PhotoStore.getItemById(this.props.activity.photoId);
+        if (photo) {
+          photo.delete();
+        }
+      }
       this.props.activity.delete();
     }
   }

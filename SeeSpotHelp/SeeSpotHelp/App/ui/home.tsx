@@ -9,6 +9,7 @@ var DefaultRoute = ReactRouter.DefaultRoute;
 var hashHistory = ReactRouter.hashHistory;
 var IndexRoute = ReactRouter.IndexRoute;
 
+import ErrorPopup from './shared/errorpopup';
 import MyNavBar from './navbar';
 import DataServices from '../core/dataservices';
 
@@ -68,27 +69,28 @@ export default class Home extends React.Component<any, any> {
   }
 
   onAuthChanged(user) {
-    console.log('onAuthChanged with user ', user);
-    if (user) {
-      LoginStore.authenticated = true;
-      this.forceUpdate();
-    }
+    LoginStore.authenticated = !!user;
+    sessionStorage.setItem('loginStoreAuthenticating', '');
+    this.setState({error: false, errorMessage: null});
   }
 
   componentDidMount() {
     DataServices.OnAuthStateChanged(this.onAuthChanged.bind(this));
     LoginStore.ensureUser().then(
       function() {
-        this.forceUpdate();
+        this.setState({error: false, errorMessage: null});
         // If we don't have a user, we don't care about changes since a login event
         // cause an entire page refresh and then it will register.
-        LoginStore.addChangeListener(this.forceUpdate);
+        LoginStore.addChangeListener(this.forceUpdate.bind(this));
+      }.bind(this),
+      function(error) {
+        this.setState({error: true, errorMessage: error});
       }.bind(this)
     )
   }
 
   componentWillUnmount() {
-    LoginStore.removeChangeListener(this.forceUpdate.bind(this));
+    //LoginStore.removeChangeListener(this.forceUpdate.bind(this));
   }
 
   render() {
@@ -102,6 +104,7 @@ export default class Home extends React.Component<any, any> {
     if (LoginStore.getUser() && LoginStore.getUser().inBeta) {
       return (
         <div>
+          <ErrorPopup error={this.state.error} errorMessage={this.state.errorMessage}/>
           <MyNavBar/>
           {this.props.children}
         </div>

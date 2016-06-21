@@ -42,10 +42,6 @@ class LoginStore extends BaseStore {
       this.handleAction(action);
     }.bind(this));
 
-    this.checkAuthenticated();
-    if (this.isAuthenticating()) {
-      this.checkAuthenticatedWithRetries(0);
-    }
     DataServices.OnAuthStateChanged(this.onAuthStateChanged);
   }
 
@@ -57,10 +53,6 @@ class LoginStore extends BaseStore {
     if (user) {
       window.location.reloadPage();
     }
-  }
-
-  isAuthenticating() {
-    return sessionStorage.getItem('loginStoreAuthenticating');
   }
 
   // See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes for
@@ -99,8 +91,6 @@ class LoginStore extends BaseStore {
       sessionStorage.setItem('loginStoreAuthenticating', '');
       console.log("User " + authData.uid + " is logged in with " + authData.provider);
       return authData;
-    } else {
-      this.authenticated = false;
     }
   }
 
@@ -129,14 +119,6 @@ class LoginStore extends BaseStore {
 
   authenticate(onSuccess, onError) {
     this.loggedOut = false;
-    // Don't make duplicate calls for authenticating. We have to save these in session storage
-    // rather than class variables because the redirect will cause us to lose all state.
-    // We will expect the onAuth callback to be called once the user is redirected back here and
-    // authenticated.
-    // See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes for
-    // some subtle issues around this process.
-    if (sessionStorage.getItem('loginStoreAuthenticating')) return;
-    sessionStorage.setItem('loginStoreAuthenticating', 'true');
     DataServices.LoginWithFacebookPopUp(this.onAuthenticated.bind(this, onSuccess), onError);
   }
 
@@ -201,11 +183,12 @@ class LoginStore extends BaseStore {
     var authData = this.checkAuthenticated();
     if (authData) {
       this.downloadUser(authData.uid);
-    } else if (!this.authenticated && !sessionStorage.getItem('loginStoreAuthenticating')) {
-      this.authenticate();
-    } else {
-      this.reject();
     }
+    // else if (!this.authenticated && !sessionStorage.getItem('loginStoreAuthenticating')) {
+    //   this.authenticate();
+    // } else {
+    //   this.reject();
+    // }
   }
 
   downloadUser(userId) {
@@ -250,7 +233,7 @@ class LoginStore extends BaseStore {
         return;
       }
       this.resolveMe = function (data) {
-        resolve(data)
+        resolve(data);
       };
       this.rejectMe = function (error) {
         reject(error);

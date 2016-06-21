@@ -10,7 +10,7 @@ var LoginPage = React.createClass({
   getInitialState: function () {
     var logout = Utils.FindPassedInProperty(this, 'logout');
     return {
-      loading: false,
+      loading: LoginStore.authenticated === null,
       error: false,
       logout: logout
     }
@@ -22,20 +22,6 @@ var LoginPage = React.createClass({
 
   checkAuthentication: function () {
     console.log('LoginPage.checkAuthentication');
-
-    if (LoginStore.isAuthenticated()) {
-      sessionStorage.setItem('loginPageUserAuthenticating', null);
-      console.log('LoginPage.checkAuthentication: authenticated!');
-    } else if (LoginStore.isAuthenticating()) {
-      this.setState({loading: true});
-      return;
-    } else if (sessionStorage.getItem('loginPageUserAuthenticating')) {
-      sessionStorage.setItem('loginPageUserAuthenticating', null);
-      // The user initiated a login but LoginStore completed without success, report
-      // an error.
-      this.setState({loading: false, error: true, message: "Login failed"});
-      return;
-    }
 
     if (LoginStore.isAuthenticated() &&
       LoginStore.getUser() &&
@@ -69,11 +55,12 @@ var LoginPage = React.createClass({
     this.checkAuthentication();
   },
 
-  getLoadingText: function () {
-    if (this.state.loading) {
+  getMessage: function () {
+    if (this.state.errorMessage) {
+      var messageStyle = this.state.error ? "alert alert-danger" : "alert alert-success";
       return (
-        <div className="text-center">
-          <h1>Logging in...</h1>
+        <div className={messageStyle}>
+          {this.state.errorMessage}
         </div>
       );
     } else {
@@ -81,23 +68,19 @@ var LoginPage = React.createClass({
     }
   },
 
-  getMessage: function () {
-    if (this.state.message) {
-      var messageStyle = this.state.error ? "alert alert-danger" : "alert alert-success";
-      return (
-        <div className={messageStyle}>
-          {this.state.message}
-        </div>
-      );
-    } else {
-      return null;
-    }
+  onError: function(error) {
+    this.setState({loading: false, error: true, errorMessage: "Login failed"});
+  },
+
+  onLoginAction: function () {
+    this.setState({loading: true});
   },
 
   getLoginButton: function () {
     return (
       <div>
-        <FacebookLogin />
+        {this.getMessage()}
+        <FacebookLogin onError={this.onError.bind(this)} loginAction={this.onLoginAction.bind(this)}/>
       </div>
     );
   },

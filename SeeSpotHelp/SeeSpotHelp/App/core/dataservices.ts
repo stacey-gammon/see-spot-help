@@ -58,9 +58,9 @@ export default class DataServices {
       // The Facebook firebase.auth.AuthCredential containing the Facebook
       // access token:
       var credential = result.credential;
-      onSuccess();
-    }, function(error) {
-      onError();
+      if (onSuccess) { onSuccess(); }
+    }).catch(function(error) {
+      if (onError) { onError(error); }
       console.log('ERROR: ', error);
     });
   }

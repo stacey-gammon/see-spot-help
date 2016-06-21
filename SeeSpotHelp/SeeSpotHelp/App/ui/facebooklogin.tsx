@@ -16,18 +16,22 @@ export default class FacebookLogin extends React.Component<any, any> {
   }
 
   loginAction() {
+    this.props.loginAction();
     if (LoginStore.getUser()) {
       LoginStore.logout();
-      sessionStorage.setItem('loginPageUserAuthenticating', null);
+      //sessionStorage.setItem('loginPageUserAuthenticating', null);
       this.context.router.push('/loginpage');
     } else {
-      sessionStorage.setItem('loginPageUserAuthenticating', 'true');
+    //  sessionStorage.setItem('loginPageUserAuthenticating', 'true');
       LoginStore.authenticate(this.onAuthenticated.bind(this), this.onError.bind(this));
     }
   }
 
   onError(errorMessage) {
-    this.setState({error: true, errorMessage: errorMessage})
+    this.setState({error: true, errorMessage: "Login Failed"});
+    if (this.props.onError) {
+      this.props.onError(errorMessage);
+    }
   }
 
   onAuthenticated() {
@@ -46,11 +50,11 @@ export default class FacebookLogin extends React.Component<any, any> {
   }
 
   getMessage() {
-    if (this.state.message) {
+    if (this.state.errorMessage) {
       var messageStyle = this.state.error ? "alert alert-danger" : "alert alert-success";
       return (
         <div className={messageStyle}>
-          {this.state.message}
+          {this.state.errorMessage}
         </div>
       );
     } else {
