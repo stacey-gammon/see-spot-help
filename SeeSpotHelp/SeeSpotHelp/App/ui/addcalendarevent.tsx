@@ -76,6 +76,8 @@ export default class AddCalendarEvent extends React.Component<any, any> {
   }
 
   ensureRequiredState() {
+    if (!LoginStore.getUser()) return;
+
     var editor = this.props.mode == 'add' ?
         new ScheduleEditor(null) : new ScheduleEditor(this.state.schedule);
     editor.inputFields['date'].value = this.state.startDate.format('MM-DD-YYYY');
@@ -103,7 +105,8 @@ export default class AddCalendarEvent extends React.Component<any, any> {
           Permission.CreateAdminPermission(this.state.schedule.userId, '') :
           Permission.CreateNonMemberPermission(this.state.schedule.userId, '');
     }
-    VolunteerStore.ensureItemById(this.state.schedule.userId).then(function(user: Volunteer) {
+    var userId = this.state.schedule ? this.state.schedule.userId : LoginStore.getUser().id;
+    VolunteerStore.ensureItemById(userId).then(function(user: Volunteer) {
       editor.inputFields['member'].value = user.name;
       this.setState({ permission: permission, editor: editor });
     }.bind(this));
