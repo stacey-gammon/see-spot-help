@@ -3,6 +3,7 @@ var ReactRouterBootstrap = require('react-router-bootstrap');
 var ReactBootstrap = require('react-bootstrap');
 import LoginStore from '../stores/loginstore';
 import FacebookLogin from "./facebooklogin";
+import ConstStrings from "../core/conststrings";
 
 var Navbar = ReactBootstrap.Navbar;
 var Nav = ReactBootstrap.Nav;
@@ -44,6 +45,11 @@ export default class MyNavBar extends React.Component<any, any> {
   //   <MenuItem eventKey={3.1}>Settings</MenuItem>
   // </LinkContainer>
 
+  getBugReportHref() {
+    var body = `Version:%20${ConstStrings.Version}.%20%20Please%20describe%20your%20issue.\n`;
+    return `mailto:info@theshelterhelper.com?subject=Bug%20Report&body=${body}`
+  }
+
   render() {
     return (
       <Navbar ref="mynavbar" className="navbar navbar-light bg-faded sh-navbar">
@@ -73,6 +79,10 @@ export default class MyNavBar extends React.Component<any, any> {
               <LinkContainer to={{ pathname: "loginPage", state: { logout: true }}}>
                 <MenuItem eventKey={3.2}>Log out</MenuItem>
               </LinkContainer>
+              <MenuItem eventKey={3.4} target="blank"
+                href={this.getBugReportHref()}>
+                Bug Report (Version {ConstStrings.Version})
+              </MenuItem>
             </Dropdown.Menu>
           </Dropdown>
         </Nav>

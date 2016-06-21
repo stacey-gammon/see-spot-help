@@ -5983,6 +5983,7 @@ button.close {
   width: 300px !important;
   z-index: 9 !important; }
   .sh-dropdown-menu li {
+    margin-top: -1px;
     text-align: left;
     z-index: 99 !important;
     padding: 5px !important;
