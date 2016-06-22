@@ -20,7 +20,7 @@ var liveConfig = {
   databaseURL: "https://shining-torch-1432.firebaseio.com",
   storageBucket: "shining-torch-1432.appspot.com",
 };
-Firebase.initializeApp(releaseConfig);
+Firebase.initializeApp(liveConfig);
 
 // A helpful class filled with functions for validating various
 // input fields.
