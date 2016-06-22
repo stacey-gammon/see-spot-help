@@ -20,7 +20,7 @@ var liveConfig = {
   databaseURL: "https://shining-torch-1432.firebaseio.com",
   storageBucket: "shining-torch-1432.appspot.com",
 };
-Firebase.initializeApp(devConfig);
+Firebase.initializeApp(releaseConfig);
 
 export default class DataServices {
   private static database = Firebase.database();
