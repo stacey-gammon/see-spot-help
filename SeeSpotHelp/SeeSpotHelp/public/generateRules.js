@@ -193,10 +193,11 @@ function generatePermissionRules() {
     `(data.exists() && ${isAuthRule} && (newData.child('permission').val() == ${NONMEMBER} || !newData.exists()))`;
 
   var existingAdminRule = `(root.child(${userPermissionByGroupId()}).val() == ${ADMIN})`;
-  var newAdminRule = `(!data.exists() && ${newRoot()}.child(${userPermissionByUserId()}).val() == ${ADMIN}`;
+  var newAdminRule =
+      `!data.exists() && ${newRoot()}.parent().child(${userPermissionByUserId()}).val() == ${ADMIN}`;
 
   addWriteRule(groupPermissionRules,
-    `${newMemberRequestRule} || ${existingMemberLeaveRule} || (${existingAdminRule} || ${newAdminRule})`);
+    `${newMemberRequestRule} || ${existingMemberLeaveRule} || ${existingAdminRule} || ${newAdminRule}`);
   addIndexOn(groupPermissionRules, "timestamp");
 
   rules["Permission"].PermissionByGroupId = {
@@ -206,12 +207,12 @@ function generatePermissionRules() {
     }
   };
 
-  rules["Permission"].PermissionByUserId = {
-    "$userId": {
-      "$groupId": groupPermissionRules,
-      ".indexOn": "timestamp"
-    }
-  };
+  // rules["Permission"].PermissionByUserId = {
+  //   "$userId": {
+  //     "$groupId": groupPermissionRules,
+  //     ".indexOn": "timestamp"
+  //   }
+  // };
 
   // Rules directly on the Permission table, keyed by permission id, are different because we
   // don't have $groupId and $userId
@@ -220,16 +221,18 @@ function generatePermissionRules() {
     `(!data.exists() && newData.child('userId').val() == auth.uid && newData.child('permission').val() == ${PENDING})`;
   existingMemberLeaveRule =
     `(data.exists() && data.child('userId').val() == auth.uid && (newData.child('permission').val() == ${NONMEMBER} || !newData.exists()))`;
-  adminRule =
+  existingAdminRule =
     `(root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
+  newAdminRule =
+    `(${newRoot()}.parent().child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
 
   var permissionIdRules = {};
   addReadRule(permissionIdRules, 'auth != null');
   addWriteRule(permissionIdRules,
-    `${newMemberRequestRule} || ${existingMemberLeaveRule} || ${adminRule}`);
-  rules["Permission"].Permission = {
-    "$permissionId": permissionIdRules
-  };
+      `${newMemberRequestRule} || ${existingMemberLeaveRule} || ${existingAdminRule} || ${newAdminRule}`);
+  // rules["Permission"].Permission = {
+  //   "$permissionId": permissionIdRules
+  // };
 }
 
 function newRoot() {
