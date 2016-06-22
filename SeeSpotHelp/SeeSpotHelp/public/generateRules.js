@@ -191,10 +191,12 @@ function generatePermissionRules() {
     `(!data.exists() && ${isAuthRule} && newData.child('permission').val() == ${PENDING})`;
   var existingMemberLeaveRule =
     `(data.exists() && ${isAuthRule} && (newData.child('permission').val() == ${NONMEMBER} || !newData.exists()))`;
-  var adminRule = `(root.child(${userPermissionByGroupId()}).val() == ${ADMIN})`;
+
+  var existingAdminRule = `(root.child(${userPermissionByGroupId()}).val() == ${ADMIN})`;
+  var newAdminRule = `(!data.exists() && ${newRoot()}.child(${userPermissionByUserId()}).val() == ${ADMIN}`;
 
   addWriteRule(groupPermissionRules,
-    `${newMemberRequestRule} || ${existingMemberLeaveRule} || ${adminRule}`);
+    `${newMemberRequestRule} || ${existingMemberLeaveRule} || (${existingAdminRule} || ${newAdminRule})`);
   addIndexOn(groupPermissionRules, "timestamp");
 
   rules["Permission"].PermissionByGroupId = {
