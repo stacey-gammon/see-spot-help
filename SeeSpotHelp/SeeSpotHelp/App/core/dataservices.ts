@@ -22,21 +22,8 @@ var liveConfig = {
 };
 Firebase.initializeApp(devConfig);
 
-// A helpful class filled with functions for validating various
-// input fields.
 export default class DataServices {
-  public static FirebaseURL = "https://shining-torch-1432.firebaseio.com/";
-
-  public firebaseURL: string = DataServices.FirebaseURL;
-  private successCallback;
-  private failureCallback;
   private static database = Firebase.database();
-
-  // TODO: make this class only contain static functions, it's easier.
-  constructor(successCallback, failureCallback) {
-    this.successCallback = successCallback;
-    this.failureCallback = failureCallback;
-  }
 
   public static GetNewPushKey(path): string {
     var ref = this.database.ref();
