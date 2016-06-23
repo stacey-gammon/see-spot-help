@@ -18,16 +18,6 @@ export default class MyNavBar extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }
-  componentDidMount() {
-    LoginStore.addChangeListener(this.onChange);
-  }
-  componentWillUnmount() {
-    LoginStore.removeChangeListener(this.onChange);
-  }
-
-  onChange() {
-    this.forceUpdate();
-  }
 
   goToAboutPage() {
     window.location.href = "http://www.theshelterhelper.com";
