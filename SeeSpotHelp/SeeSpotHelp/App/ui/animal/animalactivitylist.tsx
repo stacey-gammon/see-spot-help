@@ -8,6 +8,8 @@ import VolunteerStore from '../../stores/volunteerstore';
 import ActivityElement from '../shared/activityelement';
 
 export default class AnimalActivityList extends React.Component<any, any> {
+  public mounted: boolean = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -16,17 +18,21 @@ export default class AnimalActivityList extends React.Component<any, any> {
   }
 
   componentDidMount() {
+    this.mounted = true;
     AnimalActivityStore.addPropertyListener(
       this, 'animalId', this.props.animal.id, this.onChange.bind(this));
   }
 
   onChange() {
-    var activities = AnimalActivityStore.getActivityByAnimalId(this.props.animal.id);
-    this.setState({ activities: activities });
+    if (this.mounted) {
+      var activities = AnimalActivityStore.getActivityByAnimalId(this.props.animal.id);
+      this.setState({ activities: activities });
+    }
   }
 
   componentWillUnmount() {
     AnimalActivityStore.removePropertyListener(this);
+    this.mounted = false;
   }
 
   generateAnimalNote(note) {

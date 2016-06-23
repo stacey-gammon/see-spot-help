@@ -14,7 +14,6 @@ import VolunteerStore from '../../stores/volunteerstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
 export default class UserGroupsTab extends React.Component<any, any> {
-  public mounted: boolean = false;
 
   constructor(props) {
     super(props);
@@ -22,7 +21,6 @@ export default class UserGroupsTab extends React.Component<any, any> {
   }
 
   componentDidMount() {
-    this.mounted = true;
     LoginStore.addChangeListener(this.onChange.bind(this));
     PermissionsStore.addPropertyListener(
         this, 'userId', this.props.user.id, this.onChange.bind(this));
@@ -32,7 +30,6 @@ export default class UserGroupsTab extends React.Component<any, any> {
     LoginStore.removeChangeListener(this.onChange.bind(this));
     GroupStore.removePropertyListener(this);
     PermissionsStore.removePropertyListener(this);
-    this.mounted = false;
   }
 
   getGroupElement(group) {
@@ -60,9 +57,7 @@ export default class UserGroupsTab extends React.Component<any, any> {
   }
 
   onChange() {
-    if (this.mounted) {
-      this.setState(this.getState());
-    }
+    this.setState(this.getState());
   }
 
   getState() {

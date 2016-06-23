@@ -86,7 +86,7 @@ abstract class BaseStore extends EventEmitter {
     for (var i = 0; i < this.propertyListeners.length; i++) {
       var propListener = this.propertyListeners[i];
       if (propListener.listener == listener) {
-        this.propertyListeners.slice(i, i + 1);
+        this.propertyListeners.splice(i, i + 1);
       }
     }
   }
