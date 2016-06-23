@@ -22,6 +22,7 @@ var ConstStrings = {
   Comment: 'Comment',
   AboutMe: 'About Me',
   Email: 'Email',
+  Password: 'Password',
   StartTime: 'Start Time',
   EndTime: 'End Time',
   Date: 'Date',

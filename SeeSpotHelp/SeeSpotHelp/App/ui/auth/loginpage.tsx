@@ -1,12 +1,15 @@
 ﻿"use strict"
 
 import * as React from 'react';
-import FacebookLogin from "./facebooklogin";
-import Utils from './uiutils';
-import LoginStore from '../stores/loginstore';
+import FacebookLogin from './facebooklogin';
+import EmailAndPasswordLogin from './emailandpassword';
+import Utils from '../uiutils';
+import LoginStore from '../../stores/loginstore';
 var Loader = require('react-loader');
 
 export default class LoginPage extends React.Component<any, any> {
+  public context: any;
+
   constructor(props) {
     super(props);
     var logout = Utils.FindPassedInProperty(this, 'logout');
@@ -95,6 +98,7 @@ export default class LoginPage extends React.Component<any, any> {
           <Loader loaded={!this.state.loading} color="rgba(0,0,0,0.2)">
             <div className='login-page'>
               {this.getLoginButton()}
+              <EmailAndPasswordLogin />
             </div>
           </Loader>
         </div>
