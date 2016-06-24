@@ -16,6 +16,7 @@ export default class SignupPage extends React.Component<any, any> {
 
   constructor(props) {
     super(props);
+    this.onChange = this.onChange.bind(this);
     var logout = Utils.FindPassedInProperty(this, 'logout');
     this.state = {
       loading: LoginStore.authenticated === null,
@@ -31,11 +32,11 @@ export default class SignupPage extends React.Component<any, any> {
   }
 
   componentDidMount () {
-    LoginStore.addChangeListener(this.onChange.bind(this));
+    LoginStore.addChangeListener(this.onChange);
   }
 
   componentWillUnmount () {
-    LoginStore.removeChangeListener(this.onChange.bind(this));
+    LoginStore.removeChangeListener(this.onChange);
   }
 
   static contextTypes = {

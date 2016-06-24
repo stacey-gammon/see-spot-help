@@ -21,10 +21,10 @@ export default class EmailAndPasswordLogin extends React.Component<any, any> {
     };
   }
 
-  onError(errorMessage) {
-    this.setState({error: true, errorMessage: "Login Failed"});
+  onError(error) {
+    this.setState({error: true, message: error.message});
     if (this.props.onError) {
-      this.props.onError(errorMessage);
+      this.props.onError(error.message, true);
     }
   }
 
@@ -43,7 +43,7 @@ export default class EmailAndPasswordLogin extends React.Component<any, any> {
       // Handle Errors here.
       var errorCode = error.code;
       var errorMessage = error.message;
-      this.props.onError(errorMessage);
+      this.props.onError(errorMessage, true);
     }.bind(this));
   }
 
@@ -73,7 +73,7 @@ export default class EmailAndPasswordLogin extends React.Component<any, any> {
       .catch(function(error) {
         var errorMessage = error.message;
         this.props.onError(errorMessage, true);
-      });
+      }.bind(this));
     }
   }
 
