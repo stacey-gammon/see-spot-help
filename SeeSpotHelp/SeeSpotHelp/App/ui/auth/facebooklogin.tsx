@@ -1,7 +1,7 @@
 ﻿'use strict'
 
 import * as React from 'react';
-import LoginStore from '../stores/loginstore';
+import LoginStore from '../../stores/loginstore';
 
 export default class FacebookLogin extends React.Component<any, any> {
   public context: any;
@@ -19,10 +19,8 @@ export default class FacebookLogin extends React.Component<any, any> {
     this.props.loginAction();
     if (LoginStore.getUser()) {
       LoginStore.logout();
-      //sessionStorage.setItem('loginPageUserAuthenticating', null);
       this.context.router.push('/loginpage');
     } else {
-    //  sessionStorage.setItem('loginPageUserAuthenticating', 'true');
       LoginStore.authenticate(this.onAuthenticated.bind(this), this.onError.bind(this));
     }
   }
@@ -41,7 +39,6 @@ export default class FacebookLogin extends React.Component<any, any> {
   createButton(className, text) {
     return (
       <div className="text-center">
-        {this.getMessage()}
         <button className={className} onClick={this.loginAction.bind(this)} >
           {text}
         </button>

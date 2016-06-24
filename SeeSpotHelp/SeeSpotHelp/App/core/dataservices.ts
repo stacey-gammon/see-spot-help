@@ -30,6 +30,18 @@ export default class DataServices {
     Firebase.auth().onAuthStateChanged(callback);
   }
 
+  public static SignUpWithEmailAndPassword(email: string, password: string) : Promise<any> {
+    return Firebase.auth().createUserWithEmailAndPassword(email, password);
+  }
+
+  public static LoginWithEmailAndPassword(email: string, password: string) : Promise<any> {
+    return Firebase.auth().signInWithEmailAndPassword(email, password);
+  }
+
+  public static ResetPassword(email: string) : Promise<any> {
+    return Firebase.auth().sendPasswordResetEmail(email);
+  }
+
   public static LoginWithFacebookPopUp(onSuccess, onError) {
     var ref = this.database.ref();
     var provider = new Firebase.auth.FacebookAuthProvider();
@@ -157,18 +169,6 @@ export default class DataServices {
   public static DeleteMultiple(deletes) : Promise<any> {
     var ref = this.database.ref();
     return ref.update(deletes);
-  }
-
-  public onSuccess = function (response) {
-    this.successCallback(response);
-  }
-
-  public onFailure = function (response) {
-    console.log("DataServices::OnFailure, response:");
-    console.log(response);
-    if (this.failureCallback) {
-      this.failureCallback(response);
-    }
   }
 
   public static UploadPhoto(thumbBlob, listBlob, fullBlob, fileName, userId) {
