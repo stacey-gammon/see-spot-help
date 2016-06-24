@@ -60,8 +60,6 @@ export default class AddPhotoPage extends React.Component<any, any> {
 
     Promise.all(promises).then(
       function (results) {
-        var group = GroupStore.getGroupById(this.state.groupId);
-        var animal = AnimalStore.getItemById(this.state.animalId);
         var permission = StoreStateHelper.GetPermission(this.state);
         var photo = results[0];
         var editor = new PhotoEditor(photo);
@@ -71,7 +69,7 @@ export default class AddPhotoPage extends React.Component<any, any> {
           photo: photo,
           loaded: true
         });
-        this.addChangeListeners(group);
+        this.addChangeListeners();
       }.bind(this)
     );
   }
