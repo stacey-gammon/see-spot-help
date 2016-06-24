@@ -28,8 +28,8 @@ export default class LoginPage extends React.Component<any, any> {
     console.log('LoginPage.checkAuthentication');
 
     if (LoginStore.isAuthenticated() &&
-      LoginStore.getUser() &&
-      LoginStore.getUser().inBeta) {
+        LoginStore.getUser() &&
+        LoginStore.getUser().inBeta) {
       this.context.router.push("/profilePage");
 
     // Don't use the getUser version as that may automatically try to authenticate us and we
@@ -55,16 +55,16 @@ export default class LoginPage extends React.Component<any, any> {
   }
 
   onChange () {
-    console.log('LoginPage.onChange');
     this.checkAuthentication();
+    this.setState({loading: LoginStore.authenticated === null});
   }
 
   getMessage () {
-    if (this.state.errorMessage) {
+    if (this.state.error || this.state.message) {
       var messageStyle = this.state.error ? "alert alert-danger" : "alert alert-success";
       return (
         <div className={messageStyle}>
-          {this.state.errorMessage}
+          {this.state.message}
         </div>
       );
     } else {
@@ -72,8 +72,12 @@ export default class LoginPage extends React.Component<any, any> {
     }
   }
 
-  onError (error) {
-    this.setState({loading: false, error: true, errorMessage: "Login failed"});
+  onError (message : string, showResetLink) {
+    this.setState({loading: false, error: true, message: message, showResetLink: true});
+  }
+
+  onSuccess (message : string) {
+    this.setState({loading: false, error: false, message: message});
   }
 
   onLoginAction () {
@@ -83,7 +87,6 @@ export default class LoginPage extends React.Component<any, any> {
   getLoginButton () {
     return (
       <div>
-        {this.getMessage()}
         <FacebookLogin onError={this.onError.bind(this)} loginAction={this.onLoginAction.bind(this)}/>
       </div>
     );
@@ -95,12 +98,18 @@ export default class LoginPage extends React.Component<any, any> {
           <div className='header-bar'>
             <img src="images/logo.png" height="70px"/>
           </div>
-          <Loader loaded={!this.state.loading} color="rgba(0,0,0,0.2)">
+          <Loader loaded={!this.state.loading} color="rgba(0,0,0,0.2)"/>
             <div className='login-page'>
+              <label>Login</label>
+              {this.getMessage()}
+              <EmailAndPasswordLogin
+                  onLoginAction={this.onLoginAction.bind(this)}
+                  onError={this.onError.bind(this)}
+                  showResetLink={this.state.showResetLink}
+                  onSuccess={this.onSuccess.bind(this)}/>
+              <hr width='45px'/>
               {this.getLoginButton()}
-              <EmailAndPasswordLogin />
             </div>
-          </Loader>
         </div>
     );
   }
