@@ -220,3 +220,5 @@ main.bundle.js
 main.bundle.js.map
 PrivateDbConnectionStrings.cs
 Web.config
+
+SeeSpotHelp/SeeSpotHelp/App/core/firebaseconfig.ts
