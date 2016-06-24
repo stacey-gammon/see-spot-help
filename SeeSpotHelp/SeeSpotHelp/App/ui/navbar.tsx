@@ -2,7 +2,6 @@
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var ReactBootstrap = require('react-bootstrap');
 import LoginStore from '../stores/loginstore';
-import FacebookLogin from "./facebooklogin";
 import ConstStrings from "../core/conststrings";
 
 var Navbar = ReactBootstrap.Navbar;
@@ -17,16 +16,6 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 export default class MyNavBar extends React.Component<any, any> {
   constructor(props) {
     super(props);
-  }
-  componentDidMount() {
-    LoginStore.addChangeListener(this.onChange);
-  }
-  componentWillUnmount() {
-    LoginStore.removeChangeListener(this.onChange);
-  }
-
-  onChange() {
-    this.forceUpdate();
   }
 
   goToAboutPage() {
