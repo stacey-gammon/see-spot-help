@@ -25,10 +25,10 @@ export default class FacebookLogin extends React.Component<any, any> {
     }
   }
 
-  onError(errorMessage) {
-    this.setState({error: true, errorMessage: "Login Failed"});
+  onError(error) {
+    this.setState({error: true, errorMessage: error.message});
     if (this.props.onError) {
-      this.props.onError(errorMessage);
+      this.props.onError(error.message);
     }
   }
 

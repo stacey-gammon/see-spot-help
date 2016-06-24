@@ -22,6 +22,8 @@ export default class AddPhotoPage extends React.Component<any, any> {
   constructor(props) {
     super(props);
 
+    this.onChange = this.onChange.bind(this);
+
     var mode = Utils.FindPassedInProperty(this, 'mode');
     var animalId = Utils.FindPassedInProperty(this, 'animalId');
     var groupId = Utils.FindPassedInProperty(this, 'groupId');
@@ -75,16 +77,18 @@ export default class AddPhotoPage extends React.Component<any, any> {
   }
 
   addChangeListeners() {
-    LoginStore.addChangeListener(this.onChange.bind(this));
+    LoginStore.addChangeListener(this.onChange);
     if (LoginStore.getUser()) {
       PermissionsStore.addPropertyListener(
-        this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+        this, 'userId', LoginStore.getUser().id, this.onChange);
     }
   }
 
   componentWillMount() {
     this.ensureRequiredState();
   }
+
+
 
   uploadFile(file) {
     let me = this;
@@ -109,7 +113,7 @@ export default class AddPhotoPage extends React.Component<any, any> {
   }
 
   componentWillUnmount() {
-    GroupStore.removeChangeListener(this.onChange.bind(this));
+    LoginStore.removeChangeListener(this.onChange);
   }
 
   onChange() {

@@ -9,9 +9,11 @@ var Loader = require('react-loader');
 
 export default class LoginPage extends React.Component<any, any> {
   public context: any;
+  public mounted: boolean = false;
 
   constructor(props) {
     super(props);
+    this.onChange = this.onChange.bind(this);
     var logout = Utils.FindPassedInProperty(this, 'logout');
     this.state = {
       loading: LoginStore.authenticated === null,
@@ -47,11 +49,11 @@ export default class LoginPage extends React.Component<any, any> {
     } else {
       this.checkAuthentication();
     }
-    LoginStore.addChangeListener(this.onChange.bind(this));
+    LoginStore.addChangeListener(this.onChange);
   }
 
   componentWillUnmount () {
-    LoginStore.removeChangeListener(this.onChange.bind(this));
+    LoginStore.removeChangeListener(this.onChange);
   }
 
   onChange () {
@@ -73,7 +75,7 @@ export default class LoginPage extends React.Component<any, any> {
   }
 
   onError (message : string, showResetLink) {
-    this.setState({loading: false, error: true, message: message, showResetLink: true});
+    this.setState({loading: false, error: true, message: message, showResetLink: showResetLink});
   }
 
   onSuccess (message : string) {
