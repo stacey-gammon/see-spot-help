@@ -98,6 +98,9 @@ abstract class DatabaseObject {
     updates[this.firebasePath + '/' + this.id] = this;
 
     for (var i = 0; i < this.mappingProperties.length; i++) {
+      if (!this[this.mappingProperties[i]]) {
+        continue;
+      }
       var path = this.getPathToMapping(this.mappingProperties[i]);
       updates[path] = this;
     }
