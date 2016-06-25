@@ -20,7 +20,7 @@ var liveConfig = {
   storageBucket: "shining-torch-1432.appspot.com",
 };
 
-// test change
+// test changes
 export default function InitializeFirebase() {
   Firebase.initializeApp(devConfig);
 }
