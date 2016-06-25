@@ -7,6 +7,7 @@ initFirebase();
 
 /**
  * Controls access to the firebase database end point, as well as image storage.
+ * test change.
  */
 export default class DataServices {
   private static database = Firebase.database();
