@@ -14,6 +14,7 @@ import VolunteerStore from '../../stores/volunteerstore';
 import PermissionsStore from '../../stores/permissionsstore';
 
 export default class UserGroupsTab extends React.Component<any, any> {
+
   constructor(props) {
     super(props);
     this.state = this.getState();

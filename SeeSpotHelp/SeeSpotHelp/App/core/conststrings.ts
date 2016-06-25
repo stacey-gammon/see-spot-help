@@ -22,6 +22,8 @@ var ConstStrings = {
   Comment: 'Comment',
   AboutMe: 'About Me',
   Email: 'Email',
+  Password: 'Password',
+  PasswordConfirm: 'Confirm',
   StartTime: 'Start Time',
   EndTime: 'End Time',
   Date: 'Date',
@@ -29,7 +31,7 @@ var ConstStrings = {
   AnimalId: 'Animal',
   UserId: 'Member',
   Member: 'Member',
-  Version: '0.1'
+  Version: '0.2'
 };
 
 export default ConstStrings;
