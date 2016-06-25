@@ -27,9 +27,6 @@ export default class AddCalendarEvent extends React.Component<any, any> {
 
   constructor(props) {
     super(props);
-
-    this.onChange = this.onChange.bind(this);
-
     var startDate = Utils.FindPassedInProperty(this, 'startDate');
     var group = Utils.FindPassedInProperty(this, 'group');
     var animalId = Utils.FindPassedInProperty(this, 'animalId');
@@ -133,21 +130,21 @@ export default class AddCalendarEvent extends React.Component<any, any> {
   }
 
   componentDidMount() {
-    LoginStore.addChangeListener(this.onChange);
+    LoginStore.addChangeListener(this.onChange.bind(this));
     this.fillAnimalDropDown();
     if (this.state.group) {
-      GroupStore.addPropertyListener(this, 'id', this.state.group.id, this.onChange);
+      GroupStore.addPropertyListener(this, 'id', this.state.group.id, this.onChange.bind(this));
     } else if (LoginStore.getUser()) {
-      GroupStore.addPropertyListener(this, 'userId', LoginStore.getUser().id, this.onChange);
+      GroupStore.addPropertyListener(this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
     }
 
     if (this.state.schedule) {
       VolunteerStore.addPropertyListener(this,
                                          'id',
                                          this.state.schedule.userId,
-                                         this.onChange);
+                                         this.onChange.bind(this));
     }
-    AnimalStore.addPropertyListener(this, 'id', this.state.animalId, this.onChange);
+    AnimalStore.addPropertyListener(this, 'id', this.state.animalId, this.onChange.bind(this));
 
     // A day click defaults the time to 12 am, lets reset that to a full day event.
     if (this.state.startTime == '12:00 am' && this.state.startTime == this.state.endTime) {
@@ -180,8 +177,8 @@ export default class AddCalendarEvent extends React.Component<any, any> {
   }
 
   componentWillUnmount() {
-    LoginStore.removeChangeListener(this.onChange);
-    PermissionsStore.removeChangeListener(this.onChange);
+    LoginStore.removeChangeListener(this.onChange.bind(this));
+    PermissionsStore.removeChangeListener(this.onChange.bind(this));
 
     GroupStore.removePropertyListener(this);
     AnimalStore.removePropertyListener(this);
@@ -335,7 +332,7 @@ export default class AddCalendarEvent extends React.Component<any, any> {
 
     $("#animalChoice").empty();
     if (group) {
-      AnimalStore.addPropertyListener(this, 'groupId', group.id, this.onChange);
+      AnimalStore.addPropertyListener(this, 'groupId', group.id, this.onChange.bind(this));
     }
     var animals = group ? AnimalStore.getAnimalsByGroupId(group.id) : [];
     if (!animals) return null;

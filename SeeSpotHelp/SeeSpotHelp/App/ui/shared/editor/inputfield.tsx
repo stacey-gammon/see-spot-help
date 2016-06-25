@@ -67,9 +67,8 @@ export default class InputFieldElement extends React.Component<any, any> {
 
   getInputTextElement(inputField) {
     var inputFieldClassName = 'form-control ' + inputField.ref;
-    var type = inputField.type == InputFieldType.PASSWORD ? 'password' : 'text';
     return (
-      <input type={type}
+      <input type='text'
          disabled={inputField.disabled}
          ref={inputField.ref}
          id={inputField.ref}
@@ -80,7 +79,6 @@ export default class InputFieldElement extends React.Component<any, any> {
   getInputElement(inputField) {
     switch (inputField.type) {
       case InputFieldType.TEXT:
-      case InputFieldType.PASSWORD:
         return this.getInputTextElement(inputField);
       case InputFieldType.TEXT_AREA:
         return this.getInputTextAreaElement(inputField);

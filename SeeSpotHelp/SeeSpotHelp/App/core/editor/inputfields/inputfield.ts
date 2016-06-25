@@ -13,8 +13,7 @@ export enum InputFieldType {
   TIME,
   GROUP_SELECT,
   ANIMAL_SELECT,
-  HIDDEN,
-  PASSWORD
+  HIDDEN
 }
 
 // Represents an input form field.

@@ -22,6 +22,7 @@ export default class GroupHomePage extends React.Component<any, any> {
     super(props);
     var groupId = Utils.FindPassedInProperty(this, 'groupId');
     this.state = { groupId: groupId };
+    Utils.LoadOrSaveState(this.state);
   }
 
   componentDidMount() {
@@ -56,7 +57,8 @@ export default class GroupHomePage extends React.Component<any, any> {
         var group = GroupStore.getGroupById(groupId);
         var permission = StoreStateHelper.GetPermission(this.state);
         if (group) {
-          this.setState({ permission: permission, groupId: group.id });
+          Utils.SaveProp('groupId', group.id);
+          this.setState({ permission: permission });
           this.addChangeListeners(group);
         }
       }.bind(this)

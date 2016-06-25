@@ -122,11 +122,6 @@ class LoginStore extends BaseStore {
     DataServices.LoginWithFacebookPopUp(this.onAuthenticated.bind(this, onSuccess), onError);
   }
 
-  authenticateWithEmailPassword(email, password) : Promise<any> {
-    this.loggedOut = false;
-    return DataServices.LoginWithEmailAndPassword(email, password);
-  }
-
   onAuthenticated(onSuccess) {
     var authData = this.checkAuthenticated();
     this.downloadUser(authData.uid);

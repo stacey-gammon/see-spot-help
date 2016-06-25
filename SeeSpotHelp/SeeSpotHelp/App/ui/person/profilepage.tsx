@@ -4,7 +4,7 @@ import * as React from 'react';
 
 var GroupInfoBox = require('../group/groupinfobox');
 var SearchPage = require('../searchpage');
-import LoginPage from '../auth/loginpage';
+var LoginPage = require('../loginpage');
 
 import ProfilePageTabs from './profilepagetabs';
 import UserInfoBar from './userinfobar';

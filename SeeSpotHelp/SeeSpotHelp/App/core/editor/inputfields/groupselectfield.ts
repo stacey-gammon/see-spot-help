@@ -19,8 +19,7 @@ export default class GroupSelectField extends InputField {
 
   constructor (validations?) {
     super(validations);
-    this.populate = this.populate.bind(this);
-    LoginStore.addChangeListener(this.populate);
+    LoginStore.addChangeListener(this.populate.bind(this));
   }
 
   getDefaultValue() {

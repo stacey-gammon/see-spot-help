@@ -153,9 +153,7 @@ function generateBasicTableRules(table) {
   var usersCanUpdateTheirOwn = `(data.exists() && data.child('userId').val() == auth.uid)`;
   var usersCanAddTheirOwn = `(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid)`;
 
-  var writeRules = `${usersCanAddTheirOwn} || ${usersCanUpdateTheirOwn} || ${adminsCanWriteRule}`;
-
-  addWriteRule(tableRules, writeRules);
+  addWriteRule(tableRules, `${adminsCanWriteRule} || ${usersCanAddTheirOwn} || ${usersCanUpdateTheirOwn}`);
   addIndexOn(tableRules, "timestamp");
 
   rules[table][table] = {
@@ -209,12 +207,12 @@ function generatePermissionRules() {
     }
   };
 
-  rules["Permission"].PermissionByUserId = {
-    "$userId": {
-      "$groupId": groupPermissionRules,
-      ".indexOn": "timestamp"
-    }
-  };
+  // rules["Permission"].PermissionByUserId = {
+  //   "$userId": {
+  //     "$groupId": groupPermissionRules,
+  //     ".indexOn": "timestamp"
+  //   }
+  // };
 
   // Rules directly on the Permission table, keyed by permission id, are different because we
   // don't have $groupId and $userId
@@ -232,9 +230,9 @@ function generatePermissionRules() {
   addReadRule(permissionIdRules, 'auth != null');
   addWriteRule(permissionIdRules,
       `${newMemberRequestRule} || ${existingMemberLeaveRule} || ${existingAdminRule} || ${newAdminRule}`);
-  rules["Permission"].Permission = {
-    "$permissionId": permissionIdRules
-  };
+  // rules["Permission"].Permission = {
+  //   "$permissionId": permissionIdRules
+  // };
 }
 
 function newRoot() {

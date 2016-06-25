@@ -8,7 +8,6 @@ var Route = ReactRouter.Route;
 var DefaultRoute = ReactRouter.DefaultRoute;
 var hashHistory = ReactRouter.hashHistory;
 var IndexRoute = ReactRouter.IndexRoute;
-var Loader = require('react-loader');
 
 import ErrorPopup from './shared/errorpopup';
 import MyNavBar from './navbar';
@@ -21,12 +20,11 @@ import AddNewGroup from './group/addnewgroup';
 import AddAnimalNote from './animal/addanimalnote';
 import AnimalHomePage from './animal/animalHomePage';
 import AddAnimalPage from './animal/addanimalpage';
-import SignUpPage from './auth/signuppage';
 
 import AddPhotoPage from './addphotopage';
 var SearchPage = require('./searchpage');
 import MemberPage from './person/memberpage';
-import LoginPage from './auth/loginpage';
+var LoginPage = require('./loginpage');
 var PrivateBetaPage = require('./privatebetapage');
 var EnterBetaCode = require('./enterbetacode');
 import AddCalendarEvent from './addcalendarevent';
@@ -47,9 +45,6 @@ export default class Home extends React.Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = {
-      loaded: false
-    }
   }
 
   componentWillMount() {
@@ -60,6 +55,7 @@ export default class Home extends React.Component<any, any> {
         version: 'v2.5'
       });
       LoginStore.fbLoaded = true;
+      this.context.router.push('/profilePage');
     }.bind(this);
 
     (function(d, s, id) {
@@ -75,17 +71,7 @@ export default class Home extends React.Component<any, any> {
   onAuthChanged(user) {
     LoginStore.authenticated = !!user;
     sessionStorage.setItem('loginStoreAuthenticating', '');
-    this.setState({error: false, errorMessage: null, loaded: true});
-    LoginStore.emitChange();
-
-    if (((!user && !LoginStore.userDownloading) ||
-         (LoginStore.getUser() && !LoginStore.getUser().inBeta)) &&
-        this.props.location.pathname != '/privatebetapage' &&
-        this.props.location.pathname != '/loginpage' &&
-        this.props.location.pathname != '/signuppage' &&
-        this.props.location.pathname != '/enterBetaCode') {
-      this.context.router.push('/loginpage');
-    }
+    this.setState({error: false, errorMessage: null});
   }
 
   componentDidMount() {
@@ -104,20 +90,33 @@ export default class Home extends React.Component<any, any> {
   }
 
   componentWillUnmount() {
-    LoginStore.removeChangeListener(this.forceUpdate.bind(this));
+    //LoginStore.removeChangeListener(this.forceUpdate.bind(this));
   }
 
   render() {
-    return (
+    if (((!LoginStore.getUser() && !LoginStore.userDownloading) ||
+       (LoginStore.getUser() && !LoginStore.getUser().inBeta)) &&
+      this.props.location.pathname != '/privatebetapage' &&
+      this.props.location.pathname != '/loginpage' &&
+      this.props.location.pathname != '/enterBetaCode') {
+      this.context.router.push('/loginpage');
+    }
+    if (LoginStore.getUser() && LoginStore.getUser().inBeta) {
+      return (
         <div>
-          <Loader loaded={this.state.loaded}>
-            <ErrorPopup error={this.state.error} errorMessage={this.state.errorMessage}/>
-            <MyNavBar/>
-            {this.props.children}
-          </Loader>
+          <ErrorPopup error={this.state.error} errorMessage={this.state.errorMessage}/>
+          <MyNavBar/>
+          {this.props.children}
         </div>
       );
+    } else if (LoginStore.userDownloading) {
+      return (<span className='spinner active'><i className='fa-spin'></i></span>);
     }
+
+    return (
+      <div> {this.props.children} </div>
+    );
+  }
 }
 
 var routes = (
@@ -138,7 +137,6 @@ var routes = (
       <Route path='enterBetaCode' component={EnterBetaCode} />
       <Route path='addPhotoPage' component={AddPhotoPage} />
       <Route path='editProfile' component={EditProfile} />
-      <Route path='signUpPage' component={SignUpPage} />
   </Router>
 );
 

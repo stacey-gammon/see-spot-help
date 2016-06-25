@@ -18,7 +18,7 @@ class GroupInfoBox extends React.Component<any, any> {
       {
         pathname: "/addNewGroup",
         state: {
-          groupId:  this.props.group.id,
+          group:  this.props.group,
           mode: 'edit'
         }
       });

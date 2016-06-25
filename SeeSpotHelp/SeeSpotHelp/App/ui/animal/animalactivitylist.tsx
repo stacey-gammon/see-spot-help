@@ -8,7 +8,6 @@ import VolunteerStore from '../../stores/volunteerstore';
 import ActivityElement from '../shared/activityelement';
 
 export default class AnimalActivityList extends React.Component<any, any> {
-
   constructor(props) {
     super(props);
     this.state = {
