@@ -2,41 +2,14 @@
 var Firebase = require('firebase');
 
 // Initialize Firebase
-var devConfig = {
-  apiKey: "AIzaSyCTMUD7ilylF5erNiGtsoSDp6kReVOBWXY",
-  authDomain: "shelter-helpers-dev.firebaseapp.com",
-  databaseURL: "https://shelter-helpers-dev.firebaseio.com",
-  storageBucket: "shelter-helpers-dev.appspot.com",
-};
-var releaseConfig = {
-  apiKey: "AIzaSyBZk2PjHJAM-HYyiUegWFhMnbbCfZAr_e4",
-  authDomain: "shelter-helpers-release.firebaseapp.com",
-  databaseURL: "https://shelter-helpers-release.firebaseio.com",
-  storageBucket: "shelter-helpers-release.appspot.com",
-};
-var liveConfig = {
-  apiKey: "AIzaSyAmUDL3vRmv7RsLJIe9oMKLqHhmvuOmBCc",
-  authDomain: "shining-torch-1432.firebaseapp.com",
-  databaseURL: "https://shining-torch-1432.firebaseio.com",
-  storageBucket: "shining-torch-1432.appspot.com",
-};
-Firebase.initializeApp(releaseConfig);
+import initFirebase from './firebaseconfig';
+initFirebase();
 
-// A helpful class filled with functions for validating various
-// input fields.
+/**
+ * Controls access to the firebase database end point, as well as image storage.
+ */
 export default class DataServices {
-  public static FirebaseURL = "https://shining-torch-1432.firebaseio.com/";
-
-  public firebaseURL: string = DataServices.FirebaseURL;
-  private successCallback;
-  private failureCallback;
   private static database = Firebase.database();
-
-  // TODO: make this class only contain static functions, it's easier.
-  constructor(successCallback, failureCallback) {
-    this.successCallback = successCallback;
-    this.failureCallback = failureCallback;
-  }
 
   public static GetNewPushKey(path): string {
     var ref = this.database.ref();
@@ -58,6 +31,18 @@ export default class DataServices {
 
   public static OnAuthStateChanged(callback) {
     Firebase.auth().onAuthStateChanged(callback);
+  }
+
+  public static SignUpWithEmailAndPassword(email: string, password: string) : Promise<any> {
+    return Firebase.auth().createUserWithEmailAndPassword(email, password);
+  }
+
+  public static LoginWithEmailAndPassword(email: string, password: string) : Promise<any> {
+    return Firebase.auth().signInWithEmailAndPassword(email, password);
+  }
+
+  public static ResetPassword(email: string) : Promise<any> {
+    return Firebase.auth().sendPasswordResetEmail(email);
   }
 
   public static LoginWithFacebookPopUp(onSuccess, onError) {
@@ -187,18 +172,6 @@ export default class DataServices {
   public static DeleteMultiple(deletes) : Promise<any> {
     var ref = this.database.ref();
     return ref.update(deletes);
-  }
-
-  public onSuccess = function (response) {
-    this.successCallback(response);
-  }
-
-  public onFailure = function (response) {
-    console.log("DataServices::OnFailure, response:");
-    console.log(response);
-    if (this.failureCallback) {
-      this.failureCallback(response);
-    }
   }
 
   public static UploadPhoto(thumbBlob, listBlob, fullBlob, fileName, userId) {

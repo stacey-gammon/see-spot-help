@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "master": "shining-torch-1432",
+    "Dev": "shelter-helpers-dev",
+    "Release": "shelter-helpers-release",
+    "default": "shelter-helpers-dev"
+  }
+}

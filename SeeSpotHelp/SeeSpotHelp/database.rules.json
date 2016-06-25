@@ -20,7 +20,7 @@
       "Activity": {
         "$tableId": {
           ".read": "auth != null",
-          ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+          ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
           ".indexOn": "timestamp"
         },
         ".indexOn": "timestamp"
@@ -29,7 +29,7 @@
         "$groupId": {
           "$tableId": {
             ".read": "auth != null",
-            ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
             ".indexOn": "timestamp"
           },
           ".indexOn": "timestamp"
@@ -39,7 +39,7 @@
         "$groupId": {
           "$tableId": {
             ".read": "auth != null",
-            ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
             ".indexOn": "timestamp"
           },
           ".indexOn": "timestamp"
@@ -49,7 +49,7 @@
         "$userId": {
           "$tableId": {
             ".read": "auth != null",
-            ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
             ".indexOn": "timestamp"
           },
           ".indexOn": "timestamp"
@@ -100,8 +100,10 @@
     },
     "Permission": {
       "Permission": {
-        ".read": "true",
-        ".write": "true"
+        "$permissionId": {
+          ".read": "auth != null",
+          ".write": "(!data.exists() && newData.child('userId').val() == auth.uid && newData.child('permission').val() == 3) || (data.exists() && data.child('userId').val() == auth.uid && (newData.child('permission').val() == 1 || !newData.exists())) || (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2) || (newData.parent().parent().parent().parent().child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)"
+        }
       },
       "PermissionByAnimalId": {
         ".read": "true",
@@ -118,15 +120,21 @@
         }
       },
       "PermissionByUserId": {
-        ".read": "true",
-        ".write": "true"
+        "$userId": {
+          "$groupId": {
+            ".read": "auth != null",
+            ".write": "(!data.exists() && $userId == auth.uid && newData.child('permission').val() == 3) || (data.exists() && $userId == auth.uid && (newData.child('permission').val() == 1 || !newData.exists())) || (root.child('Permission/PermissionByGroupId/' + $groupId + '/' + auth.uid + '/permission').val() == 2) || !data.exists() && newData.parent().parent().parent().parent().child('Permission/PermissionByUserId/' + auth.uid + '/' + $groupId + '/permission').val() == 2",
+            ".indexOn": "timestamp"
+          },
+          ".indexOn": "timestamp"
+        }
       }
     },
     "Photo": {
       "Photo": {
         "$tableId": {
           ".read": "auth != null",
-          ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+          ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
           ".indexOn": "timestamp"
         },
         ".indexOn": "timestamp"
@@ -135,7 +143,7 @@
         "$groupId": {
           "$tableId": {
             ".read": "auth != null",
-            ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
             ".indexOn": "timestamp"
           },
           ".indexOn": "timestamp"
@@ -145,7 +153,7 @@
         "$groupId": {
           "$tableId": {
             ".read": "auth != null",
-            ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
             ".indexOn": "timestamp"
           },
           ".indexOn": "timestamp"
@@ -155,7 +163,7 @@
         "$userId": {
           "$tableId": {
             ".read": "auth != null",
-            ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
             ".indexOn": "timestamp"
           },
           ".indexOn": "timestamp"
@@ -166,7 +174,7 @@
       "Schedule": {
         "$tableId": {
           ".read": "auth != null",
-          ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+          ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
           ".indexOn": "timestamp"
         },
         ".indexOn": "timestamp"
@@ -175,7 +183,7 @@
         "$groupId": {
           "$tableId": {
             ".read": "auth != null",
-            ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
             ".indexOn": "timestamp"
           },
           ".indexOn": "timestamp"
@@ -185,7 +193,7 @@
         "$groupId": {
           "$tableId": {
             ".read": "auth != null",
-            ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
             ".indexOn": "timestamp"
           },
           ".indexOn": "timestamp"
@@ -195,7 +203,7 @@
         "$userId": {
           "$tableId": {
             ".read": "auth != null",
-            ".write": "((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2))) || (!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid)",
+            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
             ".indexOn": "timestamp"
           },
           ".indexOn": "timestamp"
