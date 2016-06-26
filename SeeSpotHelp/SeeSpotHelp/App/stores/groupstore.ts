@@ -1,8 +1,5 @@
 "use strict";
 
-var Dispatcher = require("../dispatcher/dispatcher");
-var ActionConstants = require('../constants/actionconstants');
-
 import Group from '../core/databaseobjects/group';
 import Animal from '../core/databaseobjects/animal';
 import DatabaseObject from '../core/databaseobjects/databaseobject';
