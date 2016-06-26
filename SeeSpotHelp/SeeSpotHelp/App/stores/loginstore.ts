@@ -20,7 +20,6 @@ class LoginStore extends BaseStore {
   // the authentication call back.  Should be cleaned up.
   public authenticated: boolean = null;
 
-  private dispatchToken;
   public userDownloading: boolean = false;
   public hasUser: boolean = null;
   public loggedOut: boolean = false;
@@ -34,10 +33,6 @@ class LoginStore extends BaseStore {
   constructor() {
     super();
     this.Init();
-    this.dispatchToken = Dispatcher.register(function (action) {
-      this.handleAction(action);
-    }.bind(this));
-
     DataServices.OnAuthStateChanged(this.onAuthStateChanged);
   }
 

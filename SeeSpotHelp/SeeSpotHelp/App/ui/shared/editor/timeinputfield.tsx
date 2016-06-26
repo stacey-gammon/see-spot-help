@@ -2,6 +2,8 @@
 import * as React from 'react';
 
 var moment = require('moment');
+import $ = require('jquery');
+global['jQuery'] = require('jquery');
 
 var TimePicker = require('bootstrap-timepicker/js/bootstrap-timepicker.js');
 require('bootstrap-timepicker/css/bootstrap-timepicker.css');
