@@ -11,17 +11,18 @@ var DropdownButton = ReactBootstrap.DropdownButton;
 var Button = ReactBootstrap.Button;
 var MenuItem = ReactBootstrap.MenuItem;
 
-import Volunteer from '../../core/databaseobjects/volunteer';
-import ConstStrings from '../../core/conststrings';
-import LoginStore from '../../stores/loginstore';
-import VolunteerStore from '../../stores/volunteerstore';
-import AnimalStore from '../../stores/animalstore';
-import PhotoStore from '../../stores/photostore';
-import PermissionsStore from '../../stores/permissionsstore';
-import AnimalActivityStore from '../../stores/animalactivitystore';
-import Activity from '../../core/databaseobjects/activity';
-import Permission from '../../core/databaseobjects/permission';
+import Volunteer from '../../../core/databaseobjects/volunteer';
+import ConstStrings from '../../../core/conststrings';
+import LoginStore from '../../../stores/loginstore';
+import VolunteerStore from '../../../stores/volunteerstore';
+import AnimalStore from '../../../stores/animalstore';
+import PhotoStore from '../../../stores/photostore';
+import PermissionsStore from '../../../stores/permissionsstore';
+import AnimalActivityStore from '../../../stores/animalactivitystore';
+import Activity from '../../../core/databaseobjects/activity';
+import Permission from '../../../core/databaseobjects/permission';
 
+import Comments from './comments';
 import ActivityBody from './activitybody';
 
 export default class ActivityElement extends React.Component<any, any> {
@@ -125,6 +126,14 @@ export default class ActivityElement extends React.Component<any, any> {
     }
   }
 
+  getAddCommentBar() {
+    return null;
+  }
+
+  getComments() {
+
+  }
+
   render() {
     var date = this.props.activity.getDateForDisplay();
     var userAndDateInfo = " - " + this.state.memberName + " - " + date;
@@ -147,7 +156,7 @@ export default class ActivityElement extends React.Component<any, any> {
             </a>
             {date}
             </p>
-
+            <Comments activityId={this.props.activity.id} />
           </div>
           {this.getActions()}
         </div>
