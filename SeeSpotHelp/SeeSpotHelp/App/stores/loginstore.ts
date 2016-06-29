@@ -115,7 +115,10 @@ class LoginStore extends BaseStore {
 
   authenticateWithEmailPassword(email, password) : Promise<any> {
     this.loggedOut = false;
-    return DataServices.LoginWithEmailAndPassword(email, password);
+    let me = this;
+    return DataServices.LoginWithEmailAndPassword(email, password).then(function() {
+      me.authenticated = true;
+    });
   }
 
   onAuthenticated(onSuccess) {

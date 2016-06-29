@@ -7,7 +7,7 @@ var ServerResponse = require("../core/serverresponse");
 
 import Volunteer from '../core/databaseobjects/volunteer';
 import Group from '../core/databaseobjects/group';
-
+import GroupEditor from '../core/editor/groupeditor';
 import AddNewGroup from '../ui/group/addnewgroup';
 import LoginStore from '../stores/loginstore';
 
@@ -20,60 +20,48 @@ describe("AddNewGroup", function () {
     var AddNewGroupElement = ReactTestUtils.renderIntoDocument(
       <AddNewGroup/>
     );
-    ReactTestUtils.findRenderedDOMComponentWithClass(
-      AddNewGroupElement, "name");
-    ReactTestUtils.findRenderedDOMComponentWithClass(
-      AddNewGroupElement, "shelter");
-    ReactTestUtils.findRenderedDOMComponentWithClass(
-      AddNewGroupElement, "address");
-    ReactTestUtils.findRenderedDOMComponentWithClass(
-      AddNewGroupElement, "city");
-    ReactTestUtils.findRenderedDOMComponentWithClass(
-      AddNewGroupElement, "state");
-    ReactTestUtils.findRenderedDOMComponentWithClass(
-      AddNewGroupElement, "zipCode");
+
+    // State input uses auto suggest so it won't follow the standard rules.
+    var searchFor = ['name', 'shelter', 'address', 'city', 'zipCode'];
+    var found = [];
+    for (let i = 0; i < searchFor.length; i++) {
+      found.push(false);
+    }
+    var inputElements = ReactTestUtils.scryRenderedDOMComponentsWithTag(AddNewGroupElement, 'input');
+    for (let j = 0; j < inputElements.length; j++) {
+      for (let i = 0; i < searchFor.length; i++) {
+        if (inputElements[j].id == searchFor[i]) {
+          found[i] = true;
+          console.log('found ' + searchFor[i]);
+        }
+      }
+    }
+
+    for (let i = 0; i < searchFor.length; i++) {
+      if (!found[i]) {
+        expect(false).toEqual(true);
+      }
+    }
   });
+
+  it("AddNewGroupWarnsOnNoInput", function() {
+    var user = new Volunteer("john", "doe", "123");
+    LoginStore.user = user;
+    var AddNewGroupElement = ReactTestUtils.renderIntoDocument(
+      <AddNewGroup/>
+    );
+    var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
+      AddNewGroupElement, "add-or-edit-btn");
+    ReactTestUtils.Simulate.click(addButton);
+
+    var errorIcons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
+      AddNewGroupElement, "glyphicon-remove");
+    expect(errorIcons.length > 0).toEqual(true);
+  });
+
 });
-//   it("AddNewGroupWarnsOnNoInput", function() {
-//     var user = new Volunteer("john", "doe", "123");
-//     LoginStore.user = user;
-//     var AddNewGroup = ReactTestUtils.renderIntoDocument(
-//       <AddNewGroup/>
-//     );
-//     var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
-//       AddNewGroup, "addNewGroupButton");
-//     ReactTestUtils.Simulate.click(addButton);
-//
-//     var errorIcons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-//       AddNewGroup, "glyphicon-remove");
-//     expect(errorIcons.length > 0).toEqual(true);
-//   });
-//
-//   it("AddNewGroupWarnGoesAwayAfterInput", function () {
-//     var user = new Volunteer("john", "doe", "123");
-//     LoginStore.user = user;
-//     var AddNewGroup = ReactTestUtils.renderIntoDocument(
-//       <AddNewGroup />
-//     );
-//     var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
-//       AddNewGroup, "addNewGroupButton");
-//     ReactTestUtils.Simulate.click(addButton);
-//
-//     ReactTestUtils.findRenderedDOMComponentWithClass(
-//       AddNewGroup, "nameErrorValidationSpan");
-//
-//     var groupNameInput = ReactDOM.findDOMNode(AddNewGroup.refs.name);
-//     groupNameInput.value = "value";
-//     ReactTestUtils.Simulate.change(groupNameInput);
-//     ReactTestUtils.Simulate.click(addButton);
-//
-//     var errors = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-//       AddNewGroup, "nameErrorValidationSpan");
-//     expect(errors.length).toEqual(0);
-//
-//     ReactTestUtils.findRenderedDOMComponentWithClass(
-//       AddNewGroup, "nameSuccessValidationSpan");
-//   });
+
+
 //
 //   it("AddNewGroupSuccess", function () {
 //     console.log("AddNewGroupSuccess");
