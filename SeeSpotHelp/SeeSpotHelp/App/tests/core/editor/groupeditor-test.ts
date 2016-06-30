@@ -16,7 +16,7 @@ import TestHelper from '../../testhelper';
 var d3 = require("d3");
 
 describe("GroupEditorTest", function () {
-  it("GroupEditorUnauthorizedUserPermissionFail", function () {
+  it("GroupEditorUnauthorizedUserPermissionFail", function (done) {
     let user = new Volunteer("john", "doe");
     LoginStore.user = user;
 
@@ -32,14 +32,16 @@ describe("GroupEditorTest", function () {
       promise.then(function() {
         expect(true).toEqual(false);
         reject();
+        done();
       }).catch(function(error) {
         expect(error.code).toEqual('PERMISSION_DENIED');
         resolve();
+        done();
       });
     });
   });
 
-  it("GroupEditorInsertPass", function () {
+  it("GroupEditorInsertPass", function (done) {
     LoginStore.user = null;
     return new Promise(function(resolve, reject) {
       TestHelper.LoginWithTestAccount().then(function() {
@@ -53,9 +55,11 @@ describe("GroupEditorTest", function () {
         let promise = groupEditor.insert({userId: LoginStore.getUser().id});
         promise.then(function() {
           resolve();
+          done();
           return groupEditor.delete();
         }).catch(function(error) {
           reject();
+          done();
         });
       });
     });

@@ -19,7 +19,7 @@ export default class AddAnimalPage extends React.Component<any, any> {
   public context: any;
   public refs: any;
 
-  constructor(props) {
+  constructor(props, context) {
     super(props);
     this.onChange = this.onChange.bind(this);
     var mode = Utils.FindPassedInProperty(this, 'mode');
@@ -29,9 +29,13 @@ export default class AddAnimalPage extends React.Component<any, any> {
 
     if (!mode) mode = 'add';
 
+    if (!group && !groupId) {
+      context.router.push('/profilePage');
+    }
+
     this.state = {
       errorMessage: null,
-      groupId: groupId || group.id,
+      groupId: groupId || (group && group.id),
       mode: mode,
       animal: animal
     };
@@ -72,6 +76,7 @@ export default class AddAnimalPage extends React.Component<any, any> {
   }
 
   componentWillMount() {
+    if (!this.state.groupId) return;
     this.ensureRequiredState();
   }
 
@@ -104,7 +109,7 @@ export default class AddAnimalPage extends React.Component<any, any> {
   }
 
   render() {
-    if (!this.state.editor) return null;
+    if (!this.state.editor || !this.state.groupId) return null;
     var extraFields = {
       groupId: this.state.groupId,
       userId: LoginStore.getUser().id

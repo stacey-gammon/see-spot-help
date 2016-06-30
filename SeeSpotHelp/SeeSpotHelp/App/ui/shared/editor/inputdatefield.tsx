@@ -2,6 +2,7 @@
 import * as React from 'react';
 
 var DatePicker = require('react-datepicker');
+import moment = require('moment');
 
 export default class InputDateField extends React.Component<any, any> {
   constructor(props) {

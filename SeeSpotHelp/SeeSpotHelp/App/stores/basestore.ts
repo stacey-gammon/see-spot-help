@@ -270,7 +270,7 @@ abstract class BaseStore extends EventEmitter {
       this.itemAdded('id', null, null, null);
     }
 
-    if (onSuccess) { onSuccess(); }
+    if (onSuccess) { onSuccess(this.getItemById(id)); }
     this.emitChange('id', id);
     this.resolvePromises(id);
   }
