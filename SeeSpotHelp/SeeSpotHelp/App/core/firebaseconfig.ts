@@ -21,5 +21,5 @@ var liveConfig = {
 };
 
 export default function InitializeFirebase() {
-  Firebase.initializeApp(releaseConfig);
+  Firebase.initializeApp(liveConfig);
 }
