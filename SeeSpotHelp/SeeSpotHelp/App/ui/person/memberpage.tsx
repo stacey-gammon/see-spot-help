@@ -30,7 +30,7 @@ export default class MemberPage extends React.Component<any, any> {
     router: React.PropTypes.object.isRequired
   }
 
-  constructor(props) {
+  constructor(props, context) {
     super(props);
     var member = Utils.FindPassedInProperty(this, 'member') || LoginStore.getUser();
     var userId = Utils.FindPassedInProperty(this, 'userId');
@@ -39,6 +39,10 @@ export default class MemberPage extends React.Component<any, any> {
     if (userId) {
       member = VolunteerStore.getItemById(userId);
       VolunteerStore.addPropertyListener(this, 'id', userId, this.onChange.bind(this));
+    }
+
+    if ((!member && !userId) || !groupId) {
+      context.router.push('/profilePage');
     }
 
     this.state = {
@@ -51,7 +55,9 @@ export default class MemberPage extends React.Component<any, any> {
   }
 
   componentDidMount() {
+    if (!this.state.groupId) return;
     LoginStore.addChangeListener(this.onChange);
+
     if (LoginStore.getUser()) {
       GroupStore.addPropertyListener(this, 'id', this.state.groupId, this.onChange.bind(this));
       PermissionsStore.addPropertyListener(
@@ -88,6 +94,8 @@ export default class MemberPage extends React.Component<any, any> {
   }
 
   render() {
+    if (!this.state.groupId) return null;
+
     var group = GroupStore.getGroupById(this.state.groupId);
     if (!LoginStore.getUser() || !this.state.member) return null;
     var memberName = this.state.member.name;

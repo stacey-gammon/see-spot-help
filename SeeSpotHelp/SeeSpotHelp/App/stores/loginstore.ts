@@ -1,9 +1,5 @@
 ﻿"use strict";
 
-var Dispatcher = require("../dispatcher/dispatcher");
-var ActionConstants = require('../constants/actionconstants');
-var LoginActions = require("../actions/loginactions");
-
 import Volunteer from '../core/databaseobjects/volunteer';
 import Group from '../core/databaseobjects/group';
 import DatabaseObject from '../core/databaseobjects/databaseobject';
@@ -24,7 +20,6 @@ class LoginStore extends BaseStore {
   // the authentication call back.  Should be cleaned up.
   public authenticated: boolean = null;
 
-  private dispatchToken;
   public userDownloading: boolean = false;
   public hasUser: boolean = null;
   public loggedOut: boolean = false;
@@ -38,10 +33,6 @@ class LoginStore extends BaseStore {
   constructor() {
     super();
     this.Init();
-    this.dispatchToken = Dispatcher.register(function (action) {
-      this.handleAction(action);
-    }.bind(this));
-
     DataServices.OnAuthStateChanged(this.onAuthStateChanged);
   }
 
@@ -124,7 +115,10 @@ class LoginStore extends BaseStore {
 
   authenticateWithEmailPassword(email, password) : Promise<any> {
     this.loggedOut = false;
-    return DataServices.LoginWithEmailAndPassword(email, password);
+    let me = this;
+    return DataServices.LoginWithEmailAndPassword(email, password).then(function() {
+      me.authenticated = true;
+    });
   }
 
   onAuthenticated(onSuccess) {

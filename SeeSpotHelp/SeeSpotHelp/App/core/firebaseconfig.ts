@@ -1,4 +1,3 @@
-
 var Firebase = require('firebase');
 
 // Initialize Firebase
@@ -22,5 +21,5 @@ var liveConfig = {
 };
 
 export default function InitializeFirebase() {
-  Firebase.initializeApp(liveConfig);
+  Firebase.initializeApp(releaseConfig);
 }

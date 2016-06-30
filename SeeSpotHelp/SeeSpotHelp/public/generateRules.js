@@ -226,7 +226,7 @@ function generatePermissionRules() {
   existingAdminRule =
     `(root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
   newAdminRule =
-    `(${newRoot()}.parent().child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
+    `(${newRoot()}.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
 
   var permissionIdRules = {};
   addReadRule(permissionIdRules, 'auth != null');

@@ -1,7 +1,5 @@
 'use strict';
 
-var Dispatcher = require('../dispatcher/dispatcher');
-var ActionConstants = require('../constants/actionconstants');
 import Events = require('events');
 import Promise = require('bluebird');
 
@@ -272,7 +270,7 @@ abstract class BaseStore extends EventEmitter {
       this.itemAdded('id', null, null, null);
     }
 
-    if (onSuccess) { onSuccess(); }
+    if (onSuccess) { onSuccess(this.getItemById(id)); }
     this.emitChange('id', id);
     this.resolvePromises(id);
   }
