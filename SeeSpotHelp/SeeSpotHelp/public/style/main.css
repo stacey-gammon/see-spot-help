@@ -6431,10 +6431,12 @@ body {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   position: relative;
-  background-color: rgba(14, 157, 208, 0.3);
+  background-color: rgba(14, 157, 208, 0.1);
   margin: 2px; }
+  .comment .member-comment-info {
+    color: rgba(0, 0, 0, 0.4); }
   .comment:hover {
-    background-color: rgba(14, 157, 208, 0.5); }
+    background-color: rgba(14, 157, 208, 0.2); }
 
 .comment-actions {
   position: absolute;

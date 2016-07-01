@@ -58,7 +58,12 @@ export default class Comments extends React.Component<any, any> {
   }
 
   deleteAction(comment) {
-    comment.delete();
+    let me = this;
+    comment.delete().then(function() {
+      me.setState({error: false, errorMessage: ''});
+    }, function (error) {
+      me.setState({error: true, errorMessage: error.message});
+    });
   }
 
   getActionDropDown(comment) {
@@ -89,7 +94,7 @@ export default class Comments extends React.Component<any, any> {
     comment.comment = this.refs['editComment'].value;
     let me = this;
     comment.update().then(function() {
-      me.setState({editCommentId: null});
+      me.setState({editCommentId: null, error: false});
     }, function (error) {
       me.setState({error: true, errorMessage: error.message});
     });
@@ -112,7 +117,7 @@ export default class Comments extends React.Component<any, any> {
         return (
           <div className='comment'>
             {comment.comment}
-            <p>
+            <p className='member-comment-info'>
             <a><LinkContainer
             to={{ pathname: "/memberPage",
               state: {
@@ -131,7 +136,7 @@ export default class Comments extends React.Component<any, any> {
     }
   }
 
-  insertComment() {
+  insertComment(e) {
     let comment = new Comment();
     comment.comment = this.refs['newComment'].value;
     comment.userId = LoginStore.getUser().id;
@@ -140,9 +145,12 @@ export default class Comments extends React.Component<any, any> {
     let me = this;
     comment.insert().then(function() {
       me.refs['newComment'].value = '';
+      me.setState({error: false, errorMessage: ''});
     }, function (error) {
       me.setState({error: true, errorMessage: error.message});
     });
+    e.preventDefault();
+    return false;
   }
 
   addCommentBar() {

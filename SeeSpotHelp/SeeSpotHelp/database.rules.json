@@ -54,6 +54,10 @@
           },
           ".indexOn": "timestamp"
         }
+      },
+      "ActivityByActivityId": {
+        ".read": "true",
+        ".write": "true"
       }
     },
     "Animal": {
@@ -88,6 +92,10 @@
           },
           ".indexOn": "timestamp"
         }
+      },
+      "AnimalByActivityId": {
+        ".read": "true",
+        ".write": "true"
       }
     },
     "Group": {
@@ -128,6 +136,10 @@
           },
           ".indexOn": "timestamp"
         }
+      },
+      "PermissionByActivityId": {
+        ".read": "true",
+        ".write": "true"
       }
     },
     "Photo": {
@@ -168,46 +180,32 @@
           },
           ".indexOn": "timestamp"
         }
+      },
+      "PhotoByActivityId": {
+        ".read": "true",
+        ".write": "true"
       }
     },
     "Comment": {
       "Comment": {
-        "$tableId": {
-          ".read": "auth != null",
-          ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
-          ".indexOn": "timestamp"
-        },
-        ".indexOn": "timestamp"
+        ".read": "true",
+        ".write": "true"
       },
       "CommentByAnimalId": {
-        "$groupId": {
-          "$tableId": {
-            ".read": "auth != null",
-            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
-            ".indexOn": "timestamp"
-          },
-          ".indexOn": "timestamp"
-        }
+        ".read": "true",
+        ".write": "true"
       },
       "CommentByGroupId": {
-        "$groupId": {
-          "$tableId": {
-            ".read": "auth != null",
-            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
-            ".indexOn": "timestamp"
-          },
-          ".indexOn": "timestamp"
-        }
+        ".read": "true",
+        ".write": "true"
       },
       "CommentByUserId": {
-        "$userId": {
-          "$tableId": {
-            ".read": "auth != null",
-            ".write": "(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid) || (data.exists() && data.child('userId').val() == auth.uid) || ((data.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == 2)) || (newData.exists() && (root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == 2)))",
-            ".indexOn": "timestamp"
-          },
-          ".indexOn": "timestamp"
-        }
+        ".read": "true",
+        ".write": "true"
+      },
+      "CommentByActivityId": {
+        ".read": "true",
+        ".write": "true"
       }
     },
     "Schedule": {
@@ -248,6 +246,10 @@
           },
           ".indexOn": "timestamp"
         }
+      },
+      "ScheduleByActivityId": {
+        ".read": "true",
+        ".write": "true"
       }
     }
   }

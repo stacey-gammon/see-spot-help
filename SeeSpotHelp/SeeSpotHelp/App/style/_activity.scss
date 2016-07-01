@@ -92,12 +92,17 @@
   border-top: 1px solid rgba(0,0,0,.1);
   border-bottom: 1px solid rgba(0,0,0,.1);
   position: relative;
-  background-color: transparentize($color1, .7);
+  background-color: transparentize($color1, .9);
   margin: 2px;
-  //color: rgba(0,0,0,.3);
+
+  //color: rgba(0,0,0,1);
+
+  .member-comment-info {
+    color: rgba(0,0,0,.4);
+  }
 
   &:hover {
-    background-color: transparentize($color1, .5);
+    background-color: transparentize($color1, .8);
   }
 }
 
