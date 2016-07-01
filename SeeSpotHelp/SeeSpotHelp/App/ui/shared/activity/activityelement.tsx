@@ -95,7 +95,7 @@ export default class ActivityElement extends React.Component<any, any> {
   getActionDropDown() {
     return (
       <div className='dropdown activity-dropdown' id='actionDropDown'>
-        <DropdownButton title="" id='actionDropDownButton'>
+        <DropdownButton title="" className='action-dropdown-btn'>
           {this.getEditMenuItem()}
           <MenuItem eventKey="2" onClick={this.deleteAction.bind(this)}>Delete</MenuItem>
         </DropdownButton>
@@ -117,21 +117,11 @@ export default class ActivityElement extends React.Component<any, any> {
     if (this.props.activity.userId == LoginStore.getUser().id ||
         this.props.permission.admin()) {
       return (
-        <div className="media-right">
-          {this.getActionDropDown()}
-        </div>
+        this.getActionDropDown()
       );
     } else {
       return null;
     }
-  }
-
-  getAddCommentBar() {
-    return null;
-  }
-
-  getComments() {
-
   }
 
   render() {
@@ -156,10 +146,10 @@ export default class ActivityElement extends React.Component<any, any> {
             </a>
             {date}
             </p>
-            <Comments activityId={this.props.activity.id} />
+            <Comments activityId={this.props.activity.id} groupId={this.props.activity.groupId}/>
           </div>
-          {this.getActions()}
         </div>
+        {this.getActions()}
       </div>
     );
   }

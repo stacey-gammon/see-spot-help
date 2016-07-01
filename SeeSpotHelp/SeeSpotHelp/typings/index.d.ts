@@ -18,3 +18,4 @@
 /// <reference path="globals/react-bootstrap/index.d.ts" />
 /// <reference path="globals/react/index.d.ts" />
 /// <reference path="globals/require/index.d.ts" />
+/// <reference path="firebase-sdk3.d.ts" />

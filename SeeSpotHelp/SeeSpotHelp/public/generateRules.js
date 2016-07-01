@@ -25,6 +25,7 @@ var TopLevelTables = [
   'Group',
   'Permission',
   'Photo',
+  'Comment',
   'Schedule'
 ];
 
@@ -45,6 +46,10 @@ function InitializeRulesToAllOpen() {
       ".write": "true"
     };
     rules[table][table + 'ByUserId'] = {
+      ".read": "true",
+      ".write": "true"
+    };
+    rules[table][table + 'ByActivityId'] = {
       ".read": "true",
       ".write": "true"
     };
@@ -284,6 +289,7 @@ function generateRules () {
   generateBasicTableRules('Photo');
   generateBasicTableRules('Activity');
   generateBasicTableRules('Schedule');
+  //generateBasicTableRules('Comment');
 
   var superRules = {
     "rules": rules

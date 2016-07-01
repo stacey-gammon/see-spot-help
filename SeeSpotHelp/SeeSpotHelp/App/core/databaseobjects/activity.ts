@@ -1,7 +1,5 @@
 'use strict';
 
-var dateFormat = require('dateformat');
-
 import DataServices from '../dataservices';
 import DatabaseObject from './databaseobject';
 
@@ -31,10 +29,6 @@ export default class Activity extends DatabaseObject {
   }
 
   createInstance() { return new Activity(); }
-
-  getDateForDisplay() {
-    return dateFormat(new Date(this.timestamp), "mm/dd/yy, h:MM TT");
-  }
 
   editable() { return true; }
 }

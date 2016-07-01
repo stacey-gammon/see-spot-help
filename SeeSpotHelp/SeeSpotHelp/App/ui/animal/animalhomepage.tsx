@@ -23,63 +23,83 @@ var LinkContainer = ReactRouterBootstrap.LinkContainer;
 // by volunteers, as well as ability to edit, delete and add a new activity or note
 // about the specific animal.
 export default class AnimalHomePage extends React.Component<any, any> {
-	constructor(props) {
-		super(props);
-		var animal = Utils.FindPassedInProperty(this, 'animal');
-		var animalId = Utils.FindPassedInProperty(this, 'animalId');
-		var group = Utils.FindPassedInProperty(this, 'group');
-		var groupId = Utils.FindPassedInProperty(this, 'groupId');
+  public context: any;
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
 
-		this.state = {
-			animalId: animalId || animal.id,
-			groupId: groupId || group.id,
-			permission: Permission.CreateNonMemberPermission(),
-			animalDefaultTabKey: null
-		};
+  constructor(props, context) {
+    super(props);
+    var animal = Utils.FindPassedInProperty(this, 'animal');
+    var animalId = Utils.FindPassedInProperty(this, 'animalId');
+    var group = Utils.FindPassedInProperty(this, 'group');
+    var groupId = Utils.FindPassedInProperty(this, 'groupId');
 
-		Utils.LoadOrSaveState(this.state);
-	}
+    if ((!group && !groupId) || (!animal && !animalId)) {
+      context.router.push('/profilePage');
+    }
 
-	componentWillMount() {
-		var idToStoreMap = {};
-		idToStoreMap[this.state.groupId] = GroupStore;
-		idToStoreMap[this.state.animalId] = AnimalStore;
-		StoreStateHelper.EnsureRequiredState(idToStoreMap, this);
-	}
+    this.state = {
+      animalId: animalId || (animal && animal.id),
+      groupId: groupId || (group && group.id),
+      permission: Permission.CreateNonMemberPermission(),
+      animalDefaultTabKey: null
+    };
 
-	componentDidMount() {
-		PhotoStore.addPropertyListener(
-			this, 'animalId', this.state.animalId, this.onChange.bind(this));
-	}
+    Utils.LoadOrSaveState(this.state);
+    this.onUserLoggedIn = this.onUserLoggedIn.bind(this);
+    this.onChange = this.onChange.bind(this);
+  }
 
-	componentWillUnmount() {
-		LoginStore.removeChangeListener(this.onChange);
-		PhotoStore.removePropertyListener(this);
-		PermissionsStore.removePropertyListener(this);
-		GroupStore.removePropertyListener(this);
-		AnimalStore.removePropertyListener(this);
-	}
+  componentWillMount() {
+    LoginStore.addChangeListener(this.onUserLoggedIn);
+    if (!this.state.groupId || !this.state.animalId || !LoginStore.getUser()) return;
+    this.onUserLoggedIn();
+  }
 
-	onChange() {
-		var permission = StoreStateHelper.GetPermission(this.state);
-		this.setState({ permission: permission });
-	}
+  onUserLoggedIn() {
+    var idToStoreMap = {};
+    idToStoreMap[this.state.groupId] = GroupStore;
+    idToStoreMap[this.state.animalId] = AnimalStore;
+    StoreStateHelper.EnsureRequiredState(idToStoreMap, this);
+  }
 
-	render() {
-		var animal = AnimalStore.getItemById(this.state.animalId);
-		var group = GroupStore.getItemById(this.state.groupId);
-		if (!animal || !group) return null;
-		return (
-			<div className="page">
-				<AnimalInfoBar
-					group={group}
-					permission={this.state.permission}
-					animal={animal} />
-				<AnimalPageTabs
-					group={group}
-					permission={this.state.permission}
-					animal={animal} />
-			</div>
-		);
-	}
+  componentDidMount() {
+    PhotoStore.addPropertyListener(
+      this, 'animalId', this.state.animalId, this.onChange.bind(this));
+  }
+
+  componentWillUnmount() {
+    LoginStore.removeChangeListener(this.onChange);
+    LoginStore.removeChangeListener(this.onUserLoggedIn);
+    PhotoStore.removePropertyListener(this);
+    PermissionsStore.removePropertyListener(this);
+    GroupStore.removePropertyListener(this);
+    AnimalStore.removePropertyListener(this);
+  }
+
+  onChange() {
+    var permission = StoreStateHelper.GetPermission(this.state);
+    this.setState({ permission: permission });
+  }
+
+  render() {
+    if (!this.state.groupId || !this.state.animalId) return null;
+
+    var animal = AnimalStore.getItemById(this.state.animalId);
+    var group = GroupStore.getItemById(this.state.groupId);
+    if (!animal || !group) return null;
+    return (
+      <div className="page">
+        <AnimalInfoBar
+          group={group}
+          permission={this.state.permission}
+          animal={animal} />
+        <AnimalPageTabs
+          group={group}
+          permission={this.state.permission}
+          animal={animal} />
+      </div>
+    );
+  }
 }

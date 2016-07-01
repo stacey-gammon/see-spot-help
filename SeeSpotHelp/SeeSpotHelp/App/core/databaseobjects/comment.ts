@@ -9,6 +9,7 @@ export default class Comment extends DatabaseObject {
   public comment: string = '';
   public userId: string;
   public activityId: string;
+  public groupId: string;
   public photoId: string = null;
 
   constructor() {
