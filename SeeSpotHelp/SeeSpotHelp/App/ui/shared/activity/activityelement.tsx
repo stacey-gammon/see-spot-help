@@ -95,7 +95,8 @@ export default class ActivityElement extends React.Component<any, any> {
   getActionDropDown() {
     return (
       <div className='dropdown activity-dropdown' id='actionDropDown'>
-        <DropdownButton title="" className='action-dropdown-btn'>
+        <DropdownButton title={<span className="glyphicon glyphicon-edit edit-action-btn"></span>}
+                        className='action-dropdown-btn'>
           {this.getEditMenuItem()}
           <MenuItem eventKey="2" onClick={this.deleteAction.bind(this)}>Delete</MenuItem>
         </DropdownButton>

@@ -112,7 +112,7 @@ export default class AddAnimalNote extends React.Component<any, any> {
   }
 
   render() {
-    if (!this.state.editor) return null;
+    if (!this.state.editor || !LoginStore.getUser()) return null;
     var extraFields = {
       animalId: this.state.animalId,
       groupId: this.state.groupId,

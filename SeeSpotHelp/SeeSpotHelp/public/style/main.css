@@ -6352,7 +6352,24 @@ body {
   color: #767676; }
 
 .action-dropdown-btn {
-  background-color: transparent; }
+  background-color: transparent;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  margin-top: 5px; }
+  .action-dropdown-btn:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: rgba(0, 0, 0, 0.7); }
+    .action-dropdown-btn:active .glyphicon-edit {
+      color: rgba(0, 0, 0, 0.7); }
+  .action-dropdown-btn .glyphicon-edit {
+    margin-right: -10px;
+    font-size: 14px;
+    margin-top: 0px; }
+  .action-dropdown-btn .caret {
+    visibility: hidden; }
 
 .activity-dropdown {
   position: absolute;
@@ -6366,12 +6383,19 @@ body {
     margin-right: -5px;
     margin-bottom: -1px;
     z-index: 1;
-    color: rgba(0, 0, 0, 0.1);
-    font-size: 40px; }
+    color: rgba(0, 0, 0, 0.5); }
     .activity-dropdown .btn :hover, .activity-dropdown .fc-button :hover {
       color: rgba(0, 0, 0, 0.4); }
   .activity-dropdown .btn-default:hover {
     background-color: transparent; }
+  .activity-dropdown .dropdown-toggle {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important; }
+    .activity-dropdown .dropdown-toggle :active {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important; }
   .activity-dropdown .dropdown-menu {
     padding-top: 0px;
     padding-bottom: 0px;

@@ -69,7 +69,8 @@ export default class Comments extends React.Component<any, any> {
   getActionDropDown(comment) {
     return (
       <div className='dropdown activity-dropdown' id='actionDropDown'>
-        <DropdownButton title="" className='action-dropdown-btn'>
+        <DropdownButton title={<span className="glyphicon glyphicon-edit edit-action-btn"></span>}
+                        className='action-dropdown-btn'>
           {this.getEditMenuItem(comment)}
           <MenuItem eventKey="2" onClick={this.deleteAction.bind(this, comment)}>Delete</MenuItem>
         </DropdownButton>

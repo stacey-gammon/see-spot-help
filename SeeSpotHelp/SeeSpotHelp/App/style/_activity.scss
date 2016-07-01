@@ -2,6 +2,30 @@
 @import 'colorThemePrimary';
 .action-dropdown-btn {
   background-color: transparent;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+
+  &:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: rgba(0,0,0,.7);
+    .glyphicon-edit {
+      color: rgba(0,0,0,.7);
+    }
+  }
+
+  margin-top: 5px;
+  .glyphicon-edit {
+    margin-right: -10px;
+    font-size: 14px;
+    margin-top: 0px;
+  }
+
+  .caret {
+    visibility: hidden;
+  }
 }
 .activity-dropdown {
   position: absolute;
@@ -15,8 +39,7 @@
     margin-right: -5px;
     margin-bottom: -1px;
     z-index: 1;
-    color: rgba(0,0,0,.1);
-    font-size: 40px;
+    color: rgba(0,0,0,.5);
 
     :hover {
       color: rgba(0,0,0,.4);
@@ -24,6 +47,18 @@
   }
   .btn-default:hover {
     background-color: rgba(0, 0, 0, 0);
+  }
+
+  .dropdown-toggle {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    :active {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
   }
 
   .dropdown-menu {

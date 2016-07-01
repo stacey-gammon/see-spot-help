@@ -47,13 +47,6 @@ export default class AnimalHomePage extends React.Component<any, any> {
     };
 
     Utils.LoadOrSaveState(this.state);
-<<<<<<< HEAD
-  }
-
-  componentWillMount() {
-    if (!this.state.groupId || !this.state.animalId) return;
-
-=======
     this.onUserLoggedIn = this.onUserLoggedIn.bind(this);
     this.onChange = this.onChange.bind(this);
   }
@@ -65,7 +58,6 @@ export default class AnimalHomePage extends React.Component<any, any> {
   }
 
   onUserLoggedIn() {
->>>>>>> ActivityComments
     var idToStoreMap = {};
     idToStoreMap[this.state.groupId] = GroupStore;
     idToStoreMap[this.state.animalId] = AnimalStore;
@@ -79,10 +71,6 @@ export default class AnimalHomePage extends React.Component<any, any> {
 
   componentWillUnmount() {
     LoginStore.removeChangeListener(this.onChange);
-<<<<<<< HEAD
-=======
-    LoginStore.removeChangeListener(this.onUserLoggedIn);
->>>>>>> ActivityComments
     PhotoStore.removePropertyListener(this);
     PermissionsStore.removePropertyListener(this);
     GroupStore.removePropertyListener(this);
