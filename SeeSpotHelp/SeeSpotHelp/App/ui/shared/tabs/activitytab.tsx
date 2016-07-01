@@ -4,7 +4,7 @@ import * as React from 'react';
 import AnimalActivityStore from '../../../stores/animalactivitystore';
 import VolunteerStore from '../../../stores/volunteerstore';
 
-import ActivityElement from '../activityelement';
+import ActivityElement from '../activity/activityelement';
 
 var Loader = require('react-loader');
 

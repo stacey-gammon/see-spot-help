@@ -54,6 +54,10 @@
           },
           ".indexOn": "timestamp"
         }
+      },
+      "ActivityByActivityId": {
+        ".read": "true",
+        ".write": "true"
       }
     },
     "Animal": {
@@ -88,6 +92,10 @@
           },
           ".indexOn": "timestamp"
         }
+      },
+      "AnimalByActivityId": {
+        ".read": "true",
+        ".write": "true"
       }
     },
     "Group": {
@@ -128,6 +136,10 @@
           },
           ".indexOn": "timestamp"
         }
+      },
+      "PermissionByActivityId": {
+        ".read": "true",
+        ".write": "true"
       }
     },
     "Photo": {
@@ -168,6 +180,32 @@
           },
           ".indexOn": "timestamp"
         }
+      },
+      "PhotoByActivityId": {
+        ".read": "true",
+        ".write": "true"
+      }
+    },
+    "Comment": {
+      "Comment": {
+        ".read": "true",
+        ".write": "true"
+      },
+      "CommentByAnimalId": {
+        ".read": "true",
+        ".write": "true"
+      },
+      "CommentByGroupId": {
+        ".read": "true",
+        ".write": "true"
+      },
+      "CommentByUserId": {
+        ".read": "true",
+        ".write": "true"
+      },
+      "CommentByActivityId": {
+        ".read": "true",
+        ".write": "true"
       }
     },
     "Schedule": {
@@ -208,6 +246,10 @@
           },
           ".indexOn": "timestamp"
         }
+      },
+      "ScheduleByActivityId": {
+        ".read": "true",
+        ".write": "true"
       }
     }
   }

@@ -11,17 +11,18 @@ var DropdownButton = ReactBootstrap.DropdownButton;
 var Button = ReactBootstrap.Button;
 var MenuItem = ReactBootstrap.MenuItem;
 
-import Volunteer from '../../core/databaseobjects/volunteer';
-import ConstStrings from '../../core/conststrings';
-import LoginStore from '../../stores/loginstore';
-import VolunteerStore from '../../stores/volunteerstore';
-import AnimalStore from '../../stores/animalstore';
-import PhotoStore from '../../stores/photostore';
-import PermissionsStore from '../../stores/permissionsstore';
-import AnimalActivityStore from '../../stores/animalactivitystore';
-import Activity from '../../core/databaseobjects/activity';
-import Permission from '../../core/databaseobjects/permission';
+import Volunteer from '../../../core/databaseobjects/volunteer';
+import ConstStrings from '../../../core/conststrings';
+import LoginStore from '../../../stores/loginstore';
+import VolunteerStore from '../../../stores/volunteerstore';
+import AnimalStore from '../../../stores/animalstore';
+import PhotoStore from '../../../stores/photostore';
+import PermissionsStore from '../../../stores/permissionsstore';
+import AnimalActivityStore from '../../../stores/animalactivitystore';
+import Activity from '../../../core/databaseobjects/activity';
+import Permission from '../../../core/databaseobjects/permission';
 
+import Comments from './comments';
 import ActivityBody from './activitybody';
 
 export default class ActivityElement extends React.Component<any, any> {
@@ -94,7 +95,7 @@ export default class ActivityElement extends React.Component<any, any> {
   getActionDropDown() {
     return (
       <div className='dropdown activity-dropdown' id='actionDropDown'>
-        <DropdownButton title="" id='actionDropDownButton'>
+        <DropdownButton title="" className='action-dropdown-btn'>
           {this.getEditMenuItem()}
           <MenuItem eventKey="2" onClick={this.deleteAction.bind(this)}>Delete</MenuItem>
         </DropdownButton>
@@ -116,9 +117,7 @@ export default class ActivityElement extends React.Component<any, any> {
     if (this.props.activity.userId == LoginStore.getUser().id ||
         this.props.permission.admin()) {
       return (
-        <div className="media-right">
-          {this.getActionDropDown()}
-        </div>
+        this.getActionDropDown()
       );
     } else {
       return null;
@@ -147,10 +146,10 @@ export default class ActivityElement extends React.Component<any, any> {
             </a>
             {date}
             </p>
-
+            <Comments activityId={this.props.activity.id} groupId={this.props.activity.groupId}/>
           </div>
-          {this.getActions()}
         </div>
+        {this.getActions()}
       </div>
     );
   }

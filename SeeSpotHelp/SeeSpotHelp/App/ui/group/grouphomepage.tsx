@@ -22,6 +22,7 @@ export default class GroupHomePage extends React.Component<any, any> {
     super(props);
     var groupId = Utils.FindPassedInProperty(this, 'groupId');
     this.state = { groupId: groupId };
+    this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
@@ -69,8 +70,7 @@ export default class GroupHomePage extends React.Component<any, any> {
 
   addChangeListeners(group) {
     if (LoginStore.getUser()) {
-      PermissionsStore.addPropertyListener(
-        this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+      PermissionsStore.addPropertyListener(this, 'userId', LoginStore.getUser().id, this.onChange);
     }
     StoreStateHelper.AddChangeListeners([LoginStore, GroupStore], this);
   }
