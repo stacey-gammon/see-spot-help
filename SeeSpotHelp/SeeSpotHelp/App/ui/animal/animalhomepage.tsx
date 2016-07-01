@@ -58,10 +58,12 @@ export default class AnimalHomePage extends React.Component<any, any> {
   }
 
   onUserLoggedIn() {
-    var idToStoreMap = {};
-    idToStoreMap[this.state.groupId] = GroupStore;
-    idToStoreMap[this.state.animalId] = AnimalStore;
-    StoreStateHelper.EnsureRequiredState(idToStoreMap, this);
+    if (LoginStore.getUser()) {
+      var idToStoreMap = {};
+      idToStoreMap[this.state.groupId] = GroupStore;
+      idToStoreMap[this.state.animalId] = AnimalStore;
+      StoreStateHelper.EnsureRequiredState(idToStoreMap, this);
+    }
   }
 
   componentDidMount() {

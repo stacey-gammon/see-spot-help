@@ -132,13 +132,14 @@
 
   //color: rgba(0,0,0,1);
 
-  .member-comment-info {
-    color: rgba(0,0,0,.4);
-  }
-
   &:hover {
     background-color: transparentize($color1, .8);
   }
+}
+
+.member-comment-info {
+  color: rgba(0,0,0,.4);
+  margin-bottom: 0;
 }
 
 .comment-actions {

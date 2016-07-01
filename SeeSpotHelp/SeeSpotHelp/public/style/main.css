@@ -6457,10 +6457,12 @@ body {
   position: relative;
   background-color: rgba(14, 157, 208, 0.1);
   margin: 2px; }
-  .comment .member-comment-info {
-    color: rgba(0, 0, 0, 0.4); }
   .comment:hover {
     background-color: rgba(14, 157, 208, 0.2); }
+
+.member-comment-info {
+  color: rgba(0, 0, 0, 0.4);
+  margin-bottom: 0; }
 
 .comment-actions {
   position: absolute;

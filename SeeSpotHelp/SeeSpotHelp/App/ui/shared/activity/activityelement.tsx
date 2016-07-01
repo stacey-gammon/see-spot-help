@@ -135,19 +135,21 @@ export default class ActivityElement extends React.Component<any, any> {
             <ActivityBody
               activity={this.props.activity}
               view={this.props.view}/>
-            <p>
-            <a><LinkContainer
-              to={{ pathname: "/memberPage",
-                state: {
-                  userId: this.props.activity.userId,
-                  groupId: this.props.activity.groupId
-                } }}>
-              <button className="invisible-button">{this.state.memberName}</button>
-            </LinkContainer>
-            </a>
-            {date}
+            <p className="member-comment-info">
+              <a><LinkContainer
+                to={{ pathname: "/memberPage",
+                  state: {
+                    userId: this.props.activity.userId,
+                    groupId: this.props.activity.groupId
+                  } }}>
+                <button className="invisible-button">{this.state.memberName}</button>
+              </LinkContainer>
+              </a>
+              {date}
             </p>
-            <Comments activityId={this.props.activity.id} groupId={this.props.activity.groupId}/>
+            <Comments activityId={this.props.activity.id}
+                      permission={this.props.permission}
+                      groupId={this.props.activity.groupId}/>
           </div>
         </div>
         {this.getActions()}

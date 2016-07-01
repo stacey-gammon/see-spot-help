@@ -91,7 +91,7 @@ export default class Comments extends React.Component<any, any> {
     }
   }
 
-  updateComment(comment) {
+  updateComment(comment, e) {
     comment.comment = this.refs['editComment'].value;
     let me = this;
     comment.update().then(function() {
@@ -99,6 +99,8 @@ export default class Comments extends React.Component<any, any> {
     }, function (error) {
       me.setState({error: true, errorMessage: error.message});
     });
+    e.preventDefault();
+    return false;
   }
 
   createCommentElement(comment: Comment) {
@@ -155,15 +157,19 @@ export default class Comments extends React.Component<any, any> {
   }
 
   addCommentBar() {
-    return (
-      <form onSubmit={this.insertComment.bind(this)}>
-        <ErrorPopup error={this.state.error} errorMessage={this.state.errorMessage}/>
-        <input type='text'
-               className='add-comment-input'
-               ref='newComment'
-               placeholder='add comment...'/>
-      </form>
-    );
+    if (this.props.permission.inGroup()) {
+      return (
+        <form onSubmit={this.insertComment.bind(this)}>
+          <ErrorPopup error={this.state.error} errorMessage={this.state.errorMessage}/>
+          <input type='text'
+                 className='add-comment-input'
+                 ref='newComment'
+                 placeholder='add comment...'/>
+        </form>
+      );
+    } else {
+      return null;
+    }
   }
 
   render() {
