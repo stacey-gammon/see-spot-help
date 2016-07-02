@@ -36,6 +36,7 @@ export default class GroupHomePage extends React.Component<any, any> {
     StoreStateHelper.RemoveChangeListeners([LoginStore, GroupStore], this);
     PermissionsStore.removePropertyListener(this);
     LoginStore.removeChangeListener(this.loadFromServer);
+    GroupStore.removePropertyListener(this);
     this.mounted = false;
   }
 
@@ -43,6 +44,7 @@ export default class GroupHomePage extends React.Component<any, any> {
     var groupId = this.state.groupId;
     // If the user doesn't have any 'last looked at' group, see if we can grab one from the user.
     if (!groupId && LoginStore.getUser()) {
+      GroupStore.addPropertyListener(this, 'userId', LoginStore.getUser().id, this.loadFromServer);
       var groups = GroupStore.getGroupsByUser(LoginStore.getUser());
       if (groups && groups.length > 0) {
         groupId = groups[0].id;
