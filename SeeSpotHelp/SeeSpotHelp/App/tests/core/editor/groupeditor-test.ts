@@ -1,10 +1,7 @@
 import * as React from 'react';
-var ReactDOM = require("react-dom");
 var ReactTestUtils = require('react-addons-test-utils');
 var expect = require('expect');
 var Promise = require('bluebird');
-
-var ServerResponse = require("../../../core/serverresponse");
 
 import Volunteer from '../../../core/databaseobjects/volunteer';
 import Group from '../../../core/databaseobjects/group';
@@ -18,6 +15,7 @@ var d3 = require("d3");
 describe("GroupEditorTest", function () {
   it("GroupEditorUnauthorizedUserPermissionFail", function (done) {
     let user = new Volunteer("john", "doe");
+    user.id = '123';
     LoginStore.user = user;
 
     let groupEditor = new GroupEditor(null);
@@ -42,7 +40,8 @@ describe("GroupEditorTest", function () {
   });
 
   it("GroupEditorInsertPass", function (done) {
-    LoginStore.user = null;
+    LoginStore.logout();
+    this.timeout(5000);
     return new Promise(function(resolve, reject) {
       TestHelper.LoginWithTestAccount().then(function() {
         let groupEditor = new GroupEditor(null);
@@ -66,7 +65,8 @@ describe("GroupEditorTest", function () {
   });
 
   it("GroupEditorUpdate", function (done) {
-    LoginStore.user = null;
+    LoginStore.logout();
+    this.timeout(10000);
     return new Promise(function(resolve, reject) {
       TestHelper.LoginWithTestAccount().then(function() {
         let groupEditor = new GroupEditor(null);
@@ -78,13 +78,13 @@ describe("GroupEditorTest", function () {
 
         let promise = groupEditor.insert({userId: LoginStore.getUser().id});
         promise.then(function() {
-          LoginStore.user = null;
+          LoginStore.logout();
           TestHelper.LoginWithTestAccount2().then(function() {
             groupEditor.inputFields['state'].value = 'New Jersey';
             groupEditor.update().catch(function(error) {
               expect(error.code).toEqual('PERMISSION_DENIED');
               // Clean up the test account.
-              LoginStore.user = null;
+              LoginStore.logout();
               TestHelper.LoginWithTestAccount().then(function() {
                 resolve();
                 done();

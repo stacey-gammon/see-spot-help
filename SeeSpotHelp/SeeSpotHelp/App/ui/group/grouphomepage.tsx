@@ -22,9 +22,12 @@ export default class GroupHomePage extends React.Component<any, any> {
     super(props);
     var groupId = Utils.FindPassedInProperty(this, 'groupId');
     this.state = { groupId: groupId };
+    this.onChange = this.onChange.bind(this);
+    this.loadFromServer = this.loadFromServer.bind(this);
   }
 
   componentDidMount() {
+    LoginStore.addChangeListener(this.loadFromServer);
     this.loadFromServer();
     this.mounted = true;
   }
@@ -32,6 +35,7 @@ export default class GroupHomePage extends React.Component<any, any> {
   componentWillUnmount() {
     StoreStateHelper.RemoveChangeListeners([LoginStore, GroupStore], this);
     PermissionsStore.removePropertyListener(this);
+    LoginStore.removeChangeListener(this.loadFromServer);
     this.mounted = false;
   }
 
@@ -69,8 +73,7 @@ export default class GroupHomePage extends React.Component<any, any> {
 
   addChangeListeners(group) {
     if (LoginStore.getUser()) {
-      PermissionsStore.addPropertyListener(
-        this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+      PermissionsStore.addPropertyListener(this, 'userId', LoginStore.getUser().id, this.onChange);
     }
     StoreStateHelper.AddChangeListeners([LoginStore, GroupStore], this);
   }

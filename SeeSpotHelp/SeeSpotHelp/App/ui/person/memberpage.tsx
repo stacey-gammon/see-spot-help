@@ -36,9 +36,10 @@ export default class MemberPage extends React.Component<any, any> {
     var userId = Utils.FindPassedInProperty(this, 'userId');
     var groupId = Utils.FindPassedInProperty(this, 'groupId');
 
+    this.onChange = this.onChange.bind(this);
     if (userId) {
       member = VolunteerStore.getItemById(userId);
-      VolunteerStore.addPropertyListener(this, 'id', userId, this.onChange.bind(this));
+      VolunteerStore.addPropertyListener(this, 'id', userId, this.onChange);
     }
 
     if ((!member && !userId) || !groupId) {
@@ -59,9 +60,9 @@ export default class MemberPage extends React.Component<any, any> {
     LoginStore.addChangeListener(this.onChange);
 
     if (LoginStore.getUser()) {
-      GroupStore.addPropertyListener(this, 'id', this.state.groupId, this.onChange.bind(this));
+      GroupStore.addPropertyListener(this, 'id', this.state.groupId, this.onChange);
       PermissionsStore.addPropertyListener(
-          this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+          this, 'userId', LoginStore.getUser().id, this.onChange);
     }
   }
 

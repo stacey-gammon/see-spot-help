@@ -5,7 +5,9 @@ var ReactBootstrap = require("react-bootstrap");
 var Tab = ReactBootstrap.Tab;
 var Tabs = ReactBootstrap.Tabs;
 
-import AnimalActivityList from './animalactivitylist';
+import ActivityTab from '../shared/tabs/activitytab';
+
+//import AnimalActivityList from './animalactivitylist';
 import AnimalScheduleTab from './animalscheduletab';
 import AnimalActionsBar from './animalactionsbar';
 
@@ -51,10 +53,7 @@ export default class AnimalPageTabs extends React.Component<any, any> {
             group={this.props.group}
             animal={this.props.animal}
             permission={this.props.permission}/>
-          <AnimalActivityList
-            group={this.props.group}
-            animal={this.props.animal}
-            permission={this.props.permission}/>
+          <ActivityTab property='animalId' value={this.props.animal.id} permission={this.props.permission}/>
         </Tab>
         <Tab className="tab" eventKey={2} title={Utils.getCalendarGlyphicon()}>
           <AnimalScheduleTab

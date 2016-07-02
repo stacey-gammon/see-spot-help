@@ -5,7 +5,7 @@ import * as React from 'react';
 import AnimalActivityStore from '../../stores/animalactivitystore';
 import VolunteerStore from '../../stores/volunteerstore';
 
-import ActivityElement from '../shared/activityelement';
+import ActivityElement from '../shared/activity/activityelement';
 
 export default class AnimalActivityList extends React.Component<any, any> {
 

@@ -1,5 +1,36 @@
-.activity-dropdown {
 
+@import 'colorThemePrimary';
+.action-dropdown-btn {
+  background-color: transparent;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+
+  &:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: rgba(0,0,0,.7);
+    .glyphicon-edit {
+      color: rgba(0,0,0,.7);
+    }
+  }
+
+  margin-top: 5px;
+  .glyphicon-edit {
+    margin-right: -10px;
+    font-size: 14px;
+    margin-top: 0px;
+  }
+
+  .caret {
+    visibility: hidden;
+  }
+}
+.activity-dropdown {
+  position: absolute;
+  top: 0;
+  right: 0;
   .btn {
     min-width: 0px;
     border: 1px solid rgba(0, 0, 0, 0);
@@ -8,11 +39,26 @@
     margin-right: -5px;
     margin-bottom: -1px;
     z-index: 1;
-    color: grey;
-    font-size: 40px;
+    color: rgba(0,0,0,.5);
+
+    :hover {
+      color: rgba(0,0,0,.4);
+    }
   }
   .btn-default:hover {
     background-color: rgba(0, 0, 0, 0);
+  }
+
+  .dropdown-toggle {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    :active {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
   }
 
   .dropdown-menu {
@@ -37,6 +83,7 @@
 
 .activity-list-item {
   margin: 10px 0px;
+  position: relative;
 }
 
 .lightbox-image {
@@ -65,4 +112,42 @@
   font-size: 16px;
   padding: 35px;
   text-align: center;
+}
+
+.add-comment-input {
+  width: 100%;
+  padding: 10px;
+}
+
+.comment {
+  z-index: auto;
+  opacity: 1;
+  padding: 10px 10px;
+  width: 100%;
+  border-top: 1px solid rgba(0,0,0,.1);
+  border-bottom: 1px solid rgba(0,0,0,.1);
+  position: relative;
+  background-color: transparentize($color1, .9);
+  margin: 2px;
+
+  //color: rgba(0,0,0,1);
+
+  &:hover {
+    background-color: transparentize($color1, .8);
+  }
+}
+
+.member-comment-info {
+  color: rgba(0,0,0,.4);
+  margin-bottom: 0;
+}
+
+.comment-actions {
+  position: absolute;
+  right: 0px;
+  top: 0px
+}
+
+.submit-comment-btn {
+  float: right;
 }

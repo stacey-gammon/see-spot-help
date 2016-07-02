@@ -1,6 +1,8 @@
 import DataServices from '../dataservices';
 import Firebase = require('firebase');
 
+var dateFormat = require('dateformat');
+
 export enum Status {
   ACTIVE,
   ARCHIVED
@@ -37,6 +39,10 @@ abstract class DatabaseObject {
     for (var prop in other) {
       this[prop] = other[prop];
     }
+  }
+
+  getDateForDisplay() {
+    return dateFormat(new Date(this.timestamp), "mm/dd/yy, h:MM TT");
   }
 
   // Updates the instance based on the values entered by the user on an input form.
@@ -112,6 +118,9 @@ abstract class DatabaseObject {
     var promises = [];
     deletes[this.firebasePath + '/' + this.id] = null;
     for (var i = 0; i < this.mappingProperties.length; i++) {
+      if (!this[this.mappingProperties[i]]) {
+        continue;
+      }
       var path = this.getPathToMapping(this.mappingProperties[i]);
       deletes[path] = null;
     }

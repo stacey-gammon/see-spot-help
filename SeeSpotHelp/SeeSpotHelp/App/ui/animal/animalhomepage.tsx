@@ -47,15 +47,23 @@ export default class AnimalHomePage extends React.Component<any, any> {
     };
 
     Utils.LoadOrSaveState(this.state);
+    this.onUserLoggedIn = this.onUserLoggedIn.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   componentWillMount() {
-    if (!this.state.groupId || !this.state.animalId) return;
+    LoginStore.addChangeListener(this.onUserLoggedIn);
+    if (!this.state.groupId || !this.state.animalId || !LoginStore.getUser()) return;
+    this.onUserLoggedIn();
+  }
 
-    var idToStoreMap = {};
-    idToStoreMap[this.state.groupId] = GroupStore;
-    idToStoreMap[this.state.animalId] = AnimalStore;
-    StoreStateHelper.EnsureRequiredState(idToStoreMap, this);
+  onUserLoggedIn() {
+    if (LoginStore.getUser()) {
+      var idToStoreMap = {};
+      idToStoreMap[this.state.groupId] = GroupStore;
+      idToStoreMap[this.state.animalId] = AnimalStore;
+      StoreStateHelper.EnsureRequiredState(idToStoreMap, this);
+    }
   }
 
   componentDidMount() {

@@ -25,6 +25,7 @@ var TopLevelTables = [
   'Group',
   'Permission',
   'Photo',
+  'Comment',
   'Schedule'
 ];
 
@@ -45,6 +46,10 @@ function InitializeRulesToAllOpen() {
       ".write": "true"
     };
     rules[table][table + 'ByUserId'] = {
+      ".read": "true",
+      ".write": "true"
+    };
+    rules[table][table + 'ByActivityId'] = {
       ".read": "true",
       ".write": "true"
     };
@@ -174,6 +179,12 @@ function generateBasicTableRules(table) {
       ".indexOn": "timestamp"
     }
   }
+  rules[table][table + 'ByActivityId'] = {
+    "$groupId": {
+      "$tableId": tableRules,
+      ".indexOn": "timestamp"
+    }
+  }
   rules[table][table + 'ByUserId'] = {
     "$userId": {
       "$tableId": tableRules,
@@ -284,6 +295,7 @@ function generateRules () {
   generateBasicTableRules('Photo');
   generateBasicTableRules('Activity');
   generateBasicTableRules('Schedule');
+  generateBasicTableRules('Comment');
 
   var superRules = {
     "rules": rules
