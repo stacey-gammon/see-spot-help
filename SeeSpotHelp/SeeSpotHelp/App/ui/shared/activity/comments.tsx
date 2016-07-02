@@ -104,7 +104,7 @@ export default class Comments extends React.Component<any, any> {
   }
 
   createCommentElement(comment: Comment) {
-    VolunteerStore.addPropertyListener(this, 'userId', comment.userId, this.onChange);
+    VolunteerStore.addPropertyListener(this, 'id', comment.userId, this.onChange);
     let member = VolunteerStore.getVolunteerById(comment.userId);
     if (member) {
       if (this.state.editCommentId == comment.id) {
