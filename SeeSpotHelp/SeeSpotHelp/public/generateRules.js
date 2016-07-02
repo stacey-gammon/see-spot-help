@@ -179,6 +179,12 @@ function generateBasicTableRules(table) {
       ".indexOn": "timestamp"
     }
   }
+  rules[table][table + 'ByActivityId'] = {
+    "$groupId": {
+      "$tableId": tableRules,
+      ".indexOn": "timestamp"
+    }
+  }
   rules[table][table + 'ByUserId'] = {
     "$userId": {
       "$tableId": tableRules,
@@ -289,7 +295,7 @@ function generateRules () {
   generateBasicTableRules('Photo');
   generateBasicTableRules('Activity');
   generateBasicTableRules('Schedule');
-  //generateBasicTableRules('Comment');
+  generateBasicTableRules('Comment');
 
   var superRules = {
     "rules": rules

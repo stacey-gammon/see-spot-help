@@ -247,28 +247,6 @@ class LoginStore extends BaseStore {
       this.emit(changeEvent.toString());
     }
   }
-
-  handleAction(action) {
-    switch (action.type) {
-      case ActionConstants.LOGIN_USER_SUCCESS:
-        this.user = action.user;
-        sessionStorage.setItem("user", JSON.stringify(this.user));
-        this.emitChange(ChangeEventEnum.LOGGED_IN);
-        break;
-
-      case ActionConstants.LOGIN_USER_ERROR:
-        this.emitChange();
-        break;
-
-      case ActionConstants.LOGOUT_USER:
-        console.log("LoginStore:handleAction:LOGOUT_USER");
-        this.emitChange();
-        break;
-
-      default:
-        break;
-    };
-  }
 };
 
 export default new LoginStore();

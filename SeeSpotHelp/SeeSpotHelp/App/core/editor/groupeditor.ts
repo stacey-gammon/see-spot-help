@@ -32,11 +32,11 @@ export default class GroupEditor extends Editor {
     var IFV = InputFieldValidation;
     this.inputFields = {
       'name': new InputField([IFV.validateNotEmpty]),
-      'shelter': new InputField([IFV.validateNotEmpty]),
-      'address': new InputField([IFV.validateNotEmpty]),
-      'city': new InputField([IFV.validateNotEmpty]),
-      'state': new InputStateField([IFV.validateListItem]),
-      'zipCode': new InputField([IFV.validateNotEmpty])
+      'shelter': new InputField(),
+      'address': new InputField(),
+      'city': new InputField(),
+      'state': new InputStateField(),
+      'zipCode': new InputField()
     };
   }
 }

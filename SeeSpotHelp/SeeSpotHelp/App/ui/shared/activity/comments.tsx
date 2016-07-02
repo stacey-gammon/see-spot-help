@@ -17,6 +17,8 @@ import VolunteerStore from '../../../stores/volunteerstore';
 import Comment from '../../../core/databaseobjects/comment';
 import LoginStore from '../../../stores/loginstore';
 
+import InputCommentForm from './inputcommentform';
+
 export default class Comments extends React.Component<any, any> {
   constructor(props) {
     super(props);
@@ -91,16 +93,14 @@ export default class Comments extends React.Component<any, any> {
     }
   }
 
-  updateComment(comment, e) {
-    comment.comment = this.refs['editComment'].value;
+  updateComment(comment: Comment) {
+    comment.comment = (this.refs['editComment'] as InputCommentForm).getValue();
     let me = this;
     comment.update().then(function() {
       me.setState({editCommentId: null, error: false});
     }, function (error) {
       me.setState({error: true, errorMessage: error.message});
     });
-    e.preventDefault();
-    return false;
   }
 
   createCommentElement(comment: Comment) {
@@ -108,14 +108,10 @@ export default class Comments extends React.Component<any, any> {
     let member = VolunteerStore.getVolunteerById(comment.userId);
     if (member) {
       if (this.state.editCommentId == comment.id) {
-        return (
-          <form onSubmit={this.updateComment.bind(this, comment)}>
-            <input type='text'
-                   className='add-comment-input'
-                   ref='editComment'
-                   defaultValue={comment.comment}/>
-          </form>
-        );
+        return <InputCommentForm ref='editComment'
+                                 value={comment.comment}
+                                 btnText='Update'
+                                 onSubmit={this.updateComment.bind(this, comment)} />;
       } else {
         return (
           <div className='comment'>
@@ -139,37 +135,26 @@ export default class Comments extends React.Component<any, any> {
     }
   }
 
-  insertComment(e) {
+  insertComment() {
     let comment = new Comment();
-    comment.comment = this.refs['newComment'].value;
+    comment.comment = (this.refs['newComment'] as InputCommentForm).getValue();
     comment.userId = LoginStore.getUser().id;
     comment.activityId = this.props.activityId;
     comment.groupId = this.props.groupId;
     let me = this;
     comment.insert().then(function() {
-      me.refs['newComment'].value = '';
+      (me.refs['newComment'] as InputCommentForm).clear();
       me.setState({error: false, errorMessage: ''});
     }, function (error) {
       me.setState({error: true, errorMessage: error.message});
     });
-    e.preventDefault();
-    return false;
   }
 
   addCommentBar() {
     if (this.props.permission.inGroup()) {
-      return (
-        <form onSubmit={this.insertComment.bind(this)}>
-          <ErrorPopup error={this.state.error} errorMessage={this.state.errorMessage}/>
-          <input type='text'
-                 className='add-comment-input'
-                 ref='newComment'
-                 placeholder='add comment...'/>
-        </form>
-      );
-    } else {
-      return null;
+      return <InputCommentForm ref='newComment' onSubmit={this.insertComment.bind(this)} />;
     }
+    return null;
   }
 
   render() {
@@ -179,6 +164,7 @@ export default class Comments extends React.Component<any, any> {
     }
     return (
       <div>
+        <ErrorPopup error={this.state.error} errorMessage={this.state.errorMessage}/>
         {this.addCommentBar()}
         <Loader loaded={this.state.loaded}>
           {commentElements}

@@ -6469,6 +6469,9 @@ body {
   right: 0px;
   top: 0px; }
 
+.submit-comment-btn {
+  float: right; }
+
 .react-autosuggest__container {
   position: relative; }
 

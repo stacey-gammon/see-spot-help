@@ -12,6 +12,8 @@ import Permission from './permission';
 import DatabaseObject from './databaseobject';
 import { Status } from './databaseobject';
 
+import LoginStore from '../../stores/loginstore';
+
 // A volunteer group represents a group of volunteers at a given
 // shelter.  The most common scenario will be a one to mapping of
 // shelter to volunteer group, though it is possible for there to
@@ -112,9 +114,9 @@ export default class Group extends DatabaseObject {
   //	 callback is expected to take as a first argument the potentially
   //	 inserted volunteer group (null on failure) and a server
   //	 response to hold error and success information.
-  insert(userId?) : Promise<any> {
+  insert() : Promise<any> {
     var inserts = this.getInserts();
-    var permission = Permission.CreateAdminPermission(userId, this.id);
+    var permission = Permission.CreateAdminPermission(LoginStore.getUser().id, this.id);
     Object.assign(inserts, permission.getInserts());
 
     return DataServices.UpdateMultiple(inserts);
