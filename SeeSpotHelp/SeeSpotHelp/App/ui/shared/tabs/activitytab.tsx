@@ -30,9 +30,9 @@ export default class ActivityTab extends React.Component<any, any> {
   handleInfiniteLoad() {
     console.log('handleInfiniteLoad');
     if (ActivityStore.getOldestItemId(this.props.property, this.props.value) &&
-        this.state.activites.length &&
+        this.state.activities.length &&
         ActivityStore.getOldestItemId(this.props.property, this.props.value) ==
-            this.state.activites[this.state.activites.length - 1].id) {
+            this.state.activities[this.state.activites.length - 1].id) {
       this.setState({infiniteLoadBeginEdgeOffset: undefined});
       return;
     }
