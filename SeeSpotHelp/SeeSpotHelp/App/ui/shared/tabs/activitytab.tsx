@@ -1,33 +1,71 @@
 'use strict'
 
 import * as React from 'react';
-import AnimalActivityStore from '../../../stores/animalactivitystore';
+import ActivityStore from '../../../stores/animalactivitystore';
 import VolunteerStore from '../../../stores/volunteerstore';
 
 import ActivityElement from '../activity/activityelement';
 
 var Loader = require('react-loader');
+var Infinite = require('react-infinite');
 
 export default class ActivityTab extends React.Component<any, any> {
+  private infiniteLoadBatch: number = 3;
+
   constructor(props) {
     super(props);
     this.state = {
-      activities: AnimalActivityStore.getItemsByProperty(this.props.property, this.props.value)
+        activities: [],
+        isInfiniteLoading: false,
+        listLength: 3,
+        infiniteLoadBeginEdgeOffset: 50
     }
   }
 
   componentDidMount() {
-    AnimalActivityStore.addPropertyListener(
+    ActivityStore.addPropertyListener(
       this, this.props.property, this.props.value, this.onChange.bind(this));
   }
 
+  handleInfiniteLoad() {
+    console.log('handleInfiniteLoad');
+    if (ActivityStore.getOldestItemId(this.props.property, this.props.value) &&
+        this.state.activites.length &&
+        ActivityStore.getOldestItemId(this.props.property, this.props.value) ==
+            this.state.activites[this.state.activites.length - 1].id) {
+      this.setState({infiniteLoadBeginEdgeOffset: undefined});
+      return;
+    }
+
+    let newListLength = this.state.listLength + this.infiniteLoadBatch;
+    let activities = ActivityStore.getItemsByProperty(this.props.property, this.props.value, newListLength);
+    this.setState(
+        {
+          isInfiniteLoading: ActivityStore.areItemsDownloading(this.props.property, this.props.value),
+          elementCountToShow: newListLength,
+          activities: activities,
+          listLength: newListLength
+        });
+  }
+
+  elementInfiniteLoad() {
+    return <Loader loaded={!this.state.isInfiniteLoading} />
+  }
+
   onChange() {
-    var activities = AnimalActivityStore.getItemsByProperty(this.props.property, this.props.value);
-    this.setState({ activities: activities });
+    var activities = ActivityStore.getItemsByProperty(this.props.property,
+                                                      this.props.value,
+                                                      this.state.listLength);
+    this.setState(
+      {
+        activities: activities,
+        isInfiniteLoading: ActivityStore.areItemsDownloading(this.props.property, this.props.value)
+      }
+    );
   }
 
   componentWillUnmount() {
-    AnimalActivityStore.removePropertyListener(this);
+    ActivityStore.removePropertyListener(this);
   }
 
   generateAnimalNote(note) {
@@ -52,17 +90,19 @@ export default class ActivityTab extends React.Component<any, any> {
 
   render() {
     var activityElements = this.state.activities.map(this.generateAnimalNote.bind(this));
-    var loaded = true;
-    if (AnimalActivityStore.areItemsDownloading(this.props.property, this.props.value)) {
-      loaded = false;
-    }
 
     return (
       <div className="list-group">
-        <Loader loaded={loaded}>
         {this.getNoActivityDisplay()}
-        {activityElements}
-        </Loader>
+        <Infinite elementHeight={120}
+                  infiniteLoadBeginEdgeOffset={this.state.infiniteLoadBeginEdgeOffset}
+                  containerHeight={500}
+                  useWindowAsScrollContainer={false}
+                  onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
+                  loadingSpinnerDelegate={this.elementInfiniteLoad()}
+                  isInfiniteLoading={this.state.isInfiniteLoading}>
+          {activityElements}
+        </Infinite>
       </div>
     );
   }
