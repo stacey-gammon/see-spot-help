@@ -70,6 +70,10 @@ abstract class BaseStore extends EventEmitter {
     }
   }
 
+  getOldestItemId(property, value) {
+    return this.storageMappingLastId[property][value];
+  }
+
   addPropertyListener(listener, property, value, callback) {
     // First make sure we aren't inserting a duplicate listener which can throw us into a
     // forever loop.
@@ -191,10 +195,6 @@ abstract class BaseStore extends EventEmitter {
         id = items[items.length - 1].id;
       }
 
-      console.log('Requested more than we have, should we download more?');
-      console.log('id of last dled item: ' + id + ' id of final last id: ' + this.storageMappingLastId[property][propertyValue]);
-      console.log('are downloading now? ' + this.areItemsDownloading(property, propertyValue, id));
-
       // Don't attempt to download more if there is none.
       if (id &&
           id != this.storageMappingLastId[property][propertyValue] &&
@@ -255,9 +255,12 @@ abstract class BaseStore extends EventEmitter {
 
     lastItemId = itemsToSort.length ? itemsToSort[itemsToSort.length - 1].id : null;
 
-    // If we only downloaded one item and it is the same timestamp we started at, this must be the
-    // oldest item we can retrieve.
-    if (lastLimitId && lastItemId == lastLimitId) {
+    // If we asked for lengthLimit items but have less than that, we must have hit the end of
+    // available items. Note - don't ever set lengthLimit to 1 or this won't work because we
+    // always ask for and download the last avavilable item.
+    let batchSmallerThanRequested = lengthLimit && itemsToSort.length < lengthLimit;
+
+    if (batchSmallerThanRequested) {
       this.storageMappingLastId[property][value] = lastItemId;
     }
 

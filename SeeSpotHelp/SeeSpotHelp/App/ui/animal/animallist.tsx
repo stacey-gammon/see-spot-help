@@ -16,7 +16,8 @@ export default class AnimalList extends React.Component<any, any> {
     this.state = {
       isInfiniteLoading: false,
       listLength: 3,
-      animals: []
+      animals: [],
+      infiniteLoadBeginEdgeOffset: 50
     }
   }
 
@@ -58,6 +59,15 @@ export default class AnimalList extends React.Component<any, any> {
 
   handleInfiniteLoad() {
     console.log('handleInfiniteLoad');
+    if (AnimalStore.getOldestItemId('groupId', this.props.group.id) &&
+        this.state.animals.length &&
+        AnimalStore.getOldestItemId('groupId', this.props.group.id) ==
+            this.state.animals[this.state.animals.length - 1].id) {
+      console.log('No more to retrieve');
+      this.setState({infiniteLoadBeginEdgeOffset: undefined});
+      return;
+    }
+
     let newListLength = this.state.listLength + this.infiniteLoadBatch;
     console.log('handleInfiniteLoad, getting new length: ' + newListLength);
     let animals = AnimalStore.getItemsByProperty('groupId', this.props.group.id, newListLength);
@@ -78,8 +88,8 @@ export default class AnimalList extends React.Component<any, any> {
 
     return (
       <Infinite elementHeight={120}
-                infiniteLoadBeginEdgeOffset={50}
-                containerHeight={600}
+                infiniteLoadBeginEdgeOffset={this.state.infiniteLoadBeginEdgeOffset}
+                containerHeight={500}
                 useWindowAsScrollContainer={false}
                 onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
                 loadingSpinnerDelegate={this.elementInfiniteLoad()}
