@@ -4,6 +4,8 @@ import * as React from 'react';
 var Router = require("react-router");
 var Loader = require('react-loader');
 
+import moment = require('moment');
+
 import EditorElement from './shared/editor/editorelement';
 
 import Utils from './uiutils';
@@ -20,7 +22,6 @@ import ScheduleEditor from '../core/editor/scheduleeditor';
 
 import StoreStateHelper from '../stores/storestatehelper';
 
-
 export default class AddCalendarEvent extends React.Component<any, any> {
   public refs: any;
   public context: any;
@@ -28,21 +29,26 @@ export default class AddCalendarEvent extends React.Component<any, any> {
     router: React.PropTypes.object.isRequired
   }
 
-  constructor(props) {
+  constructor(props, context) {
     super(props);
+
+    this.ensureRequiredState = this.ensureRequiredState.bind(this);
 
     var startDate = Utils.FindPassedInProperty(this, 'startDate');
     var group = Utils.FindPassedInProperty(this, 'group');
     var animalId = Utils.FindPassedInProperty(this, 'animalId');
     var scheduleId = Utils.FindPassedInProperty(this, 'scheduleId');
-    var schedule = ScheduleStore.getScheduleById(scheduleId);
+    var schedule = null;
+    if (scheduleId) {
+      schedule = ScheduleStore.getScheduleById(scheduleId);
+    }
     var mode = Utils.FindPassedInProperty(this, 'mode');
     var startTime = Utils.FindPassedInProperty(this, 'startTime');
     var endTime = Utils.FindPassedInProperty(this, 'endTime');
     var allowAnimalChange = Utils.FindPassedInProperty(this, 'allowAnimalChange');
     var allowGroupChange = Utils.FindPassedInProperty(this, 'allowGroupChange');
 
-    if (scheduleId == -1 || !mode) mode = 'add';
+    if (!mode) mode = 'add';
 
     this.state = {
       startDate: moment(startDate, 'MM-DD-YYYY'),
@@ -64,10 +70,12 @@ export default class AddCalendarEvent extends React.Component<any, any> {
   }
 
   componentDidMount() {
+    LoginStore.addChangeListener(this.ensureRequiredState);
     this.ensureRequiredState();
   }
 
   componentWillUnmount() {
+    LoginStore.removeChangeListener(this.ensureRequiredState);
   }
 
   viewOnly() {
@@ -108,7 +116,7 @@ export default class AddCalendarEvent extends React.Component<any, any> {
     var userId = this.state.schedule ? this.state.schedule.userId : LoginStore.getUser().id;
     VolunteerStore.ensureItemById(userId).then(function(user: Volunteer) {
       editor.inputFields['member'].value = user.name;
-      this.setState({ permission: permission, editor: editor });
+      this.setState({ permission: permission, editor: editor});
     }.bind(this));
   }
 
@@ -118,7 +126,7 @@ export default class AddCalendarEvent extends React.Component<any, any> {
 
   render() {
     if (!this.state.editor) {
-      return <Loader loaded="false"/>
+      return <Loader loaded={false}/>
     }
       var title = this.state.mode == 'add' ? 'Add Event' : 'Edit Event';
       if (this.viewOnly() && this.state.schedule) {

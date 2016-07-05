@@ -5,16 +5,16 @@ import * as React from 'react';
 var ReactRouterBootstrap = require('react-router-bootstrap');
 var LinkContainer = ReactRouterBootstrap.LinkContainer;
 
-import Volunteer from '../../core/databaseobjects/volunteer';
-import ConstStrings from '../../core/conststrings';
-import LoginStore from '../../stores/loginstore';
-import VolunteerStore from '../../stores/volunteerstore';
-import PhotoStore from '../../stores/photostore';
-import PermissionsStore from '../../stores/permissionsstore';
-import AnimalActivityStore from '../../stores/animalactivitystore';
-import Activity from '../../core/databaseobjects/activity';
-import Permission from '../../core/databaseobjects/permission';
-import LightboxImage from './lightboximage';
+import Volunteer from '../../../core/databaseobjects/volunteer';
+import ConstStrings from '../../../core/conststrings';
+import LoginStore from '../../../stores/loginstore';
+import VolunteerStore from '../../../stores/volunteerstore';
+import PhotoStore from '../../../stores/photostore';
+import PermissionsStore from '../../../stores/permissionsstore';
+import AnimalActivityStore from '../../../stores/animalactivitystore';
+import Activity from '../../../core/databaseobjects/activity';
+import Permission from '../../../core/databaseobjects/permission';
+import LightboxImage from '../lightboximage';
 
 export default class ActivityBody extends React.Component<any, any> {
   constructor(props) {

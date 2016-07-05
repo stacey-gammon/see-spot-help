@@ -1,8 +1,5 @@
 "use strict";
 
-var Dispatcher = require("../dispatcher/dispatcher");
-var ActionConstants = require('../constants/actionconstants');
-
 import Group from '../core/databaseobjects/group';
 import Animal from '../core/databaseobjects/animal';
 import DatabaseObject from '../core/databaseobjects/databaseobject';
@@ -27,7 +24,7 @@ class GroupStore extends BaseStore {
     return this.getItemById(groupId);
   }
 
-  getGroupsByUser(user) {
+  getGroupsByUser(user, listener) {
     if (!user) return null;
     var groupsForUser = [];
     var permissions = PermissionsStore.getPermissionsByUserId(user.id);
@@ -35,10 +32,12 @@ class GroupStore extends BaseStore {
 
     for (var i = 0; i < permissions.length; i++) {
       if (permissions[i].inGroup() || permissions[i].pending()) {
-        var group = this.storage[permissions[i].groupId];
-        if (!group) {
+        let groupId = permissions[i].groupId;
+        var group = this.storage[groupId];
+        if (!group && !this.isItemDownloading(groupId)) {
+          this.addChangeListener(listener);
           this.downloadItem(permissions[i].groupId);
-        } else if (group.status != Status.ARCHIVED) {
+        } else if (group && group.status != Status.ARCHIVED) {
           groupsForUser.push(this.storage[permissions[i].groupId]);
         }
       }

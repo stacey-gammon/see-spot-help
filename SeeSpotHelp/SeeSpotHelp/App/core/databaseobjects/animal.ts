@@ -22,7 +22,7 @@ export default class Animal extends DatabaseObject {
   public description: string = '';
   public gender: string = '';
   public breed: string = '';
-  public age: number = null;
+  public age: string = '';
   public status: number = Status.ACTIVE;
   public adoptionStatus: number = AdoptionStatus.ADOPTABLE;
   public groupId: string;

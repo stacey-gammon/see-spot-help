@@ -21,6 +21,7 @@ export default class AddAnimalNote extends React.Component<any, any> {
   constructor(props) {
     super(props);
 
+    this.onChange = this.onChange.bind(this);
     var mode = Utils.FindPassedInProperty(this, "mode");
     var animalId = Utils.FindPassedInProperty(this, "animalId");
     var groupId = Utils.FindPassedInProperty(this, "groupId");
@@ -76,7 +77,7 @@ export default class AddAnimalNote extends React.Component<any, any> {
     LoginStore.addChangeListener(this.onChange);
     if (LoginStore.getUser()) {
       PermissionsStore.addPropertyListener(
-        this, 'userId', LoginStore.getUser().id, this.onChange.bind(this));
+        this, 'userId', LoginStore.getUser().id, this.onChange);
     }
   }
 
@@ -112,7 +113,7 @@ export default class AddAnimalNote extends React.Component<any, any> {
   }
 
   render() {
-    if (!this.state.editor) return null;
+    if (!this.state.editor || !LoginStore.getUser()) return null;
     var extraFields = {
       animalId: this.state.animalId,
       groupId: this.state.groupId,

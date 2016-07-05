@@ -19,7 +19,7 @@ export default class AddPhotoPage extends React.Component<any, any> {
   public refs: any;
   public context: any;
 
-  constructor(props) {
+  constructor(props, context) {
     super(props);
 
     this.onChange = this.onChange.bind(this);
@@ -31,6 +31,10 @@ export default class AddPhotoPage extends React.Component<any, any> {
     var headShot = Utils.FindPassedInProperty(this, 'headShot');
 
     if (!mode) mode = 'add';
+
+    if (!file) {
+      context.router.push('/profilePage');
+    }
 
     this.state = {
       animalId: animalId,
@@ -83,12 +87,12 @@ export default class AddPhotoPage extends React.Component<any, any> {
   }
 
   componentWillMount() {
+    if (!this.state.file) return;
     this.ensureRequiredState();
   }
 
-
-
   uploadFile(file) {
+    if (!file) return;
     let me = this;
     return new Promise(function (resolve, reject) {
       var reader = new FileReader();

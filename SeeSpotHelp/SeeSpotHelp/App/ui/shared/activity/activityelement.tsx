@@ -11,17 +11,18 @@ var DropdownButton = ReactBootstrap.DropdownButton;
 var Button = ReactBootstrap.Button;
 var MenuItem = ReactBootstrap.MenuItem;
 
-import Volunteer from '../../core/databaseobjects/volunteer';
-import ConstStrings from '../../core/conststrings';
-import LoginStore from '../../stores/loginstore';
-import VolunteerStore from '../../stores/volunteerstore';
-import AnimalStore from '../../stores/animalstore';
-import PhotoStore from '../../stores/photostore';
-import PermissionsStore from '../../stores/permissionsstore';
-import AnimalActivityStore from '../../stores/animalactivitystore';
-import Activity from '../../core/databaseobjects/activity';
-import Permission from '../../core/databaseobjects/permission';
+import Volunteer from '../../../core/databaseobjects/volunteer';
+import ConstStrings from '../../../core/conststrings';
+import LoginStore from '../../../stores/loginstore';
+import VolunteerStore from '../../../stores/volunteerstore';
+import AnimalStore from '../../../stores/animalstore';
+import PhotoStore from '../../../stores/photostore';
+import PermissionsStore from '../../../stores/permissionsstore';
+import AnimalActivityStore from '../../../stores/animalactivitystore';
+import Activity from '../../../core/databaseobjects/activity';
+import Permission from '../../../core/databaseobjects/permission';
 
+import Comments from './comments';
 import ActivityBody from './activitybody';
 
 export default class ActivityElement extends React.Component<any, any> {
@@ -94,7 +95,8 @@ export default class ActivityElement extends React.Component<any, any> {
   getActionDropDown() {
     return (
       <div className='dropdown activity-dropdown' id='actionDropDown'>
-        <DropdownButton title="" id='actionDropDownButton'>
+        <DropdownButton title={<span className="glyphicon glyphicon-edit edit-action-btn"></span>}
+                        className='action-dropdown-btn'>
           {this.getEditMenuItem()}
           <MenuItem eventKey="2" onClick={this.deleteAction.bind(this)}>Delete</MenuItem>
         </DropdownButton>
@@ -116,9 +118,7 @@ export default class ActivityElement extends React.Component<any, any> {
     if (this.props.activity.userId == LoginStore.getUser().id ||
         this.props.permission.admin()) {
       return (
-        <div className="media-right">
-          {this.getActionDropDown()}
-        </div>
+        this.getActionDropDown()
       );
     } else {
       return null;
@@ -135,22 +135,25 @@ export default class ActivityElement extends React.Component<any, any> {
             <ActivityBody
               activity={this.props.activity}
               view={this.props.view}/>
-            <p>
-            <a><LinkContainer
-              to={{ pathname: "/memberPage",
-                state: {
-                  userId: this.props.activity.userId,
-                  groupId: this.props.activity.groupId
-                } }}>
-              <button className="invisible-button">{this.state.memberName}</button>
-            </LinkContainer>
-            </a>
-            {date}
+            <p className="member-comment-info">
+              <a><LinkContainer
+                to={{ pathname: "/memberPage",
+                  state: {
+                    userId: this.props.activity.userId,
+                    groupId: this.props.activity.groupId
+                  } }}>
+                <button className="invisible-button">{this.state.memberName}</button>
+              </LinkContainer>
+              </a>
+              {date}
             </p>
-
+            <Comments ref='comments-list'
+                      activityId={this.props.activity.id}
+                      permission={this.props.permission}
+                      groupId={this.props.activity.groupId}/>
           </div>
-          {this.getActions()}
         </div>
+        {this.getActions()}
       </div>
     );
   }

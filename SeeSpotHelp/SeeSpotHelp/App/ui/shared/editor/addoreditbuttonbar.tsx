@@ -14,7 +14,9 @@ export default class AddOrEditButtonBar extends React.Component<any, any> {
     if (this.props.mode == 'add' || !this.props.permission) return null;
     var deleteDisabled = this.props.mode == 'edit' && !this.props.permission.admin();
     return (
-      <button className='btn btn-warning' onClick={this.props.onDelete} disabled={deleteDisabled}>
+      <button className='btn btn-warning delete-btn'
+              onClick={this.props.onDelete}
+              disabled={deleteDisabled}>
         Delete
       </button>
     );
@@ -38,7 +40,9 @@ export default class AddOrEditButtonBar extends React.Component<any, any> {
     return (
       <div className='center-block button-bar'>
         {this.getDeleteGroupButton()}
-        <button className='btn btn-info pull-right' disabled={editDisabled} onClick={onAddOrEdit}>
+        <button className='btn btn-info pull-right add-or-edit-btn'
+                disabled={editDisabled}
+                onClick={onAddOrEdit}>
           {addOrEditText}
         </button>
         <button className='btn btn-info pull-right' onClick={this.cancel.bind(this)}>

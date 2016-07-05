@@ -25,6 +25,7 @@ var TopLevelTables = [
   'Group',
   'Permission',
   'Photo',
+  'Comment',
   'Schedule'
 ];
 
@@ -45,6 +46,10 @@ function InitializeRulesToAllOpen() {
       ".write": "true"
     };
     rules[table][table + 'ByUserId'] = {
+      ".read": "true",
+      ".write": "true"
+    };
+    rules[table][table + 'ByActivityId'] = {
       ".read": "true",
       ".write": "true"
     };
@@ -174,6 +179,12 @@ function generateBasicTableRules(table) {
       ".indexOn": "timestamp"
     }
   }
+  rules[table][table + 'ByActivityId'] = {
+    "$groupId": {
+      "$tableId": tableRules,
+      ".indexOn": "timestamp"
+    }
+  }
   rules[table][table + 'ByUserId'] = {
     "$userId": {
       "$tableId": tableRules,
@@ -226,7 +237,7 @@ function generatePermissionRules() {
   existingAdminRule =
     `(root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
   newAdminRule =
-    `(${newRoot()}.parent().child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
+    `(${newRoot()}.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
 
   var permissionIdRules = {};
   addReadRule(permissionIdRules, 'auth != null');
@@ -284,6 +295,7 @@ function generateRules () {
   generateBasicTableRules('Photo');
   generateBasicTableRules('Activity');
   generateBasicTableRules('Schedule');
+  generateBasicTableRules('Comment');
 
   var superRules = {
     "rules": rules

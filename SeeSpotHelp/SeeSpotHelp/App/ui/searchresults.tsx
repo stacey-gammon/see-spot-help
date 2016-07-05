@@ -5,7 +5,6 @@ import LoginStore from '../stores/loginstore';
 import GroupListItem from './group/grouplistitem';
 import Animal from '../core/databaseobjects/animal';
 import Group from '../core/databaseobjects/group';
-var AnimalThumbnail = require("./animal/animalthumbnail");
 
 export default class ShelterSearchResults extends React.Component<any, any> {
   constructor(props) {

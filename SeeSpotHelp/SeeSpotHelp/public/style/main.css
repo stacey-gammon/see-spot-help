@@ -6351,46 +6351,75 @@ body {
   font-size: 9px;
   color: #767676; }
 
-.activity-dropdown .btn, .activity-dropdown .fc-button {
-  min-width: 0px;
-  border: 1px solid transparent;
-  height: 25px;
-  margin-top: -5px;
-  margin-right: -5px;
-  margin-bottom: -1px;
-  z-index: 1;
-  color: grey;
-  font-size: 40px; }
+.action-dropdown-btn {
+  background-color: transparent;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  margin-top: 5px; }
+  .action-dropdown-btn:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: rgba(0, 0, 0, 0.7); }
+    .action-dropdown-btn:active .glyphicon-edit {
+      color: rgba(0, 0, 0, 0.7); }
+  .action-dropdown-btn .glyphicon-edit {
+    margin-right: -10px;
+    font-size: 14px;
+    margin-top: 0px; }
+  .action-dropdown-btn .caret {
+    visibility: hidden; }
 
-.activity-dropdown .btn-default:hover {
-  background-color: transparent; }
-
-.activity-dropdown .dropdown-menu {
-  padding-top: 0px;
-  padding-bottom: 0px;
-  left: -130px !important;
-  z-index: 999 !important;
-  -webkit-border-radius: 0px !important;
-  -moz-border-radius: 0px !important;
-  -ms-border-radius: 0px !important;
-  border-radius: 0px !important; }
-
-.activity-dropdown a {
-  max-height: 39px;
-  padding: 9px 15px !important;
-  -webkit-border-radius: 0px !important;
-  -moz-border-radius: 0px !important;
-  -ms-border-radius: 0px !important;
-  border-radius: 0px !important; }
-
-.activity-dropdown li {
-  border-bottom: 1px solid #D2D2D3; }
-
-.activity-dropdown li:last-child {
-  border-bottom: none; }
+.activity-dropdown {
+  position: absolute;
+  top: 0;
+  right: 0; }
+  .activity-dropdown .btn, .activity-dropdown .fc-button {
+    min-width: 0px;
+    border: 1px solid transparent;
+    height: 25px;
+    margin-top: -5px;
+    margin-right: -5px;
+    margin-bottom: -1px;
+    z-index: 1;
+    color: rgba(0, 0, 0, 0.5); }
+    .activity-dropdown .btn :hover, .activity-dropdown .fc-button :hover {
+      color: rgba(0, 0, 0, 0.4); }
+  .activity-dropdown .btn-default:hover {
+    background-color: transparent; }
+  .activity-dropdown .dropdown-toggle {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important; }
+    .activity-dropdown .dropdown-toggle :active {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important; }
+  .activity-dropdown .dropdown-menu {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    left: -130px !important;
+    z-index: 999 !important;
+    -webkit-border-radius: 0px !important;
+    -moz-border-radius: 0px !important;
+    -ms-border-radius: 0px !important;
+    border-radius: 0px !important; }
+  .activity-dropdown a {
+    max-height: 39px;
+    padding: 9px 15px !important;
+    -webkit-border-radius: 0px !important;
+    -moz-border-radius: 0px !important;
+    -ms-border-radius: 0px !important;
+    border-radius: 0px !important; }
+  .activity-dropdown li {
+    border-bottom: 1px solid #D2D2D3; }
+  .activity-dropdown li:last-child {
+    border-bottom: none; }
 
 .activity-list-item {
-  margin: 10px 0px; }
+  margin: 10px 0px;
+  position: relative; }
 
 .lightbox-image {
   cursor: pointer; }
@@ -6413,6 +6442,35 @@ body {
   font-size: 16px;
   padding: 35px;
   text-align: center; }
+
+.add-comment-input {
+  width: 100%;
+  padding: 10px; }
+
+.comment {
+  z-index: auto;
+  opacity: 1;
+  padding: 10px 10px;
+  width: 100%;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: relative;
+  background-color: rgba(14, 157, 208, 0.1);
+  margin: 2px; }
+  .comment:hover {
+    background-color: rgba(14, 157, 208, 0.2); }
+
+.member-comment-info {
+  color: rgba(0, 0, 0, 0.4);
+  margin-bottom: 0; }
+
+.comment-actions {
+  position: absolute;
+  right: 0px;
+  top: 0px; }
+
+.submit-comment-btn {
+  float: right; }
 
 .react-autosuggest__container {
   position: relative; }
@@ -6463,7 +6521,9 @@ body {
   border-top-right-radius: 0px !important;
   border-top-left-radius: 0px !important;
   height: 40px !important;
-  min-width: 55px !important; }
+  min-width: 55px !important;
+  box-shadow: none;
+  text-shadow: none; }
 
 .fc-prev-button, .fc-next-button {
   min-width: 40px !important;
