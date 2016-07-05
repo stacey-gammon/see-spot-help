@@ -108,11 +108,11 @@ abstract class BaseStore extends EventEmitter {
   emitChange(property?, value?) {
     this.emit(CHANGE_EVENT);
     if (property) {
-      for (var i = 0; i < this.propertyListeners.length; i++) {
-        var propListener = this.propertyListeners[i];
+      for (let i = 0; i < this.propertyListeners.length; i++) {
+        let propListener = this.propertyListeners[i];
         if (propListener.property == property &&
           propListener.value == value) {
-          propListener.callback();
+          setTimeout(propListener.callback);
         }
       }
     }
@@ -169,6 +169,8 @@ abstract class BaseStore extends EventEmitter {
   * propertyValue with the id of the group.
   */
   getItemsByProperty(property, propertyValue, lengthLimit?: number) {
+    if (lengthLimit === 0) return [];
+
     var storageMapping = this.storageMappings[property];
     if (!storageMapping.hasOwnProperty(propertyValue)) {
       console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');

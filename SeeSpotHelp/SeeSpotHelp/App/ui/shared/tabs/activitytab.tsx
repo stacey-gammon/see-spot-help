@@ -16,50 +16,27 @@ export default class ActivityTab extends React.Component<any, any> {
     super(props);
     this.state = {
         activities: [],
-        isInfiniteLoading: false,
-        listLength: 3,
-        infiniteLoadBeginEdgeOffset: 50
+        listLength: 0,
+        loaded: false
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     ActivityStore.addPropertyListener(
-      this, this.props.property, this.props.value, this.onChange.bind(this));
-  }
-
-  handleInfiniteLoad() {
-    console.log('handleInfiniteLoad');
-    if (ActivityStore.getOldestItemId(this.props.property, this.props.value) &&
-        this.state.activities.length &&
-        ActivityStore.getOldestItemId(this.props.property, this.props.value) ==
-            this.state.activities[this.state.activites.length - 1].id) {
-      this.setState({infiniteLoadBeginEdgeOffset: undefined});
-      return;
-    }
-
-    let newListLength = this.state.listLength + this.infiniteLoadBatch;
-    let activities = ActivityStore.getItemsByProperty(this.props.property, this.props.value, newListLength);
-    this.setState(
-        {
-          isInfiniteLoading: ActivityStore.areItemsDownloading(this.props.property, this.props.value),
-          elementCountToShow: newListLength,
-          activities: activities,
-          listLength: newListLength
-        });
-  }
-
-  elementInfiniteLoad() {
-    return <Loader loaded={!this.state.isInfiniteLoading} />
+        this, this.props.property, this.props.value, this.onChange.bind(this));
+    this.loadMore();
   }
 
   onChange() {
     var activities = ActivityStore.getItemsByProperty(this.props.property,
                                                       this.props.value,
                                                       this.state.listLength);
+    if (activities.length < this.state.activities.length) return;
+
     this.setState(
       {
         activities: activities,
-        isInfiniteLoading: ActivityStore.areItemsDownloading(this.props.property, this.props.value)
+        loaded: !this.areItemsDownloading()
       }
     );
   }
@@ -81,11 +58,55 @@ export default class ActivityTab extends React.Component<any, any> {
   }
 
   getNoActivityDisplay() {
-    if (this.state.activities.length == 0) {
+    if (this.state.activities.length == 0 && !this.areItemsDownloading()) {
       return <div className='no-activity-display'>No Activity to Report</div>
     } else {
       return null;
     }
+  }
+
+  noneExist() {
+
+  }
+
+  areItemsDownloading() {
+    return ActivityStore.areItemsDownloading(this.props.property, this.props.value);
+  }
+
+  noMore() {
+    let lessThanRequested = !this.areItemsDownloading() &&
+                            this.state.activities.length < this.state.listLength;
+    let containsLastItemAvailable =
+        ActivityStore.getOldestItemId(this.props.property, this.props.value) &&
+        this.state.activities.length &&
+        ActivityStore.getOldestItemId(this.props.property, this.props.value) ==
+            this.state.activities[this.state.activities.length - 1].id;
+    return lessThanRequested || containsLastItemAvailable;
+  }
+
+  hasMoreItems() {
+    return !this.noMore();
+  }
+
+  loadMore() {
+    let newListLength = this.state.listLength + this.infiniteLoadBatch;
+    this.setState({listLength: newListLength});
+    let activities = ActivityStore.getItemsByProperty(this.props.property, this.props.value, newListLength);
+    this.setState({activities: activities, loaded: !this.areItemsDownloading(),});
+  }
+
+  loadMoreButton() {
+    if (this.areItemsDownloading()) {
+      return <Loader loaded='false' />
+    }
+
+    if (this.hasMoreItems()) {
+      return <button className='btn btn-info' onClick={this.loadMore.bind(this)}>
+               Load More
+             </button>
+    }
+
+    return null;
   }
 
   render() {
@@ -93,16 +114,9 @@ export default class ActivityTab extends React.Component<any, any> {
 
     return (
       <div className="list-group">
-        {this.getNoActivityDisplay()}
-        <Infinite elementHeight={120}
-                  infiniteLoadBeginEdgeOffset={this.state.infiniteLoadBeginEdgeOffset}
-                  containerHeight={500}
-                  useWindowAsScrollContainer={false}
-                  onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
-                  loadingSpinnerDelegate={this.elementInfiniteLoad()}
-                  isInfiniteLoading={this.state.isInfiniteLoading}>
+          {this.getNoActivityDisplay()}
           {activityElements}
-        </Infinite>
+          {this.loadMoreButton()}
       </div>
     );
   }
