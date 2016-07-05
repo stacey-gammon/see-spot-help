@@ -7,10 +7,9 @@ import VolunteerStore from '../../../stores/volunteerstore';
 import ActivityElement from '../activity/activityelement';
 
 var Loader = require('react-loader');
-var Infinite = require('react-infinite');
 
 export default class ActivityTab extends React.Component<any, any> {
-  private infiniteLoadBatch: number = 3;
+  private batchSize: number = 10;
 
   constructor(props) {
     super(props);
@@ -53,20 +52,19 @@ export default class ActivityTab extends React.Component<any, any> {
       view = 'animal';
     }
     return (
-      <ActivityElement key={note.id} view={view} activity={note} permission={this.props.permission}/>
+      <ActivityElement key={note.id}
+                       view={view}
+                       activity={note}
+                       permission={this.props.permission}/>
     );
   }
 
   getNoActivityDisplay() {
-    if (this.state.activities.length == 0 && !this.areItemsDownloading()) {
+    if (this.state.loaded && this.state.activities.length == 0) {
       return <div className='no-activity-display'>No Activity to Report</div>
     } else {
       return null;
     }
-  }
-
-  noneExist() {
-
   }
 
   areItemsDownloading() {
@@ -89,10 +87,13 @@ export default class ActivityTab extends React.Component<any, any> {
   }
 
   loadMore() {
-    let newListLength = this.state.listLength + this.infiniteLoadBatch;
-    this.setState({listLength: newListLength});
-    let activities = ActivityStore.getItemsByProperty(this.props.property, this.props.value, newListLength);
-    this.setState({activities: activities, loaded: !this.areItemsDownloading(),});
+    let newListLength = this.state.listLength + this.batchSize;
+    let activities = ActivityStore.getItemsByProperty(this.props.property,
+                                                      this.props.value,
+                                                      newListLength);
+    this.setState({activities: activities,
+                   loaded: !this.areItemsDownloading(),
+                   listLength: newListLength});
   }
 
   loadMoreButton() {

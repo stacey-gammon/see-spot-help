@@ -341,13 +341,15 @@ abstract class BaseStore extends EventEmitter {
       var casted = this.databaseObject.castObject(item);
       // Wait for the subsequent update to set the id.
       if (!casted.id) return;
-      if (prop) {
-        console.log(this.databaseObject.className + 'Store: added with prop ' + prop + ' and value ' + casted[prop]);
-        this.addIdToMapping(this.storageMappings[prop], casted[prop], casted.id);
+
+      // Add item to the mappings
+      console.log(this.databaseObject.className + 'Store: added with prop ' + prop + ' and value ' + casted[prop]);
+      for (let property in this.storageMappings) {
+        this.addIdToMapping(this.storageMappings[property], casted[property], casted.id);
       }
+
       this.storage[casted.id] = casted;
       if (onSuccess) onSuccess();
-      //this.emitChange(prop, casted[prop]);
     } else {
       if (onError) onError();
     }

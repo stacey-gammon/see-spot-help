@@ -13,6 +13,12 @@ import Group from '../../core/databaseobjects/group';
 import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
+
+import AnimalStore from '../../stores/animalstore';
+import ActivityStore from '../../stores/animalactivitystore';
+import ScheduleStore from '../../stores/schedulestore';
+import PhotoStore from '../../stores/photostore';
+
 import PermissionsStore from '../../stores/permissionsstore';
 import StoreStateHelper from '../../stores/storestatehelper';
 
@@ -108,6 +114,15 @@ export default class GroupHomePage extends React.Component<any, any> {
     }
     GroupStore.addPropertyListener(this, 'id', group.id, this.onGroupChange);
   }
+  //
+  // // Download group data for the other tabs so switching tabs is very fast.
+  // preDownloadData(group) {
+  //   AnimalStore.getItemsByProperty('groupId', group.id);
+  //   // Limit the activity to the top 20.
+  //   ActivityStore.getItemsByProperty('groupId', group.id, 20);
+  //   PhotoStore.getItemsByProperty('groupId', group.id);
+  //   ScheduleStore.getItemsByProperty('groupId', group.id);
+  // }
 
   onGroupChange() {
     var permission = StoreStateHelper.GetPermission(this.state);

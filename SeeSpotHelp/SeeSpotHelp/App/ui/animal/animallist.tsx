@@ -14,8 +14,8 @@ export default class AnimalList extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      isInfiniteLoading: false,
-      listLength: 3,
+      loaded: false,
+      listLength: 0,
       animals: [],
       infiniteLoadBeginEdgeOffset: 50
     }
@@ -35,7 +35,7 @@ export default class AnimalList extends React.Component<any, any> {
   componentDidMount() {
     if (this.props.group) {
       AnimalStore.addPropertyListener(
-        this, 'groupId', this.props.group.id, this.onChange.bind(this));
+          this, 'groupId', this.props.group.id, this.onChange.bind(this));
       this.onChange();
     }
   }
@@ -47,9 +47,8 @@ export default class AnimalList extends React.Component<any, any> {
   onChange() {
     this.setState({
       animals: AnimalStore.getItemsByProperty('groupId',
-                                              this.props.group.id,
-                                              this.state.listLength),
-      isInfiniteLoading: AnimalStore.areItemsDownloading('groupId', this.props.group.id)
+                                              this.props.group.id),
+      loaded: !AnimalStore.areItemsDownloading('groupId', this.props.group.id)
     });
   }
 
@@ -57,6 +56,7 @@ export default class AnimalList extends React.Component<any, any> {
     return <Loader loaded={!this.state.isInfiniteLoading} />
   }
 
+  // This function is no longer used.  It was used for infinite loading but I took that out.
   handleInfiniteLoad() {
     console.log('handleInfiniteLoad');
     if (AnimalStore.getOldestItemId('groupId', this.props.group.id) &&
@@ -87,15 +87,9 @@ export default class AnimalList extends React.Component<any, any> {
     }
 
     return (
-      <Infinite elementHeight={120}
-                infiniteLoadBeginEdgeOffset={this.state.infiniteLoadBeginEdgeOffset}
-                containerHeight={500}
-                useWindowAsScrollContainer={false}
-                onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
-                loadingSpinnerDelegate={this.elementInfiniteLoad()}
-                isInfiniteLoading={this.state.isInfiniteLoading}>
+      <Loader loaded={this.state.loaded}>
         {animalUiElements}
-      </Infinite>
+      </Loader>
     );
   }
 }
