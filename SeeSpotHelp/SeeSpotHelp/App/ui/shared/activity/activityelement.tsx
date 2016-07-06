@@ -147,8 +147,7 @@ export default class ActivityElement extends React.Component<any, any> {
               </a>
               {date}
             </p>
-            <Comments ref='comments-list'
-                      activityId={this.props.activity.id}
+            <Comments activityId={this.props.activity.id}
                       permission={this.props.permission}
                       groupId={this.props.activity.groupId}/>
           </div>

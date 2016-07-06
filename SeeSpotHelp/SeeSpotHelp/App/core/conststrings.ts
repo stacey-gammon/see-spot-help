@@ -31,7 +31,7 @@ var ConstStrings = {
   AnimalId: 'Animal',
   UserId: 'Member',
   Member: 'Member',
-  Version: '0.5'
+  Version: '0.4'
 };
 
 export default ConstStrings;

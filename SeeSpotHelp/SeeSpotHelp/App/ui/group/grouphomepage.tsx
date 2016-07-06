@@ -1,7 +1,6 @@
 ﻿'use strict';
 
 import * as React from 'react';
-var Loader = require('react-loader');
 
 import Intro from '../intro';
 
@@ -13,12 +12,6 @@ import Group from '../../core/databaseobjects/group';
 import Permission from '../../core/databaseobjects/permission';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
-
-import AnimalStore from '../../stores/animalstore';
-import ActivityStore from '../../stores/animalactivitystore';
-import ScheduleStore from '../../stores/schedulestore';
-import PhotoStore from '../../stores/photostore';
-
 import PermissionsStore from '../../stores/permissionsstore';
 import StoreStateHelper from '../../stores/storestatehelper';
 
@@ -28,13 +21,9 @@ export default class GroupHomePage extends React.Component<any, any> {
   constructor(props) {
     super(props);
     var groupId = Utils.FindPassedInProperty(this, 'groupId');
-    this.state = {
-      groupId: groupId,
-      loading: true
-     };
-    this.onGroupChange = this.onGroupChange.bind(this);
+    this.state = { groupId: groupId };
+    this.onChange = this.onChange.bind(this);
     this.loadFromServer = this.loadFromServer.bind(this);
-    this.loadDefaultGroup = this.loadDefaultGroup.bind(this);
   }
 
   componentDidMount() {
@@ -44,19 +33,17 @@ export default class GroupHomePage extends React.Component<any, any> {
   }
 
   componentWillUnmount() {
+    StoreStateHelper.RemoveChangeListeners([LoginStore, GroupStore], this);
     PermissionsStore.removePropertyListener(this);
     LoginStore.removeChangeListener(this.loadFromServer);
-    GroupStore.removeChangeListener(this.onGroupChange);
-    GroupStore.removeChangeListener(this.loadDefaultGroup);
-    GroupStore.removePropertyListener(this);
     this.mounted = false;
   }
 
-  loadDefaultGroup() {
+  loadFromServer() {
     var groupId = this.state.groupId;
     // If the user doesn't have any 'last looked at' group, see if we can grab one from the user.
-    if (LoginStore.getUser() && !groupId) {
-      var groups = GroupStore.getGroupsByUser(LoginStore.getUser(), this.loadDefaultGroup);
+    if (!groupId && LoginStore.getUser()) {
+      var groups = GroupStore.getGroupsByUser(LoginStore.getUser());
       if (groups && groups.length > 0) {
         groupId = groups[0].id;
       }
@@ -73,58 +60,25 @@ export default class GroupHomePage extends React.Component<any, any> {
         var group = GroupStore.getGroupById(groupId);
         var permission = StoreStateHelper.GetPermission(this.state);
         if (group) {
-          this.setState({ permission: permission, groupId: group.id, loading: false });
-          this.removeGroupChangeListeners();
-          this.addGroupChangeListeners(group);
+          this.setState({ permission: permission, groupId: group.id });
+          this.addChangeListeners(group);
         }
       }.bind(this)
     );
-  }
-
-  loadFromServer() {
-    // If the user doesn't have any 'last looked at' group, see if we can grab one from the user.
-    if (LoginStore.getUser() && !this.state.groupId) {
-      GroupStore.addPropertyListener(this,
-                                     'userId',
-                                     LoginStore.getUser().id,
-                                     this.loadDefaultGroup);
-      PermissionsStore.addPropertyListener(this,
-                                           'userId',
-                                           LoginStore.getUser().id,
-                                           this.loadDefaultGroup);
-    }
-    this.loadDefaultGroup();
   }
 
   loadDifferentGroup(group) {
     this.setState({ groupId: group.id });
   }
 
-  removeGroupChangeListeners() {
-    PermissionsStore.removePropertyListener(this);
-    GroupStore.removePropertyListener(this);
-  }
-
-  addGroupChangeListeners(group) {
+  addChangeListeners(group) {
     if (LoginStore.getUser()) {
-      PermissionsStore.addPropertyListener(this,
-                                           'userId',
-                                           LoginStore.getUser().id,
-                                           this.onGroupChange);
+      PermissionsStore.addPropertyListener(this, 'userId', LoginStore.getUser().id, this.onChange);
     }
-    GroupStore.addPropertyListener(this, 'id', group.id, this.onGroupChange);
+    StoreStateHelper.AddChangeListeners([LoginStore, GroupStore], this);
   }
-  //
-  // // Download group data for the other tabs so switching tabs is very fast.
-  // preDownloadData(group) {
-  //   AnimalStore.getItemsByProperty('groupId', group.id);
-  //   // Limit the activity to the top 20.
-  //   ActivityStore.getItemsByProperty('groupId', group.id, 20);
-  //   PhotoStore.getItemsByProperty('groupId', group.id);
-  //   ScheduleStore.getItemsByProperty('groupId', group.id);
-  // }
 
-  onGroupChange() {
+  onChange() {
     var permission = StoreStateHelper.GetPermission(this.state);
     this.setState({ permission: permission });
   }
@@ -141,18 +95,12 @@ export default class GroupHomePage extends React.Component<any, any> {
 
   render() {
     console.log('GroupHomePage:render');
-
-    if (this.state.loading) {
-      return <Loader loaded={false} />
-    }
-
     if (this.state.groupId) {
       var group = GroupStore.getGroupById(this.state.groupId);
       if (group) {
         return this.hasGroupHomePage(group);
       }
     }
-
     return ( <div> <Intro /> </div> );
   }
 }

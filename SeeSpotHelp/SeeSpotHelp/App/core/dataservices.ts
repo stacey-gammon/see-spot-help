@@ -138,16 +138,15 @@ export default class DataServices {
     );
   }
 
-  public static DownloadDataOnce(path, onSuccess, onError?, lengthLimit?, id?) {
+  public static DownloadDataOnce(path, onSuccess, onError?) {
     var ref = this.database.ref("/" + path);
-
-    if (lengthLimit && id) {
-      ref.orderByKey().endAt(id).limitToLast(lengthLimit).once('value', onSuccess, onError);
-    } else if (lengthLimit) {
-      ref.orderByKey().limitToLast(lengthLimit).once('value', onSuccess, onError);
-    } else {
-      ref.once("value", onSuccess, onError);
-    }
+    ref.once("value", function (snapshot) {
+        onSuccess(snapshot);
+      }, function (errorObject) {
+        console.log("The read failed: " + errorObject.code);
+        if (onError) onError(errorObject);
+      }
+    );
   }
 
   public static SetFirebaseData(path, value) : Promise<any> {
