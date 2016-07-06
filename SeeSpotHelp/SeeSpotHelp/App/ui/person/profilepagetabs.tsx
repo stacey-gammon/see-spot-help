@@ -12,6 +12,7 @@ var MemberScheduleTab = require('./memberscheduletab');
 
 import Utils from '../uiutils';
 import LoginStore from '../../stores/loginstore';
+import Permission from '../../core/databaseobjects/permission';
 
 export default class ProfilePageTabs extends React.Component<any, any> {
   constructor(props) {
@@ -37,7 +38,9 @@ export default class ProfilePageTabs extends React.Component<any, any> {
           <UserGroupsTab user={this.props.user}/>
         </OptimizedTab>
         <OptimizedTab eventKey={2} title={Utils.getActivityGlyphicon()} activeKey={defaultKey}>
-          <ActivityTab property='userId' value={this.props.user.id} />
+          <ActivityTab property='userId'
+                       value={this.props.user.id}
+                       permission={Permission.CreateNonMemberPermission()} />
         </OptimizedTab>
         <OptimizedTab eventKey={3} title={Utils.getCalendarGlyphicon()} activeKey={defaultKey}>
           <MemberScheduleTab view='profile' user={this.props.user}/>
