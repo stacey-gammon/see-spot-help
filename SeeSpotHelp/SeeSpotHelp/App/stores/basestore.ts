@@ -45,6 +45,9 @@ abstract class BaseStore extends EventEmitter {
   private itemListeners: Array<PropertyListener> = [];
   private currentlyDownloading = {};
 
+  // A map of properties to property values to the oldest element's id.
+  private storageMappingLastId = {};
+
   // Mapping of EventTypeEnum to an array of object with a callback and potentially an id.
   private listenerInfo = {
     INSERT: [],
@@ -62,8 +65,13 @@ abstract class BaseStore extends EventEmitter {
     for (var i = 0; i < this.databaseObject.mappingProperties.length; i++) {
       var property = this.databaseObject.mappingProperties[i];
       this.storageMappings[property] = {};
+      this.storageMappingLastId[property] = {};
       this.currentlyDownloading[property] = {};
     }
+  }
+
+  getOldestItemId(property, value) {
+    return this.storageMappingLastId[property][value];
   }
 
   addPropertyListener(listener, property, value, callback) {
@@ -72,8 +80,8 @@ abstract class BaseStore extends EventEmitter {
     for (var i = 0; i < this.propertyListeners.length; i++) {
       var propListener = this.propertyListeners[i];
       if (propListener.listener == listener &&
-        propListener.property == property &&
-        propListener.value == value) {
+          propListener.property == property &&
+          propListener.value == value) {
         return;
       }
     }
@@ -100,11 +108,11 @@ abstract class BaseStore extends EventEmitter {
   emitChange(property?, value?) {
     this.emit(CHANGE_EVENT);
     if (property) {
-      for (var i = 0; i < this.propertyListeners.length; i++) {
-        var propListener = this.propertyListeners[i];
+      for (let i = 0; i < this.propertyListeners.length; i++) {
+        let propListener = this.propertyListeners[i];
         if (propListener.property == property &&
           propListener.value == value) {
-          propListener.callback();
+          setTimeout(propListener.callback);
         }
       }
     }
@@ -160,12 +168,14 @@ abstract class BaseStore extends EventEmitter {
   * anmimals in a certain group by calling this on the AnimalStore with property 'groupId' and
   * propertyValue with the id of the group.
   */
-  getItemsByProperty(property, propertyValue) {
+  getItemsByProperty(property, propertyValue, lengthLimit?: number) {
+    if (lengthLimit === 0) return [];
+
     var storageMapping = this.storageMappings[property];
     if (!storageMapping.hasOwnProperty(propertyValue)) {
       console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');
       storageMapping[propertyValue] = [];
-      this.downloadFromMapping(property, propertyValue);
+      this.downloadFromMapping(property, propertyValue, lengthLimit);
       return [];
     }
 
@@ -176,9 +186,27 @@ abstract class BaseStore extends EventEmitter {
         items.push(item);
       }
     }
+
     items.sort(function(a, b) {
       return a.timestamp < b.timestamp ? 1 : -1;
     });
+
+    if (lengthLimit && items.length < lengthLimit) {
+      let id = null;
+      if (items.length > 0) {
+        id = items[items.length - 1].id;
+      }
+
+      // Don't attempt to download more if there is none.
+      if (id &&
+          id != this.storageMappingLastId[property][propertyValue] &&
+          !this.areItemsDownloading(property, propertyValue, id)) {
+        this.downloadFromMapping(property,
+                                 propertyValue,
+                                 lengthLimit,
+                                 id);
+      }
+    }
     return items;
   }
 
@@ -188,29 +216,62 @@ abstract class BaseStore extends EventEmitter {
   * initially downloaded in bulk, after which a listener is set up for subsequent additions,
   * changes and deletions.
   */
-  itemsDownloaded(property: string, value: string, onSuccess, snapshot) {
-    console.log(this.databaseObject.className + 'Store: itemsDownloaded with value ' + value);
-    var timestamp = 0;
-    var items = snapshot.val();
-    for (var id in items) {
+  itemsDownloaded(property: string, value: string, lengthLimit: number, lastLimitId : string, snapshot) {
+    console.log(this.databaseObject.className + 'Store: itemsDownloaded with value ' + value + ', limited to ' + lengthLimit + ' starting at ' + lastLimitId);
+    let lastItemTimestamp = 0;
+    let lastItemId = null;
+    let items = snapshot.val();
+    let itemsToSort = [];
+    for (let id in items) {
       var item = items[id];
+      itemsToSort.push(item);
       if (item.status == Status.ARCHIVED) continue;
+      lastItemTimestamp = item.timestamp;
+      lastItemId = item.id;
 
-      if (this.storageMappings[property][value].hasOwnProperty(id)) {
+      if (lastLimitId && item.id == lastLimitId) continue;
+
+      if (this.storageMappings[property][value].indexOf(id) >= 0) {
         // Exists locally, item must be updated.
         this.itemChanged(property, item);
       } else {
+        if (lengthLimit) {
+          console.log('adding item: ', item);
+        }
         this.itemAdded(property, null, null, item);
       }
-      timestamp = item.timestamp;
     }
 
-    this.currentlyDownloading[property][value] = false;
-    this.addListeners(property, value, timestamp + 1);
+    if (lastLimitId) {
+      if (!this.currentlyDownloading[property][value]) {
+        this.currentlyDownloading[property][value] = {};
+      }
+      this.currentlyDownloading[property][value][lastLimitId] = false;
+    } else {
+      this.currentlyDownloading[property][value] = false;
+    }
 
-    this.emitChange(property, value);
+    itemsToSort.sort(function(a, b) {
+      return a.timestamp < b.timestamp ? 1 : -1;
+    });
 
-    if (onSuccess) { onSuccess(); }
+    lastItemId = itemsToSort.length ? itemsToSort[itemsToSort.length - 1].id : null;
+
+    // If we asked for lengthLimit items but have less than that, we must have hit the end of
+    // available items. Note - don't ever set lengthLimit to 1 or this won't work because we
+    // always ask for and download the last avavilable item.
+    let batchSmallerThanRequested = lengthLimit && itemsToSort.length < lengthLimit;
+
+    if (batchSmallerThanRequested) {
+      this.storageMappingLastId[property][value] = lastItemId;
+    }
+
+    // Don't emit a change if all we did was download the last available item and no more are left.
+    if (!lastLimitId || lastItemId != lastLimitId) {
+      this.emitChange(property, value);
+    }
+
+    this.addListeners(property, value, lastItemTimestamp + 1);
   }
 
   /**
@@ -280,14 +341,15 @@ abstract class BaseStore extends EventEmitter {
       var casted = this.databaseObject.castObject(item);
       // Wait for the subsequent update to set the id.
       if (!casted.id) return;
-      if (prop) {
-        console.log(this.databaseObject.className + 'Store: added with prop ' + prop + ' and value ' + casted[prop]);
-        this.addIdToMapping(this.storageMappings[prop], casted[prop], casted.id);
-      }
-      this.storage[casted.id] = casted;
 
+      // Add item to the mappings
+      console.log(this.databaseObject.className + 'Store: added with prop ' + prop + ' and value ' + casted[prop]);
+      for (let property in this.storageMappings) {
+        this.addIdToMapping(this.storageMappings[property], casted[property], casted.id);
+      }
+
+      this.storage[casted.id] = casted;
       if (onSuccess) onSuccess();
-      this.emitChange(prop, casted[prop]);
     } else {
       if (onError) onError();
     }
@@ -311,12 +373,11 @@ abstract class BaseStore extends EventEmitter {
     delete this.storage[id];
   }
 
-  itemChanged(prop, snapshot) {
+  itemChanged(prop, snapshot, emit?: boolean) {
     var changedObject = this.databaseObject.castObject(snapshot);
     if (this.storage.hasOwnProperty(changedObject.id)) {
       console.log(this.databaseObject.className + 'Store: itemChanged with id ' + changedObject.id + ' and prop ' + prop);
       this.storage[changedObject.id] = changedObject;
-      this.emitChange(prop, changedObject[prop]);
     } else {
       this.itemAdded(prop, null, null, snapshot);
     }
@@ -339,32 +400,59 @@ abstract class BaseStore extends EventEmitter {
     this.hasError = false;
   }
 
-  areItemsDownloading(property, value) {
-    return this.currentlyDownloading[property][value];
+  areItemsDownloading(property, value, id?) {
+    if (id) {
+      if (!this.currentlyDownloading[property][value]) {
+        this.currentlyDownloading[property][value] = {};
+      }
+      return this.currentlyDownloading[property][value][id];
+    } else {
+      if (typeof this.currentlyDownloading[property][value] === 'object') {
+        for (let id in this.currentlyDownloading[property][value]) {
+          if (this.currentlyDownloading[property][value][id]) {
+            return true;
+          }
+        }
+        return false;
+      }
+      return this.currentlyDownloading[property][value];
+    }
   }
 
   isItemDownloading(id) {
     return this.isDownloading[id];
   }
 
-  downloadFromMapping(property, value, onSuccess?, onError?) {
+  downloadFromMapping(property, value, lengthLimit? : number, id? : string) {
+    if (lengthLimit) {
+      console.log('downloading last ' + lengthLimit + ' starting at ' + id);
+    }
     this.resetErrorInfo();
-    this.currentlyDownloading[property][value] = true;
-    var path = DatabaseObject.GetPathToMapping(
-      this.firebasePath,
-      property,
-      value);
+    if (id) {
+      if (!this.currentlyDownloading[property][value]) {
+        this.currentlyDownloading[property][value] = {};
+      }
+      this.currentlyDownloading[property][value][id] = true;
+    } else {
+      this.currentlyDownloading[property][value] = true;
+    }
+    var path = DatabaseObject.GetPathToMapping(this.firebasePath, property, value);
 
     DataServices.DownloadDataOnce(path,
-      this.itemsDownloaded.bind(this, property, value, onSuccess));
+                                  this.itemsDownloaded.bind(this, property, value, lengthLimit, id),
+                                  null,
+                                  lengthLimit,
+                                  id);
   }
 
   onChildAdded(property, snapshot) {
     this.itemAdded(property, null, null, snapshot.val());
+    this.emitChange(property, snapshot.val()[property]);
   }
 
   onChildChanged(property, snapshot) {
     this.itemChanged(property, snapshot.val());
+    this.emitChange(property, snapshot.val()[property]);
   }
 
   onChildRemoved(property, value, snapshot) {
