@@ -28,6 +28,12 @@ export default class GroupHomePage extends React.Component<any, any> {
   constructor(props) {
     super(props);
     var groupId = Utils.FindPassedInProperty(this, 'groupId');
+    if (groupId) {
+      Utils.SaveProp('groupId', groupId);
+    } else {
+      groupId = Utils.GetProp('groupId');
+    }
+
     this.state = {
       groupId: groupId,
       loading: true

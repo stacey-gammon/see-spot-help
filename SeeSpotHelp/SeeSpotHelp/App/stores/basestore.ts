@@ -344,9 +344,9 @@ abstract class BaseStore extends EventEmitter {
 
       // Add item to the mappings
       console.log(this.databaseObject.className + 'Store: added with prop ' + prop + ' and value ' + casted[prop]);
-      for (let property in this.storageMappings) {
-        this.addIdToMapping(this.storageMappings[property], casted[property], casted.id);
-      }
+      // Note: We cannot add the item to all mappings or we won't know if we have everything available
+      // and we'll be missing data. 
+      this.addIdToMapping(this.storageMappings[prop], casted[prop], casted.id);
 
       this.storage[casted.id] = casted;
       if (onSuccess) onSuccess();
