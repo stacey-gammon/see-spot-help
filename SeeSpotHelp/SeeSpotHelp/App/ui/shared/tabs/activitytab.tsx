@@ -3,12 +3,19 @@
 import * as React from 'react';
 import ActivityStore from '../../../stores/animalactivitystore';
 import VolunteerStore from '../../../stores/volunteerstore';
+import Permission from '../../../core/databaseobjects/permission';
 
 import ActivityElement from '../activity/activityelement';
 
 var Loader = require('react-loader');
 
-export default class ActivityTab extends React.Component<any, any> {
+interface propTypes {
+  permission: Permission,
+  property: string,
+  value: string
+}
+
+export default class ActivityTab extends React.Component<propTypes, any> {
   private batchSize: number = 10;
 
   constructor(props) {

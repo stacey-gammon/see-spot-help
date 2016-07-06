@@ -6445,7 +6445,8 @@ body {
 
 .add-comment-input {
   width: 100%;
-  padding: 10px; }
+  padding: 10px;
+  border: 1px solid lightgrey; }
 
 .comment {
   z-index: auto;

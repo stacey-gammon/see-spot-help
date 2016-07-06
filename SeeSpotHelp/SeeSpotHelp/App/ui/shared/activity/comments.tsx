@@ -14,6 +14,7 @@ var MenuItem = ReactBootstrap.MenuItem;
 import ErrorPopup from '../errorpopup';
 import CommentStore from '../../../stores/commentstore';
 import VolunteerStore from '../../../stores/volunteerstore';
+import ActivityStore from '../../../stores/animalactivitystore';
 import Comment from '../../../core/databaseobjects/comment';
 import LoginStore from '../../../stores/loginstore';
 
@@ -151,7 +152,9 @@ export default class Comments extends React.Component<any, any> {
   }
 
   addCommentBar() {
-    if (this.props.permission.inGroup()) {
+    let activity = ActivityStore.getItemById(this.props.activityId);
+    if ((activity && LoginStore.getUser().id == activity.userId) ||
+        this.props.permission.inGroup()) {
       return <InputCommentForm ref='newComment' onSubmit={this.insertComment.bind(this)} />;
     }
     return null;
