@@ -18,7 +18,7 @@ export default class GroupEditor extends Editor {
   insert(extraFields) {
     var group = new Group();
     group.updateFromInputFields(this.inputFields);
-    var promise = group.insert(extraFields.userId);
+    var promise = group.insert();
     this.databaseObject = group;
     return promise;
   }

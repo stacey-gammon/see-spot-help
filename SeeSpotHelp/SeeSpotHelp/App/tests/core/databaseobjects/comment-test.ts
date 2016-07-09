@@ -10,6 +10,7 @@ import CommentStore from '../../../stores/commentstore';
 import ActivityStore from '../../../stores/animalactivitystore';
 
 import TestHelper from '../../testhelper';
+import TestData from '../../testdata';
 
 describe("CommentTest", function () {
 
@@ -24,21 +25,22 @@ describe("CommentTest", function () {
   it("CommentAddTest", function (done) {
     this.timeout(7000);
     return new Promise(function(resolve, reject) {
-      TestHelper.LoginWithTestAccount()
-          .then(function() { TestHelper.CreateTestData()
+      TestHelper.CreateTestData()
+          .then(function() { TestHelper.LoginAsAdmin()
           .then(function() {
             let comment = new Comment();
-            comment.activityId = TestHelper.testActivityId;
-            comment.groupId = TestHelper.testGroupId;
+            comment.activityId = TestData.testActivityId;
+            comment.groupId = TestData.testGroupId;
             comment.userId = LoginStore.getUser().id;
 
             comment.insert().then(function() {
               resolve();
               TestHelper.DeleteTestData();
-              comment.delete();
+              comment.shallowDelete();
               done();
             });
           });
+      });
       });
     });
   });
@@ -46,27 +48,26 @@ describe("CommentTest", function () {
   it("CommentAddTestNotAuthorized", function (done) {
     this.timeout(7000);
     return new Promise(function(resolve, reject) {
-      TestHelper.LoginWithTestAccount()
-        .then(function() { TestHelper.CreateTestData()
-        .then(function() {
-          TestHelper.LoginWithTestAccount2().then(function() {
+      TestHelper.CreateTestData()
+          .then(function() { TestHelper.LoginAsAdmin()
+          .then(function() { TestHelper.LoginAsNonMember()
+          .then(function() {
             let comment = new Comment();
-            comment.activityId = TestHelper.testActivityId;
-            comment.groupId = TestHelper.testGroupId;
+            comment.activityId = TestData.testActivityId;
+            comment.groupId = TestData.testGroupId;
             comment.userId = LoginStore.getUser().id;
 
             comment.insert().then(function() {
               reject();
               TestHelper.DeleteTestData();
-              comment.delete();
+              comment.shallowDelete();
             }, function(error) {
               resolve();
               TestHelper.DeleteTestData();
               done();
             });
-        });
-        });
+          });
+          });
       });
     });
-  });
 });

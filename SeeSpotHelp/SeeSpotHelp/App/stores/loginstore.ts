@@ -33,17 +33,6 @@ class LoginStore extends BaseStore {
   constructor() {
     super();
     this.Init();
-    DataServices.OnAuthStateChanged(this.onAuthStateChanged);
-  }
-
-  /**
-   * Displays the signed-in user information in the UI or hides it and displays the
-   * "Sign-In" button if the user isn't signed-in.
-   */
-  onAuthStateChanged(user) {
-    if (user) {
-      window.location.reloadPage();
-    }
   }
 
   // See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes for
@@ -80,7 +69,7 @@ class LoginStore extends BaseStore {
     if (authData) {
       this.authenticated = true;
       sessionStorage.setItem('loginStoreAuthenticating', '');
-      console.log("User " + authData.uid + " is logged in with " + authData.provider);
+      console.log('User ' + authData.uid + ' is logged in');
       return authData;
     }
   }
@@ -118,6 +107,21 @@ class LoginStore extends BaseStore {
     let me = this;
     return DataServices.LoginWithEmailAndPassword(email, password).then(function() {
       me.authenticated = true;
+    });
+  }
+
+  signUpWithEmailAndPassword(name, email, password) : Promise<any> {
+    this.logout();
+    this.loggedOut = false;
+    let me = this;
+    return new Promise(function(resolve, reject) {
+      let updateName = function() {
+        me.ensureUser().then(function() {
+          me.getUser().name = name;
+          me.getUser().update().then(resolve, reject);
+        }, reject);
+      };
+      DataServices.SignUpWithEmailAndPassword(email, password).then(updateName, reject);
     });
   }
 
@@ -213,8 +217,8 @@ class LoginStore extends BaseStore {
     this.rejectMe = null;
   }
 
-  reject() {
-    if (this.rejectMe) { this.rejectMe(); }
+  reject(error) {
+    if (this.rejectMe) { this.rejectMe(error); }
     this.clearPromiseFunctions();
     this.userDownloading = false;
   }

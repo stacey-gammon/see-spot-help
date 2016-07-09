@@ -15,8 +15,9 @@ var d3 = require("d3");
 
 describe("AddNewGroup", function () {
   it("AddNewGroupLoadsInputFields", function () {
-    var user = new Volunteer("john", "doe", "123");
-    LoginStore.user = user;
+    var user = new Volunteer("john", "doe");
+    user.id = '123';
+    LoginStore['user'] = user;
     var AddNewGroupElement = ReactTestUtils.renderIntoDocument(
       <AddNewGroup/>
     );
@@ -45,8 +46,9 @@ describe("AddNewGroup", function () {
   });
 
   it("AddNewGroupWarnsOnNoInput", function() {
-    var user = new Volunteer("john", "doe", "123");
-    LoginStore.user = user;
+    var user = new Volunteer("john", "doe");
+    user.id = '123';
+    LoginStore['user'] = user;
     var AddNewGroupElement = ReactTestUtils.renderIntoDocument(
       <AddNewGroup/>
     );

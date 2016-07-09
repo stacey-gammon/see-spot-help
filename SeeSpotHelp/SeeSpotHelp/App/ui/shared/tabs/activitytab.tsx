@@ -37,8 +37,6 @@ export default class ActivityTab extends React.Component<propTypes, any> {
     var activities = ActivityStore.getItemsByProperty(this.props.property,
                                                       this.props.value,
                                                       this.state.listLength);
-    if (activities.length < this.state.activities.length) return;
-
     this.setState(
       {
         activities: activities,

@@ -6,8 +6,8 @@ var Promise = require('bluebird');
 import Volunteer from '../../../core/databaseobjects/volunteer';
 import Group from '../../../core/databaseobjects/group';
 import GroupEditor from '../../../core/editor/groupeditor';
-import AddNewGroup from '../../../ui/group/addnewgroup';
 import LoginStore from '../../../stores/loginstore';
+import GroupStore from '../../../stores/groupstore';
 import TestHelper from '../../testhelper';
 
 var d3 = require("d3");
@@ -16,7 +16,7 @@ describe("GroupEditorTest", function () {
   it("GroupEditorUnauthorizedUserPermissionFail", function (done) {
     let user = new Volunteer("john", "doe");
     user.id = '123';
-    LoginStore.user = user;
+    LoginStore['user'] = user;
 
     let groupEditor = new GroupEditor(null);
     groupEditor.inputFields['state'].value = 'New York';
@@ -43,7 +43,7 @@ describe("GroupEditorTest", function () {
     LoginStore.logout();
     this.timeout(5000);
     return new Promise(function(resolve, reject) {
-      TestHelper.LoginWithTestAccount().then(function() {
+      TestHelper.LoginAsAdmin().then(function() {
         let groupEditor = new GroupEditor(null);
         groupEditor.inputFields['state'].value = 'New York';
         groupEditor.inputFields['city'].value = 'New York City';
@@ -68,7 +68,7 @@ describe("GroupEditorTest", function () {
     LoginStore.logout();
     this.timeout(10000);
     return new Promise(function(resolve, reject) {
-      TestHelper.LoginWithTestAccount().then(function() {
+      TestHelper.LoginAsAdmin().then(function() {
         let groupEditor = new GroupEditor(null);
         groupEditor.inputFields['state'].value = 'New York';
         groupEditor.inputFields['city'].value = 'New York City';
@@ -79,13 +79,13 @@ describe("GroupEditorTest", function () {
         let promise = groupEditor.insert({userId: LoginStore.getUser().id});
         promise.then(function() {
           LoginStore.logout();
-          TestHelper.LoginWithTestAccount2().then(function() {
+          TestHelper.LoginAsNonMember().then(function() {
             groupEditor.inputFields['state'].value = 'New Jersey';
             groupEditor.update().catch(function(error) {
               expect(error.code).toEqual('PERMISSION_DENIED');
               // Clean up the test account.
               LoginStore.logout();
-              TestHelper.LoginWithTestAccount().then(function() {
+              TestHelper.LoginAsAdmin().then(function() {
                 resolve();
                 done();
                 return groupEditor.delete();
@@ -99,5 +99,37 @@ describe("GroupEditorTest", function () {
       });
     });
   });
+
+  // it("DeleteGroupTest", function (done) {
+  //   this.timeout(10000);
+  //   TestHelper.LoginWithTestAccount()
+  //       .then(function() { TestHelper.CreateTestData()
+  //       .then(function() { GroupStore.ensureItemById(TestHelper.testGroupId)
+  //       .then(function() {
+  //         let group = GroupStore.getItemById(TestHelper.testGroupId);
+  //         let editor = new GroupEditor(group);
+  //
+  //         return new Promise(function(resolve, reject) {
+  //           editor.delete().then(function() {
+  //             GroupStore.ensureItemById(TestHelper.testGroupId).then(function() {
+  //               let group = GroupStore.getItemById(TestHelper.testGroupId);
+  //               expect(group).toEqual(null);
+  //               if (!group) {
+  //                 resolve();
+  //                 done();
+  //               } else {
+  //                 reject();
+  //               }
+  //             }, reject);
+  //           },
+  //           function(error) {
+  //             console.log('error: ', error);
+  //             reject();
+  //           });
+  //       });
+  //       });
+  //       });
+  //   });
+  // });
 
 });

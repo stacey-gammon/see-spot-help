@@ -42,7 +42,7 @@ export default class InputCommentForm extends React.Component<propTypes, any> {
         <input type='text'
                className='add-comment-input'
                ref='comment'
-               onInput={(e) => {this.setState({value: e.target.value})}}
+               onInput={(e) => {this.setState({value: e.target['value']})}}
                value={this.state.value}
                placeholder='add comment...'/>
         {this.getSendButton()}

@@ -23,11 +23,11 @@ export default class TimeInputField extends React.Component<any, any> {
       showSeconds: false,
       showMeridian: true,
       defaultTime: this.props.inputField.value
-    });
+    } as any);
   }
 
   getValue() {
-    return this.refs[this.props.inputField.ref].value;
+    return this.refs[this.props.inputField.ref]['value'];
   }
 
   clickedTime() {

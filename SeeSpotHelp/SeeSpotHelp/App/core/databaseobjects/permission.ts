@@ -86,7 +86,7 @@ export default class Permission extends DatabaseObject {
 
   update() : Promise<any> {
     if (this.permission == PermissionsEnum.NONMEMBER) {
-      return this.delete();
+      return this.shallowDelete();
     } else if (this.id) {
       return super.update();
     } else {

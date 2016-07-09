@@ -113,9 +113,14 @@ abstract class DatabaseObject {
     return updates;
   }
 
-  delete() : Promise<any> {
+  // Only does a shallow delete. For objects that have linked children (e.g. a Group has linked
+  // members, activities, comments, etc, that also need to be deleted), you should use the Editor.
+  shallowDelete() : Promise<any> {
+    return DataServices.DeleteMultiple(this.getDeletePaths());
+  }
+
+  getDeletePaths() {
     var deletes = {};
-    var promises = [];
     deletes[this.firebasePath + '/' + this.id] = null;
     for (var i = 0; i < this.mappingProperties.length; i++) {
       if (!this[this.mappingProperties[i]]) {
@@ -124,8 +129,7 @@ abstract class DatabaseObject {
       var path = this.getPathToMapping(this.mappingProperties[i]);
       deletes[path] = null;
     }
-    return DataServices.DeleteMultiple(deletes);
+    return deletes;
   }
-
 }
 export default DatabaseObject;

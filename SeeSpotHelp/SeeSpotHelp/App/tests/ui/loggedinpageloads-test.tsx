@@ -27,98 +27,98 @@ var d3 = require("d3");
 
 describe("InvalidPageLoads", function () {
   it("AnimalHomePage", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(AnimalHomePage);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("AddAnimalPage", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(AddAnimalPage);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("GroupHomePage", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(GroupHomePage);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("AddNewGroup", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(AddNewGroup);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("ProfilePage", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(ProfilePage);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("EditProfile", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(EditProfile);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("SignUpPage", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(SignUpPage);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("AddPhotoPage", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(AddPhotoPage);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("SearchPage", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(SearchPage);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("MemberPage", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(MemberPage);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("LoginPage", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(LoginPage);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("PrivateBetaPage", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(PrivateBetaPage);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
   });
 
   it("EnterBetaCode", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(EnterBetaCode);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });
   });
 
   it("AddCalendarEvent", function () {
-    TestHelper.LoginWithTestAccount().then(function() {
+    TestHelper.LoginAsAdmin().then(function() {
       let wrappedComponent = TestHelper.WrapWithRouterContext(AddCalendarEvent);
       ReactTestUtils.renderIntoDocument(wrappedComponent);
     });

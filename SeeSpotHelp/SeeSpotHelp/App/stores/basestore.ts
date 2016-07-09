@@ -107,6 +107,10 @@ abstract class BaseStore extends EventEmitter {
 
   emitChange(property?, value?) {
     this.emit(CHANGE_EVENT);
+    this.emitChangeByProperty(property, value);
+  }
+
+  emitChangeByProperty(property, value) {
     if (property) {
       for (let i = 0; i < this.propertyListeners.length; i++) {
         let propListener = this.propertyListeners[i];
@@ -161,6 +165,64 @@ abstract class BaseStore extends EventEmitter {
     } else {
       return this.itemExistsLocally('id', this.storageMappings[property][value]);
     }
+  }
+
+  ensureItemsByProperty(property, propertyValue, lengthLimit?: number) : Promise<any> {
+    return new Promise(function(resolve, reject) {
+      if (lengthLimit === 0) {
+        resolve([]);
+        return;
+      }
+
+      var storageMapping = this.storageMappings[property];
+      if (!storageMapping.hasOwnProperty(propertyValue)) {
+        console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');
+        storageMapping[propertyValue] = [];
+        this.downloadFromMapping(property, propertyValue, lengthLimit).then(
+            resolve,
+            function(error) {
+              console.log('Failed to download items with error: ', error);
+              reject(error);
+            });
+        return;
+      }
+
+      var items = [];
+      for (var i = 0; i < storageMapping[propertyValue].length; i++) {
+        var item = this.storage[storageMapping[propertyValue][i]];
+        if (item && item.status !== Status.ARCHIVED) {
+          items.push(item);
+        }
+      }
+
+      items.sort(function(a, b) {
+        return a.timestamp < b.timestamp ? 1 : -1;
+      });
+
+      if (lengthLimit && items.length < lengthLimit) {
+        let id = null;
+        if (items.length > 0) {
+          id = items[items.length - 1].id;
+        }
+
+        // Don't attempt to download more if there is none.
+        if (id &&
+            id != this.storageMappingLastId[property][propertyValue] &&
+            !this.areItemsDownloading(property, propertyValue, id)) {
+          this.downloadFromMapping(property,
+                                   propertyValue,
+                                   lengthLimit,
+                                   id).then(resolve,
+                                     function(error) {
+                                       console.log('Failed to grab more items with error: ', error);
+                                       reject(error);
+                                     });
+          return;
+        }
+      } else {
+        resolve(items);
+      }
+    }.bind(this));
   }
 
   /**
@@ -295,7 +357,6 @@ abstract class BaseStore extends EventEmitter {
       } else {
         console.log('Adding callback');
         this.promiseResolveCallbacks.push(onResolve);
-      //	reject('Already waiting on the download.');
       }
     }.bind(this));
     return promise;
@@ -331,6 +392,11 @@ abstract class BaseStore extends EventEmitter {
       this.itemAdded('id', null, null, null);
     }
 
+    DataServices.OnChildChanged(this.firebasePath,
+                                this.onChildChanged.bind(this, 'id'));
+    DataServices.OnChildRemoved(this.firebasePath,
+                                this.onChildRemoved.bind(this, 'id', id));
+
     if (onSuccess) { onSuccess(this.getItemById(id)); }
     this.emitChange('id', id);
     this.resolvePromises(id);
@@ -345,7 +411,7 @@ abstract class BaseStore extends EventEmitter {
       // Add item to the mappings
       console.log(this.databaseObject.className + 'Store: added with prop ' + prop + ' and value ' + casted[prop]);
       // Note: We cannot add the item to all mappings or we won't know if we have everything available
-      // and we'll be missing data. 
+      // and we'll be missing data.
       this.addIdToMapping(this.storageMappings[prop], casted[prop], casted.id);
 
       this.storage[casted.id] = casted;
@@ -353,11 +419,6 @@ abstract class BaseStore extends EventEmitter {
     } else {
       if (onError) onError();
     }
-  }
-
-  itemDeleted(snapshot) {
-    var deletedObject = <DatabaseObject>snapshot.val();
-    this.itemDeletedWithId(deletedObject.id);
   }
 
   itemDeletedWithId(id) {
@@ -423,7 +484,7 @@ abstract class BaseStore extends EventEmitter {
     return this.isDownloading[id];
   }
 
-  downloadFromMapping(property, value, lengthLimit? : number, id? : string) {
+  downloadFromMapping(property, value, lengthLimit? : number, id? : string) : Promise<any> {
     if (lengthLimit) {
       console.log('downloading last ' + lengthLimit + ' starting at ' + id);
     }
@@ -438,11 +499,17 @@ abstract class BaseStore extends EventEmitter {
     }
     var path = DatabaseObject.GetPathToMapping(this.firebasePath, property, value);
 
-    DataServices.DownloadDataOnce(path,
-                                  this.itemsDownloaded.bind(this, property, value, lengthLimit, id),
-                                  null,
-                                  lengthLimit,
-                                  id);
+    return new Promise(function(resolve, reject) {
+      DataServices.DownloadDataOnce(path,
+                                    lengthLimit,
+                                    id)
+          .then(
+            function(snapshot) {
+              this.itemsDownloaded(property, value, lengthLimit, id, snapshot);
+              resolve(this.getItemsByProperty(property, value));
+            }.bind(this),
+            reject);
+    }.bind(this));
   }
 
   onChildAdded(property, snapshot) {
@@ -456,15 +523,20 @@ abstract class BaseStore extends EventEmitter {
   }
 
   onChildRemoved(property, value, snapshot) {
-    this.itemDeleted(snapshot);
-    this.emitChange(property, value);
+    let databaseObject = snapshot.val() as DatabaseObject;
+    this.itemDeletedWithId(databaseObject.id);
+
+    for (let prop in this.storageMappings) {
+      this.emitChangeByProperty(prop, databaseObject[prop]);
+    }
+    this.emitChange();
   }
 
   addListeners(property, value, timestamp) {
     var path = DatabaseObject.GetPathToMapping(
-      this.firebasePath,
-      property,
-      value);
+        this.firebasePath,
+        property,
+        value);
 
     DataServices.OnChildAdded(path, this.onChildAdded.bind(this, property), timestamp);
     DataServices.OnChildChanged(path, this.onChildChanged.bind(this, property));

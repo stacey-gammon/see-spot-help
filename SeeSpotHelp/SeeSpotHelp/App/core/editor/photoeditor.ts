@@ -127,7 +127,7 @@ export default class PhotoEditor extends Editor {
     return new Promise(function (resolve, reject) {
       let reader = new FileReader();
       reader.onload = function (e) {
-        resolve(e.target.result);
+        resolve(e.target['result']);
       };
       reader.readAsDataURL(file);
     }).then(function(result) {
@@ -144,7 +144,7 @@ export default class PhotoEditor extends Editor {
             blobs[0],
             blobs[1],
             blobs[2],
-            photo.file.name,
+            photo.file['name'],
             extraFields.userId).then(
           function(result) {
             extraFields.thumbUrl = result[0];

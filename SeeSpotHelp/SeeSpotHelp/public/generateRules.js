@@ -210,7 +210,7 @@ function generatePermissionRules() {
       `!data.exists() && ${newRoot()}.parent().child(${userPermissionByUserId()}).val() == ${ADMIN}`;
 
   addWriteRule(groupPermissionRules,
-    `${newMemberRequestRule} || ${existingMemberLeaveRule} || ${existingAdminRule} || ${newAdminRule}`);
+      `${newMemberRequestRule} || ${existingMemberLeaveRule} || ${existingAdminRule} || ${newAdminRule}`);
   addIndexOn(groupPermissionRules, "timestamp");
 
   rules["Permission"].PermissionByGroupId = {

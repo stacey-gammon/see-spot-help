@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 var Promise = require('bluebird');
+var expect = require('expect');
 import LoginStore from '../stores/loginstore';
 import Group from '../core/databaseobjects/group';
 import Animal from '../core/databaseobjects/animal';
@@ -9,24 +10,16 @@ import Activity from '../core/databaseobjects/activity';
 import TestData from './testdata';
 
 export default class TestHelper {
-  public static TestAccountEmail = 'test@test-account.com';
-  public static TestAccountPassword = 'test1234';
-
-  public static TestAccount2Email = 'test2@test-account.com';
-  public static TestAccount2Password = 'test1234';
-
-  public static testGroupId: string;
-  public static testAnimalId: string;
-  public static testActivityId: string;
-
-  static LoginWithTestAccount() : Promise<any> {
-    let me = this;
-    return this.LoginWithTestCredentials(this.TestAccountEmail, this.TestAccountPassword);
+  static LoginAsAdmin() : Promise<any> {
+    return this.LoginWithTestCredentials(TestData.TestAdminEmail, TestData.TestAdminPassword);
   }
 
-  static LoginWithTestAccount2() : Promise<any> {
-    let me = this;
-    return this.LoginWithTestCredentials(this.TestAccount2Email, this.TestAccount2Password);
+  static LoginAsMember() : Promise<any> {
+    return this.LoginWithTestCredentials(TestData.TestMemberEmail, TestData.TestMemberPassword);
+  }
+
+  static LoginAsNonMember() : Promise<any> {
+    return this.LoginWithTestCredentials(TestData.TestNonMemberEmail, TestData.TestNonMemberPassword);
   }
 
   static LoginWithTestCredentials(email, password) : Promise<any> {
@@ -51,8 +44,8 @@ export default class TestHelper {
   }
 
   static WrapWithRouterContext(element) {
-    const context = { router: this.GetMockedRouter() };
-    const contextTypes = { router: React.PropTypes.array };
+    const context = { router: this.GetMockedRouter() } as any;
+    const contextTypes = { router: React.PropTypes.array } as any;
     const wrapperWithContext = React.createClass({
         childContextTypes: contextTypes,
         getChildContext: function() { return context },
@@ -67,33 +60,58 @@ export default class TestHelper {
   static CreateTestData() : Promise<any> {
     let me = this;
     return new Promise(function(resolve, reject) {
-      let group = TestData.GetTestGroup();
-      group.insert().then(function() {
-        me.testGroupId = group.id;
-        let animal = TestData.GetTestAnimal(group.id);
-        animal.insert().then(function() {
-          me.testAnimalId = animal.id;
-          let activity = TestData.GetTestActivity(group.id, animal.id);
+      me.LoginAsAdmin
+          .then(function () { let group = TestData.GetTestGroup(); group.insert()
+          .then(() => TestData.InsertTestAnimal(TestData.testGroupId)
+          .then(function() {
+          let activity = TestData.GetTestActivity(group.id, TestData.testAnimalId);
           activity.insert().then(function() {
-            me.testActivityId = activity.id;
-            resolve();
+            TestData.testActivityId = activity.id;
+            let comment = TestData.GetTestComment(group.id, activity.id);
+            comment.insert().then(function() {
+              TestData.testAdminCommentId = comment.id;
+              LoginStore.logout();
+              TestHelper.LoginAsMember().then(function() {
+                let comment2 = TestData.GetTestComment(group.id, activity.id);
+                comment2.insert().then(function() {
+                  TestData.testMemberCommentId = comment2.id;
+                  LoginStore.logout();
+                  resolve();
+                });
+              });
+            });
           });
-        });
       })
+      );
+    });
+  });
+  }
+
+  static ExpectItemIsDeleted(id, store) : Promise<any> {
+    return new Promise(function(resolve, reject) {
+      store.ensureItemById(id).then(function() {
+        let item = store.getItemById(id);
+        expect(item).toEqual(null);
+        if (!item) {
+          resolve();
+        } else {
+          reject();
+        }
+      }, reject);
     });
   }
 
   static DeleteTestData() {
     let group = TestData.GetTestGroup();
-    group.id = this.testGroupId;
-    group.delete();
+    group.id = TestData.testGroupId;
+    group.shallowDelete();
 
     let animal = TestData.GetTestAnimal(group.id);
-    animal.id = this.testAnimalId;
-    animal.delete();
+    animal.id = TestData.testAnimalId;
+    animal.shallowDelete();
 
     let activity = TestData.GetTestActivity(group.id, animal.id);
-    activity.id = this.testActivityId;
-    activity.delete();
+    activity.id = TestData.testActivityId;
+    activity.shallowDelete();
   }
 }

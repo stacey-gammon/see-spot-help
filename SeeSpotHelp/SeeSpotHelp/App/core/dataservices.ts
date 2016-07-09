@@ -132,21 +132,21 @@ export default class DataServices {
     ref.on("value", function (snapshot) {
         onSuccess(snapshot);
       }, function (errorObject) {
-        console.log("The read failed: " + errorObject.code);
+        console.log("The read failed: " + errorObject.code + ' on path ' + path);
         if (onError) onError(errorObject);
       }
     );
   }
 
-  public static DownloadDataOnce(path, onSuccess, onError?, lengthLimit?, id?) {
+  public static DownloadDataOnce(path, lengthLimit?, id?) : Promise<any> {
     var ref = this.database.ref("/" + path);
 
     if (lengthLimit && id) {
-      ref.orderByKey().endAt(id).limitToLast(lengthLimit).once('value', onSuccess, onError);
+      return ref.orderByKey().endAt(id).limitToLast(lengthLimit).once('value');
     } else if (lengthLimit) {
-      ref.orderByKey().limitToLast(lengthLimit).once('value', onSuccess, onError);
+      return ref.orderByKey().limitToLast(lengthLimit).once('value');
     } else {
-      ref.once("value", onSuccess, onError);
+      return ref.once("value");
     }
   }
 

@@ -23,9 +23,8 @@ export default class ShelterSearchResults extends React.Component<any, any> {
       } else {
         return null;
       }
-    } else {
-      return <AnimalThumbnail animal={result} user={LoginStore.getUser()}/>
     }
+    return null;
   }
 
   render() {
