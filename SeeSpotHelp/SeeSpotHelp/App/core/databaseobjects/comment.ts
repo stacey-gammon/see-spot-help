@@ -17,6 +17,7 @@ export default class Comment extends DatabaseObject {
     this.mappingProperties.push('userId');
     this.mappingProperties.push('activityId');
     this.mappingProperties.push('photoId');
+    this.mappingProperties.push('groupId');
   }
 
   createInstance() { return new Comment(); }

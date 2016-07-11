@@ -122,13 +122,14 @@ abstract class BaseStore extends EventEmitter {
     }
   }
 
-  resolvePromises(id) {
+  resolvePromises(data) {
     for (var i = 0; i < this.promiseResolveCallbacks.length; i++) {
-      this.promiseResolveCallbacks[i]();
+      this.promiseResolveCallbacks[i](data);
     }
   }
 
   getItemById(id) {
+    console.log(this.databaseObject.className + 'Store: getItemById(' + id + ')');
     if (!this.storage.hasOwnProperty(id)) {
       this.storage[id] = null;
       this.downloadItem(id);
@@ -340,42 +341,41 @@ abstract class BaseStore extends EventEmitter {
   * Very similar to downloadItem except returns a promise that will be called once the item is
   * downloaded.
   */
-  ensureItemById(id) {
-    var promise = new Promise(function(resolve, reject) {
-      var onResolve = function (data) {
-        resolve(data)
-      };
-      var onReject = function (error) {
-        reject(error);
-      };
+  ensureItemById(id) : Promise<DatabaseObject> {
+    console.log(this.databaseObject.className + 'Store: ensureItemById(' + id + ')');
+    return new Promise<DatabaseObject>(function(resolve, reject) {
       if (!this.storage.hasOwnProperty(id)) {
         this.storage[id] = null;
-        this.downloadItem(id, onResolve, onReject);
-      } else if (!this.isDownloading[id]){
-        console.log('resolving callback because it isn\'t downloading');
-        resolve(this.storage[id]);
+        this.downloadItem(id).then(resolve, reject);
+      } else if (!this.isDownloading[id]) {
+        resolve(this.storage[id] as DatabaseObject);
       } else {
-        console.log('Adding callback');
-        this.promiseResolveCallbacks.push(onResolve);
+        console.log('WARN: Already downloading this item, we\'ll just have to download it again. ' +
+                    'Try to improve this.');
+        this.downloadItem(id).then(resolve, reject);
       }
     }.bind(this));
-    return promise;
   }
 
-
-  downloadItem(id, onSuccess?, onError?) {
+  downloadItem(id) : Promise<DatabaseObject> {
+    console.log(this.databaseObject.className + 'Store: downloadItem(' + id + ')');
     if (!id) {
       throw new Error('Id is null');
     }
     this.isDownloading[id] = true;
     this.resetErrorInfo();
-    DataServices.DownloadData(
-      this.firebasePath + '/' + id,
-      this.itemDownloaded.bind(this, id, onSuccess),
-      this.errorOccurred.bind(this, id, onError));
+    return DataServices.DownloadDataOnce(this.firebasePath + '/' + id)
+        .then((snapshot) => {
+          this.itemDownloaded(id, snapshot);
+          return this.storage[id];
+        })
+        .catch((error) => {
+          console.log('Error downloading item: ', error);
+          throw error;
+        });
   }
 
-  itemDownloaded(id: string, onSuccess, snapshot) {
+  itemDownloaded(id: string, snapshot) {
     if (!id) {
       console.log('WARN: itemDownloaded being passed undefined id');
       return;
@@ -397,9 +397,8 @@ abstract class BaseStore extends EventEmitter {
     DataServices.OnChildRemoved(this.firebasePath,
                                 this.onChildRemoved.bind(this, 'id', id));
 
-    if (onSuccess) { onSuccess(this.getItemById(id)); }
     this.emitChange('id', id);
-    this.resolvePromises(id);
+    this.resolvePromises(this.storage[id]);
   }
 
   itemAdded(prop, onSuccess, onError, item) {
@@ -523,6 +522,7 @@ abstract class BaseStore extends EventEmitter {
   }
 
   onChildRemoved(property, value, snapshot) {
+    console.log('BaseStore.onChildRemoved(' + property + ',' + value + ': ', snapshot.val());
     let databaseObject = snapshot.val() as DatabaseObject;
     this.itemDeletedWithId(databaseObject.id);
 

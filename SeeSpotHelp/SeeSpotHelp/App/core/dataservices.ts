@@ -11,6 +11,9 @@ initFirebase();
  */
 export default class DataServices {
   private static database = Firebase.database();
+  private static addListeners: Array<string> = [];
+  private static changeListeners: Array<string> = [];
+  private static removeListeners: Array<string> = [];
 
   public static GetNewPushKey(path): string {
     var ref = this.database.ref();
@@ -26,8 +29,8 @@ export default class DataServices {
       });
   }
 
-  public static LogOut() {
-    Firebase.auth().signOut();
+  public static LogOut() : Promise<any> {
+    return Firebase.auth().signOut();
   }
 
   public static OnAuthStateChanged(callback) {
@@ -89,6 +92,8 @@ export default class DataServices {
   }
 
   public static OnChildRemoved(path, onSuccess) {
+    if (this.removeListeners.indexOf(path) >= 0) return;
+    this.removeListeners.push(path);
     var ref = this.database.ref("/" + path);
     ref.on("child_removed", function (snapshot) {
       onSuccess(snapshot);
@@ -96,6 +101,8 @@ export default class DataServices {
   }
 
   public static OnChildAdded(path, onSuccess, timestamp) {
+    if (this.addListeners.indexOf(path) >= 0) return;
+    this.addListeners.push(path);
     var ref = this.database.ref("/" + path);
     ref.orderByChild('timestamp').startAt(timestamp).on("child_added", function (snapshot) {
       onSuccess(snapshot);
@@ -103,6 +110,8 @@ export default class DataServices {
   }
 
   public static OnChildChanged(path, onSuccess) {
+    if (this.changeListeners.indexOf(path) >= 0) return;
+    this.changeListeners.push(path);
     var ref = this.database.ref("/" + path);
     ref.on("child_changed", function (snapshot) {
       onSuccess(snapshot);
@@ -127,15 +136,8 @@ export default class DataServices {
     ref.off("value", callback);
   }
 
-  public static DownloadData(path, onSuccess, onError?) {
-    var ref = this.database.ref("/" + path);
-    ref.on("value", function (snapshot) {
-        onSuccess(snapshot);
-      }, function (errorObject) {
-        console.log("The read failed: " + errorObject.code + ' on path ' + path);
-        if (onError) onError(errorObject);
-      }
-    );
+  public static DownloadData(path, callback) {
+    this.database.ref("/" + path).on("value", callback);
   }
 
   public static DownloadDataOnce(path, lengthLimit?, id?) : Promise<any> {
@@ -173,7 +175,10 @@ export default class DataServices {
 
   public static DeleteMultiple(deletes) : Promise<any> {
     var ref = this.database.ref();
-    return ref.update(deletes);
+    return ref.update(deletes).catch(function(error) {
+      console.log('Error deleting ', deletes);
+      return error;
+    });
   }
 
   public static UploadPhoto(thumbBlob, listBlob, fullBlob, fileName, userId) {

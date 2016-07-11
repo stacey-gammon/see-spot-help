@@ -8,6 +8,7 @@ import Photo from './photo';
 import Schedule from './schedule';
 import Activity from './activity';
 import Permission from './permission';
+import Comment from './comment';
 
 import DatabaseObject from './databaseobject';
 import { Status } from './databaseobject';
@@ -40,7 +41,6 @@ export default class Group extends DatabaseObject {
   public state: string = '';
   public zipCode: string = '';
   public photoId: string = '';
-  // Unfortunately, I don't know anyway to generate this dynamically.
 
   constructor() {
     super();

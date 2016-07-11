@@ -23,7 +23,8 @@ describe("CommentTest", function () {
   });
 
   it("CommentAddTest", function (done) {
-    this.timeout(7000);
+    console.log('CommentAddTest');
+    this.timeout(10000);
     return new Promise(function(resolve, reject) {
       TestHelper.CreateTestData()
           .then(function() { TestHelper.LoginAsAdmin()
@@ -46,7 +47,8 @@ describe("CommentTest", function () {
   });
 
   it("CommentAddTestNotAuthorized", function (done) {
-    this.timeout(7000);
+    console.log('CommentAddTestNotAuthorized');
+    this.timeout(10000);
     return new Promise(function(resolve, reject) {
       TestHelper.CreateTestData()
           .then(function() { TestHelper.LoginAsAdmin()

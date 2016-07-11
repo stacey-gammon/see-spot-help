@@ -155,10 +155,10 @@ function generateBasicTableRules(table) {
   addReadRule(tableRules, 'auth != null');
 
   var adminsCanWriteRule = getAllowAccessRule(ADMIN);
-  var usersCanUpdateTheirOwn = `(data.exists() && data.child('userId').val() == auth.uid)`;
-  var usersCanAddTheirOwn = `(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid)`;
+  var membersCanUpdateTheirOwn = `(data.exists() && data.child('userId').val() == auth.uid) && ${getAllowAccessRule(MEMBER)}`;
+  var membersCanAddTheirOwn = `(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid && ${getAllowAccessRule(MEMBER)})`;
 
-  var writeRules = `${usersCanAddTheirOwn} || ${usersCanUpdateTheirOwn} || ${adminsCanWriteRule}`;
+  var writeRules = `${adminsCanWriteRule} || ${membersCanAddTheirOwn} || ${membersCanUpdateTheirOwn}`;
 
   addWriteRule(tableRules, writeRules);
   addIndexOn(tableRules, "timestamp");
@@ -235,14 +235,14 @@ function generatePermissionRules() {
   existingMemberLeaveRule =
     `(data.exists() && data.child('userId').val() == auth.uid && (newData.child('permission').val() == ${NONMEMBER} || !newData.exists()))`;
   existingAdminRule =
-    `(root.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
+    `(data.exists() && root.child('Permission/PermissionByUserId/' + auth.uid + '/' + data.child('groupId').val() + '/permission').val() == ${ADMIN})`;
   newAdminRule =
-    `(${newRoot()}.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
+    `(newData.exists() && ${newRoot()}.child('Permission/PermissionByUserId/' + auth.uid + '/' + newData.child('groupId').val() + '/permission').val() == ${ADMIN})`;
 
   var permissionIdRules = {};
   addReadRule(permissionIdRules, 'auth != null');
   addWriteRule(permissionIdRules,
-      `${newMemberRequestRule} || ${existingMemberLeaveRule} || ${existingAdminRule} || ${newAdminRule}`);
+      `${newMemberRequestRule} || ${existingMemberLeaveRule} || ${newAdminRule} || ${existingAdminRule}`);
   rules["Permission"].Permission = {
     "$permissionId": permissionIdRules
   };
@@ -258,13 +258,13 @@ function generateGroupRules() {
   addReadRule(groupRules, 'auth != null');
 
   // Allowed:
-  // 1. Admins for existing groups can update.
+  // 1. Admins for existing groups can update or delete.
   var existingGroupRule =
-    `data.exists() && root.child(${userPermissionByGroupId()}).val() == ${ADMIN}`;
+      `data.exists() && root.child(${userPermissionByGroupId()}).val() == ${ADMIN}`;
 
   // 2. New groups created by a new admin.
   var newGroupRule =
-    `!data.exists() && ${newRoot()}.child(${userPermissionByUserId()}).val() == ${ADMIN}`;
+      `!data.exists() && ${newRoot()}.child(${userPermissionByUserId()}).val() == ${ADMIN}`;
 
   var writeRule = `(${existingGroupRule}) || (${newGroupRule})`;
   addWriteRule(groupRules, writeRule);

@@ -14,6 +14,7 @@ var d3 = require("d3");
 
 describe("ActivityEditorTest", function () {
   it("DeleteActivityTest", function (done) {
+    console.log('DeleteActivityTest');
     this.timeout(10000);
     TestHelper.LoginAsAdmin()
         .then(function() { TestHelper.CreateTestData()

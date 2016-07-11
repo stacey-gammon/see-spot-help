@@ -6,8 +6,23 @@ import InputStateField from './inputfields/inputstatefield';
 import InputFieldValidation from './inputfieldvalidation';
 import { Editor } from './editor';
 
+import BaseStore from "../../stores/basestore";
+import CommentStore from "../../stores/commentstore";
+import PhotoStore from "../../stores/photostore";
+import ActivityStore from "../../stores/animalactivitystore";
+import AnimalStore from "../../stores/animalstore";
+import ScheduleStore from "../../stores/schedulestore";
+
 export default class GroupEditor extends Editor {
   public databaseObject: Group;
+  public externalId : string = 'groupId';
+  public linkedChildrenStores: Array<BaseStore> = [
+    CommentStore,
+    PhotoStore,
+    ActivityStore,
+    ScheduleStore,
+    AnimalStore
+  ];
 
   constructor(group) {
     super(group);
@@ -15,7 +30,7 @@ export default class GroupEditor extends Editor {
 
   getInputFields() { return this.inputFields; }
 
-  insert(extraFields) {
+  insert() {
     var group = new Group();
     group.updateFromInputFields(this.inputFields);
     var promise = group.insert();

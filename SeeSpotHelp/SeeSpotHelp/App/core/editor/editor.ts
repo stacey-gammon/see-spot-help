@@ -1,5 +1,7 @@
 
 import DatabaseObject from '../databaseobjects/databaseobject';
+import Group from '../databaseobjects/group';
+import PermissionsStore from '../../stores/permissionsstore';
 import InputField from './inputfields/inputfield';
 import DataServices from '../dataservices';
 import BaseStore from '../../stores/basestore';
@@ -41,22 +43,21 @@ export abstract class Editor {
   abstract update(extraFields, onError, onSuccess);
 
   delete() : Promise<any> {
-    let me = this;
-    return new Promise(function(resolve, reject) {
-      me.deleteLinkedChildren().then(
-        function () {
-          console.log('deleting me');
-          me.databaseObject.shallowDelete().then(
-            resolve,
-            function (error) {
-              console.log('Error with shallow delete on object ', me.databaseObject);
-              reject(error);
-            });
-        }).catch(
-          function (error) {
-            console.log('Error deleting linked children: ', error);
-            reject(error);
-          });
+    return this.deleteLinkedChildren()
+        .then(() => {
+          console.log('Editor.delete, children deleted, now deleting itself: ', this.databaseObject);
+          return this.databaseObject.shallowDelete()
+        .then(() => {
+          // The very last thing for deleting a group is deleting it's permissions.  If we delete
+          // them beforehand, we won't be able to delete it.
+          if (this.databaseObject.className == new Group().className) {
+            return this.deleteLinkedChildrenOfType(PermissionsStore);
+          }
+        })
+        .catch((error) => {
+            console.log('Error during Editor.delete: ', error);
+            throw error;
+        });
     });
   }
 
@@ -72,6 +73,9 @@ export abstract class Editor {
     let me = this;
     return new Promise(function(resolve, reject) {
       let deletes = {};
+      if (!me.externalId) {
+        throw new Error('Must supply externalId field for type ' + me.databaseObject.className);
+      }
       store.ensureItemsByProperty(me.externalId, me.databaseObject.id).then(
         function(items: Array<DatabaseObject>) {
           for (let i = 0; i < items.length; i++) {

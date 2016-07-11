@@ -3,36 +3,116 @@ import * as React from 'react';
 var Promise = require('bluebird');
 var expect = require('expect');
 import LoginStore from '../stores/loginstore';
+import GroupStore from '../stores/groupstore';
+import PermissionsStore from '../stores/permissionsstore';
 import Group from '../core/databaseobjects/group';
+import GroupEditor from '../core/editor/groupeditor';
 import Animal from '../core/databaseobjects/animal';
 import Activity from '../core/databaseobjects/activity';
+import Permission from '../core/databaseobjects/permission';
+import DataServices from '../core/dataservices';
 
 import TestData from './testdata';
 
 export default class TestHelper {
+
+  static LoginAsSuperAdmin() : Promise<any> {
+    console.log('LoginAsSuperAdmin');
+    return this.LoginWithTestCredentials('sa@theshelterhelper.com', 'sa329pp2f');
+  }
+
   static LoginAsAdmin() : Promise<any> {
-    return this.LoginWithTestCredentials(TestData.TestAdminEmail, TestData.TestAdminPassword);
+    console.log('LoginAsAdmin');
+    return this.LoginWithTestCredentials(TestData.TestAdminEmail, TestData.TestAdminPassword)
+        .then(() => {
+          expect(DataServices.GetAuthData().email).toEqual(TestData.TestAdminEmail);
+          expect(LoginStore.getUser().email).toEqual(TestData.TestAdminEmail);
+          TestData.TestAdminId = LoginStore.getUser().id;
+            console.log('LoginAsAdmin: Finish');
+          return TestData.TestAdminId;
+        });
   }
 
   static LoginAsMember() : Promise<any> {
-    return this.LoginWithTestCredentials(TestData.TestMemberEmail, TestData.TestMemberPassword);
+    console.log('LoginAsMember');
+    return this.LoginWithTestCredentials(TestData.TestMemberEmail, TestData.TestMemberPassword)
+        .then(() => {
+          expect(DataServices.GetAuthData().email).toEqual(TestData.TestMemberEmail);
+          expect(LoginStore.getUser().email).toEqual(TestData.TestMemberEmail);
+          TestData.TestMemberId = LoginStore.getUser().id;
+            console.log('LoginAsMember: Finish');
+          return TestData.TestMemberId;
+        });
   }
 
   static LoginAsNonMember() : Promise<any> {
-    return this.LoginWithTestCredentials(TestData.TestNonMemberEmail, TestData.TestNonMemberPassword);
+    console.log('LoginAsNonMember');
+    return this.LoginWithTestCredentials(TestData.TestNonMemberEmail, TestData.TestNonMemberPassword)
+        .then(() => {
+          TestData.TestNonMemberId = LoginStore.getUser().id;
+          expect(DataServices.GetAuthData().email).toEqual(TestData.TestNonMemberEmail);
+          expect(LoginStore.getUser().email).toEqual(TestData.TestNonMemberEmail);
+          return TestData.TestNonMemberId;
+        });
   }
 
   static LoginWithTestCredentials(email, password) : Promise<any> {
+    console.log('Login with email ' + email + ' and pw: ' + password);
     let me = this;
     return new Promise(function(resolve, reject) {
-      LoginStore.authenticateWithEmailPassword(email, password)
-          .then(function() {
-             LoginStore.ensureUser().then(function() { resolve(); });
-          })
-          .catch(function(error) {
-            reject();
-          });
+      LoginStore.logout().then(() =>
+          LoginStore.authenticateWithEmailPassword(email, password).then(() => {
+             console.log('Authenticated with ' + email + ' and pw ' + password);
+             LoginStore.ensureUser().then(() => {
+               expect(DataServices.GetAuthData()).toNotEqual(null);
+               resolve();
+             });
+          }))
+          .catch(reject);
     });
+  }
+
+  static DeleteTestDataForUser() : Promise<any> {
+    console.log('DeleteTestDataForUser for user ' + LoginStore.getUser().id);
+     return PermissionsStore.ensureItemsByProperty('userId', LoginStore.getUser().id)
+        .then((items) => {
+          let promises = [];
+          console.log('Permissions for user ' + LoginStore.getUser().id, items);
+          for (let i = 0; i < items.length; i++) {
+            console.log('Deleting permission ', items[i]);
+            console.log('For user ' + LoginStore.getUser().id);
+            let permission = items[i];
+            promises.push(GroupStore.ensureItemById(permission.groupId).then((group) => {
+              if (group) {
+                console.log('Deleting group ', group);
+                return new GroupEditor(group).delete();
+              } else {
+                console.log('Deleting only permission ', permission);
+                return permission.shallowDelete();
+              }
+            }));
+          }
+
+          return Promise.all(promises).then(function() {
+            console.log('DeleteTestDataForUser for user ' + LoginStore.getUser().id +
+                        ' all promises finished');
+          });
+      })
+      .catch(function(error) {
+        console.log('Error ensureItemsByProperty: ', error);
+      });
+  }
+
+  static DeleteAllTestData() : Promise<any> {
+    return this.LoginAsAdmin()
+        .then(() => { return TestHelper.DeleteTestDataForUser(); })
+        .then(() => { return this.LoginAsMember(); })
+        .then(() => { return TestHelper.DeleteTestDataForUser(); })
+        .then(() => { return this.LoginAsNonMember(); })
+        .then(() => { return TestHelper.DeleteTestDataForUser(); })
+        .catch((error) => {
+          console.log('Error Deleting all test data: ', error);
+        });
   }
 
   static GetMockedRouter() {
@@ -57,34 +137,46 @@ export default class TestHelper {
     return React.createElement(wrapperWithContext);
   }
 
+  static AddTestMemberToGroup() {
+    let me = this;
+    expect(LoginStore.getUser().email).toEqual(TestData.TestAdminEmail);
+    let permission = Permission.CreateMemberPermission(TestData.TestMemberId, TestData.testGroupId);
+    return permission.insert()
+        .then(() => {
+          return PermissionsStore.ensureItemsByProperty('userId', TestData.TestMemberId)
+              .then((items : Array<Permission>) => {
+                  for (let i = 0; i < items.length; i++) {
+                    if (items[i].groupId == TestData.testGroupId) {
+                      expect(items[i].inGroup()).toEqual(true);
+                      return items;
+                    }
+                  }
+                  console.log('No permission found');
+              });
+        })
+        .catch(function(error) {
+          console.log('AddTestMemberToGroup Error: ', error);
+          return error;
+        });
+  }
+
   static CreateTestData() : Promise<any> {
     let me = this;
-    return new Promise(function(resolve, reject) {
-      me.LoginAsAdmin
-          .then(function () { let group = TestData.GetTestGroup(); group.insert()
-          .then(() => TestData.InsertTestAnimal(TestData.testGroupId)
-          .then(function() {
-          let activity = TestData.GetTestActivity(group.id, TestData.testAnimalId);
-          activity.insert().then(function() {
-            TestData.testActivityId = activity.id;
-            let comment = TestData.GetTestComment(group.id, activity.id);
-            comment.insert().then(function() {
-              TestData.testAdminCommentId = comment.id;
-              LoginStore.logout();
-              TestHelper.LoginAsMember().then(function() {
-                let comment2 = TestData.GetTestComment(group.id, activity.id);
-                comment2.insert().then(function() {
-                  TestData.testMemberCommentId = comment2.id;
-                  LoginStore.logout();
-                  resolve();
-                });
-              });
-            });
-          });
-      })
-      );
-    });
-  });
+    return this.LoginAsAdmin()
+        .then(() => { return TestData.InsertTestGroup(); })
+        .then(() => { return TestHelper.LoginAsMember(); })
+        .then(() => { return TestHelper.LoginAsNonMember(); })
+        .then(() => { return TestHelper.LoginAsAdmin(); })
+        .then(() => { return TestHelper.AddTestMemberToGroup(); })
+        .then(() => { return TestData.InsertTestAnimal(TestData.testGroupId); })
+        .then(() => { return TestData.InsertTestActivity(TestData.testGroupId, TestData.testAnimalId); })
+        .then(() => { return TestData.InsertAdminComment(TestData.testGroupId, TestData.testActivityId); })
+        .then(() => { return TestHelper.LoginAsMember(); })
+        .then(() => { return TestData.InsertMemberComment(TestData.testGroupId, TestData.testActivityId); })
+        .then(() => { return me.LoginAsAdmin(); })
+        .catch(function (error) {
+          console.log('Error creating test data: ', error);
+        });
   }
 
   static ExpectItemIsDeleted(id, store) : Promise<any> {
