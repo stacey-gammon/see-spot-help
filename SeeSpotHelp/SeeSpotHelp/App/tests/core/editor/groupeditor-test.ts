@@ -27,29 +27,32 @@ function InsertNewGroupWithEditor() : Promise<any> {
 describe("GroupEditorTest", function () {
 
   afterEach(function(done) {
+    this.timeout(100000);
     return TestHelper.DeleteAllTestData().then(done);
   });
 
-  // it("GroupEditorInsertPass", function () {
-  //   console.log('GroupEditorInsertPass');
-  //   LoginStore.logout();
-  //   this.timeout(1000000);
-  //   return TestHelper.LoginAsAdmin()
-  //       .then(() => { return InsertNewGroupWithEditor(); })
-  // });
+  it("GroupEditorInsertPass", function () {
+    console.log('GroupEditorInsertPass');
+    LoginStore.logout();
+    this.timeout(10000);
+    return TestHelper.LoginAsAdmin()
+        .then(() => { return InsertNewGroupWithEditor(); })
+  });
 
   it("GroupEditorUpdateFail", function () {
     console.log('GroupEditorUpdateFail');
-    this.timeout(1000000);
+    this.timeout(10000);
     return new Promise(function(resolve, reject) {
       TestHelper.CreateTestData()
-          .then(() => { return TestHelper.LoginAsMember(); })
+          .then(() => { console.log('Done Creating Test Data'); return TestHelper.LoginAsMember(); })
           .then(() => {
+            console.log('Attempging group update');
             let editor = new GroupEditor(TestData.TestGroup);
             editor.inputFields['name'].value = 'Test Group Change';
             return editor.update();
           })
           .catch((error) => {
+            console.log('catch group update error');
             expect(error.code).toEqual('PERMISSION_DENIED');
             resolve();
           });
