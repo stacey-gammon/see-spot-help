@@ -1,5 +1,6 @@
 
 var Firebase = require('firebase');
+//Firebase.database.enableLogging(true);
 
 // Initialize Firebase
 import initFirebase from './firebaseconfig';

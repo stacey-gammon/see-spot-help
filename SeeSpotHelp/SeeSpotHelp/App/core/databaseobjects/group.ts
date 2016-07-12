@@ -114,11 +114,14 @@ export default class Group extends DatabaseObject {
   //	 callback is expected to take as a first argument the potentially
   //	 inserted volunteer group (null on failure) and a server
   //	 response to hold error and success information.
-  insert() : Promise<any> {
+  insert() : Promise<DatabaseObject> {
     var inserts = this.getInserts();
     var permission = Permission.CreateAdminPermission(LoginStore.getUser().id, this.id);
     Object.assign(inserts, permission.getInserts());
 
-    return DataServices.UpdateMultiple(inserts);
+    return DataServices.UpdateMultiple(inserts)
+        .then(() => {
+          return this;
+        });
   }
 }

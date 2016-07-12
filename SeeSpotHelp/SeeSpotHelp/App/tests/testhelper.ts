@@ -26,6 +26,7 @@ export default class TestHelper {
     return this.LoginWithTestCredentials(TestData.TestAdminEmail, TestData.TestAdminPassword)
         .then(() => {
           expect(DataServices.GetAuthData().email).toEqual(TestData.TestAdminEmail);
+          console.log('Now checking loginstore');
           expect(LoginStore.getUser().email).toEqual(TestData.TestAdminEmail);
           TestData.TestAdminId = LoginStore.getUser().id;
             console.log('LoginAsAdmin: Finish');
@@ -38,6 +39,7 @@ export default class TestHelper {
     return this.LoginWithTestCredentials(TestData.TestMemberEmail, TestData.TestMemberPassword)
         .then(() => {
           expect(DataServices.GetAuthData().email).toEqual(TestData.TestMemberEmail);
+          console.log('Now checking loginstore');
           expect(LoginStore.getUser().email).toEqual(TestData.TestMemberEmail);
           TestData.TestMemberId = LoginStore.getUser().id;
             console.log('LoginAsMember: Finish');
@@ -51,6 +53,7 @@ export default class TestHelper {
         .then(() => {
           TestData.TestNonMemberId = LoginStore.getUser().id;
           expect(DataServices.GetAuthData().email).toEqual(TestData.TestNonMemberEmail);
+          console.log('Now checking loginstore');
           expect(LoginStore.getUser().email).toEqual(TestData.TestNonMemberEmail);
           return TestData.TestNonMemberId;
         });
@@ -100,10 +103,12 @@ export default class TestHelper {
       })
       .catch(function(error) {
         console.log('Error ensureItemsByProperty: ', error);
+        throw error;
       });
   }
 
   static DeleteAllTestData() : Promise<any> {
+    console.log('DeleteAllTestData');
     return this.LoginAsAdmin()
         .then(() => { return TestHelper.DeleteTestDataForUser(); })
         .then(() => { return this.LoginAsMember(); })
@@ -112,6 +117,7 @@ export default class TestHelper {
         .then(() => { return TestHelper.DeleteTestDataForUser(); })
         .catch((error) => {
           console.log('Error Deleting all test data: ', error);
+          throw error;
         });
   }
 
@@ -174,8 +180,10 @@ export default class TestHelper {
         .then(() => { return TestHelper.LoginAsMember(); })
         .then(() => { return TestData.InsertMemberComment(TestData.testGroupId, TestData.testActivityId); })
         .then(() => { return me.LoginAsAdmin(); })
+        .then(() => { return; })
         .catch(function (error) {
           console.log('Error creating test data: ', error);
+          throw error;
         });
   }
 

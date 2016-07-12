@@ -80,9 +80,12 @@ abstract class DatabaseObject {
       this.id);
   }
 
-  insert() : Promise<any> {
+  insert() : Promise<DatabaseObject> {
     var inserts = this.getInserts();
     return DataServices.UpdateMultiple(inserts)
+        .then(() => {
+          return this;
+        })
         .catch((error) => {
           console.log('Error caught on DatabaseObject.insert: ', error);
           console.log('Attempting inserts: ', inserts);

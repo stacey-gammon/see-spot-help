@@ -58,6 +58,21 @@ abstract class BaseStore extends EventEmitter {
 
   constructor() {
     super();
+
+    DataServices.OnAuthStateChanged(() => this.Reset());
+  }
+
+  Reset() {
+    this.storageMappingLastId = {};
+    this.storageMappings = {};
+    this.isDownloading = {};
+    this.currentlyDownloading = {};
+    this.propertyListeners = [];
+    this.itemListeners = [];
+    this.promiseResolveCallbacks = [];
+    this.hasError = false;
+
+    this.Init();
   }
 
   Init() {

@@ -23,6 +23,10 @@ module.exports = function (config) {
         webpack: webpackConfig,
         webpackServer: {
             noInfo: true
-        }
+        },
+        captureTimeout: 60000, // it was already there
+        browserDisconnectTimeout : 100000,
+        browserDisconnectTolerance : 1,
+        browserNoActivityTimeout : 100000,
     });
 };
