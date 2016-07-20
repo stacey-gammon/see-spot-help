@@ -41,21 +41,21 @@ describe("GroupEditorTest", function () {
 
   it("GroupEditorUpdateFail", function () {
     console.log('GroupEditorUpdateFail');
-    this.timeout(10000);
-    return new Promise(function(resolve, reject) {
-      TestHelper.CreateTestData()
-          .then(() => { console.log('Done Creating Test Data'); return TestHelper.LoginAsMember(); })
-          .then(() => {
-            console.log('Attempging group update');
-            let editor = new GroupEditor(TestData.TestGroup);
-            editor.inputFields['name'].value = 'Test Group Change';
-            return editor.update();
-          })
-          .catch((error) => {
-            console.log('catch group update error');
-            expect(error.code).toEqual('PERMISSION_DENIED');
-            resolve();
-          });
-    });
+    this.timeout(50000);
+    return TestHelper.CreateTestData()
+        .then(() => { console.log('Done Creating Test Data'); return TestHelper.LoginAsMember(); })
+        .then(() => {
+          console.log('Attempging group update');
+          let editor = new GroupEditor(TestData.TestGroup);
+          editor.inputFields['name'].value = 'Test Group Change';
+          return editor.update();
+        })
+        .then(() => {
+          expect(false).toEqual(true);
+        })
+        .catch((error) => {
+          console.log('catch group update error');
+          expect(error.code).toEqual('PERMISSION_DENIED');
+        });
   });
 });

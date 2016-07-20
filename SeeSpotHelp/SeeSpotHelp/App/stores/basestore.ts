@@ -72,6 +72,7 @@ abstract class BaseStore extends EventEmitter {
     this.promiseResolveCallbacks = [];
     this.hasError = false;
 
+
     this.Init();
   }
 
@@ -340,7 +341,7 @@ abstract class BaseStore extends EventEmitter {
     // always ask for and download the last avavilable item.
     let batchSmallerThanRequested = lengthLimit && itemsToSort.length < lengthLimit;
 
-    if (batchSmallerThanRequested) {
+    if (batchSmallerThanRequested || !lengthLimit) {
       this.storageMappingLastId[property][value] = lastItemId;
     }
 
@@ -349,7 +350,9 @@ abstract class BaseStore extends EventEmitter {
       this.emitChange(property, value);
     }
 
-    this.addListeners(property, value, lastItemTimestamp + 1);
+    if (items) {
+      this.addListeners(property, value);
+    }
   }
 
   /**
@@ -397,23 +400,35 @@ abstract class BaseStore extends EventEmitter {
     }
     console.log(this.databaseObject.className + 'Store: itemDownloaded with id ' + id);
     this.isDownloading[id] = false;
-    if (snapshot && snapshot.val() && !this.storage.hasOwnProperty[id]) {
+    if (snapshot && snapshot.val() && !this.storage[id]) {
       this.itemAdded('id', null, null, snapshot.val());
-    } else if (snapshot && snapshot.val()) {
+      // This is the first time this item has been downloaded, we now need to register a listener
+      // for future changes and deletions to make sure our stores stay up-to-date.
+      DataServices.DownloadData(this.firebasePath + '/' + id,
+                                this.itemChangedCallback.bind(this, id));
+    } else  {
+      this.itemChangedCallback(id, snapshot);
+    }
+
+    this.resolvePromises(this.storage[id]);
+  }
+
+  itemChangedCallback(id : string, snapshot) {
+    if (snapshot && snapshot.val()) {
+      let currentItem = this.getItemById(id);
       this.itemChanged('id', snapshot.val());
+    } else if (snapshot &&
+               !snapshot.val() &&
+               this.storage.hasOwnProperty(id) &&
+               this.storage[id]) {
+      this.onChildRemoved('id', id, snapshot);
     } else {
       // Data requested that doesn't exist.
       console.log('WARN: Data requested that doesn\'t exist.');
-      this.itemAdded('id', null, null, null);
+      // Make sure we don't request it again.
+      this.storage[id] = null;
     }
-
-    DataServices.OnChildChanged(this.firebasePath,
-                                this.onChildChanged.bind(this, 'id'));
-    DataServices.OnChildRemoved(this.firebasePath,
-                                this.onChildRemoved.bind(this, 'id', id));
-
     this.emitChange('id', id);
-    this.resolvePromises(this.storage[id]);
   }
 
   itemAdded(prop, onSuccess, onError, item) {
@@ -539,6 +554,9 @@ abstract class BaseStore extends EventEmitter {
   onChildRemoved(property, value, snapshot) {
     console.log('BaseStore.onChildRemoved(' + property + ',' + value + ': ', snapshot.val());
     let databaseObject = snapshot.val() as DatabaseObject;
+    if (!databaseObject && property == 'id') {
+      databaseObject = this.storage[value];
+    }
     this.itemDeletedWithId(databaseObject.id);
 
     for (let prop in this.storageMappings) {
@@ -547,13 +565,14 @@ abstract class BaseStore extends EventEmitter {
     this.emitChange();
   }
 
-  addListeners(property, value, timestamp) {
+  addListeners(property, value) {
     var path = DatabaseObject.GetPathToMapping(
         this.firebasePath,
         property,
         value);
 
-    DataServices.OnChildAdded(path, this.onChildAdded.bind(this, property), timestamp);
+    let lastId = this.getOldestItemId(property, value);
+    DataServices.OnChildAdded(path, this.onChildAdded.bind(this, property), lastId);
     DataServices.OnChildChanged(path, this.onChildChanged.bind(this, property));
     DataServices.OnChildRemoved(path, this.onChildRemoved.bind(this, property, value));
   }

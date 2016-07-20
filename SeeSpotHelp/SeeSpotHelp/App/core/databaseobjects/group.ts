@@ -103,11 +103,6 @@ export default class Group extends DatabaseObject {
     return this.status == Status.ARCHIVED;
   }
 
-  delete() : Promise<any> {
-    this.status = Status.ARCHIVED;
-    return this.update();
-  }
-
   // Attempts to insert the current instance into the database as
   // a new volunteer group.
   // @param callback {Function(Group, ServerResponse) }

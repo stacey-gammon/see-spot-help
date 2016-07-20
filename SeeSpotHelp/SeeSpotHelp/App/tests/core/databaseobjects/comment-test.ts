@@ -14,62 +14,49 @@ import TestData from '../../testdata';
 
 describe("CommentTest", function () {
 
-  beforeEach(() => {
-    LoginStore.logout();
+  beforeEach(function() {
+    this.timeout(100000);
+    return TestHelper.CreateTestData();
   });
 
-  afterEach(() => {
-    LoginStore.logout();
+  afterEach(function() {
+    this.timeout(100000);
+    return TestHelper.DeleteAllTestData();
   });
 
-  it("CommentAddTest", function (done) {
+  it("CommentAddTest", function () {
     console.log('CommentAddTest');
-    this.timeout(10000);
-    return new Promise(function(resolve, reject) {
-      TestHelper.CreateTestData()
-          .then(function() { TestHelper.LoginAsAdmin()
-          .then(function() {
-            let comment = new Comment();
-            comment.activityId = TestData.testActivityId;
-            comment.groupId = TestData.testGroupId;
-            comment.userId = LoginStore.getUser().id;
+    this.timeout(50000);
+    return TestHelper.LoginAsAdmin()
+        .then(() => {
+          let comment = new Comment();
+          comment.activityId = TestData.testActivityId;
+          comment.groupId = TestData.testGroupId;
+          comment.userId = LoginStore.getUser().id;
 
-            comment.insert().then(function() {
-              resolve();
-              TestHelper.DeleteTestData();
-              comment.shallowDelete();
-              done();
-            });
-          });
-      });
-      });
-    });
+          return comment.insert();
+        })
+        .then((comment) => { return comment.shallowDelete(); });
   });
 
-  it("CommentAddTestNotAuthorized", function (done) {
+  it("CommentAddTestNotAuthorized", function () {
     console.log('CommentAddTestNotAuthorized');
-    this.timeout(10000);
-    return new Promise(function(resolve, reject) {
-      TestHelper.CreateTestData()
-          .then(function() { TestHelper.LoginAsAdmin()
-          .then(function() { TestHelper.LoginAsNonMember()
-          .then(function() {
-            let comment = new Comment();
-            comment.activityId = TestData.testActivityId;
-            comment.groupId = TestData.testGroupId;
-            comment.userId = LoginStore.getUser().id;
+    this.timeout(50000);
+    return TestHelper.LoginAsNonMember()
+        .then(() => {
+          let comment = new Comment();
+          comment.activityId = TestData.testActivityId;
+          comment.groupId = TestData.testGroupId;
+          comment.userId = LoginStore.getUser().id;
 
-            comment.insert().then(function() {
-              reject();
-              TestHelper.DeleteTestData();
-              comment.shallowDelete();
-            }, function(error) {
-              resolve();
-              TestHelper.DeleteTestData();
-              done();
-            });
-          });
-          });
-      });
+          return comment.insert();
+        })
+        .then((comment) => {
+          expect(false).toEqual(true);
+          return comment.shallowDelete();
+        })
+        .catch((error) => {
+          expect(error.code).toEqual('PERMISSION_DENIED');
+        });
     });
 });

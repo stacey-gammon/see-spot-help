@@ -13,32 +13,34 @@ import TestData from '../../testdata';
 var d3 = require("d3");
 
 describe("ActivityEditorTest", function () {
-  it("DeleteActivityTest", function (done) {
+
+  beforeEach(function(done) {
+    this.timeout(100000);
+    TestHelper.CreateTestData().then(done);
+  });
+
+  afterEach(function(done) {
+    this.timeout(100000);
+    TestHelper.DeleteAllTestData().then(done);
+  });
+
+  it("DeleteActivityTest", function () {
     console.log('DeleteActivityTest');
-    this.timeout(10000);
-    TestHelper.LoginAsAdmin()
-        .then(function() { TestHelper.CreateTestData()
-        .then(function() { ActivityStore.ensureItemById(TestData.testActivityId)
-        .then(function() {
+    this.timeout(50000);
+    return ActivityStore.ensureItemById(TestData.testActivityId)
+        .then(() => {
           let activity = ActivityStore.getItemById(TestData.testActivityId);
           let activityEditor = new ActivityEditor(activity);
 
-          return new Promise(function(resolve, reject) {
-            activityEditor.delete().then(function() {
-              let promises = [
-                  TestHelper.ExpectItemIsDeleted(TestData.testActivityId, ActivityStore)];//,
-                //  TestHelper.ExpectItemIsDeleted(TestData.testAdminCommentId, CommentStore),
-              //    TestHelper.ExpectItemIsDeleted(TestData.testMemberCommentId, CommentStore)];
+          return activityEditor.delete();
+        })
+        .then(() => {
+          let promises = [
+              TestHelper.ExpectItemIsDeleted(TestData.testActivityId, ActivityStore)];//,
+            //  TestHelper.ExpectItemIsDeleted(TestData.testAdminCommentId, CommentStore),
+          //    TestHelper.ExpectItemIsDeleted(TestData.testMemberCommentId, CommentStore)];
 
-              Promise.all(promises).then(function() { resolve(); done(); }, reject);
-            },
-            function(error) {
-              console.log('error: ', error);
-              reject();
-            });
+          return Promise.all(promises);
         });
-        });
-        });
-    });
   });
 });

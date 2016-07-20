@@ -6,6 +6,7 @@ var Promise = require('bluebird');
 import PermissionStore from '../../stores/permissionsstore';
 import Group from '../../core/databaseobjects/group';
 import GroupStore from '../../stores/groupstore';
+import LoginStore from '../../stores/loginstore';
 import TestHelper from '../testhelper';
 import TestData from '../testdata';
 
@@ -26,10 +27,7 @@ describe("PermissionStoreTest", function () {
   it("PermissionStoreGetItemChildAddedListener", function () {
     this.timeout(50000);
     let insertedGroupId;
-    return TestHelper.CreateTestData()
-        .then(() => {
-          return PermissionStore.ensureItemsByProperty('userId', TestData.TestAdminId);
-        })
+    return PermissionStore.ensureItemsByProperty('userId', LoginStore.getUser().id)
         .then(() => {
           let group = new Group();
           group.name = 'my test group 2';
@@ -37,9 +35,7 @@ describe("PermissionStoreTest", function () {
         })
         .then((insertedGroup) => {
           insertedGroupId = insertedGroup.id;
-          return PermissionStore.ensureItemsByProperty('userId', TestData.TestAdminId);
-        })
-        .then((permissions) => {
+          let permissions = PermissionStore.getItemsByProperty('userId', LoginStore.getUser().id);
           let found = false;
           for (let i = 0; i < permissions.length; i++) {
             if (permissions[i].groupId == insertedGroupId) {

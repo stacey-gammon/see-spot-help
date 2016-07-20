@@ -115,6 +115,7 @@ export default class TestHelper {
         .then(() => { return TestHelper.DeleteTestDataForUser(); })
         .then(() => { return this.LoginAsNonMember(); })
         .then(() => { return TestHelper.DeleteTestDataForUser(); })
+        .then(() => { return LoginStore.logout(); })
         .catch((error) => {
           console.log('Error Deleting all test data: ', error);
           throw error;

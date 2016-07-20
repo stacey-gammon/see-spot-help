@@ -31,6 +31,9 @@ export default class DataServices {
   }
 
   public static LogOut() : Promise<any> {
+    this.addListeners = [];
+    this.removeListeners = [];
+    this.changeListeners = [];
     return Firebase.auth().signOut();
   }
 
@@ -101,11 +104,15 @@ export default class DataServices {
     });
   }
 
-  public static OnChildAdded(path, onSuccess, timestamp) {
+  public static OnChildAdded(path, onSuccess, lastId : string) {
     if (this.addListeners.indexOf(path) >= 0) return;
     this.addListeners.push(path);
     var ref = this.database.ref("/" + path);
-    ref.orderByChild('timestamp').startAt(timestamp).on("child_added", function (snapshot) {
+    let query;
+    if (lastId) {
+      query = ref.orderByKey().startAt(lastId);
+    }
+    query.on("child_added", function (snapshot) {
       onSuccess(snapshot);
     });
   }

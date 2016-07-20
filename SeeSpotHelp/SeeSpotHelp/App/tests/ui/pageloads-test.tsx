@@ -26,86 +26,83 @@ import TestHelper from '../testhelper';
 var d3 = require("d3");
 
 describe("InvalidPageLoads", function () {
+
+  beforeEach(function(done) {
+    this.timeout(10000);
+    LoginStore.logout().then(() => done());
+  });
+
+  afterEach(function(done) {
+    this.timeout(10000);
+    LoginStore.logout().then(() => done());
+  });
+
   it("AnimalHomePage", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(AnimalHomePage);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("AddAnimalPage", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(AddAnimalPage);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("GroupHomePage", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(GroupHomePage);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("AddNewGroup", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(AddNewGroup);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("ProfilePage", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(ProfilePage);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("EditProfile", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(EditProfile);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("SignUpPage", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(SignUpPage);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("AddPhotoPage", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(AddPhotoPage);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("SearchPage", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(SearchPage);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("MemberPage", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(MemberPage);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("LoginPage", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(LoginPage);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("PrivateBetaPage", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(PrivateBetaPage);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("EnterBetaCode", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(EnterBetaCode);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
 
   it("AddCalendarEvent", function () {
-    LoginStore.logout();
     let wrappedComponent = TestHelper.WrapWithRouterContext(AddCalendarEvent);
     ReactTestUtils.renderIntoDocument(wrappedComponent);
   });
