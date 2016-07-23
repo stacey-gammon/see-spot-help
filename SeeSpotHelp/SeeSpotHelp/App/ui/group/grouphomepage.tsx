@@ -82,6 +82,10 @@ export default class GroupHomePage extends React.Component<any, any> {
           this.setState({ permission: permission, groupId: group.id, loading: false });
           this.removeGroupChangeListeners();
           this.addGroupChangeListeners(group);
+        } else {
+          // Clear out the group id since it's apparently invalid.
+          Utils.SaveProp('groupId', null);
+          this.setState({loading: false });
         }
       }.bind(this)
     );

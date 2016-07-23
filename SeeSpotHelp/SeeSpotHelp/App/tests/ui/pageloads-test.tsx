@@ -31,10 +31,10 @@ describe("InvalidPageLoads", function () {
     this.timeout(10000);
     LoginStore.logout().then(() => done());
   });
-
+  
   afterEach(function(done) {
-    this.timeout(10000);
-    LoginStore.logout().then(() => done());
+    this.timeout(100000);
+    return TestHelper.DeleteAllTestData().then(done);
   });
 
   it("AnimalHomePage", function () {
