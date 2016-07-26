@@ -105,10 +105,6 @@ export default class Group extends DatabaseObject {
 
   // Attempts to insert the current instance into the database as
   // a new volunteer group.
-  // @param callback {Function(Group, ServerResponse) }
-  //	 callback is expected to take as a first argument the potentially
-  //	 inserted volunteer group (null on failure) and a server
-  //	 response to hold error and success information.
   insert() : Promise<DatabaseObject> {
     var inserts = this.getInserts();
     var permission = Permission.CreateAdminPermission(LoginStore.getUser().id, this.id);

@@ -27,14 +27,14 @@ var d3 = require("d3");
 
 describe("InvalidPageLoads", function () {
 
-  beforeEach(function(done) {
-    this.timeout(10000);
-    LoginStore.logout().then(() => done());
+  beforeEach(function() {
+    this.timeout(5000);
+    return LoginStore.logout();
   });
-  
-  afterEach(function(done) {
-    this.timeout(100000);
-    return TestHelper.DeleteAllTestData().then(done);
+
+  afterEach(function() {
+    this.timeout(50000);
+    return TestHelper.DeleteAllTestData();
   });
 
   it("AnimalHomePage", function () {

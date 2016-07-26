@@ -62,17 +62,22 @@ export default class TestHelper {
   static LoginWithTestCredentials(email, password) : Promise<any> {
     console.log('Login with email ' + email + ' and pw: ' + password);
     let me = this;
-    return new Promise(function(resolve, reject) {
-      LoginStore.logout().then(() =>
-          LoginStore.authenticateWithEmailPassword(email, password).then(() => {
+    return LoginStore.logout()
+        .then(() => { return LoginStore.authenticateWithEmailPassword(email, password); })
+        .then(() => {
              console.log('Authenticated with ' + email + ' and pw ' + password);
-             LoginStore.ensureUser().then(() => {
-               expect(DataServices.GetAuthData()).toNotEqual(null);
-               resolve();
-             });
-          }))
-          .catch(reject);
-    });
+             return LoginStore.ensureUser(); })
+        .then(() => { expect(DataServices.GetAuthData()).toNotEqual(null); });
+  }
+
+  static DeleteGroupData(group, permission) : Promise<any> {
+    if (group) {
+      console.log('Deleting group ', group);
+      return new GroupEditor(group).delete();
+    } else {
+      console.log('Deleting only permission ', permission);
+      return permission.shallowDelete();
+    }
   }
 
   static DeleteTestDataForUser() : Promise<any> {
@@ -85,15 +90,9 @@ export default class TestHelper {
             console.log('Deleting permission ', items[i]);
             console.log('For user ' + LoginStore.getUser().id);
             let permission = items[i];
-            promises.push(GroupStore.ensureItemById(permission.groupId).then((group) => {
-              if (group) {
-                console.log('Deleting group ', group);
-                return new GroupEditor(group).delete();
-              } else {
-                console.log('Deleting only permission ', permission);
-                return permission.shallowDelete();
-              }
-            }));
+            let promise = GroupStore.ensureItemById(permission.groupId)
+                .then((group) => { return this.DeleteGroupData(group, permission); });
+            promises.push(promise);
           }
 
           return Promise.all(promises).then(function() {
@@ -200,19 +199,5 @@ export default class TestHelper {
         }
       }, reject);
     });
-  }
-
-  static DeleteTestData() {
-    let group = TestData.GetTestGroup();
-    group.id = TestData.testGroupId;
-    group.shallowDelete();
-
-    let animal = TestData.GetTestAnimal(group.id);
-    animal.id = TestData.testAnimalId;
-    animal.shallowDelete();
-
-    let activity = TestData.GetTestActivity(group.id, animal.id);
-    activity.id = TestData.testActivityId;
-    activity.shallowDelete();
   }
 }

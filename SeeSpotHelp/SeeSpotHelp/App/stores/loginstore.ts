@@ -4,6 +4,7 @@ import Volunteer from '../core/databaseobjects/volunteer';
 import Group from '../core/databaseobjects/group';
 import DatabaseObject from '../core/databaseobjects/databaseobject';
 import DataServices from '../core/dataservices';
+import PermissionsStore from './permissionsstore';
 import BaseStore from './basestore';
 
 enum ChangeEventEnum {

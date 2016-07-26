@@ -30,10 +30,21 @@ export default class DataServices {
       });
   }
 
+  public static TurnOffListeners(listeners) {
+      for (let i = 0; i < listeners.length; i++) {
+        this.database.ref("/" + listeners[i]).off();
+      }
+  }
+
   public static LogOut() : Promise<any> {
+    this.TurnOffListeners(this.addListeners);
+    this.TurnOffListeners(this.removeListeners);
+    this.TurnOffListeners(this.changeListeners);
+
     this.addListeners = [];
     this.removeListeners = [];
     this.changeListeners = [];
+
     return Firebase.auth().signOut();
   }
 
@@ -77,6 +88,7 @@ export default class DataServices {
   public static OnMatchingChildRemoved(path, child, value, onSuccess) {
     var ref = this.database.ref("/" + path);
     ref.orderByChild(child).equalTo(value).on("child_removed", function (snapshot) {
+      console.log('OnMatchingChildRemoved: child_removed at ' + path);
       onSuccess(snapshot);
     });
   }
@@ -84,6 +96,7 @@ export default class DataServices {
   public static OnMatchingChildAdded(path, child, value, onSuccess) {
     var ref = this.database.ref("/" + path);
     ref.orderByChild(child).equalTo(value).on("child_added", function (snapshot) {
+      console.log('child_added at ' + path);
       onSuccess(snapshot);
     });
   }
@@ -91,6 +104,7 @@ export default class DataServices {
   public static OnMatchingChildChanged(path, child, value, onSuccess) {
     var ref = this.database.ref("/" + path);
     ref.orderByChild(child).equalTo(value).on("child_changed", function (snapshot) {
+      console.log('child_changed at ' + path);
       onSuccess(snapshot);
     });
   }
@@ -100,6 +114,7 @@ export default class DataServices {
     this.removeListeners.push(path);
     var ref = this.database.ref("/" + path);
     ref.on("child_removed", function (snapshot) {
+      console.log('child_removed at ' + path);
       onSuccess(snapshot);
     });
   }
@@ -107,12 +122,12 @@ export default class DataServices {
   public static OnChildAdded(path, onSuccess, lastId : string) {
     if (this.addListeners.indexOf(path) >= 0) return;
     this.addListeners.push(path);
-    var ref = this.database.ref("/" + path);
-    let query;
+    var ref = this.database.ref("/" + path).orderByKey();
     if (lastId) {
-      query = ref.orderByKey().startAt(lastId);
+      ref = ref.startAt(lastId);
     }
-    query.on("child_added", function (snapshot) {
+    ref.on("child_added", function (snapshot) {
+      console.log('child_added at ' + path);
       onSuccess(snapshot);
     });
   }
@@ -122,6 +137,7 @@ export default class DataServices {
     this.changeListeners.push(path);
     var ref = this.database.ref("/" + path);
     ref.on("child_changed", function (snapshot) {
+      console.log('child_changed at ' + path);
       onSuccess(snapshot);
     });
   }
@@ -130,10 +146,12 @@ export default class DataServices {
     var ref = this.database.ref("/" + path);
     if (listen) {
       ref.orderByChild(child).equalTo(value).on("child_added", function (snapshot) {
+        console.log('child_added at ' + path);
         onSuccess(snapshot);
       });
     } else {
       ref.orderByChild(child).equalTo(value).once("value", function (snapshot) {
+        console.log('value once at ' + path);
         onSuccess(snapshot);
       });
     }
@@ -145,6 +163,7 @@ export default class DataServices {
   }
 
   public static DownloadData(path, callback) {
+    console.log('DownloadData at ' + path);
     this.database.ref("/" + path).on("value", callback);
   }
 

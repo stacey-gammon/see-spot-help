@@ -38,7 +38,6 @@ export default class GroupHomePage extends React.Component<any, any> {
       groupId: groupId,
       loading: true
      };
-    this.onGroupChange = this.onGroupChange.bind(this);
     this.loadFromServer = this.loadFromServer.bind(this);
     this.loadDefaultGroup = this.loadDefaultGroup.bind(this);
   }
@@ -50,9 +49,7 @@ export default class GroupHomePage extends React.Component<any, any> {
   }
 
   componentWillUnmount() {
-    PermissionsStore.removePropertyListener(this);
     LoginStore.removeChangeListener(this.loadFromServer);
-    GroupStore.removeChangeListener(this.onGroupChange);
     GroupStore.removeChangeListener(this.loadDefaultGroup);
     GroupStore.removePropertyListener(this);
     this.mounted = false;
@@ -70,14 +67,16 @@ export default class GroupHomePage extends React.Component<any, any> {
 
     // User doesn't belong to any groups, and isn't looking at any.  We'll just show an intro
     // screen on the home page.
-    if (!groupId) return;
+    if (!groupId || !LoginStore.getUser()) return;
 
-    GroupStore.ensureItemById(groupId).then(
-      function () {
+    let promises = [
+        GroupStore.ensureItemById(groupId),
+        PermissionsStore.ensureItemsByProperty('userId', LoginStore.getUser().id)];
+    Promise.all(promises).then((results) => {
         if (!this.mounted) return;
 
         var group = GroupStore.getGroupById(groupId);
-        var permission = StoreStateHelper.GetPermission(this.state);
+        var permission = PermissionsStore.getPermission(LoginStore.getUser().id, groupId);
         if (group) {
           this.setState({ permission: permission, groupId: group.id, loading: false });
           this.removeGroupChangeListeners();
@@ -87,8 +86,7 @@ export default class GroupHomePage extends React.Component<any, any> {
           Utils.SaveProp('groupId', null);
           this.setState({loading: false });
         }
-      }.bind(this)
-    );
+    });
   }
 
   loadFromServer() {
@@ -116,13 +114,7 @@ export default class GroupHomePage extends React.Component<any, any> {
   }
 
   addGroupChangeListeners(group) {
-    if (LoginStore.getUser()) {
-      PermissionsStore.addPropertyListener(this,
-                                           'userId',
-                                           LoginStore.getUser().id,
-                                           this.onGroupChange);
-    }
-    GroupStore.addPropertyListener(this, 'id', group.id, this.onGroupChange);
+    GroupStore.addPropertyListener(this, 'id', group.id, this.forceUpdate.bind(this));
   }
   //
   // // Download group data for the other tabs so switching tabs is very fast.
@@ -133,11 +125,6 @@ export default class GroupHomePage extends React.Component<any, any> {
   //   PhotoStore.getItemsByProperty('groupId', group.id);
   //   ScheduleStore.getItemsByProperty('groupId', group.id);
   // }
-
-  onGroupChange() {
-    var permission = StoreStateHelper.GetPermission(this.state);
-    this.setState({ permission: permission });
-  }
 
   hasGroupHomePage(group) {
     var permission = StoreStateHelper.GetPermission(this.state);

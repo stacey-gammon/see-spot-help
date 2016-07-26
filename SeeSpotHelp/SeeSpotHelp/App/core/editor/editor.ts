@@ -46,8 +46,9 @@ export abstract class Editor {
     return this.deleteLinkedChildren()
         .then(() => {
           console.log('Editor.delete, children deleted, now deleting itself: ', this.databaseObject);
-          return this.databaseObject.shallowDelete()
-        .then(() => {
+          return this.databaseObject.shallowDelete();
+        }).then(() => {
+          console.log('Deleting the groups permissions');
           // The very last thing for deleting a group is deleting it's permissions.  If we delete
           // them beforehand, we won't be able to delete it.
           if (this.databaseObject.className == new Group().className) {
@@ -58,10 +59,10 @@ export abstract class Editor {
             console.log('Error during Editor.delete: ', error);
             throw error;
         });
-    });
   }
 
   deleteLinkedChildren() : Promise<any> {
+    console.log('Delete linked children');
     let promises = [];
     for (let i = 0; i < this.linkedChildrenStores.length; i++) {
       promises.push(this.deleteLinkedChildrenOfType(this.linkedChildrenStores[i]));
@@ -70,30 +71,23 @@ export abstract class Editor {
   }
 
   deleteLinkedChildrenOfType(store: BaseStore) : Promise<any> {
-    let me = this;
-    return new Promise(function(resolve, reject) {
-      let deletes = {};
-      if (!me.externalId) {
-        throw new Error('Must supply externalId field for type ' + me.databaseObject.className);
-      }
-      store.ensureItemsByProperty(me.externalId, me.databaseObject.id).then(
-        function(items: Array<DatabaseObject>) {
+    console.log('Deleting children of type ', store);
+    if (!this.externalId) {
+      throw new Error('Must supply externalId field for type ' + this.databaseObject.className);
+    }
+    return store.ensureItemsByProperty(this.externalId, this.databaseObject.id)
+        .then((items: Array<DatabaseObject>) => {
+          let deletes = {};
+          console.log('Deleteing all items of ' + this.externalId + ' and id ' + this.databaseObject.id);
           for (let i = 0; i < items.length; i++) {
             Object.assign(deletes, items[i].getDeletePaths());
           }
-          DataServices.DeleteMultiple(deletes).then(
-            resolve,
-            function(error) {
-              console.log('Failed to delete: ', deletes);
-              reject(error);
-            });
-        }).catch(function (error) {
+          return DataServices.DeleteMultiple(deletes);
+        }, (error) => {
           console.log('Error ensuring all items by property ' +
-                        me.externalId + ' and value ' + me.databaseObject.id);
+                        this.externalId + ' and value ' + this.databaseObject.id);
           console.log('Failed with error ', error);
-          reject(error);
         });
-    });
   }
 
   validateFields() : boolean {

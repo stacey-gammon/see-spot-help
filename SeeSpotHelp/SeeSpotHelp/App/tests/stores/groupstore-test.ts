@@ -14,41 +14,44 @@ var d3 = require("d3");
 
 describe("GroupStoreTest", function () {
 
-  beforeEach(function(done) {
+  beforeEach(function() {
     this.timeout(100000);
-    return TestHelper.CreateTestData().then(done);
+    return TestHelper.CreateTestData();
   });
 
-  afterEach(function(done) {
+  afterEach(function() {
+    console.log('GroupStoreGetItemDeleteListener: Delete All Test Data');
     this.timeout(100000);
-    TestHelper.DeleteAllTestData().then(done);
+    return TestHelper.DeleteAllTestData();
   });
 
-  it("GroupStoreGetItemChangeListener", function () {
-    this.timeout(50000);
-    // Getting the item by id should add listeners for that item.
-    return GroupStore.ensureItemById(TestData.TestGroup.id)
-        .then((group: Group) => {
-          expect(group).toNotEqual(null);
-          group.name = 'New Group Name';
-          return group.update();
-        })
-        .then(() => {
-          let group = GroupStore.getItemById(TestData.TestGroup.id);
-          expect(group).toNotEqual(null);
-          expect(group.name).toEqual('New Group Name');
-        }, (error) => {
-          console.log('GroupStoreGetItemChangeListener Error Caught: ', error);
-          expect(true).toEqual(false);
-          throw error;
-        });
-  });
+  // it("GroupStoreGetItemChangeListener", function () {
+  //   this.timeout(50000);
+  //   // Getting the item by id should add listeners for that item.
+  //   return GroupStore.ensureItemById(TestData.TestGroup.id)
+  //       .then((group: Group) => {
+  //         expect(group).toNotEqual(null);
+  //         group.name = 'New Group Name';
+  //         return group.update();
+  //       })
+  //       .then(() => {
+  //         let group = GroupStore.getItemById(TestData.TestGroup.id);
+  //         expect(group).toNotEqual(null);
+  //         expect(group.name).toEqual('New Group Name');
+  //       }, (error) => {
+  //         console.log('GroupStoreGetItemChangeListener Error Caught: ', error);
+  //         expect(true).toEqual(false);
+  //         throw error;
+  //       });
+  // });
 
   it("GroupStoreGetItemDeleteListener", function () {
+    console.log('GroupStoreGetItemDeleteListener');
     this.timeout(50000);
     // Getting the item by id should add listeners for that item.
     return GroupStore.ensureItemById(TestData.TestGroup.id)
         .then((group : Group) => {
+          console.log('GroupStoreGetItemDeleteListener: Deleting group ', group);
           expect(group).toNotEqual(null);
           return new GroupEditor(group).delete();
         })

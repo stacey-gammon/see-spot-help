@@ -114,6 +114,7 @@ abstract class BaseStore extends EventEmitter {
   }
 
   addChangeListener(callback) {
+    console.log('addChangeListener: ', callback);
     this.on(CHANGE_EVENT, callback);
   }
 
@@ -132,6 +133,7 @@ abstract class BaseStore extends EventEmitter {
         let propListener = this.propertyListeners[i];
         if (propListener.property == property &&
           propListener.value == value) {
+          console.log('Going to call ', propListener.callback);
           setTimeout(propListener.callback);
         }
       }
@@ -317,7 +319,7 @@ abstract class BaseStore extends EventEmitter {
         if (lengthLimit) {
           console.log('adding item: ', item);
         }
-        this.itemAdded(property, null, null, item);
+        this.itemAdded(property, item);
       }
     }
 
@@ -350,9 +352,7 @@ abstract class BaseStore extends EventEmitter {
       this.emitChange(property, value);
     }
 
-    if (items) {
-      this.addListeners(property, value);
-    }
+    this.addListeners(property, value);
   }
 
   /**
@@ -401,7 +401,7 @@ abstract class BaseStore extends EventEmitter {
     console.log(this.databaseObject.className + 'Store: itemDownloaded with id ' + id);
     this.isDownloading[id] = false;
     if (snapshot && snapshot.val() && !this.storage[id]) {
-      this.itemAdded('id', null, null, snapshot.val());
+      this.itemAdded('id', snapshot.val());
       // This is the first time this item has been downloaded, we now need to register a listener
       // for future changes and deletions to make sure our stores stay up-to-date.
       DataServices.DownloadData(this.firebasePath + '/' + id,
@@ -414,6 +414,7 @@ abstract class BaseStore extends EventEmitter {
   }
 
   itemChangedCallback(id : string, snapshot) {
+    console.log('itemChangedCallback for id ' + id + ' and snapshot: ', snapshot);
     if (snapshot && snapshot.val()) {
       let currentItem = this.getItemById(id);
       this.itemChanged('id', snapshot.val());
@@ -431,23 +432,22 @@ abstract class BaseStore extends EventEmitter {
     this.emitChange('id', id);
   }
 
-  itemAdded(prop, onSuccess, onError, item) {
+  itemAdded(prop, item) {
+    console.log(this.databaseObject.className + 'Store: itemAdded with prop ' + prop);
     if (item) {
       var casted = this.databaseObject.castObject(item);
       // Wait for the subsequent update to set the id.
       if (!casted.id) return;
 
       // Add item to the mappings
-      console.log(this.databaseObject.className + 'Store: added with prop ' + prop + ' and value ' + casted[prop]);
+      console.log(this.databaseObject.className + 'Store: added with prop ' + prop + ' and value ' + casted[prop] + ' and id ' + casted.id);
       // Note: We cannot add the item to all mappings or we won't know if we have everything available
       // and we'll be missing data.
       this.addIdToMapping(this.storageMappings[prop], casted[prop], casted.id);
 
       this.storage[casted.id] = casted;
-      if (onSuccess) onSuccess();
-    } else {
-      if (onError) onError();
     }
+    console.log(this.databaseObject.className + 'Store: itemAdded with prop ' + prop + ' GOODBYTE');
   }
 
   itemDeletedWithId(id) {
@@ -464,12 +464,13 @@ abstract class BaseStore extends EventEmitter {
   }
 
   itemChanged(prop, snapshot, emit?: boolean) {
+    console.log(this.databaseObject.className + 'Store: itemChanged with prop ' + prop);
     var changedObject = this.databaseObject.castObject(snapshot);
     if (this.storage.hasOwnProperty(changedObject.id)) {
       console.log(this.databaseObject.className + 'Store: itemChanged with id ' + changedObject.id + ' and prop ' + prop);
       this.storage[changedObject.id] = changedObject;
     } else {
-      this.itemAdded(prop, null, null, snapshot);
+      this.itemAdded(prop, snapshot);
     }
   }
 
@@ -542,7 +543,9 @@ abstract class BaseStore extends EventEmitter {
   }
 
   onChildAdded(property, snapshot) {
-    this.itemAdded(property, null, null, snapshot.val());
+    console.log('onChildAdded property ' + property + ' and snapshot ', snapshot);
+    this.itemAdded(property, snapshot.val());
+    console.log('onChildAdded emitting change');
     this.emitChange(property, snapshot.val()[property]);
   }
 
@@ -552,11 +555,14 @@ abstract class BaseStore extends EventEmitter {
   }
 
   onChildRemoved(property, value, snapshot) {
-    console.log('BaseStore.onChildRemoved(' + property + ',' + value + ': ', snapshot.val());
+    console.log(this.databaseObject.className + 'Store:onChildRemoved(' + property + ',' + value + ': ', snapshot.val());
     let databaseObject = snapshot.val() as DatabaseObject;
     if (!databaseObject && property == 'id') {
       databaseObject = this.storage[value];
     }
+
+    console.log(this.databaseObject.className + 'Store:onChildRemoved(' + property + ',' + value + ', with dbobj ', databaseObject);
+
     this.itemDeletedWithId(databaseObject.id);
 
     for (let prop in this.storageMappings) {
@@ -566,6 +572,7 @@ abstract class BaseStore extends EventEmitter {
   }
 
   addListeners(property, value) {
+    console.log(this.databaseObject.className + 'Store: addListeners for ' + property + ' and val ' + value);
     var path = DatabaseObject.GetPathToMapping(
         this.firebasePath,
         property,

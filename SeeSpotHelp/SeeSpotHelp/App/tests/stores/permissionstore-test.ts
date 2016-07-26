@@ -14,31 +14,36 @@ var d3 = require("d3");
 
 describe("PermissionStoreTest", function () {
 
-  beforeEach(function(done) {
+  beforeEach(function() {
     this.timeout(100000);
-    TestHelper.CreateTestData().then(done);
+    return TestHelper.CreateTestData();
   });
 
-  afterEach(function(done) {
+  afterEach(function() {
+    console.log('PermissionStoreTest: After Each');
     this.timeout(100000);
-    TestHelper.DeleteAllTestData().then(done);
+    return TestHelper.DeleteAllTestData().then(() => {
+
+        console.log('PermissionStoreTest: Finished After Each (delete all test data)');
+    });
   });
 
   it("PermissionStoreGetItemChildAddedListener", function () {
+    console.log('PermissionStoreGetItemChildAddedListener');
     this.timeout(50000);
-    let insertedGroupId;
     return PermissionStore.ensureItemsByProperty('userId', LoginStore.getUser().id)
         .then(() => {
           let group = new Group();
           group.name = 'my test group 2';
+          console.log('PermissionStoreGetItemChildAddedListener: inserting a group');
           return group.insert();
         })
         .then((insertedGroup) => {
-          insertedGroupId = insertedGroup.id;
+          console.log('PermissionStoreGetItemChildAddedListener: Checking inserted group');
           let permissions = PermissionStore.getItemsByProperty('userId', LoginStore.getUser().id);
           let found = false;
           for (let i = 0; i < permissions.length; i++) {
-            if (permissions[i].groupId == insertedGroupId) {
+            if (permissions[i].groupId == insertedGroup.id) {
               found = true;
               break;
             }
@@ -46,7 +51,7 @@ describe("PermissionStoreTest", function () {
           expect(found).toEqual(true);
         })
         .catch((error) => {
-          console.log('Caught error during PermissionStoreGetItemChildAddedListener:', error);
+          console.log('Caught error during PermissionStoreGetItemChildAddedListener: ', error);
           expect(error).toEqual(null);
           throw error;
         });

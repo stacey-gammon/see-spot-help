@@ -6,6 +6,7 @@ module.exports = function (config) {
     config.set({
         browsers: ['Chrome'],
         singleRun: false,
+        concurrency: 1,
         plugins: [
               'karma-chrome-launcher',
               'karma-mocha',
