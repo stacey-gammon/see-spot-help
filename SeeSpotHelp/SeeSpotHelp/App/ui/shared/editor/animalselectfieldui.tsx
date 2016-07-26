@@ -6,8 +6,7 @@ import AnimalSelectField from '../../../core/editor/inputfields/animalselectfiel
 import { InputFieldType } from '../../../core/editor/inputfields/inputfield';
 
 export interface AnimalSelectFieldPropTypes {
-  inputField : AnimalSelectField,
-  groupId?: string
+  inputField : AnimalSelectField
 }
 
 export default class AnimalSelectFieldUI extends React.Component<AnimalSelectFieldPropTypes, any> {
@@ -27,19 +26,12 @@ export default class AnimalSelectFieldUI extends React.Component<AnimalSelectFie
   componentDidMount() {
     this.props.inputField.onLoad = this.onChange.bind(this);
     this.props.inputField.onChange = this.onChange.bind(this);
-    if (this.props.groupId) {
-      this.setState({loaded: false});
-      this.props.inputField.populate(this.props.groupId).then(() => {
-        this.setState({ loaded: true });
-      });
-    } else {
-      // No group, empty options, mark loaded.
-      this.setState({loaded: true});
-    }
+    this.setState({loaded: !this.props.inputField.loading});
   }
 
   onChange() {
     this.props.inputField.value = this.getValue();
+    this.setState({loaded: !this.props.inputField.loading});
   }
 
   createTypeOption(option) {

@@ -133,7 +133,6 @@ abstract class BaseStore extends EventEmitter {
         let propListener = this.propertyListeners[i];
         if (propListener.property == property &&
           propListener.value == value) {
-          console.log('Going to call ', propListener.callback);
           setTimeout(propListener.callback);
         }
       }
