@@ -10,13 +10,20 @@ import Group from '../core/databaseobjects/group';
 import GroupEditor from '../core/editor/groupeditor';
 import AddNewGroup from '../ui/group/addnewgroup';
 import LoginStore from '../stores/loginstore';
+import TestHelper from './testhelper';
 
 var d3 = require("d3");
 
 describe("AddNewGroup", function () {
+  afterEach(function(done) {
+    this.timeout(100000);
+    return TestHelper.DeleteAllTestData().then(done);
+  });
+
   it("AddNewGroupLoadsInputFields", function () {
-    var user = new Volunteer("john", "doe", "123");
-    LoginStore.user = user;
+    var user = new Volunteer("john", "doe");
+    user.id = '123';
+    LoginStore['user'] = user;
     var AddNewGroupElement = ReactTestUtils.renderIntoDocument(
       <AddNewGroup/>
     );
@@ -45,8 +52,9 @@ describe("AddNewGroup", function () {
   });
 
   it("AddNewGroupWarnsOnNoInput", function() {
-    var user = new Volunteer("john", "doe", "123");
-    LoginStore.user = user;
+    var user = new Volunteer("john", "doe");
+    user.id = '123';
+    LoginStore['user'] = user;
     var AddNewGroupElement = ReactTestUtils.renderIntoDocument(
       <AddNewGroup/>
     );

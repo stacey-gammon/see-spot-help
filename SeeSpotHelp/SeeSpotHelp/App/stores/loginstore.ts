@@ -4,6 +4,7 @@ import Volunteer from '../core/databaseobjects/volunteer';
 import Group from '../core/databaseobjects/group';
 import DatabaseObject from '../core/databaseobjects/databaseobject';
 import DataServices from '../core/dataservices';
+import PermissionsStore from './permissionsstore';
 import BaseStore from './basestore';
 
 enum ChangeEventEnum {
@@ -33,46 +34,6 @@ class LoginStore extends BaseStore {
   constructor() {
     super();
     this.Init();
-    DataServices.OnAuthStateChanged(this.onAuthStateChanged);
-  }
-
-  /**
-   * Displays the signed-in user information in the UI or hides it and displays the
-   * "Sign-In" button if the user isn't signed-in.
-   */
-  onAuthStateChanged(user) {
-    if (user) {
-      window.location.reloadPage();
-    }
-  }
-
-  // See http://stackoverflow.com/questions/26390027/firebase-authwithoauthredirect-woes for
-  // the bug we are trying to work around here.
-  checkAuthenticatedWithRetries(retry) {
-    console.log('checkAuthenticatedWithRetries: ' + retry);
-    var authData = this.checkAuthenticated();
-    if (authData) {
-      sessionStorage.setItem('loginStoreAuthenticating', '');
-      this.emitChange();
-      return authData;
-    }
-
-    if (retry && retry >= 4) {
-      console.log('checkAuthenticatedWithRetries: unsuccessful');
-      // No auth data on the third try, give up and set user as logged out.
-      sessionStorage.setItem('loginStoreAuthenticating', '');
-      sessionStorage.setItem('user', '');
-      this.user = null;
-      this.emitChange();
-      return null;
-    }
-
-    setTimeout(function() {
-      if (!retry) retry = 0;
-      retry += 1;
-      this.checkAuthenticatedWithRetries(retry);
-    }.bind(this), 500)
-    return null;
   }
 
   checkAuthenticated() {
@@ -80,7 +41,7 @@ class LoginStore extends BaseStore {
     if (authData) {
       this.authenticated = true;
       sessionStorage.setItem('loginStoreAuthenticating', '');
-      console.log("User " + authData.uid + " is logged in with " + authData.provider);
+      console.log('User ' + authData.uid + ' is logged in');
       return authData;
     }
   }
@@ -114,44 +75,71 @@ class LoginStore extends BaseStore {
   }
 
   authenticateWithEmailPassword(email, password) : Promise<any> {
+    console.log('authenticateWithEmailPassword(' + email + ',' + password + ')');
+    this.loggedOut = false;
+    return DataServices.LoginWithEmailAndPassword(email, password)
+        .then((data) => {
+          console.log('Completed login with ' + email + ' and ' + password + ' with data ', data);
+          this.authenticated = true;
+          return data;
+        });
+  }
+
+  signUpWithEmailAndPassword(name, email, password) : Promise<any> {
+    this.logout();
     this.loggedOut = false;
     let me = this;
-    return DataServices.LoginWithEmailAndPassword(email, password).then(function() {
-      me.authenticated = true;
+    return new Promise(function(resolve, reject) {
+      let updateName = function() {
+        me.ensureUser().then(function() {
+          me.getUser().name = name;
+          me.getUser().update().then(resolve, reject);
+        }, reject);
+      };
+      DataServices.SignUpWithEmailAndPassword(email, password).then(updateName, reject);
     });
   }
 
   onAuthenticated(onSuccess) {
+    console.log('onAuthenticated');
     var authData = this.checkAuthenticated();
     this.downloadUser(authData.uid);
     if (onSuccess) { onSuccess(); }
   }
 
-  logout () {
-    DataServices.LogOut();
-    this.loggedOut = true;
-    if (this.user) {
-      DataServices.DetachListener(
-        "users/" + this.user.id,
-        this.onUserDownloaded.bind(this));
-    }
-    this.user = null;
-    sessionStorage.clear();
-    localStorage.clear();
+  logout() : Promise<any> {
+    console.log('logout');
+    return DataServices.LogOut().then(() => {
+      this.loggedOut = true;
+      if (this.user) {
+        DataServices.DetachListener(
+            "users/" + this.user.id,
+            this.onUserDownloaded.bind(this));
+      }
+      this.user = null;
+      sessionStorage.clear();
+      localStorage.clear();
+      console.log('auth after logout: ', DataServices.GetAuthData());
+    });
   }
 
-
   onUserDownloaded(data) {
+    console.log('onUserDownloaded');
     var authData = this.checkAuthenticated() as any;
-
+    console.log('User downloaded with data ', data);
     // We are authenticated but no user exists for us, insert a new user.
     if (authData && data.val() == null) {
       this.user = new Volunteer(authData.displayName, authData.email);
       this.user.id = authData.uid;
       this.user.insert();
       this.hasUser = true;
-    } else if (authData && data.val()){
+    } else if (authData && data.val()) {
       this.user = new Volunteer('', '').castObject(data.val());
+      if (authData.email != this.user.email) {
+        console.log('ERROR: Auth data does not equal downloaded user.  Trying again.');
+        this.downloadUser(authData.uid);
+        return;
+      }
       this.hasUser = true;
     } else {
       this.hasUser = false;
@@ -176,6 +164,7 @@ class LoginStore extends BaseStore {
   }
 
   downloadAndAuthenticateUser() {
+    console.log('downloadAndAuthenticateUser');
     // Don't auto-log the person in if they intentionally logged out.
     if (this.loggedOut) return;
 
@@ -192,11 +181,10 @@ class LoginStore extends BaseStore {
 
   downloadUser(userId) {
     if (this.userDownloading) return;
+    console.log('Downloading user ' + userId);
     this.userDownloading = true;
-    DataServices.DownloadData(
-      'users/' + userId,
-      this.onUserDownloaded.bind(this),
-      this.reject.bind(this));
+    DataServices.DownloadDataOnce('users/' + userId).then(
+        this.onUserDownloaded.bind(this), this.reject.bind(this));
   }
 
   getUser() {
@@ -213,8 +201,8 @@ class LoginStore extends BaseStore {
     this.rejectMe = null;
   }
 
-  reject() {
-    if (this.rejectMe) { this.rejectMe(); }
+  reject(error) {
+    if (this.rejectMe) { this.rejectMe(error); }
     this.clearPromiseFunctions();
     this.userDownloading = false;
   }
@@ -232,12 +220,13 @@ class LoginStore extends BaseStore {
         return;
       }
       this.resolveMe = function (data) {
+        console.log('Resolving ensureUser with data ', data);
         resolve(data);
       };
       this.rejectMe = function (error) {
         reject(error);
       };
-      return this.getUser();
+      this.getUser();
     }.bind(this));
   }
 

@@ -80,7 +80,7 @@ export default class UserGroupsTab extends React.Component<any, any> {
   }
 
   getGroupElements() {
-    if (!this.state.groups) return null;
+    if (!this.state.groups || !LoginStore.getUser()) return null;
     if (this.state.groups.length == 0 && this.props.user.id != LoginStore.getUser().id) {
       return (
         <div>This user does not currently belong to any groups.</div>

@@ -1,15 +1,22 @@
 
 var Firebase = require('firebase');
+//Firebase.database.enableLogging(true);
 
 // Initialize Firebase
 import initFirebase from './firebaseconfig';
 initFirebase();
+
+const MaxNetworkRetries : number = 3;
 
 /**
  * Controls access to the firebase database end point, as well as image storage.
  */
 export default class DataServices {
   private static database = Firebase.database();
+  private static addListeners: Array<string> = [];
+  private static changeListeners: Array<string> = [];
+  private static removeListeners: Array<string> = [];
+  private static networkErrorRetries: number = 0;
 
   public static GetNewPushKey(path): string {
     var ref = this.database.ref();
@@ -25,8 +32,22 @@ export default class DataServices {
       });
   }
 
-  public static LogOut() {
-    Firebase.auth().signOut();
+  public static TurnOffListeners(listeners) {
+      for (let i = 0; i < listeners.length; i++) {
+        this.database.ref("/" + listeners[i]).off();
+      }
+  }
+
+  public static LogOut() : Promise<any> {
+    this.TurnOffListeners(this.addListeners);
+    this.TurnOffListeners(this.removeListeners);
+    this.TurnOffListeners(this.changeListeners);
+
+    this.addListeners = [];
+    this.removeListeners = [];
+    this.changeListeners = [];
+
+    return Firebase.auth().signOut();
   }
 
   public static OnAuthStateChanged(callback) {
@@ -38,7 +59,12 @@ export default class DataServices {
   }
 
   public static LoginWithEmailAndPassword(email: string, password: string) : Promise<any> {
-    return Firebase.auth().signInWithEmailAndPassword(email, password);
+    console.log('DataServices:LoginWithEmailAndPassword: Logging in as ' + email + ' with pw ' + password);
+    let signInPromise = Firebase.auth().signInWithEmailAndPassword(email, password);
+    console.log('Firebase sign in promise: ', signInPromise);
+    return this.WrapInCatch(
+        signInPromise,
+        this.LoginWithEmailAndPassword.bind(this, email, password));
   }
 
   public static ResetPassword(email: string) : Promise<any> {
@@ -69,6 +95,7 @@ export default class DataServices {
   public static OnMatchingChildRemoved(path, child, value, onSuccess) {
     var ref = this.database.ref("/" + path);
     ref.orderByChild(child).equalTo(value).on("child_removed", function (snapshot) {
+      console.log('OnMatchingChildRemoved: child_removed at ' + path);
       onSuccess(snapshot);
     });
   }
@@ -76,6 +103,7 @@ export default class DataServices {
   public static OnMatchingChildAdded(path, child, value, onSuccess) {
     var ref = this.database.ref("/" + path);
     ref.orderByChild(child).equalTo(value).on("child_added", function (snapshot) {
+      console.log('child_added at ' + path);
       onSuccess(snapshot);
     });
   }
@@ -83,27 +111,40 @@ export default class DataServices {
   public static OnMatchingChildChanged(path, child, value, onSuccess) {
     var ref = this.database.ref("/" + path);
     ref.orderByChild(child).equalTo(value).on("child_changed", function (snapshot) {
+      console.log('child_changed at ' + path);
       onSuccess(snapshot);
     });
   }
 
   public static OnChildRemoved(path, onSuccess) {
+    if (this.removeListeners.indexOf(path) >= 0) return;
+    this.removeListeners.push(path);
     var ref = this.database.ref("/" + path);
     ref.on("child_removed", function (snapshot) {
+      console.log('child_removed at ' + path);
       onSuccess(snapshot);
     });
   }
 
-  public static OnChildAdded(path, onSuccess, timestamp) {
-    var ref = this.database.ref("/" + path);
-    ref.orderByChild('timestamp').startAt(timestamp).on("child_added", function (snapshot) {
+  public static OnChildAdded(path, onSuccess, lastId : string) {
+    if (this.addListeners.indexOf(path) >= 0) return;
+    this.addListeners.push(path);
+    var ref = this.database.ref("/" + path).orderByKey();
+    if (lastId) {
+      ref = ref.startAt(lastId);
+    }
+    ref.on("child_added", function (snapshot) {
+      console.log('child_added at ' + path);
       onSuccess(snapshot);
     });
   }
 
   public static OnChildChanged(path, onSuccess) {
+    if (this.changeListeners.indexOf(path) >= 0) return;
+    this.changeListeners.push(path);
     var ref = this.database.ref("/" + path);
     ref.on("child_changed", function (snapshot) {
+      console.log('child_changed at ' + path);
       onSuccess(snapshot);
     });
   }
@@ -112,10 +153,12 @@ export default class DataServices {
     var ref = this.database.ref("/" + path);
     if (listen) {
       ref.orderByChild(child).equalTo(value).on("child_added", function (snapshot) {
+        console.log('child_added at ' + path);
         onSuccess(snapshot);
       });
     } else {
       ref.orderByChild(child).equalTo(value).once("value", function (snapshot) {
+        console.log('value once at ' + path);
         onSuccess(snapshot);
       });
     }
@@ -126,27 +169,33 @@ export default class DataServices {
     ref.off("value", callback);
   }
 
-  public static DownloadData(path, onSuccess, onError?) {
-    var ref = this.database.ref("/" + path);
-    ref.on("value", function (snapshot) {
-        onSuccess(snapshot);
-      }, function (errorObject) {
-        console.log("The read failed: " + errorObject.code);
-        if (onError) onError(errorObject);
-      }
-    );
+  public static MaybeRetry(error, originalCall: () => Promise<any>) : Promise<any> {
+    if (error.code == 'auth/network-request-failed' &&
+        this.networkErrorRetries < MaxNetworkRetries) {
+      console.log('Caught network error, retry #' + this.networkErrorRetries);
+      this.networkErrorRetries++;
+      return originalCall();
+    } else {
+      throw error;
+    }
   }
 
-  public static DownloadDataOnce(path, onSuccess, onError?, lengthLimit?, id?) {
+  public static DownloadData(path, callback) {
+    console.log('DownloadData at ' + path);
+    this.database.ref("/" + path).on("value", callback);
+  }
+
+  public static DownloadDataOnce(path, lengthLimit?, id?) : Promise<any> {
     var ref = this.database.ref("/" + path);
 
     if (lengthLimit && id) {
-      ref.orderByKey().endAt(id).limitToLast(lengthLimit).once('value', onSuccess, onError);
+      ref = ref.orderByKey().endAt(id).limitToLast(lengthLimit);
     } else if (lengthLimit) {
-      ref.orderByKey().limitToLast(lengthLimit).once('value', onSuccess, onError);
-    } else {
-      ref.once("value", onSuccess, onError);
+      ref = ref.orderByKey().limitToLast(lengthLimit);
     }
+
+    return this.WrapInCatch(ref.once('value'),
+                            this.DownloadDataOnce.bind(this, path, lengthLimit, id));
   }
 
   public static SetFirebaseData(path, value) : Promise<any> {
@@ -165,14 +214,27 @@ export default class DataServices {
     return ref.push(value);
   }
 
+  public static WrapInCatch(promise: Promise<any>, originalCall) : Promise<any> {
+    console.log('WrapInCatch: ', promise);
+    return promise.then((result) => {
+      console.log('promise succeeded, reseting network retries, returning ', result);
+      this.networkErrorRetries = 0;
+      return result;
+    })
+    .catch((error) => {
+      console.log('Error caught: ', error);
+      return this.MaybeRetry(error, originalCall);
+    });
+  }
+
   public static UpdateMultiple(updates) : Promise<any> {
     var ref = this.database.ref();
-    return ref.update(updates);
+    return this.WrapInCatch(ref.update(updates), this.UpdateMultiple.bind(this, updates));
   }
 
   public static DeleteMultiple(deletes) : Promise<any> {
     var ref = this.database.ref();
-    return ref.update(deletes);
+    return this.WrapInCatch(ref.update(deletes), this.DeleteMultiple.bind(this, deletes));
   }
 
   public static UploadPhoto(thumbBlob, listBlob, fullBlob, fileName, userId) {

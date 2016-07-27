@@ -138,11 +138,11 @@ export default class Calendar extends React.Component<any, any> {
     console.log('initializeCalendar with events: ', events);
     var outer = this;
     var defaultView = this.state.defaultView ? this.state.defaultView : 'month';
-    $('#calendar').fullCalendar({
-      height: 'auto',
+    let options = {
+      height: 'auto' as any,
       events: events,
-      minTime: '06:00:00',
-      maxTime: '22:00:00',
+      minTime: '06:00:00' as any,
+      maxTime: '22:00:00' as any,
       defaultView: defaultView,
 
       header: {
@@ -168,28 +168,29 @@ export default class Calendar extends React.Component<any, any> {
       }.bind(this),
 
       dayClick: function(date) {
-        if (this.props.view == "member") return;
-        this.context.router.push({
-          pathname: "addCalendarEvent",
-          state: {
-            mode: 'add',
-            scheduleId: -1,  // Just avoid pulling schedule from local storage,
-            group: this.props.group,
-            animalId: this.props.animalId,
-            startDate: date.format('MM-DD-YYYY'),
-            startTime: date.format('hh:mm a'),
-            endTime: date.format('hh:mm a')
-          }
-        });
-      }.bind(this),
+          if (this.props.view == "member") return;
+          this.context.router.push({
+            pathname: "addCalendarEvent",
+            state: {
+              mode: 'add',
+              scheduleId: -1,  // Just avoid pulling schedule from local storage,
+              group: this.props.group,
+              animalId: this.props.animalId,
+              startDate: date.format('MM-DD-YYYY'),
+              startTime: date.format('hh:mm a'),
+              endTime: date.format('hh:mm a')
+            }
+          });
+        }.bind(this),
 
-      viewRender: function(view) {
-        this.setState({ defaultView: view.name });
-        var stateDuplicate = this.state;
-        stateDuplicate.defaultView = view.name;
-        Utils.LoadOrSaveState(stateDuplicate);
-      }.bind(this)
-    });
+        viewRender: function(view) {
+          this.setState({ defaultView: view.name });
+          var stateDuplicate = this.state;
+          stateDuplicate.defaultView = view.name;
+          Utils.LoadOrSaveState(stateDuplicate);
+        }.bind(this)
+    };
+    $('#calendar').fullCalendar(options);
   }
 
   componentDidUpdate () {

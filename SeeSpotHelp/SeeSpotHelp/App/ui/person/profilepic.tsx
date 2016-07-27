@@ -17,6 +17,7 @@ export default class ProfilePic extends React.Component<any, any> {
     if (!LoginStore.fbLoaded) return;
     FB.api(
        '/' + this.props.user.id.substring(9) + '/picture?width=75&height=75',
+       'get',
        function (response) {
          if (response && !response.error) {
            this.props.user.imgUrl = response.data.url;

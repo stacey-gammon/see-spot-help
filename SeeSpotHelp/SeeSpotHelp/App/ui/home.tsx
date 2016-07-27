@@ -1,5 +1,6 @@
 ﻿'use strict';
 
+require('autotrack');
 import * as React from 'react';
 var ReactDOM = require('react-dom');
 var ReactRouter = require('react-router');
@@ -35,7 +36,7 @@ var UserSettingsPage = require('./person/usersettingspage');
 import LoginStore from '../stores/loginstore';
 
 // Comment out for debugging logs.
-console.log = function() {}
+//console.log = function() {}
 
 export default class Home extends React.Component<any, any> {
   public props: any;

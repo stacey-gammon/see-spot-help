@@ -1,6 +1,11 @@
 import * as React from 'react';
 import SkyLight from 'react-skylight';
 
+interface propTypes {
+  error: boolean,
+  errorMessage: string
+}
+
 export default class ErrorPopup extends React.Component<any, any> {
   constructor(props){
     super(props);
@@ -8,7 +13,7 @@ export default class ErrorPopup extends React.Component<any, any> {
 
   componentDidMount() {
     if (this.props.error) {
-      this.refs.errorPopup.show();
+      (this.refs['errorPopup'] as any).show();
     }
   }
 
@@ -19,7 +24,7 @@ export default class ErrorPopup extends React.Component<any, any> {
 
   componentWillReceiveProps(newProps) {
     if (newProps.error) {
-      this.refs.errorPopup.show();
+      (this.refs['errorPopup'] as any).show();
     }
   }
 

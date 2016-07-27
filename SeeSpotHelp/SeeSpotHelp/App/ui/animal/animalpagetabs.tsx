@@ -7,7 +7,6 @@ var Tabs = ReactBootstrap.Tabs;
 
 import ActivityTab from '../shared/tabs/activitytab';
 
-//import AnimalActivityList from './animalactivitylist';
 import AnimalScheduleTab from './animalscheduletab';
 import AnimalActionsBar from './animalactionsbar';
 

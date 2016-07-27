@@ -30,31 +30,31 @@ export default class GroupSelectField extends InputField {
     return null;
   }
 
-  populate() {
-    this.options = [];
+  populate() : Promise<any> {
     if (!LoginStore.getUser()) { return; }
+
+    this.options = [];
     this.loading = false;
-    PermissionsStore.addPropertyListener(
-        this, 'userId', LoginStore.getUser().id, this.populate.bind(this));
-    var permissions = PermissionsStore.getPermissionsByUserId(LoginStore.getUser().id)
-    this.loading = PermissionsStore.areItemsDownloading('userId', LoginStore.getUser().id);
 
-    var groups = [];
-    for (var i = 0; i < permissions.length; i++) {
-      if (permissions[i].inGroup) {
-        let groupId = permissions[i].groupId;
-        GroupStore.addPropertyListener(this, 'id', groupId, this.populate.bind(this));
-        let group = GroupStore.getGroupById(groupId);
-        if (group && group.status !== Status.ARCHIVED) { groups.push(group); }
-        this.loading = this.loading || GroupStore.isItemDownloading(groupId);
-      }
-    }
+    return PermissionsStore.ensureItemsByProperty('userId', LoginStore.getUser().id)
+        .then((permissions) => {
+          let groupPromises = [];
+          for (var i = 0; i < permissions.length; i++) {
+            if (permissions[i].inGroup) {
+              let groupId = permissions[i].groupId;
+              groupPromises.push(GroupStore.ensureItemById(groupId));
+            }
+          }
 
-    if (!this.loading) {
-      for (let i = 0; i < groups.length; i++) {
-        this.options.push({ name: groups[i].name, value: groups[i].id });
-      }
-      if (this.onLoad) { this.onLoad(); }
-    }
+          return Promise.all(groupPromises);
+        })
+        .then((results) => {
+          for (let i = 0; i < results.length; i++) {
+            let group = results[i];
+            this.options.push({ name: group.name, value: group.id });
+          }
+          if (this.onLoad) { this.onLoad(); }
+          this.loading = false;
+        });
   }
 }

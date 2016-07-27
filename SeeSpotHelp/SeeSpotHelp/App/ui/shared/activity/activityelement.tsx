@@ -11,6 +11,7 @@ var DropdownButton = ReactBootstrap.DropdownButton;
 var Button = ReactBootstrap.Button;
 var MenuItem = ReactBootstrap.MenuItem;
 
+import ErrorPopup from '../errorpopup';
 import Volunteer from '../../../core/databaseobjects/volunteer';
 import ConstStrings from '../../../core/conststrings';
 import LoginStore from '../../../stores/loginstore';
@@ -20,12 +21,20 @@ import PhotoStore from '../../../stores/photostore';
 import PermissionsStore from '../../../stores/permissionsstore';
 import AnimalActivityStore from '../../../stores/animalactivitystore';
 import Activity from '../../../core/databaseobjects/activity';
+import ActivityEditor from '../../../core/editor/activityeditor';
 import Permission from '../../../core/databaseobjects/permission';
 
 import Comments from './comments';
 import ActivityBody from './activitybody';
 
-export default class ActivityElement extends React.Component<any, any> {
+interface propTypes {
+  activity: Activity,
+  permission: Permission,
+  view: string
+}
+
+export default class ActivityElement extends React.Component<propTypes, any> {
+  public context: any;
   // Required for page transitions via this.context.router.push.
   static contextTypes = {
     router: React.PropTypes.object.isRequired
@@ -65,13 +74,19 @@ export default class ActivityElement extends React.Component<any, any> {
 
   deleteAction(event) {
     if (confirm("Are you sure you want to delete this post?")) {
+      let me = this;
+      me.setState({hasError: false, errorMessage: null});
       if (this.props.activity.photoId) {
         var photo = PhotoStore.getItemById(this.props.activity.photoId);
         if (photo) {
-          photo.delete();
+          photo.shallowDelete().catch(function(error) {
+            me.setState({hasError: true, errorMessage: error.message});
+          });
         }
       }
-      this.props.activity.delete();
+      new ActivityEditor(this.props.activity).delete().catch(function(error) {
+        me.setState({hasError: true, errorMessage: error.message});
+      });
     }
   }
 
@@ -130,6 +145,7 @@ export default class ActivityElement extends React.Component<any, any> {
     var userAndDateInfo = " - " + this.state.memberName + " - " + date;
     return (
       <div className="list-group-item activity-list-item">
+        <ErrorPopup error={this.state.hasError} errorMessage={this.state.errorMessage} />
         <div className="media">
           <div className="media-body">
             <ActivityBody

@@ -19,6 +19,7 @@ export default class MemberHeadShot extends React.Component<any, any> {
     if (!LoginStore.fbLoaded) return;
     FB.api(
        '/' + this.props.user.id.substring(9) + '/picture?width=80&height=80',
+       'get',
        function (response) {
          if (response && !response.error) {
            this.setState({fbProfilePhotoUrl: response.data.url});

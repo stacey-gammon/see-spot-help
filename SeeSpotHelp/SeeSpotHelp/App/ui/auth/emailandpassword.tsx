@@ -9,6 +9,7 @@ import { InputFieldType } from '../../core/editor/inputfields/inputfield';
 
 export default class EmailAndPasswordLogin extends React.Component<any, any> {
   public context: any;
+  public refs: any;
 
   static contextTypes = {
     router: React.PropTypes.object.isRequired

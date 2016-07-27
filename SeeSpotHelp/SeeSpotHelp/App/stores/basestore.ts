@@ -58,6 +58,22 @@ abstract class BaseStore extends EventEmitter {
 
   constructor() {
     super();
+
+    DataServices.OnAuthStateChanged(() => this.Reset());
+  }
+
+  Reset() {
+    this.storageMappingLastId = {};
+    this.storageMappings = {};
+    this.isDownloading = {};
+    this.currentlyDownloading = {};
+    this.propertyListeners = [];
+    this.itemListeners = [];
+    this.promiseResolveCallbacks = [];
+    this.hasError = false;
+
+
+    this.Init();
   }
 
   Init() {
@@ -98,6 +114,7 @@ abstract class BaseStore extends EventEmitter {
   }
 
   addChangeListener(callback) {
+    console.log('addChangeListener: ', callback);
     this.on(CHANGE_EVENT, callback);
   }
 
@@ -107,6 +124,10 @@ abstract class BaseStore extends EventEmitter {
 
   emitChange(property?, value?) {
     this.emit(CHANGE_EVENT);
+    this.emitChangeByProperty(property, value);
+  }
+
+  emitChangeByProperty(property, value) {
     if (property) {
       for (let i = 0; i < this.propertyListeners.length; i++) {
         let propListener = this.propertyListeners[i];
@@ -118,13 +139,14 @@ abstract class BaseStore extends EventEmitter {
     }
   }
 
-  resolvePromises(id) {
+  resolvePromises(data) {
     for (var i = 0; i < this.promiseResolveCallbacks.length; i++) {
-      this.promiseResolveCallbacks[i]();
+      this.promiseResolveCallbacks[i](data);
     }
   }
 
   getItemById(id) {
+    console.log(this.databaseObject.className + 'Store: getItemById(' + id + ')');
     if (!this.storage.hasOwnProperty(id)) {
       this.storage[id] = null;
       this.downloadItem(id);
@@ -161,6 +183,64 @@ abstract class BaseStore extends EventEmitter {
     } else {
       return this.itemExistsLocally('id', this.storageMappings[property][value]);
     }
+  }
+
+  ensureItemsByProperty(property, propertyValue, lengthLimit?: number) : Promise<any> {
+    return new Promise(function(resolve, reject) {
+      if (lengthLimit === 0) {
+        resolve([]);
+        return;
+      }
+
+      var storageMapping = this.storageMappings[property];
+      if (!storageMapping.hasOwnProperty(propertyValue)) {
+        console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');
+        storageMapping[propertyValue] = [];
+        this.downloadFromMapping(property, propertyValue, lengthLimit).then(
+            resolve,
+            (error) => {
+              console.log('Failed to download items with error: ', error);
+              reject(error);
+            });
+        return;
+      }
+
+      var items = [];
+      for (var i = 0; i < storageMapping[propertyValue].length; i++) {
+        var item = this.storage[storageMapping[propertyValue][i]];
+        if (item && item.status !== Status.ARCHIVED) {
+          items.push(item);
+        }
+      }
+
+      items.sort(function(a, b) {
+        return a.timestamp < b.timestamp ? 1 : -1;
+      });
+
+      if (lengthLimit && items.length < lengthLimit) {
+        let id = null;
+        if (items.length > 0) {
+          id = items[items.length - 1].id;
+        }
+
+        // Don't attempt to download more if there is none.
+        if (id &&
+            id != this.storageMappingLastId[property][propertyValue] &&
+            !this.areItemsDownloading(property, propertyValue, id)) {
+          this.downloadFromMapping(property,
+                                   propertyValue,
+                                   lengthLimit,
+                                   id)
+              .then(resolve, (error) => {
+                 console.log('Failed to grab more items with error: ', error);
+                 reject(error);
+               });
+          return;
+        }
+      } else {
+        resolve(items);
+      }
+    }.bind(this));
   }
 
   /**
@@ -231,14 +311,12 @@ abstract class BaseStore extends EventEmitter {
 
       if (lastLimitId && item.id == lastLimitId) continue;
 
-      if (this.storageMappings[property][value].indexOf(id) >= 0) {
+      if (this.storageMappings[property][value] &&
+          this.storageMappings[property][value].indexOf(id) >= 0) {
         // Exists locally, item must be updated.
         this.itemChanged(property, item);
       } else {
-        if (lengthLimit) {
-          console.log('adding item: ', item);
-        }
-        this.itemAdded(property, null, null, item);
+        this.itemAdded(property, item);
       }
     }
 
@@ -262,7 +340,7 @@ abstract class BaseStore extends EventEmitter {
     // always ask for and download the last avavilable item.
     let batchSmallerThanRequested = lengthLimit && itemsToSort.length < lengthLimit;
 
-    if (batchSmallerThanRequested) {
+    if (batchSmallerThanRequested || !lengthLimit) {
       this.storageMappingLastId[property][value] = lastItemId;
     }
 
@@ -271,93 +349,102 @@ abstract class BaseStore extends EventEmitter {
       this.emitChange(property, value);
     }
 
-    this.addListeners(property, value, lastItemTimestamp + 1);
+    this.addListeners(property, value);
   }
 
   /**
   * Very similar to downloadItem except returns a promise that will be called once the item is
   * downloaded.
   */
-  ensureItemById(id) {
-    var promise = new Promise(function(resolve, reject) {
-      var onResolve = function (data) {
-        resolve(data)
-      };
-      var onReject = function (error) {
-        reject(error);
-      };
+  ensureItemById(id) : Promise<DatabaseObject> {
+    console.log(this.databaseObject.className + 'Store: ensureItemById(' + id + ')');
+    return new Promise<DatabaseObject>(function(resolve, reject) {
       if (!this.storage.hasOwnProperty(id)) {
         this.storage[id] = null;
-        this.downloadItem(id, onResolve, onReject);
-      } else if (!this.isDownloading[id]){
-        console.log('resolving callback because it isn\'t downloading');
-        resolve(this.storage[id]);
+        this.downloadItem(id).then(resolve, reject);
+      } else if (!this.isDownloading[id]) {
+        resolve(this.storage[id] as DatabaseObject);
       } else {
-        console.log('Adding callback');
-        this.promiseResolveCallbacks.push(onResolve);
-      //	reject('Already waiting on the download.');
+        console.log('WARN: Already downloading this item, we\'ll just have to download it again. ' +
+                    'Try to improve this.');
+        this.downloadItem(id).then(resolve, reject);
       }
     }.bind(this));
-    return promise;
   }
 
-
-  downloadItem(id, onSuccess?, onError?) {
+  downloadItem(id) : Promise<DatabaseObject> {
+    console.log(this.databaseObject.className + 'Store: downloadItem(' + id + ')');
     if (!id) {
       throw new Error('Id is null');
     }
     this.isDownloading[id] = true;
     this.resetErrorInfo();
-    DataServices.DownloadData(
-      this.firebasePath + '/' + id,
-      this.itemDownloaded.bind(this, id, onSuccess),
-      this.errorOccurred.bind(this, id, onError));
+    return DataServices.DownloadDataOnce(this.firebasePath + '/' + id)
+        .then((snapshot) => {
+          this.itemDownloaded(id, snapshot);
+          return this.storage[id];
+        })
+        .catch((error) => {
+          console.log('Error downloading item: ', error);
+          throw error;
+        });
   }
 
-  itemDownloaded(id: string, onSuccess, snapshot) {
+  itemDownloaded(id: string, snapshot) {
     if (!id) {
       console.log('WARN: itemDownloaded being passed undefined id');
       return;
     }
     console.log(this.databaseObject.className + 'Store: itemDownloaded with id ' + id);
     this.isDownloading[id] = false;
-    if (snapshot && snapshot.val() && !this.storage.hasOwnProperty[id]) {
-      this.itemAdded('id', null, null, snapshot.val());
-    } else if (snapshot && snapshot.val()) {
+    if (snapshot && snapshot.val() && !this.storage[id]) {
+      this.itemAdded('id', snapshot.val());
+      // This is the first time this item has been downloaded, we now need to register a listener
+      // for future changes and deletions to make sure our stores stay up-to-date.
+      DataServices.DownloadData(this.firebasePath + '/' + id,
+                                this.itemChangedCallback.bind(this, id));
+    } else  {
+      this.itemChangedCallback(id, snapshot);
+    }
+
+    this.resolvePromises(this.storage[id]);
+  }
+
+  itemChangedCallback(id : string, snapshot) {
+    console.log('itemChangedCallback for id ' + id + ' and snapshot: ', snapshot);
+    if (snapshot && snapshot.val()) {
+      let currentItem = this.getItemById(id);
       this.itemChanged('id', snapshot.val());
+    } else if (snapshot &&
+               !snapshot.val() &&
+               this.storage.hasOwnProperty(id) &&
+               this.storage[id]) {
+      this.onChildRemoved('id', id, snapshot);
     } else {
       // Data requested that doesn't exist.
       console.log('WARN: Data requested that doesn\'t exist.');
-      this.itemAdded('id', null, null, null);
+      // Make sure we don't request it again.
+      this.storage[id] = null;
     }
-
-    if (onSuccess) { onSuccess(this.getItemById(id)); }
     this.emitChange('id', id);
-    this.resolvePromises(id);
   }
 
-  itemAdded(prop, onSuccess, onError, item) {
+  itemAdded(prop, item) {
+    console.log(this.databaseObject.className + 'Store: itemAdded with prop ' + prop);
     if (item) {
       var casted = this.databaseObject.castObject(item);
       // Wait for the subsequent update to set the id.
       if (!casted.id) return;
 
       // Add item to the mappings
-      console.log(this.databaseObject.className + 'Store: added with prop ' + prop + ' and value ' + casted[prop]);
-      for (let property in this.storageMappings) {
-        this.addIdToMapping(this.storageMappings[property], casted[property], casted.id);
-      }
+      console.log(this.databaseObject.className + 'Store: added with prop ' + prop + ' and value ' + casted[prop] + ' and id ' + casted.id);
+      // Note: We cannot add the item to all mappings or we won't know if we have everything available
+      // and we'll be missing data.
+      this.addIdToMapping(this.storageMappings[prop], casted[prop], casted.id);
 
       this.storage[casted.id] = casted;
-      if (onSuccess) onSuccess();
-    } else {
-      if (onError) onError();
     }
-  }
-
-  itemDeleted(snapshot) {
-    var deletedObject = <DatabaseObject>snapshot.val();
-    this.itemDeletedWithId(deletedObject.id);
+    console.log(this.databaseObject.className + 'Store: itemAdded with prop ' + prop + ' GOODBYTE');
   }
 
   itemDeletedWithId(id) {
@@ -374,12 +461,13 @@ abstract class BaseStore extends EventEmitter {
   }
 
   itemChanged(prop, snapshot, emit?: boolean) {
+    console.log(this.databaseObject.className + 'Store: itemChanged with prop ' + prop);
     var changedObject = this.databaseObject.castObject(snapshot);
     if (this.storage.hasOwnProperty(changedObject.id)) {
       console.log(this.databaseObject.className + 'Store: itemChanged with id ' + changedObject.id + ' and prop ' + prop);
       this.storage[changedObject.id] = changedObject;
     } else {
-      this.itemAdded(prop, null, null, snapshot);
+      this.itemAdded(prop, snapshot);
     }
   }
 
@@ -423,7 +511,7 @@ abstract class BaseStore extends EventEmitter {
     return this.isDownloading[id];
   }
 
-  downloadFromMapping(property, value, lengthLimit? : number, id? : string) {
+  downloadFromMapping(property, value, lengthLimit? : number, id? : string) : Promise<any> {
     if (lengthLimit) {
       console.log('downloading last ' + lengthLimit + ' starting at ' + id);
     }
@@ -436,17 +524,17 @@ abstract class BaseStore extends EventEmitter {
     } else {
       this.currentlyDownloading[property][value] = true;
     }
-    var path = DatabaseObject.GetPathToMapping(this.firebasePath, property, value);
 
-    DataServices.DownloadDataOnce(path,
-                                  this.itemsDownloaded.bind(this, property, value, lengthLimit, id),
-                                  null,
-                                  lengthLimit,
-                                  id);
+    var path = DatabaseObject.GetPathToMapping(this.firebasePath, property, value);
+    return DataServices.DownloadDataOnce(path, lengthLimit, id).then((snapshot) => {
+        this.itemsDownloaded(property, value, lengthLimit, id, snapshot);
+        return this.getItemsByProperty(property, value);
+      });
   }
 
   onChildAdded(property, snapshot) {
-    this.itemAdded(property, null, null, snapshot.val());
+    console.log('onChildAdded property ' + property + ' and snapshot ', snapshot);
+    this.itemAdded(property, snapshot.val());
     this.emitChange(property, snapshot.val()[property]);
   }
 
@@ -456,17 +544,31 @@ abstract class BaseStore extends EventEmitter {
   }
 
   onChildRemoved(property, value, snapshot) {
-    this.itemDeleted(snapshot);
-    this.emitChange(property, value);
+    console.log(this.databaseObject.className + 'Store:onChildRemoved(' + property + ',' + value + ': ', snapshot.val());
+    let databaseObject = snapshot.val() as DatabaseObject;
+    if (!databaseObject && property == 'id') {
+      databaseObject = this.storage[value];
+    }
+
+    console.log(this.databaseObject.className + 'Store:onChildRemoved(' + property + ',' + value + ', with dbobj ', databaseObject);
+
+    this.itemDeletedWithId(databaseObject.id);
+
+    for (let prop in this.storageMappings) {
+      this.emitChangeByProperty(prop, databaseObject[prop]);
+    }
+    this.emitChange();
   }
 
-  addListeners(property, value, timestamp) {
+  addListeners(property, value) {
+    console.log(this.databaseObject.className + 'Store: addListeners for ' + property + ' and val ' + value);
     var path = DatabaseObject.GetPathToMapping(
-      this.firebasePath,
-      property,
-      value);
+        this.firebasePath,
+        property,
+        value);
 
-    DataServices.OnChildAdded(path, this.onChildAdded.bind(this, property), timestamp);
+    let lastId = this.getOldestItemId(property, value);
+    DataServices.OnChildAdded(path, this.onChildAdded.bind(this, property), lastId);
     DataServices.OnChildChanged(path, this.onChildChanged.bind(this, property));
     DataServices.OnChildRemoved(path, this.onChildRemoved.bind(this, property, value));
   }

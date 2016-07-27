@@ -4,9 +4,13 @@ import Activity from '../databaseobjects/activity';
 import InputTextAreaField from './inputfields/inputtextareafield';
 import InputFieldValidation from './inputfieldvalidation';
 import { Editor } from './editor';
+import CommentStore from '../../stores/commentstore';
+import BaseStore from '../../stores/basestore';
 
 export default class AcitivtyEditor extends Editor {
   public databaseObject: Activity;
+  public linkedChildrenStores: Array<BaseStore> = [CommentStore];
+  public externalId : string = 'activityId';
 
   constructor(activity) {
     super(activity);

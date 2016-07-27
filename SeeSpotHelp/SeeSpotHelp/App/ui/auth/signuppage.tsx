@@ -13,6 +13,7 @@ import { InputFieldType } from '../../core/editor/inputfields/inputfield';
 
 export default class SignupPage extends React.Component<any, any> {
   public context: any;
+  public refs: any;
 
   constructor(props) {
     super(props);
@@ -70,9 +71,7 @@ export default class SignupPage extends React.Component<any, any> {
     return true;
   }
 
-  updateUsersName() {
-    LoginStore.getUser().name = this.state.name;
-    LoginStore.getUser().update();
+  login() {
     this.context.router.push("/profilePage");
   }
 
@@ -81,16 +80,17 @@ export default class SignupPage extends React.Component<any, any> {
 
     if (this.validate()) {
       this.setState({loading: true });
-      DataServices.SignUpWithEmailAndPassword(
+      LoginStore.signUpWithEmailAndPassword(
+          this.refs.name.getValue(),
           this.refs.email.getValue(),
-          this.refs.password.getValue()).then(function() {
-        LoginStore.addChangeListener(this.updateUsersName.bind(this));
-      }.bind(this)).catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        this.onError(errorMessage);
-      }.bind(this));
+          this.refs.password.getValue()).then(
+        this.login.bind(this),
+        function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          this.onError(errorMessage);
+        }.bind(this));
     }
   }
 

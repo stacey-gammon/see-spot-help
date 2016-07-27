@@ -8,6 +8,7 @@ import Photo from './photo';
 import Schedule from './schedule';
 import Activity from './activity';
 import Permission from './permission';
+import Comment from './comment';
 
 import DatabaseObject from './databaseobject';
 import { Status } from './databaseobject';
@@ -40,7 +41,6 @@ export default class Group extends DatabaseObject {
   public state: string = '';
   public zipCode: string = '';
   public photoId: string = '';
-  // Unfortunately, I don't know anyway to generate this dynamically.
 
   constructor() {
     super();
@@ -103,22 +103,16 @@ export default class Group extends DatabaseObject {
     return this.status == Status.ARCHIVED;
   }
 
-  delete() : Promise<any> {
-    this.status = Status.ARCHIVED;
-    return this.update();
-  }
-
   // Attempts to insert the current instance into the database as
   // a new volunteer group.
-  // @param callback {Function(Group, ServerResponse) }
-  //	 callback is expected to take as a first argument the potentially
-  //	 inserted volunteer group (null on failure) and a server
-  //	 response to hold error and success information.
-  insert() : Promise<any> {
+  insert() : Promise<DatabaseObject> {
     var inserts = this.getInserts();
     var permission = Permission.CreateAdminPermission(LoginStore.getUser().id, this.id);
     Object.assign(inserts, permission.getInserts());
 
-    return DataServices.UpdateMultiple(inserts);
+    return DataServices.UpdateMultiple(inserts)
+        .then(() => {
+          return this;
+        });
   }
 }

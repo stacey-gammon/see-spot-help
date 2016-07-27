@@ -47,6 +47,7 @@
     "webpack-stream": "^3.1.0"
   },
   "dependencies": {
+    "autotrack": "^0.6.5",
     "bluebird": "^3.3.4",
     "bootstrap": "^3.0.0",
     "bootstrap-timepicker": "^0.5.2",

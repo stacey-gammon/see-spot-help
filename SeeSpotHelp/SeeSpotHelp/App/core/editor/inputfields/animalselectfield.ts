@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Promise = require('bluebird');
 
 import ConstStrings from "../../conststrings";
 import InputField from "./inputfield";
@@ -11,7 +12,7 @@ export default class AnimalSelectField extends InputField {
   public type: InputFieldType = InputFieldType.ANIMAL_SELECT;
   public options: Array<{value: any, name: string}> = [];
   public defaultListItemIndex: number = 0;
-  public loading: boolean = true;
+  public loading: boolean = false;
   public onLoad: any;
 
   constructor (validations?) {
@@ -25,20 +26,17 @@ export default class AnimalSelectField extends InputField {
       return null;
   }
 
-  populate(groupId) {
+  populate(groupId) : Promise<any> {
     this.options = [];
     if (!groupId) return;
-    this.loading = false;
-    AnimalStore.addPropertyListener(this, 'groupId', groupId, this.populate.bind(this, groupId));
-    var animals = AnimalStore.getAnimalsByGroupId(groupId);
 
-    this.loading = AnimalStore.areItemsDownloading('groupId', groupId);
-
-    if (!this.loading) {
+    this.loading = true;
+    return AnimalStore.ensureItemsByProperty('groupId', groupId).then((animals) => {
+      this.loading = false;
       for (var i = 0; i < animals.length; i++) {
         this.options.push({ name: animals[i].name, value: animals[i].id });
       }
       if (this.onLoad) { this.onLoad(); }
-    }
+    });
   }
 }

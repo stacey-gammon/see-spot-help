@@ -15,7 +15,7 @@ export default class GroupSelectFieldUI extends React.Component<any, any> {
 
   getValue() {
     var element = this.refs[this.props.inputField.ref];
-    return element ? element.value : this.props.inputField.value || this.props.inputField.getDefaultValue();
+    return element ? element['value'] : this.props.inputField.value || this.props.inputField.getDefaultValue();
   }
 
   componentDidMount() {

@@ -18,7 +18,8 @@ export default class Permission extends DatabaseObject {
     super();
     this.userId = userId;
     this.groupId = groupId;
-    this.permission = permission ? permission : PermissionsEnum.NONMEMBER;
+    this.permission = permission !== undefined  && permission !== null ?
+        permission : PermissionsEnum.NONMEMBER;
 
     this.mappingProperties.push('userId');
     this.mappingProperties.push('groupId');
@@ -86,7 +87,7 @@ export default class Permission extends DatabaseObject {
 
   update() : Promise<any> {
     if (this.permission == PermissionsEnum.NONMEMBER) {
-      return this.delete();
+      return this.shallowDelete();
     } else if (this.id) {
       return super.update();
     } else {

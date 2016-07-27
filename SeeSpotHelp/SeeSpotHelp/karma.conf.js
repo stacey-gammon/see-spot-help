@@ -6,6 +6,7 @@ module.exports = function (config) {
     config.set({
         browsers: ['Chrome'],
         singleRun: false,
+        concurrency: 1,
         plugins: [
               'karma-chrome-launcher',
               'karma-mocha',
@@ -23,6 +24,10 @@ module.exports = function (config) {
         webpack: webpackConfig,
         webpackServer: {
             noInfo: true
-        }
+        },
+        captureTimeout: 60000, // it was already there
+        browserDisconnectTimeout : 100000,
+        browserDisconnectTolerance : 1,
+        browserNoActivityTimeout : 100000,
     });
 };
