@@ -1,4 +1,6 @@
 import * as React from 'react';
+var ReactDOM = require("react-dom");
+var ReactTestUtils = require('react-addons-test-utils');
 
 var Promise = require('bluebird');
 var expect = require('expect');
@@ -14,7 +16,36 @@ import DataServices from '../core/dataservices';
 
 import TestData from './testdata';
 
+function GetMockedRouter() {
+  return {
+    push() {},
+    createHref() {},
+    isActive() { return false; }
+  };
+}
+
+const context = { router: GetMockedRouter() } as any;
+const contextTypes = { router: [] } as any;
+
+class WrappedWithContext extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
+  }
+  static childContextTypes = contextTypes;
+  getChildContext() { return context; }
+
+  render() {
+    return React.createElement('div', null, this.props.children);
+  }
+}
+
 export default class TestHelper {
+
+  static MountAndUnMountPage(page) {
+    let instance = React.createElement(WrappedWithContext);
+    let rendered = ReactTestUtils.renderIntoDocument(instance);
+    ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(rendered).parentNode);
+  }
 
   static LoginAsSuperAdmin() : Promise<any> {
     console.log('LoginAsSuperAdmin');
@@ -121,27 +152,19 @@ export default class TestHelper {
         });
   }
 
-  static GetMockedRouter() {
-    return {
-      push() {},
-      createHref() {},
-      isActive() { return false; }
-    };
-  }
-
-  static WrapWithRouterContext(element) {
-    const context = { router: this.GetMockedRouter() } as any;
-    const contextTypes = { router: React.PropTypes.array } as any;
-    const wrapperWithContext = React.createClass({
-        childContextTypes: contextTypes,
-        getChildContext: function() { return context },
-        render: function() {
-          return React.createElement(element)
-        }
-    });
-
-    return React.createElement(wrapperWithContext);
-  }
+  // static WrapWithRouterContext(element) {
+  //   const context = { router: this.GetMockedRouter() } as any;
+  //   const contextTypes = { router: [] } as any;
+  //   const wrapperWithContext = React.createClass({
+  //       childContextTypes: contextTypes,
+  //       getChildContext: function() { return context },
+  //       render: function() {
+  //         return React.createElement(element)
+  //       }
+  //   });
+  //
+  //   return wrapperWithContext;
+  // }
 
   static AddTestMemberToGroup() {
     let me = this;
@@ -179,7 +202,7 @@ export default class TestHelper {
         .then(() => { return TestData.InsertAdminComment(TestData.testGroupId, TestData.testActivityId); })
         .then(() => { return TestHelper.LoginAsMember(); })
         .then(() => { return TestData.InsertMemberComment(TestData.testGroupId, TestData.testActivityId); })
-        .then(() => { return me.LoginAsAdmin(); })
+        .then(() => { return TestHelper.LoginAsAdmin(); })
         .then(() => { return; })
         .catch(function (error) {
           console.log('Error creating test data: ', error);

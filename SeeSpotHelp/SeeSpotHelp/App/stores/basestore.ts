@@ -198,7 +198,7 @@ abstract class BaseStore extends EventEmitter {
         storageMapping[propertyValue] = [];
         this.downloadFromMapping(property, propertyValue, lengthLimit).then(
             resolve,
-            function(error) {
+            (error) => {
               console.log('Failed to download items with error: ', error);
               reject(error);
             });
@@ -230,11 +230,11 @@ abstract class BaseStore extends EventEmitter {
           this.downloadFromMapping(property,
                                    propertyValue,
                                    lengthLimit,
-                                   id).then(resolve,
-                                     function(error) {
-                                       console.log('Failed to grab more items with error: ', error);
-                                       reject(error);
-                                     });
+                                   id)
+              .then(resolve, (error) => {
+                 console.log('Failed to grab more items with error: ', error);
+                 reject(error);
+               });
           return;
         }
       } else {
@@ -311,13 +311,11 @@ abstract class BaseStore extends EventEmitter {
 
       if (lastLimitId && item.id == lastLimitId) continue;
 
-      if (this.storageMappings[property][value].indexOf(id) >= 0) {
+      if (this.storageMappings[property][value] &&
+          this.storageMappings[property][value].indexOf(id) >= 0) {
         // Exists locally, item must be updated.
         this.itemChanged(property, item);
       } else {
-        if (lengthLimit) {
-          console.log('adding item: ', item);
-        }
         this.itemAdded(property, item);
       }
     }
@@ -526,25 +524,17 @@ abstract class BaseStore extends EventEmitter {
     } else {
       this.currentlyDownloading[property][value] = true;
     }
-    var path = DatabaseObject.GetPathToMapping(this.firebasePath, property, value);
 
-    return new Promise(function(resolve, reject) {
-      DataServices.DownloadDataOnce(path,
-                                    lengthLimit,
-                                    id)
-          .then(
-            function(snapshot) {
-              this.itemsDownloaded(property, value, lengthLimit, id, snapshot);
-              resolve(this.getItemsByProperty(property, value));
-            }.bind(this),
-            reject);
-    }.bind(this));
+    var path = DatabaseObject.GetPathToMapping(this.firebasePath, property, value);
+    return DataServices.DownloadDataOnce(path, lengthLimit, id).then((snapshot) => {
+        this.itemsDownloaded(property, value, lengthLimit, id, snapshot);
+        return this.getItemsByProperty(property, value);
+      });
   }
 
   onChildAdded(property, snapshot) {
     console.log('onChildAdded property ' + property + ' and snapshot ', snapshot);
     this.itemAdded(property, snapshot.val());
-    console.log('onChildAdded emitting change');
     this.emitChange(property, snapshot.val()[property]);
   }
 

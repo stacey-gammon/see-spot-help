@@ -77,12 +77,12 @@ class LoginStore extends BaseStore {
   authenticateWithEmailPassword(email, password) : Promise<any> {
     console.log('authenticateWithEmailPassword(' + email + ',' + password + ')');
     this.loggedOut = false;
-    let me = this;
-    return DataServices.LoginWithEmailAndPassword(email, password).then(function(data) {
-      console.log('Completed login with ' + email + ' and ' + password + ' with data ', data);
-      me.authenticated = true;
-      return data;
-    });
+    return DataServices.LoginWithEmailAndPassword(email, password)
+        .then((data) => {
+          console.log('Completed login with ' + email + ' and ' + password + ' with data ', data);
+          this.authenticated = true;
+          return data;
+        });
   }
 
   signUpWithEmailAndPassword(name, email, password) : Promise<any> {

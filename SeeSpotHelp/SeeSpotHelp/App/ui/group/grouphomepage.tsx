@@ -27,6 +27,7 @@ export default class GroupHomePage extends React.Component<any, any> {
 
   constructor(props) {
     super(props);
+    console.log('GroupHomePage:constructor');
     var groupId = Utils.FindPassedInProperty(this, 'groupId');
     if (groupId) {
       Utils.SaveProp('groupId', groupId);
@@ -38,82 +39,80 @@ export default class GroupHomePage extends React.Component<any, any> {
       groupId: groupId,
       loading: true
      };
-    this.loadFromServer = this.loadFromServer.bind(this);
-    this.loadDefaultGroup = this.loadDefaultGroup.bind(this);
   }
 
   componentDidMount() {
-    LoginStore.addChangeListener(this.loadFromServer);
-    this.loadFromServer();
+    console.log('GroupHomePage:componentDidMount');
+    if (!LoginStore.getUser()) return ;
+
+    this.loadGroup();
     this.mounted = true;
   }
 
   componentWillUnmount() {
-    LoginStore.removeChangeListener(this.loadFromServer);
-    GroupStore.removeChangeListener(this.loadDefaultGroup);
+    console.log('GroupHomePage:componentWillUnmount');
     GroupStore.removePropertyListener(this);
+    PermissionsStore.removePropertyListener(this);
+
     this.mounted = false;
   }
 
-  loadDefaultGroup() {
-    var groupId = this.state.groupId;
-    // If the user doesn't have any 'last looked at' group, see if we can grab one from the user.
-    if (LoginStore.getUser() && !groupId) {
-      var groups = GroupStore.getGroupsByUser(LoginStore.getUser(), this.loadDefaultGroup);
-      if (groups && groups.length > 0) {
-        groupId = groups[0].id;
-      }
+  loadGroupById(groupId) : Promise<Group> {
+    return GroupStore.ensureItemById(groupId)
+        .then((group) => {
+          if (!group) {
+            let permissions = PermissionsStore.getItemsByProperty('userId',
+                                                                  LoginStore.getUser().id);
+            return this.loadDefaultUserGroup(permissions);
+          } else {
+            return group as Group;
+          }
+        });
+  }
+
+  loadDefaultUserGroup(permissions) : Promise<Group> {
+    if (permissions.length == 0) {
+      return Promise.resolve(null);
+    } else {
+      return GroupStore.ensureItemById(permissions[0].groupId) as Promise<Group>;
     }
+  }
 
-    // User doesn't belong to any groups, and isn't looking at any.  We'll just show an intro
-    // screen on the home page.
-    if (!groupId || !LoginStore.getUser()) return;
+  loadGroup() {
+    console.log('GroupHomePage:loadGroup');
 
-    let promises = [
-        GroupStore.ensureItemById(groupId),
-        PermissionsStore.ensureItemsByProperty('userId', LoginStore.getUser().id)];
-    Promise.all(promises).then((results) => {
-        if (!this.mounted) return;
-
-        var group = GroupStore.getGroupById(groupId);
-        var permission = PermissionsStore.getPermission(LoginStore.getUser().id, groupId);
+    PermissionsStore.ensureItemsByProperty('userId', LoginStore.getUser().id)
+      .then((permissions) => {
+         if (this.state.groupId) {
+           return this.loadGroupById(this.state.groupId);
+         } else {
+           return this.loadDefaultUserGroup(permissions);
+         }
+      })
+      .then((group) => {
         if (group) {
+          var permission = PermissionsStore.getPermission(LoginStore.getUser().id, group.id);
           this.setState({ permission: permission, groupId: group.id, loading: false });
-          this.removeGroupChangeListeners();
-          this.addGroupChangeListeners(group);
+          this.removeGroupPropertyListeners();
+          this.addGroupPropertyListeners(group);
         } else {
           // Clear out the group id since it's apparently invalid.
           Utils.SaveProp('groupId', null);
           this.setState({loading: false });
         }
-    });
-  }
-
-  loadFromServer() {
-    // If the user doesn't have any 'last looked at' group, see if we can grab one from the user.
-    if (LoginStore.getUser() && !this.state.groupId) {
-      GroupStore.addPropertyListener(this,
-                                     'userId',
-                                     LoginStore.getUser().id,
-                                     this.loadDefaultGroup);
-      PermissionsStore.addPropertyListener(this,
-                                           'userId',
-                                           LoginStore.getUser().id,
-                                           this.loadDefaultGroup);
-    }
-    this.loadDefaultGroup();
+      });
   }
 
   loadDifferentGroup(group) {
     this.setState({ groupId: group.id });
   }
 
-  removeGroupChangeListeners() {
+  removeGroupPropertyListeners() {
     PermissionsStore.removePropertyListener(this);
     GroupStore.removePropertyListener(this);
   }
 
-  addGroupChangeListeners(group) {
+  addGroupPropertyListeners(group) {
     GroupStore.addPropertyListener(this, 'id', group.id, this.forceUpdate.bind(this));
   }
   //

@@ -13,13 +13,13 @@ import LoginStore from '../../../stores/loginstore';
 import TestHelper from '../../testhelper';
 import TestData from '../../testdata';
 
-describe("GroupHomePageTests", function () {
-  afterEach(function(done) {
+describe("Group home page", function () {
+  afterEach(function() {
     this.timeout(100000);
-    return TestHelper.DeleteAllTestData().then(done);
+    return TestHelper.DeleteAllTestData();
   });
 
-  it("LoadGroup", function () {
+  it("loads a group", function () {
     this.timeout(50000);
     return TestHelper.CreateTestData().then(() => {
       Utils.SaveProp('groupId', TestData.testGroupId);
@@ -32,13 +32,14 @@ describe("GroupHomePageTests", function () {
         setTimeout(() => {
           expect(GroupHomePageElement.state.loading).toEqual(false);
           ReactTestUtils.findRenderedComponentWithType(GroupHomePageElement, GroupInfoBar);
+          ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(GroupHomePageElement).parentNode);
           resolve();
         }, 1000);
       });
     });
   });
 
-  it("LoadNonExistantGroup", function () {
+  it("loads intro page when user does not belong to a group", function () {
     this.timeout(50000);
     return TestHelper.LoginAsNonMember().then(() => {
       Utils.SaveProp('groupId', 'nogroupidofthisexists');
@@ -51,7 +52,7 @@ describe("GroupHomePageTests", function () {
         setTimeout(() => {
           expect(GroupHomePageElement.state.loading).toEqual(false);
           ReactTestUtils.findRenderedComponentWithType(GroupHomePageElement, Intro);
-
+          ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(GroupHomePageElement).parentNode);
           resolve();
         }, 1000);
       });

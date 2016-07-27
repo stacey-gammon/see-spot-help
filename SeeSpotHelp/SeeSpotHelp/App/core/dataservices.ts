@@ -6,6 +6,8 @@ var Firebase = require('firebase');
 import initFirebase from './firebaseconfig';
 initFirebase();
 
+const MaxNetworkRetries : number = 3;
+
 /**
  * Controls access to the firebase database end point, as well as image storage.
  * test change.
@@ -15,6 +17,7 @@ export default class DataServices {
   private static addListeners: Array<string> = [];
   private static changeListeners: Array<string> = [];
   private static removeListeners: Array<string> = [];
+  private static networkErrorRetries: number = 0;
 
   public static GetNewPushKey(path): string {
     var ref = this.database.ref();
@@ -57,7 +60,12 @@ export default class DataServices {
   }
 
   public static LoginWithEmailAndPassword(email: string, password: string) : Promise<any> {
-    return Firebase.auth().signInWithEmailAndPassword(email, password);
+    console.log('DataServices:LoginWithEmailAndPassword: Logging in as ' + email + ' with pw ' + password);
+    let signInPromise = Firebase.auth().signInWithEmailAndPassword(email, password);
+    console.log('Firebase sign in promise: ', signInPromise);
+    return this.WrapInCatch(
+        signInPromise,
+        this.LoginWithEmailAndPassword.bind(this, email, password));
   }
 
   public static ResetPassword(email: string) : Promise<any> {
@@ -162,6 +170,17 @@ export default class DataServices {
     ref.off("value", callback);
   }
 
+  public static MaybeRetry(error, originalCall: () => Promise<any>) : Promise<any> {
+    if (error.code == 'auth/network-request-failed' &&
+        this.networkErrorRetries < MaxNetworkRetries) {
+      console.log('Caught network error, retry #' + this.networkErrorRetries);
+      this.networkErrorRetries++;
+      return originalCall();
+    } else {
+      throw error;
+    }
+  }
+
   public static DownloadData(path, callback) {
     console.log('DownloadData at ' + path);
     this.database.ref("/" + path).on("value", callback);
@@ -171,12 +190,13 @@ export default class DataServices {
     var ref = this.database.ref("/" + path);
 
     if (lengthLimit && id) {
-      return ref.orderByKey().endAt(id).limitToLast(lengthLimit).once('value');
+      ref = ref.orderByKey().endAt(id).limitToLast(lengthLimit);
     } else if (lengthLimit) {
-      return ref.orderByKey().limitToLast(lengthLimit).once('value');
-    } else {
-      return ref.once("value");
+      ref = ref.orderByKey().limitToLast(lengthLimit);
     }
+
+    return this.WrapInCatch(ref.once('value'),
+                            this.DownloadDataOnce.bind(this, path, lengthLimit, id));
   }
 
   public static SetFirebaseData(path, value) : Promise<any> {
@@ -195,17 +215,27 @@ export default class DataServices {
     return ref.push(value);
   }
 
+  public static WrapInCatch(promise: Promise<any>, originalCall) : Promise<any> {
+    console.log('WrapInCatch: ', promise);
+    return promise.then((result) => {
+      console.log('promise succeeded, reseting network retries, returning ', result);
+      this.networkErrorRetries = 0;
+      return result;
+    })
+    .catch((error) => {
+      console.log('Error caught: ', error);
+      this.MaybeRetry(error, originalCall);
+    });
+  }
+
   public static UpdateMultiple(updates) : Promise<any> {
     var ref = this.database.ref();
-    return ref.update(updates);
+    return this.WrapInCatch(ref.update(updates), this.UpdateMultiple.bind(this, updates));
   }
 
   public static DeleteMultiple(deletes) : Promise<any> {
     var ref = this.database.ref();
-    return ref.update(deletes).catch(function(error) {
-      console.log('Error deleting ', deletes);
-      return error;
-    });
+    return this.WrapInCatch(ref.update(deletes), this.DeleteMultiple.bind(this, deletes));
   }
 
   public static UploadPhoto(thumbBlob, listBlob, fullBlob, fileName, userId) {
