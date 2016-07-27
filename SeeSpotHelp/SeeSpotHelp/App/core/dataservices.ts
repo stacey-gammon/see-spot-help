@@ -224,7 +224,7 @@ export default class DataServices {
     })
     .catch((error) => {
       console.log('Error caught: ', error);
-      this.MaybeRetry(error, originalCall);
+      return this.MaybeRetry(error, originalCall);
     });
   }
 
