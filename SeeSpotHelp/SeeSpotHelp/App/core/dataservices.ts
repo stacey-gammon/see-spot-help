@@ -2,6 +2,8 @@
 var Firebase = require('firebase');
 //Firebase.database.enableLogging(true);
 
+
+import $ = require('jquery');
 // Initialize Firebase
 import initFirebase from './firebaseconfig';
 initFirebase();

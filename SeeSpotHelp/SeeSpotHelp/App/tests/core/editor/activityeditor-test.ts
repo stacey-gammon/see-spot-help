@@ -1,5 +1,4 @@
 import * as React from 'react';
-var ReactTestUtils = require('react-addons-test-utils');
 var expect = require('expect');
 var Promise = require('bluebird');
 
@@ -9,8 +8,6 @@ import ActivityEditor from '../../../core/editor/activityeditor';
 import LoginStore from '../../../stores/loginstore';
 import TestHelper from '../../testhelper';
 import TestData from '../../testdata';
-
-var d3 = require("d3");
 
 describe("ActivityEditorTest", function () {
 

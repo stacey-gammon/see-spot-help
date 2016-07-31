@@ -10,7 +10,7 @@ export default class Photo extends DatabaseObject {
   public userId: string;
   public groupId: string;
   public animalId: string;
-  public file: string;
+  public file: Blob|File;
 
   constructor() {
     super();

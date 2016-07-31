@@ -154,26 +154,15 @@ export default class PhotoEditor extends Editor {
           });
         });
       });
-
-    // var photo = this.databaseObject;
-    // this.generateImages(photo.file).then(function(blobs) {
-    //   DataServices.UploadPhoto(blobs[0], blobs[1], blobs[2], photo.file.name, extraFields.userId).then(
-    //     function(result) {
-    //       extraFields.thumbUrl = result[0];
-    //       extraFields.midSizeUrl = result[1];
-    //       extraFields.fullUrl = result[2];
-    //       return this.insertPhoto(extraFields, onError, onSuccess);
-    //   }.bind(this));
-    // }.bind(this));
   }
 
   insertPhoto(extraFields) : Promise<any> {
     let promises = [];
     var photo = new Photo();
     photo.updateFromInputFields(this.inputFields);
-    photo.groupId = extraFields.groupId;
-    photo.animalId = extraFields.animalId;
-    photo.userId = extraFields.userId;
+    photo.groupId = extraFields.groupId || null;
+    photo.animalId = extraFields.animalId || null;
+    photo.userId = extraFields.userId || null;
     photo.src = ''; // Make sure we aren't saving the base 64 data.
     photo.fullSizeUrl = extraFields.fullUrl;
     photo.midSizeUrl = extraFields.midSizeUrl;
@@ -217,8 +206,8 @@ export default class PhotoEditor extends Editor {
 
   createInputFields() {
     this.inputFields = {
-      'src': new InputPhotoField(
-        this.databaseObject.src, [InputFieldValidation.validateNotEmpty]),
+      'src': new InputPhotoField(this.databaseObject.src,
+                                 [InputFieldValidation.validateNotEmpty]),
       'comment': new InputTextAreaField([])
     };
   }
