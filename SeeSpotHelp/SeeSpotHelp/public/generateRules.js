@@ -155,10 +155,19 @@ function generateBasicTableRules(table) {
   addReadRule(tableRules, 'auth != null');
 
   var adminsCanWriteRule = getAllowAccessRule(ADMIN);
-  var membersCanUpdateTheirOwn = `(data.exists() && data.child('userId').val() == auth.uid) && ${getAllowAccessRule(MEMBER)}`;
+  var membersCanUpdateTheirOwn = `(data.exists() && data.child('userId').val() == auth.uid && ${getAllowAccessRule(MEMBER)})`;
   var membersCanAddTheirOwn = `(!data.exists() && newData.exists() && newData.child('userId').val() == auth.uid && ${getAllowAccessRule(MEMBER)})`;
 
-  var writeRules = `${adminsCanWriteRule} || ${membersCanAddTheirOwn} || ${membersCanUpdateTheirOwn}`;
+  var writeRules = '';
+  if (table == 'Photo') {
+    // This is really for headshot photos only, where there is no group id.
+    var nonMembersCanUpdateTheirOwn = `(data.exists() && data.child('userId').val() == auth.uid && (!data.child('groupId').exists() || data.child('groupId').val() == null))`;
+    var nonMembersCanAddTheirOwn = `(newData.exists() && newData.child('userId').val() == auth.uid && (!newData.child('groupId').exists() || newData.child('groupId').val() == null))`;
+
+    writeRules += `${nonMembersCanUpdateTheirOwn} || ${nonMembersCanAddTheirOwn} || `;
+  }
+
+  writeRules += `${adminsCanWriteRule} || ${membersCanAddTheirOwn} || ${membersCanUpdateTheirOwn}`;
 
   addWriteRule(tableRules, writeRules);
   addIndexOn(tableRules, "timestamp");
