@@ -25,88 +25,176 @@ import TestHelper from '../testhelper';
 
 var d3 = require("d3");
 
-describe("InvalidPageLoads", function () {
-  it("AnimalHomePage", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(AnimalHomePage);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+describe("Page ", function () {
+
+  beforeEach(function() {
+    this.timeout(10000);
+    return TestHelper.LoginAsAdmin();
   });
 
-  it("AddAnimalPage", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(AddAnimalPage);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+  afterEach(function() {
+    this.timeout(100000);
+    return TestHelper.DeleteAllTestData();
   });
 
-  it("GroupHomePage", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(GroupHomePage);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+
+  describe("Animal Home", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(AnimalHomePage);
+    });
+
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(AnimalHomePage);
+      });
+    });
   });
 
-  it("AddNewGroup", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(AddNewGroup);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+  describe("Add Animal", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(AddAnimalPage);
+    });
+
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(AddAnimalPage);
+      });
+    });
+  });
+  describe("Group Home ", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(GroupHomePage);
+    });
+
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(GroupHomePage);
+      });
+    });
   });
 
-  it("ProfilePage", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(ProfilePage);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+  describe("Add new group ", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(AddNewGroup);
+    });
+
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(AddNewGroup);
+      });
+    });
   });
 
-  it("EditProfile", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(EditProfile);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+  describe("Profile page ", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(ProfilePage);
+    });
+
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(ProfilePage);
+      });
+    });
   });
 
-  it("SignUpPage", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(SignUpPage);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+  describe("Edit profile", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(EditProfile);
+    });
+
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(EditProfile);
+      });
+    });
   });
 
-  it("AddPhotoPage", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(AddPhotoPage);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
-  });
+  describe("Sign up page", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(SignUpPage);
+    });
 
-  it("SearchPage", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(SearchPage);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(SignUpPage);
+      });
+    });
   });
+  describe("Add photo page", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(AddPhotoPage);
+    });
 
-  it("MemberPage", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(MemberPage);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(AddPhotoPage);
+      });
+    });
   });
+  describe("search page", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(SearchPage);
+    });
 
-  it("LoginPage", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(LoginPage);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(SearchPage);
+      });
+    });
   });
+  describe("member page", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(MemberPage);
+    });
 
-  it("PrivateBetaPage", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(PrivateBetaPage);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(MemberPage);
+      });
+    });
   });
+  describe("login page", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(LoginPage);
+    });
 
-  it("EnterBetaCode", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(EnterBetaCode);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(LoginPage);
+      });
+    });
   });
+  describe("private beta page", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(PrivateBetaPage);
+    });
 
-  it("AddCalendarEvent", function () {
-    LoginStore.user = null;
-    let wrappedComponent = TestHelper.WrapWithRouterContext(AddCalendarEvent);
-    ReactTestUtils.renderIntoDocument(wrappedComponent);
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(PrivateBetaPage);
+      });
+    });
+  });
+  describe("Enter beta code page", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(EnterBetaCode);
+    });
+
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(EnterBetaCode);
+      });
+    });
+  });
+  describe("Add calendar event page", function () {
+    it("loads when logged in", function () {
+      TestHelper.MountAndUnMountPage(AddCalendarEvent);
+    });
+
+    it("loads when logged out", function () {
+      return LoginStore.logout().then(() => {
+        TestHelper.MountAndUnMountPage(AddCalendarEvent);
+      });
+    });
   });
 });

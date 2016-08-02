@@ -5,7 +5,11 @@ import InputField from '../../../core/editor/inputfields/inputfield';
 import AnimalSelectField from '../../../core/editor/inputfields/animalselectfield';
 import { InputFieldType } from '../../../core/editor/inputfields/inputfield';
 
-export default class AnimalSelectFieldUI extends React.Component<any, any> {
+export interface AnimalSelectFieldPropTypes {
+  inputField : AnimalSelectField
+}
+
+export default class AnimalSelectFieldUI extends React.Component<AnimalSelectFieldPropTypes, any> {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,25 +19,19 @@ export default class AnimalSelectFieldUI extends React.Component<any, any> {
 
   getValue() {
     var element = this.refs[this.props.inputField.ref];
-    return element ? element.value : this.props.inputField.value || this.props.inputField.getDefaultValue();
+    return element ? element['value'] :
+        this.props.inputField.value || this.props.inputField.getDefaultValue();
   }
 
   componentDidMount() {
     this.props.inputField.onLoad = this.onChange.bind(this);
     this.props.inputField.onChange = this.onChange.bind(this);
-    if (this.props.groupId) {
-      this.props.inputField.populate(this.props.groupId);
-    }
-    this.setState({
-      loaded: !this.props.inputField.loading
-    });
+    this.setState({loaded: !this.props.inputField.loading});
   }
 
   onChange() {
     this.props.inputField.value = this.getValue();
-    this.setState({
-      loaded: !this.props.inputField.loading
-    });
+    this.setState({loaded: !this.props.inputField.loading});
   }
 
   createTypeOption(option) {
@@ -41,9 +39,10 @@ export default class AnimalSelectFieldUI extends React.Component<any, any> {
   }
 
   getInputListElement(inputField: AnimalSelectField) {
-    if (inputField.loading) {
+    if (!this.state.loaded) {
       return <Loader loaded={this.state.loaded}/>
     }
+
     var inputFieldClassName = 'form-control ' + inputField.ref;
     var options = inputField.options.map(this.createTypeOption);
     var defaultValue = inputField.value ? inputField.value : inputField.getDefaultValue();

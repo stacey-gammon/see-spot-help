@@ -1,59 +1,65 @@
 ﻿var React = require("react");
 var ReactTestUtils = require("react-addons-test-utils");
 var expect = require("expect"),
-	Volunteer = require("../core/volunteer"),
-	Group = require("../core/group"),
-	LoginStore = require("../stores/loginstore"),
-	SearchPage = require("../ui/searchpage.jsx");
+  Volunteer = require("../core/volunteer"),
+  Group = require("../core/group"),
+  LoginStore = require("../stores/loginstore"),
+  SearchPage = require("../ui/searchpage.jsx");
 
 var d3 = require("d3");
 
 describe("SearchPage", function () {
-	it("ShowEnabledAddButtonAfterSearchForLoggedInUser", function () {
-		var user = new Volunteer("sally", "sallyemail", "123");
-		LoginStore.user = user;
-		var shelterSearchPage = ReactTestUtils.renderIntoDocument(
-			<SearchPage user={user}/>
-		);
+  afterEach(function(done) {
+    this.timeout(100000);
+    return TestHelper.DeleteAllTestData().then(done);
+  });
 
-		// No add button until the user actually starts a search.
-		var addButtons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-			shelterSearchPage, "AddNewGroupButton");
-		expect(addButtons.length).toEqual(0);
 
-		var searchInput = ReactTestUtils.findRenderedDOMComponentWithClass(
-			shelterSearchPage, "shelterSearchInput");
-		searchInput.value = "anything";
+  it("ShowEnabledAddButtonAfterSearchForLoggedInUser", function () {
+    var user = new Volunteer("sally", "sallyemail", "123");
+    LoginStore.user = user;
+    var shelterSearchPage = ReactTestUtils.renderIntoDocument(
+      <SearchPage user={user}/>
+    );
 
-		var searchButton = ReactTestUtils.findRenderedDOMComponentWithClass(
-			shelterSearchPage, "shelterSearchButton");
-		ReactTestUtils.Simulate.click(searchButton);
+    // No add button until the user actually starts a search.
+    var addButtons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
+      shelterSearchPage, "AddNewGroupButton");
+    expect(addButtons.length).toEqual(0);
 
-		var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
-			shelterSearchPage, "AddNewGroupButton");
-		expect(addButton.disabled).toEqual(false);
-	});
+    var searchInput = ReactTestUtils.findRenderedDOMComponentWithClass(
+      shelterSearchPage, "shelterSearchInput");
+    searchInput.value = "anything";
 
-	it("ShowDisabledAddButtonAfterSearchForNoUser", function () {
-		LoginStore.user = null;
-		var shelterSearchPage = ReactTestUtils.renderIntoDocument(
-			<SearchPage />
-		);
-		// No add button until the user actually starts a search.
-		var addButtons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-			shelterSearchPage, "AddNewGroupButton");
-		expect(addButtons.length).toEqual(0);
+    var searchButton = ReactTestUtils.findRenderedDOMComponentWithClass(
+      shelterSearchPage, "shelterSearchButton");
+    ReactTestUtils.Simulate.click(searchButton);
 
-		var searchInput = ReactTestUtils.findRenderedDOMComponentWithClass(
-			shelterSearchPage, "shelterSearchInput");
-		searchInput.value = "anything";
+    var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
+      shelterSearchPage, "AddNewGroupButton");
+    expect(addButton.disabled).toEqual(false);
+  });
 
-		var searchButton = ReactTestUtils.findRenderedDOMComponentWithClass(
-			shelterSearchPage, "shelterSearchButton");
-		ReactTestUtils.Simulate.click(searchButton);
+  it("ShowDisabledAddButtonAfterSearchForNoUser", function () {
+    LoginStore.user = null;
+    var shelterSearchPage = ReactTestUtils.renderIntoDocument(
+      <SearchPage />
+    );
+    // No add button until the user actually starts a search.
+    var addButtons = ReactTestUtils.scryRenderedDOMComponentsWithClass(
+      shelterSearchPage, "AddNewGroupButton");
+    expect(addButtons.length).toEqual(0);
 
-		var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
-			shelterSearchPage, "AddNewGroupButton");
-		expect(addButton.disabled).toEqual(true);
-	});
+    var searchInput = ReactTestUtils.findRenderedDOMComponentWithClass(
+      shelterSearchPage, "shelterSearchInput");
+    searchInput.value = "anything";
+
+    var searchButton = ReactTestUtils.findRenderedDOMComponentWithClass(
+      shelterSearchPage, "shelterSearchButton");
+    ReactTestUtils.Simulate.click(searchButton);
+
+    var addButton = ReactTestUtils.findRenderedDOMComponentWithClass(
+      shelterSearchPage, "AddNewGroupButton");
+    expect(addButton.disabled).toEqual(true);
+  });
 });

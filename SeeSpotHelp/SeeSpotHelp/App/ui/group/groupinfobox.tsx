@@ -31,7 +31,8 @@ class GroupInfoBox extends React.Component<any, any> {
       return null;
     }
     return (
-      <span className='edit-group-button glyphicon glyphicon-edit' onClick={this.editGroup.bind(this)}>
+      <span className='edit-group-button glyphicon glyphicon-edit'
+            onClick={this.editGroup.bind(this)}>
       </span>
     );
   }

@@ -2,6 +2,7 @@
 
 import DataServices from '../dataservices';
 import DatabaseObject from './databaseobject';
+import Comment from './comment';
 
 export default class Activity extends DatabaseObject {
   public description: string = '';
@@ -10,6 +11,7 @@ export default class Activity extends DatabaseObject {
   public groupId: string;
   public photoId: string = null;
   public eventId: string = null;
+  public linkedChildren: Array<DatabaseObject> = [new Comment()];
 
   constructor() {
     super();

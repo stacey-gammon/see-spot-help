@@ -15,12 +15,19 @@ import ErrorPopup from '../errorpopup';
 import CommentStore from '../../../stores/commentstore';
 import VolunteerStore from '../../../stores/volunteerstore';
 import ActivityStore from '../../../stores/animalactivitystore';
+import Permission from '../../../core/databaseobjects/permission';
 import Comment from '../../../core/databaseobjects/comment';
 import LoginStore from '../../../stores/loginstore';
 
 import InputCommentForm from './inputcommentform';
 
-export default class Comments extends React.Component<any, any> {
+export interface CommentsPropTypes {
+  activityId: string,
+  permission: Permission,
+  groupId: string
+}
+
+export default class Comments extends React.Component<CommentsPropTypes, any> {
   constructor(props) {
     super(props);
     this.state = {
@@ -52,7 +59,7 @@ export default class Comments extends React.Component<any, any> {
     this.setState({editCommentId: commentId});
   }
 
-  getEditMenuItem(comment) {
+  getEditMenuItem(comment: Comment) {
     if (comment.userId == LoginStore.getUser().id) {
       return <MenuItem eventKey="1" onClick={this.editAction.bind(this, comment.id)}>Edit</MenuItem>
     } else {
@@ -60,28 +67,29 @@ export default class Comments extends React.Component<any, any> {
     }
   }
 
-  deleteAction(comment) {
+  deleteAction(comment: Comment) : Promise<any> {
     let me = this;
-    comment.delete().then(function() {
+    return comment.shallowDelete().then(function() {
       me.setState({error: false, errorMessage: ''});
     }, function (error) {
       me.setState({error: true, errorMessage: error.message});
     });
   }
 
-  getActionDropDown(comment) {
+  getActionDropDown(comment: Comment) {
     return (
       <div className='dropdown activity-dropdown' id='actionDropDown'>
         <DropdownButton title={<span className="glyphicon glyphicon-edit edit-action-btn"></span>}
                         className='action-dropdown-btn'>
           {this.getEditMenuItem(comment)}
-          <MenuItem eventKey="2" onClick={this.deleteAction.bind(this, comment)}>Delete</MenuItem>
+          <MenuItem eventKey="2" ref='deleteAction'
+                    onClick={this.deleteAction.bind(this, comment)}>Delete</MenuItem>
         </DropdownButton>
       </div>
     );
   }
 
-  getActions(comment) {
+  getActions(comment: Comment) {
     if (!LoginStore.getUser()) return null;
     if (comment.userId == LoginStore.getUser().id || this.props.permission.admin()) {
       return (

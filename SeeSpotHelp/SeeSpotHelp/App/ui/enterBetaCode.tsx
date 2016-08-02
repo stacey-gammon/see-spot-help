@@ -47,7 +47,7 @@ var EnterBetaCode = React.createClass({
     var onError = function () {
       this.setState({error: true});
     }.bind(this);
-    DataServices.DownloadDataOnce('inviteCodes/' + betaCode, onSuccess, onError);
+    DataServices.DownloadDataOnce('inviteCodes/' + betaCode).then(onSuccess, onError);
   },
 
   getErrorText: function () {
