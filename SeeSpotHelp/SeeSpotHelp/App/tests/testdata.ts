@@ -99,6 +99,7 @@ export default class TestData {
     let comment = new Comment();
     comment.groupId = groupId;
     comment.userId = LoginStore.getUser().id;
+    comment.activityId = activityId;
     comment.comment = 'test comment';
     return comment;
   }

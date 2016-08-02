@@ -120,6 +120,7 @@ export default class DataServices {
   }
 
   public static OnChildRemoved(path, onSuccess) {
+    console.log('DataServices:OnChildRemoved: ' + path);
     if (this.removeListeners.indexOf(path) >= 0) return;
     this.removeListeners.push(path);
     var ref = this.database.ref("/" + path);
@@ -129,12 +130,12 @@ export default class DataServices {
     });
   }
 
-  public static OnChildAdded(path, onSuccess, lastId : string) {
+  public static OnChildAdded(path: string, onSuccess: (any) => void, lastTimestamp? : number) {
     if (this.addListeners.indexOf(path) >= 0) return;
     this.addListeners.push(path);
-    var ref = this.database.ref("/" + path).orderByKey();
-    if (lastId) {
-      ref = ref.startAt(lastId);
+    var ref = this.database.ref("/" + path).orderByChild('timestamp');
+    if (lastTimestamp) {
+      ref = ref.startAt(lastTimestamp);
     }
     ref.on("child_added", function (snapshot) {
       console.log('child_added at ' + path);
@@ -212,7 +213,7 @@ export default class DataServices {
     return ref.remove(callback);
   }
 
-  public static PushFirebaseData(path, value) {
+  public static PushFirebaseData(path, value) : Promise<any> {
     var ref = this.database.ref('/' + path);
     return ref.push(value);
   }
@@ -230,12 +231,13 @@ export default class DataServices {
     });
   }
 
-  public static UpdateMultiple(updates) : Promise<any> {
+  public static UpdateMultiple(updates: {}) : Promise<any> {
     var ref = this.database.ref();
     return this.WrapInCatch(ref.update(updates), this.UpdateMultiple.bind(this, updates));
   }
 
-  public static DeleteMultiple(deletes) : Promise<any> {
+  public static DeleteMultiple(deletes: {}) : Promise<any> {
+    console.log('Dataservices:DeleteMultiple: on deletes ', deletes);
     var ref = this.database.ref();
     return this.WrapInCatch(ref.update(deletes), this.DeleteMultiple.bind(this, deletes));
   }

@@ -11,6 +11,11 @@ var rules = {
     ".write": "true"
   },
 
+  "test": {
+    ".read": "true",
+    ".write": "true"
+  },
+
   "users": {
     "$userId": {
       ".read": "true",

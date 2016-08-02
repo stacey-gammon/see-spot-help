@@ -194,6 +194,13 @@ abstract class BaseStore extends EventEmitter {
 
       var storageMapping = this.storageMappings[property];
       if (!storageMapping.hasOwnProperty(propertyValue)) {
+
+        // Add change and remove listeners before downloading them to avoid a race condition.
+        var path = this.getPathToMaping(property, propertyValue);
+
+        DataServices.OnChildChanged(path, this.onChildChanged.bind(this, property));
+        DataServices.OnChildRemoved(path, this.onChildRemoved.bind(this, property, propertyValue));
+
         console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');
         storageMapping[propertyValue] = [];
         this.downloadFromMapping(property, propertyValue, lengthLimit).then(
@@ -296,7 +303,11 @@ abstract class BaseStore extends EventEmitter {
   * initially downloaded in bulk, after which a listener is set up for subsequent additions,
   * changes and deletions.
   */
-  itemsDownloaded(property: string, value: string, lengthLimit: number, lastLimitId : string, snapshot) {
+  itemsDownloaded(property: string,
+                  value: string,
+                  lengthLimit: number,
+                  lastLimitId : string,
+                  snapshot) {
     console.log(this.databaseObject.className + 'Store: itemsDownloaded with value ' + value + ', limited to ' + lengthLimit + ' starting at ' + lastLimitId);
     let lastItemTimestamp = 0;
     let lastItemId = null;
@@ -349,7 +360,11 @@ abstract class BaseStore extends EventEmitter {
       this.emitChange(property, value);
     }
 
-    this.addListeners(property, value);
+    var path = this.getPathToMaping(property, value);
+
+    console.log(this.databaseObject.className + 'Store: addListeners for ' +
+                property + ' and val ' + value + ' on path ' + path + ' with last ts ' + lastItemTimestamp);
+    DataServices.OnChildAdded(path, this.onChildAdded.bind(this, property), lastItemTimestamp + 1);
   }
 
   /**
@@ -444,7 +459,7 @@ abstract class BaseStore extends EventEmitter {
 
       this.storage[casted.id] = casted;
     }
-    console.log(this.databaseObject.className + 'Store: itemAdded with prop ' + prop + ' GOODBYTE');
+    console.log(this.databaseObject.className + 'Store: itemAdded with prop ' + prop + ' and item: ', item);
   }
 
   itemDeletedWithId(id) {
@@ -533,12 +548,14 @@ abstract class BaseStore extends EventEmitter {
   }
 
   onChildAdded(property, snapshot) {
-    console.log('onChildAdded property ' + property + ' and snapshot ', snapshot);
+    console.log('onChildAdded property ' + property + ' and snapshot val ', snapshot.val());
     this.itemAdded(property, snapshot.val());
     this.emitChange(property, snapshot.val()[property]);
   }
 
   onChildChanged(property, snapshot) {
+    console.log(this.databaseObject.className + 'Store:onChildChanged(' + property + ': ', snapshot.val());
+
     this.itemChanged(property, snapshot.val());
     this.emitChange(property, snapshot.val()[property]);
   }
@@ -560,15 +577,20 @@ abstract class BaseStore extends EventEmitter {
     this.emitChange();
   }
 
-  addListeners(property, value) {
-    console.log(this.databaseObject.className + 'Store: addListeners for ' + property + ' and val ' + value);
-    var path = DatabaseObject.GetPathToMapping(
-        this.firebasePath,
-        property,
-        value);
+  getPathToMaping(property, value) : string {
+    return DatabaseObject.GetPathToMapping(this.firebasePath, property, value);
+  }
+
+  addListeners(property, value, lastItemTimestamp) {
+    var path = this.getPathToMaping(property, value);
 
     let lastId = this.getOldestItemId(property, value);
-    DataServices.OnChildAdded(path, this.onChildAdded.bind(this, property), lastId);
+
+    let lastItem = this.storage[lastId];
+    console.log(this.databaseObject.className + 'Store: addListeners for ' +
+                property + ' and val ' + value + ' on path ' + path + ' with last ts ' + lastItemTimestamp);
+
+    DataServices.OnChildAdded(path, this.onChildAdded.bind(this, property), lastItemTimestamp + 1);
     DataServices.OnChildChanged(path, this.onChildChanged.bind(this, property));
     DataServices.OnChildRemoved(path, this.onChildRemoved.bind(this, property, value));
   }

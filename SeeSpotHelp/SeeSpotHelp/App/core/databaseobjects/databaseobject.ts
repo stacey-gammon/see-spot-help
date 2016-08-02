@@ -124,6 +124,7 @@ abstract class DatabaseObject {
   // Only does a shallow delete. For objects that have linked children (e.g. a Group has linked
   // members, activities, comments, etc, that also need to be deleted), you should use the Editor.
   shallowDelete() : Promise<any> {
+    console.log(this.className + ':shallowDelete()');
     return DataServices.DeleteMultiple(this.getDeletePaths());
   }
 
