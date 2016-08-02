@@ -9,6 +9,10 @@
       ".read": "true",
       ".write": "true"
     },
+    "test": {
+      ".read": "true",
+      ".write": "true"
+    },
     "users": {
       "$userId": {
         ".read": "auth != null",

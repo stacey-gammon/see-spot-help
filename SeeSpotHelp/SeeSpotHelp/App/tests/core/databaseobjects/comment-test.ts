@@ -40,7 +40,6 @@ describe("CommentTest", function () {
   });
 
   it("CommentAddTestNotAuthorized", function () {
-    console.log('CommentAddTestNotAuthorized');
     this.timeout(50000);
     return TestHelper.LoginAsNonMember()
         .then(() => {
