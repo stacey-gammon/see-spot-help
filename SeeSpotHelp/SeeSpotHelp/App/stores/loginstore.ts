@@ -135,11 +135,6 @@ class LoginStore extends BaseStore {
       this.hasUser = true;
     } else if (authData && data.val()) {
       this.user = new Volunteer('', '').castObject(data.val());
-      if (authData.email != this.user.email) {
-        console.log('ERROR: Auth data does not equal downloaded user.  Trying again.');
-        this.downloadUser(authData.uid);
-        return;
-      }
       this.hasUser = true;
     } else {
       this.hasUser = false;
