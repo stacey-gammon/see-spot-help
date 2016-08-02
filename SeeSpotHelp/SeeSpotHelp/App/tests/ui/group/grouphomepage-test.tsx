@@ -19,6 +19,32 @@ describe("Group home page", function () {
     return TestHelper.DeleteAllTestData();
   });
 
+  it("listens for user logging in event ", function () {
+    this.timeout(50000);
+    let GroupHomePageElement;
+    return TestHelper.CreateTestData()
+        .then(() => { return LoginStore.logout(); })
+        .then(() => {
+          Utils.SaveProp('groupId', TestData.testGroupId);
+          GroupHomePageElement = ReactTestUtils.renderIntoDocument(
+            <GroupHomePage/>
+          );
+          expect(GroupHomePageElement.state.loading).toEqual(true);
+          return TestHelper.LoginAsAdmin();
+        })
+        .then(() => {
+          return new Promise((resolve, reject) => {
+            // Give time for the group to load, though it should be local so take pretty much no time.
+            setTimeout(() => {
+              expect(GroupHomePageElement.state.loading).toEqual(false);
+              ReactTestUtils.findRenderedComponentWithType(GroupHomePageElement, GroupInfoBar);
+              ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(GroupHomePageElement).parentNode);
+              resolve();
+            }, 1000);
+          });
+        });
+  });
+
   it("loads a group", function () {
     this.timeout(50000);
     return TestHelper.CreateTestData().then(() => {

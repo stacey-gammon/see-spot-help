@@ -39,20 +39,25 @@ export default class GroupHomePage extends React.Component<any, any> {
       groupId: groupId,
       loading: true
      };
+
+     this.loadGroup = this.loadGroup.bind(this);
   }
 
   componentDidMount() {
     console.log('GroupHomePage:componentDidMount');
-    if (!LoginStore.getUser()) return ;
+    LoginStore.addChangeListener(this.loadGroup);
+
+    this.mounted = true;
+    if (!LoginStore.getUser()) { return; }
 
     this.loadGroup();
-    this.mounted = true;
   }
 
   componentWillUnmount() {
     console.log('GroupHomePage:componentWillUnmount');
     GroupStore.removePropertyListener(this);
     PermissionsStore.removePropertyListener(this);
+    LoginStore.removeChangeListener(this.loadGroup);
 
     this.mounted = false;
   }
