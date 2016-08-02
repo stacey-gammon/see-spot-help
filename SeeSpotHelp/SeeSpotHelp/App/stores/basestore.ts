@@ -262,6 +262,13 @@ abstract class BaseStore extends EventEmitter {
     if (!storageMapping.hasOwnProperty(propertyValue)) {
       console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');
       storageMapping[propertyValue] = [];
+
+      // Add change and remove listeners before downloading them to avoid a race condition.
+      var path = this.getPathToMaping(property, propertyValue);
+
+      DataServices.OnChildChanged(path, this.onChildChanged.bind(this, property));
+      DataServices.OnChildRemoved(path, this.onChildRemoved.bind(this, property, propertyValue));
+
       this.downloadFromMapping(property, propertyValue, lengthLimit);
       return [];
     }
