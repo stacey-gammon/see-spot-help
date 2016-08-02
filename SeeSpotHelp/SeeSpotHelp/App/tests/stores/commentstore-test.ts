@@ -62,52 +62,56 @@ describe("CommentStore", function () {
   //     });
   // });
   //
-  // it("delete listener called when getting items by property", function (done) {
-  //   this.timeout(50000);
-  //   let commentsLength;
-  //   let pathPrefix, newKey;
-  //
-  //   // Getting the item by id should add listeners for that item.
-  //   return CommentStore.ensureItemsByProperty('activityId', TestData.testActivityId)
-  //       .then((comments : Array<Comment>) => {
-  //         expect(comments).toNotEqual(null);
-  //         expect(comments.length).toBeGreaterThan(0);
-  //         commentsLength = comments.length;
-  //
-  //         pathPrefix = 'Comment/CommentByActivityId/123/';
-  //         newKey = DataServices.GetNewPushKey(pathPrefix);
-  //
-  //         let insertPath = pathPrefix + newKey;
-  //         let inserts = {};
-  //         inserts[insertPath] = {'data': 'd'};
-  //
-  //         console.log('Inserting: ', inserts);
-  //
-  //         return DataServices.database.ref().update(inserts);
-  //       //  return DataServices.UpdateMultiple(inserts);
-  //       })
-  //       .then(() => {
-  //         let callback = (snapshot) => {
-  //           alert('i was recieved');
-  //           done();
-  //         };
-  //
-  //         DataServices.database.ref(pathPrefix).on("child_removed", callback);
-  //         //DataServices.OnChildRemoved(pathPrefix, callback);
-  //
-  //         let deletePaths = {};
-  //         deletePaths[pathPrefix + newKey] = null;
-  //         console.log('Deleting: ', deletePaths);
-  //         return DataServices.database.ref().update(deletePaths);
-  //
-  //       //  return comments[0].shallowDelete();
-  //     });
-  //       // .then(() => {
-  //       //   return CommentStore.ensureItemsByProperty('activityId', TestData.testActivityId)
-  //       // })
-  //       // .then((comments : Array<Comment>) => {
-  //       //   expect(comments).toNotEqual(null);
-  //       //   expect(comments.length).toEqual(commentsLength - 1);
-  //       // });
-  // });
+
+  it("delete listener called when ensuring items by property", function () {
+    this.timeout(50000);
+    let commentsLength;
+
+    return CommentStore.ensureItemsByProperty('activityId', TestData.testActivityId)
+        .then((comments : Array<Comment>) => {
+          expect(comments).toNotEqual(null);
+          expect(comments.length).toBeGreaterThan(0);
+          commentsLength = comments.length;
+
+          return comments[0].shallowDelete();
+        })
+        .then(() => {
+          return CommentStore.ensureItemsByProperty('activityId', TestData.testActivityId)
+        })
+        .then((comments : Array<Comment>) => {
+          expect(comments).toNotEqual(null);
+          expect(comments.length).toEqual(commentsLength - 1);
+        });
+  });
+
+  it("delete listener called when getting items by property", function (done) {
+    this.timeout(50000);
+    let commentsLength;
+
+    let getItemsInitially = () => {
+      let comments = CommentStore.getItemsByProperty('activityId', TestData.testActivityId);
+      expect(comments).toNotEqual(null);
+      expect(comments.length).toBeGreaterThan(0);
+      commentsLength = comments.length;
+      CommentStore.removePropertyListener(this);
+
+      let afterDeleteTriggered = () => {
+        let comments = CommentStore.getItemsByProperty('activityId', TestData.testActivityId);
+        expect(comments).toNotEqual(null);
+        expect(comments.length).toEqual(commentsLength - 1);
+
+        done();
+      }
+
+      CommentStore.addPropertyListener(this, 'activityId', TestData.testActivityId, afterDeleteTriggered);
+      comments[0].shallowDelete();
+    };
+
+    CommentStore.addPropertyListener(this, 'activityId', TestData.testActivityId, getItemsInitially);
+
+    let comments = CommentStore.getItemsByProperty('activityId', TestData.testActivityId);
+    if (comments.length > 0) {
+      getItemsInitially();
+    }
+  });
 })
