@@ -40,15 +40,18 @@ export default class TestHelper {
   }
 
   static MountAndUnMountPage(page) {
+    this.AddRouter(page);
     let rendered = ReactTestUtils.renderIntoDocument(page);
-    this.AddRouter(rendered);
     ReactDOM.unmountComponentAtNode(document.body);
   }
 
   static DeleteUser(email, password) : Promise<any> {
     return this.LoginWithTestCredentials(email, password)
         .then(() => {
-          return DataServices.GetAuthData().delete();
+          return Promise.all([
+            LoginStore.getUser().shallowDelete(),
+            DataServices.GetAuthData().delete()
+          ]);
         })
         .catch((error) => {
           console.log('error: ', error);

@@ -36,11 +36,12 @@ export default class LoginPage extends React.Component<any, any> {
 
     // Don't use the getUser version as that may automatically try to authenticate us and we
     // want to avoid a loop if authentication fails for some reason.
-    } else if (LoginStore.isAuthenticated() &&
-      LoginStore.getUser() &&
-      !LoginStore.getUser().inBeta) {
-      this.context.router.push("/enterBetaCode");
     }
+    //  else if (LoginStore.isAuthenticated() &&
+    //   LoginStore.getUser() &&
+    //   !LoginStore.getUser().inBeta) {
+    //   this.context.router.push("/enterBetaCode");
+    // }
   }
 
   componentDidMount () {
