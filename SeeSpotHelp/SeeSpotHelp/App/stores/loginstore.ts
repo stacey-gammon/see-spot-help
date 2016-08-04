@@ -86,18 +86,18 @@ class LoginStore extends BaseStore {
   }
 
   signUpWithEmailAndPassword(name, email, password) : Promise<any> {
-    this.logout();
-    this.loggedOut = false;
-    let me = this;
-    return new Promise(function(resolve, reject) {
-      let updateName = function() {
-        me.ensureUser().then(function() {
-          me.getUser().name = name;
-          me.getUser().update().then(resolve, reject);
-        }, reject);
-      };
-      DataServices.SignUpWithEmailAndPassword(email, password).then(updateName, reject);
-    });
+    return this.logout()
+        .then(() => {
+          this.loggedOut = false;
+          return DataServices.SignUpWithEmailAndPassword(email, password);
+        })
+        .then(() => {
+          return this.ensureUser();
+        })
+        .then(() => {
+          this.getUser().name = name;
+          return this.getUser().update();
+        });
   }
 
   onAuthenticated(onSuccess) {
@@ -116,6 +116,7 @@ class LoginStore extends BaseStore {
             "users/" + this.user.id,
             this.onUserDownloaded.bind(this));
       }
+      this.authenticated = false;
       this.user = null;
       sessionStorage.clear();
       localStorage.clear();
@@ -148,38 +149,25 @@ class LoginStore extends BaseStore {
     return this.authenticated;
   }
 
-  getUserFromStorage() {
-    try {
-      return JSON.parse(sessionStorage.getItem("user"));
-    } catch (error) {
-      console.log('Failed to parse user value ' + sessionStorage.getItem("user"));
-      sessionStorage.setItem('user', '');
-      return null;
-    }
-  }
-
-  downloadAndAuthenticateUser() {
+  downloadAndAuthenticateUser() : Promise<any> {
     console.log('downloadAndAuthenticateUser');
     // Don't auto-log the person in if they intentionally logged out.
-    if (this.loggedOut) return;
+    if (this.loggedOut) return Promise.resolve();
 
     var authData = this.checkAuthenticated();
     if (authData) {
-      this.downloadUser(authData.uid);
+      return this.downloadUser(authData.uid);
     }
-    // else if (!this.authenticated && !sessionStorage.getItem('loginStoreAuthenticating')) {
-    //   this.authenticate();
-    // } else {
-    //   this.reject();
-    // }
   }
 
-  downloadUser(userId) {
+  downloadUser(userId) : Promise<any>{
     if (this.userDownloading) return;
     console.log('Downloading user ' + userId);
     this.userDownloading = true;
-    DataServices.DownloadDataOnce('users/' + userId).then(
-        this.onUserDownloaded.bind(this), this.reject.bind(this));
+    return DataServices.DownloadDataOnce('users/' + userId)
+        .then((data) => {
+          this.onUserDownloaded(data);
+        }, this.reject.bind(this));
   }
 
   getUser() {
@@ -208,21 +196,11 @@ class LoginStore extends BaseStore {
     this.userDownloading = false;
   }
 
-  ensureUser() {
-    return new Promise(function(resolve, reject) {
-      if (this.user && this.authenticated) {
-        resolve(this.user);
-        return;
-      }
-      this.resolveMe = function (data) {
-        console.log('Resolving ensureUser with data ', data);
-        resolve(data);
-      };
-      this.rejectMe = function (error) {
-        reject(error);
-      };
-      this.getUser();
-    }.bind(this));
+  ensureUser() : Promise<Volunteer> {
+    if (this.user && this.authenticated) {
+      return Promise.resolve(this.user);
+    }
+    return this.downloadAndAuthenticateUser();
   }
 
   emitChange(changeEvent? : ChangeEventEnum) {

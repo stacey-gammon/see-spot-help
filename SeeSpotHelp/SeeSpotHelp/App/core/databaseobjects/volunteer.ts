@@ -4,7 +4,6 @@
 import Group from './group';
 import DataServices from '../dataservices';
 import DatabaseObject from './databaseobject';
-var ServerResponse = require('../serverresponse');
 
 class Volunteer extends DatabaseObject {
   public name: string = '';
@@ -12,8 +11,8 @@ class Volunteer extends DatabaseObject {
   public email: string = '';
   public aboutMe: string = '';
   public photoId: string = '';
-  public inBeta: boolean;
-  public betaCode: string;
+  public inBeta: boolean = true;
+  public betaCode: string = 'NOBETAREQUIRED';
   public firebasePath: string = 'users';
 
   constructor(name, email) {
@@ -31,6 +30,13 @@ class Volunteer extends DatabaseObject {
 
   getDisplayName() {
     return this.displayName ? this.displayName : this.name;
+  }
+
+  // Overriding base implementation to also delete the auth user, in addition to the database user
+  // entry.
+  shallowDelete() : Promise<any> {
+    return DataServices.DeleteMultiple(this.getDeletePaths())
+        .then(() => { return DataServices.GetAuthData().delete(); });
   }
 }
 

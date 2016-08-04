@@ -16,35 +16,47 @@ import DataServices from '../core/dataservices';
 
 import TestData from './testdata';
 
-function GetMockedRouter() {
+export function GetMockedRouter() {
   return {
-    push() {},
+    pages: [],
+    push(page) { this.pages.push(page); },
     createHref() {},
-    isActive() { return false; }
+    isActive() { return false; },
+    has(page): boolean {
+      return this.pages.indexOf(page) >= 0;
+    }
   };
 }
 
 const context = { router: GetMockedRouter() } as any;
-const contextTypes = { router: [] } as any;
-
-class WrappedWithContext extends React.Component<any, any> {
-  constructor(props) {
-    super(props);
-  }
-  static childContextTypes = contextTypes;
-  getChildContext() { return context; }
-
-  render() {
-    return React.createElement('div', null, this.props.children);
-  }
-}
+const contextTypes = { router: GetMockedRouter() } as any;
 
 export default class TestHelper {
 
+  static AddRouter(page) {
+    page.context = context;
+    page.childContextTypes = contextTypes;
+    page.getChildContext = () => { return context; }
+  }
+
   static MountAndUnMountPage(page) {
-    let instance = React.createElement(WrappedWithContext);
-    let rendered = ReactTestUtils.renderIntoDocument(instance);
-    ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(rendered).parentNode);
+    this.AddRouter(page);
+    let rendered = ReactTestUtils.renderIntoDocument(page);
+    ReactDOM.unmountComponentAtNode(document.body);
+  }
+
+  static DeleteUser(email, password) : Promise<any> {
+    return this.LoginWithTestCredentials(email, password)
+        .then(() => {
+          return Promise.all([
+            LoginStore.getUser().shallowDelete(),
+            DataServices.GetAuthData().delete()
+          ]);
+        })
+        .catch((error) => {
+          console.log('error: ', error);
+          return;
+        })
   }
 
   static LoginAsSuperAdmin() : Promise<any> {
