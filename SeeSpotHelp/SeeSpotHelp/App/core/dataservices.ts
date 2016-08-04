@@ -175,9 +175,13 @@ export default class DataServices {
   public static MaybeRetry(error, originalCall: () => Promise<any>) : Promise<any> {
     if (error.code == 'auth/network-request-failed' &&
         this.networkErrorRetries < MaxNetworkRetries) {
-      console.log('Caught network error, retry #' + this.networkErrorRetries);
-      this.networkErrorRetries++;
-      return originalCall();
+      return new Promise((resolve, reject) => {
+        console.log('Caught network error, retry #' + this.networkErrorRetries);
+        this.networkErrorRetries++;
+        setTimeout(() => {
+          originalCall().then(resolve, reject);
+        }, 2000 * this.networkErrorRetries);
+      });
     } else {
       throw error;
     }

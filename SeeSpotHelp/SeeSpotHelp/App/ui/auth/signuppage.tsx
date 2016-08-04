@@ -142,7 +142,9 @@ export default class SignupPage extends React.Component<any, any> {
                 {this.createInputField(this.getPasswordField(false))}
                 {this.createInputField(this.getPasswordField(true))}
                 <div class="row">
-                  <button className="btn btn-info btn-big" onClick={this.signUp.bind(this)}>Sign Up</button>
+                  <button className="btn btn-info btn-big"
+                          ref='signUpButton'
+                          onClick={this.signUp.bind(this)}>Sign Up</button>
                   <a className='tiny-text' href='#loginpage'>
                   <br/>
                   Already have an account?  Login here </a>
