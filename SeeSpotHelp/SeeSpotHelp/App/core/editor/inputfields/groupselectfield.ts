@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import Events = require('events');
+
 import ConstStrings from "../../conststrings";
 import InputField from "./inputfield";
 import { InputFieldType } from "./inputfield";
@@ -9,6 +11,7 @@ import LoginStore from '../../../stores/loginstore';
 import PermissionsStore from '../../../stores/permissionsstore';
 import { Status } from '../../databaseobjects/databaseobject';
 
+const CHANGE = 'CHANGE';
 // Represents an input form field of the drop down list type.
 export default class GroupSelectField extends InputField {
   public type: InputFieldType = InputFieldType.GROUP_SELECT;
@@ -16,11 +19,21 @@ export default class GroupSelectField extends InputField {
   public defaultListItemIndex: number = 0;
   public loading: boolean = true;
   public onLoad: any;
+  private eventListener = new Events.EventEmitter();
 
   constructor (validations?) {
     super(validations);
     this.populate = this.populate.bind(this);
     LoginStore.addChangeListener(this.populate);
+  }
+
+  addChangeListener(callback) {
+    this.eventListener.on(CHANGE, callback);
+  }
+
+  setValue(newValue) {
+    this.value = newValue;
+    this.eventListener.emit(CHANGE);
   }
 
   getDefaultValue() {
@@ -32,8 +45,6 @@ export default class GroupSelectField extends InputField {
 
   populate() : Promise<any> {
     if (!LoginStore.getUser()) { return; }
-
-    this.options = [];
     this.loading = false;
 
     return PermissionsStore.ensureItemsByProperty('userId', LoginStore.getUser().id)
@@ -49,6 +60,7 @@ export default class GroupSelectField extends InputField {
           return Promise.all(groupPromises);
         })
         .then((results) => {
+          this.options = [];
           for (let i = 0; i < results.length; i++) {
             let group = results[i];
             this.options.push({ name: group.name, value: group.id });
