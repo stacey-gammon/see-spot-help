@@ -51,6 +51,7 @@ export default class Home extends React.Component<any, any> {
     this.state = {
       loaded: false
     }
+    this.onLoginChange = this.onLoginChange.bind(this);
   }
 
   componentWillMount() {
@@ -73,13 +74,9 @@ export default class Home extends React.Component<any, any> {
     }(document, 'script', 'facebook-jssdk'));
   }
 
-  onAuthChanged(user) {
-    LoginStore.authenticated = !!user;
-    sessionStorage.setItem('loginStoreAuthenticating', '');
+  onLoginChange() {
     this.setState({error: false, errorMessage: null, loaded: true});
-    LoginStore.emitChange();
-
-    if (((!user && !LoginStore.userDownloading) ||
+    if (((!LoginStore.getUser() && !LoginStore.userDownloading) ||
          (LoginStore.getUser() && !LoginStore.getUser().inBeta)) &&
         this.props.location.pathname != '/privatebetapage' &&
         this.props.location.pathname != '/loginpage' &&
@@ -90,22 +87,15 @@ export default class Home extends React.Component<any, any> {
   }
 
   componentDidMount() {
-    DataServices.OnAuthStateChanged(this.onAuthChanged.bind(this));
+    LoginStore.addChangeListener(this.onLoginChange);
     LoginStore.ensureUser().then(
-      function() {
-        this.setState({error: false, errorMessage: null});
-        // If we don't have a user, we don't care about changes since a login event
-        // cause an entire page refresh and then it will register.
-        LoginStore.addChangeListener(this.forceUpdate.bind(this));
-      }.bind(this),
-      function(error) {
-        this.setState({error: true, errorMessage: error});
-      }.bind(this)
+      () => { this.setState({error: false, errorMessage: null}); },
+      (error) => { this.setState({error: true, errorMessage: error}); }
     )
   }
 
   componentWillUnmount() {
-    LoginStore.removeChangeListener(this.forceUpdate.bind(this));
+    LoginStore.removeChangeListener(this.onLoginChange);
   }
 
   render() {

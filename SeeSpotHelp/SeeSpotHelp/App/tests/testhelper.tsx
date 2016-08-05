@@ -204,7 +204,7 @@ export default class TestHelper {
   static CreateTestData() : Promise<any> {
     let me = this;
     return this.LoginAsAdmin()
-        .then(() => { return TestData.InsertTestGroup(); })
+        .then(() => { return TestData.InsertTestGroup(TestData.GetTestGroup()); })
         .then(() => { return TestHelper.LoginAsMember(); })
         .then(() => { return TestHelper.LoginAsNonMember(); })
         .then(() => { return TestHelper.LoginAsAdmin(); })

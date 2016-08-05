@@ -34,6 +34,13 @@ class LoginStore extends BaseStore {
   constructor() {
     super();
     this.Init();
+
+    DataServices.OnAuthStateChanged(this.onAuthChanged.bind(this));
+  }
+
+  onAuthChanged(user) {
+    this.authenticated = !!user;
+    this.emitChange();
   }
 
   checkAuthenticated() {
@@ -152,16 +159,19 @@ class LoginStore extends BaseStore {
   downloadAndAuthenticateUser() : Promise<any> {
     console.log('downloadAndAuthenticateUser');
     // Don't auto-log the person in if they intentionally logged out.
-    if (this.loggedOut) return Promise.resolve();
+    if (this.loggedOut) {
+      return Promise.resolve(null);
+    }
 
     var authData = this.checkAuthenticated();
     if (authData) {
       return this.downloadUser(authData.uid);
+    } else {
+      return Promise.resolve(null);
     }
   }
 
-  downloadUser(userId) : Promise<any>{
-    if (this.userDownloading) return;
+  downloadUser(userId) : Promise<any> {
     console.log('Downloading user ' + userId);
     this.userDownloading = true;
     return DataServices.DownloadDataOnce('users/' + userId)
@@ -197,6 +207,7 @@ class LoginStore extends BaseStore {
   }
 
   ensureUser() : Promise<Volunteer> {
+    console.log('LoginStore.ensureUser');
     if (this.user && this.authenticated) {
       return Promise.resolve(this.user);
     }

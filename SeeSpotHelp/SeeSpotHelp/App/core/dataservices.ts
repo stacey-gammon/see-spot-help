@@ -15,7 +15,7 @@ const MaxNetworkRetries : number = 3;
  * test change.
  */
 export default class DataServices {
-  private static database = Firebase.database();
+  public static database = Firebase.database();
   private static addListeners: Array<string> = [];
   private static changeListeners: Array<string> = [];
   private static removeListeners: Array<string> = [];

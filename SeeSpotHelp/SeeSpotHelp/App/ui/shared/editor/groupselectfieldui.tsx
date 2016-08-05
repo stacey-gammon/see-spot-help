@@ -15,7 +15,8 @@ export default class GroupSelectFieldUI extends React.Component<any, any> {
 
   getValue() {
     var element = this.refs[this.props.inputField.ref];
-    return element ? element['value'] : this.props.inputField.value || this.props.inputField.getDefaultValue();
+    return element && element['value'] ? element['value'] :
+        this.props.inputField.value || this.props.inputField.getDefaultValue();
   }
 
   componentDidMount() {
@@ -27,8 +28,7 @@ export default class GroupSelectFieldUI extends React.Component<any, any> {
   }
 
   onChange() {
-    this.props.inputField.value = this.getValue();
-    this.props.inputField.onChange();
+    this.props.inputField.setValue(this.getValue());
     this.setState({
       loaded: !this.props.inputField.loading
     });
@@ -45,8 +45,7 @@ export default class GroupSelectFieldUI extends React.Component<any, any> {
     var inputFieldClassName = 'form-control ' + inputField.ref;
     var options = inputField.options.map(this.createTypeOption.bind(this));
     var defaultValue = inputField.value ? inputField.value : inputField.getDefaultValue();
-    inputField.value = defaultValue;
-    inputField.onChange();
+    inputField.setValue(defaultValue);
     return (
       <select defaultValue={defaultValue}
               className={inputFieldClassName}
