@@ -67,9 +67,9 @@ export default class SchedulEditor extends Editor {
 
   createGroupSelectField() {
     var inputField = new GroupSelectField([InputFieldValidation.validateNotEmpty]);
-    inputField.onChange = this.fillAnimalDropDown.bind(this);
+    inputField.addChangeListener(this.fillAnimalDropDown.bind(this));
     if (this.databaseObject) {
-      inputField.value = this.databaseObject.groupId;
+      inputField.setValue(this.databaseObject.groupId);
     }
     return inputField;
   }

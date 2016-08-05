@@ -186,68 +186,49 @@ abstract class BaseStore extends EventEmitter {
   }
 
   ensureItemsByProperty(property, propertyValue, lengthLimit?: number) : Promise<any> {
-    return new Promise(function(resolve, reject) {
-      if (lengthLimit === 0) {
-        resolve([]);
-        return;
+    if (lengthLimit === 0) {
+      return Promise.resolve([]);
+    }
+
+    var storageMapping = this.storageMappings[property];
+    if (!storageMapping.hasOwnProperty(propertyValue)) {
+      // Add change and remove listeners before downloading them to avoid a race condition.
+      var path = this.getPathToMaping(property, propertyValue);
+
+      DataServices.OnChildChanged(path, this.onChildChanged.bind(this, property));
+      DataServices.OnChildRemoved(path, this.onChildRemoved.bind(this, property, propertyValue));
+
+      console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');
+      return this.downloadFromMapping(property, propertyValue, lengthLimit);
+    }
+
+    var items = [];
+    for (var i = 0; i < storageMapping[propertyValue].length; i++) {
+      var item = this.storage[storageMapping[propertyValue][i]];
+      if (item && item.status !== Status.ARCHIVED) {
+        items.push(item);
+      }
+    }
+
+    items.sort(function(a, b) {
+      return a.timestamp < b.timestamp ? 1 : -1;
+    });
+
+    if (lengthLimit && items.length < lengthLimit) {
+      let id = null;
+      if (items.length > 0) {
+        id = items[items.length - 1].id;
       }
 
-      var storageMapping = this.storageMappings[property];
-      if (!storageMapping.hasOwnProperty(propertyValue)) {
-
-        // Add change and remove listeners before downloading them to avoid a race condition.
-        var path = this.getPathToMaping(property, propertyValue);
-
-        DataServices.OnChildChanged(path, this.onChildChanged.bind(this, property));
-        DataServices.OnChildRemoved(path, this.onChildRemoved.bind(this, property, propertyValue));
-
-        console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');
-        storageMapping[propertyValue] = [];
-        this.downloadFromMapping(property, propertyValue, lengthLimit).then(
-            resolve,
-            (error) => {
-              console.log('Failed to download items with error: ', error);
-              reject(error);
-            });
-        return;
+      // Don't attempt to download more if there is none.
+      if (id &&
+          id != this.storageMappingLastId[property][propertyValue] &&
+          !this.areItemsDownloading(property, propertyValue, id)) {
+        return this.downloadFromMapping(property, propertyValue, lengthLimit, id);
       }
-
-      var items = [];
-      for (var i = 0; i < storageMapping[propertyValue].length; i++) {
-        var item = this.storage[storageMapping[propertyValue][i]];
-        if (item && item.status !== Status.ARCHIVED) {
-          items.push(item);
-        }
-      }
-
-      items.sort(function(a, b) {
-        return a.timestamp < b.timestamp ? 1 : -1;
-      });
-
-      if (lengthLimit && items.length < lengthLimit) {
-        let id = null;
-        if (items.length > 0) {
-          id = items[items.length - 1].id;
-        }
-
-        // Don't attempt to download more if there is none.
-        if (id &&
-            id != this.storageMappingLastId[property][propertyValue] &&
-            !this.areItemsDownloading(property, propertyValue, id)) {
-          this.downloadFromMapping(property,
-                                   propertyValue,
-                                   lengthLimit,
-                                   id)
-              .then(resolve, (error) => {
-                 console.log('Failed to grab more items with error: ', error);
-                 reject(error);
-               });
-          return;
-        }
-      } else {
-        resolve(items);
-      }
-    }.bind(this));
+    } else {
+      return Promise.resolve(items);
+    }
   }
 
   /**
@@ -320,6 +301,8 @@ abstract class BaseStore extends EventEmitter {
     let lastItemId = null;
     let items = snapshot.val();
     let itemsToSort = [];
+    this.storageMappings[property][value] = [];
+
     for (let id in items) {
       var item = items[id];
       itemsToSort.push(item);

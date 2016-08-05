@@ -42,10 +42,9 @@ export default class TestData {
     return group;
   }
 
-  public static InsertTestGroup() : Promise<any> {
+  public static InsertTestGroup(group) : Promise<any> {
     console.log('Inserting Test Group');
     let me = this;
-    let group = TestData.GetTestGroup();
     return group.insert().then(function () {
       me.testGroupId = group.id;
       me.TestGroup = group;

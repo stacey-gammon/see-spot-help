@@ -29,7 +29,7 @@ describe("AnimalStoreTest", function () {
 
     return TestHelper.DeleteAllTestData()
         .then(() => { return TestHelper.LoginAsAdmin(); })
-        .then(() => { return TestData.InsertTestGroup(); })
+        .then(() => { return TestData.InsertTestGroup(TestData.GetTestGroup()); })
         .then((group) => {
           return AnimalStore.ensureItemsByProperty('groupId', TestData.testGroupId);
         })
