@@ -10,7 +10,7 @@ import Utils from '../uiutils';
 import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 import AnimalStore from '../../stores/animalstore';
-import AnimalActivityStore from '../../stores/animalactivitystore';
+import AnimalActivityStore from '../../stores/activitystore';
 import PermissionsStore from '../../stores/permissionsstore';
 import StoreStateHelper from '../../stores/storestatehelper';
 

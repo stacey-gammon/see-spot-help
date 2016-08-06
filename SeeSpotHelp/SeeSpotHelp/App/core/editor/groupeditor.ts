@@ -9,7 +9,7 @@ import { Editor } from './editor';
 import BaseStore from "../../stores/basestore";
 import CommentStore from "../../stores/commentstore";
 import PhotoStore from "../../stores/photostore";
-import ActivityStore from "../../stores/animalactivitystore";
+import ActivityStore from "../../stores/activitystore";
 import AnimalStore from "../../stores/animalstore";
 import ScheduleStore from "../../stores/schedulestore";
 

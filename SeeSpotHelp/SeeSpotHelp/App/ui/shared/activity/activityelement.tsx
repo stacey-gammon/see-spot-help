@@ -19,7 +19,7 @@ import VolunteerStore from '../../../stores/volunteerstore';
 import AnimalStore from '../../../stores/animalstore';
 import PhotoStore from '../../../stores/photostore';
 import PermissionsStore from '../../../stores/permissionsstore';
-import AnimalActivityStore from '../../../stores/animalactivitystore';
+import AnimalActivityStore from '../../../stores/activitystore';
 import Activity from '../../../core/databaseobjects/activity';
 import ActivityEditor from '../../../core/editor/activityeditor';
 import Permission from '../../../core/databaseobjects/permission';

@@ -14,7 +14,7 @@ var MenuItem = ReactBootstrap.MenuItem;
 import ErrorPopup from '../errorpopup';
 import CommentStore from '../../../stores/commentstore';
 import VolunteerStore from '../../../stores/volunteerstore';
-import ActivityStore from '../../../stores/animalactivitystore';
+import ActivityStore from '../../../stores/activitystore';
 import Permission from '../../../core/databaseobjects/permission';
 import Comment from '../../../core/databaseobjects/comment';
 import LoginStore from '../../../stores/loginstore';

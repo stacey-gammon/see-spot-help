@@ -2,7 +2,7 @@ import * as React from 'react';
 var expect = require('expect');
 var Promise = require('bluebird');
 
-import ActivityStore from '../../../stores/animalactivitystore';
+import ActivityStore from '../../../stores/activitystore';
 import CommentStore from '../../../stores/commentstore';
 import ActivityEditor from '../../../core/editor/activityeditor';
 import LoginStore from '../../../stores/loginstore';
@@ -33,9 +33,9 @@ describe("ActivityEditorTest", function () {
         })
         .then(() => {
           let promises = [
-              TestHelper.ExpectItemIsDeleted(TestData.testActivityId, ActivityStore)];//,
-            //  TestHelper.ExpectItemIsDeleted(TestData.testAdminCommentId, CommentStore),
-          //    TestHelper.ExpectItemIsDeleted(TestData.testMemberCommentId, CommentStore)];
+              TestHelper.ExpectItemIsDeleted(TestData.testActivityId, ActivityStore),
+              TestHelper.ExpectItemIsDeleted(TestData.testAdminCommentId, CommentStore),
+              TestHelper.ExpectItemIsDeleted(TestData.testMemberCommentId, CommentStore)];
 
           return Promise.all(promises);
         });
