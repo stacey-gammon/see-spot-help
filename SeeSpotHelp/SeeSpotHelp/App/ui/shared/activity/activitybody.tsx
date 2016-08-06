@@ -11,7 +11,7 @@ import LoginStore from '../../../stores/loginstore';
 import VolunteerStore from '../../../stores/volunteerstore';
 import PhotoStore from '../../../stores/photostore';
 import PermissionsStore from '../../../stores/permissionsstore';
-import AnimalActivityStore from '../../../stores/animalactivitystore';
+import AnimalActivityStore from '../../../stores/activitystore';
 import Activity from '../../../core/databaseobjects/activity';
 import Permission from '../../../core/databaseobjects/permission';
 import LightboxImage from '../lightboximage';

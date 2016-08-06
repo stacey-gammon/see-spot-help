@@ -15,7 +15,7 @@ import LoginStore from '../../stores/loginstore';
 import GroupStore from '../../stores/groupstore';
 
 import AnimalStore from '../../stores/animalstore';
-import ActivityStore from '../../stores/animalactivitystore';
+import ActivityStore from '../../stores/activitystore';
 import ScheduleStore from '../../stores/schedulestore';
 import PhotoStore from '../../stores/photostore';
 

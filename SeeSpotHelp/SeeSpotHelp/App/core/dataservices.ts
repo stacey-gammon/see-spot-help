@@ -63,7 +63,6 @@ export default class DataServices {
   public static LoginWithEmailAndPassword(email: string, password: string) : Promise<any> {
     console.log('DataServices:LoginWithEmailAndPassword: Logging in as ' + email + ' with pw ' + password);
     let signInPromise = Firebase.auth().signInWithEmailAndPassword(email, password);
-    console.log('Firebase sign in promise: ', signInPromise);
     return this.WrapInCatch(
         signInPromise,
         this.LoginWithEmailAndPassword.bind(this, email, password));
@@ -172,17 +171,24 @@ export default class DataServices {
     ref.off("value", callback);
   }
 
+
+  public static isTransientError(error) : boolean {
+    return error.code == 'auth/network-request-failed' ||
+           error.code == 'auth/too-many-requests';
+  }
+
   public static MaybeRetry(error, originalCall: () => Promise<any>) : Promise<any> {
-    if (error.code == 'auth/network-request-failed' &&
+    if (this.isTransientError(error) &&
         this.networkErrorRetries < MaxNetworkRetries) {
       return new Promise((resolve, reject) => {
-        console.log('Caught network error, retry #' + this.networkErrorRetries);
+        let retryTimeout = Math.pow(2, this.networkErrorRetries) * 1000;
+        console.log('Caught transient error (' + error.code + '), retry #' + this.networkErrorRetries +
+                    ', trying again in ' + retryTimeout + 'ms');
         this.networkErrorRetries++;
-        setTimeout(() => {
-          originalCall().then(resolve, reject);
-        }, 2000 * this.networkErrorRetries);
+        setTimeout(() => { originalCall().then(resolve, reject); }, retryTimeout);
       });
     } else {
+      console.log('Throwing error: ', error);
       throw error;
     }
   }
@@ -222,7 +228,6 @@ export default class DataServices {
   }
 
   public static WrapInCatch(promise: Promise<any>, originalCall) : Promise<any> {
-    console.log('WrapInCatch: ', promise);
     return promise.then((result) => {
       console.log('promise succeeded, reseting network retries, returning ', result);
       this.networkErrorRetries = 0;
