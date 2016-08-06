@@ -7,7 +7,7 @@ import Comment from '../../../core/databaseobjects/comment';
 import Activity from '../../../core/databaseobjects/activity';
 import LoginStore from '../../../stores/loginstore';
 import CommentStore from '../../../stores/commentstore';
-import ActivityStore from '../../../stores/animalactivitystore';
+import ActivityStore from '../../../stores/activitystore';
 
 import TestHelper from '../../testhelper';
 import TestData from '../../testdata';

@@ -226,9 +226,8 @@ abstract class BaseStore extends EventEmitter {
           !this.areItemsDownloading(property, propertyValue, id)) {
         return this.downloadFromMapping(property, propertyValue, lengthLimit, id);
       }
-    } else {
-      return Promise.resolve(items);
     }
+    return Promise.resolve(items);
   }
 
   /**
@@ -242,8 +241,6 @@ abstract class BaseStore extends EventEmitter {
     var storageMapping = this.storageMappings[property];
     if (!storageMapping.hasOwnProperty(propertyValue)) {
       console.log(this.databaseObject.className + 'Store: getItemsByProperty(' + property + ', ' + propertyValue + ')');
-      storageMapping[propertyValue] = [];
-
       // Add change and remove listeners before downloading them to avoid a race condition.
       var path = this.getPathToMaping(property, propertyValue);
 
@@ -301,7 +298,11 @@ abstract class BaseStore extends EventEmitter {
     let lastItemId = null;
     let items = snapshot.val();
     let itemsToSort = [];
-    this.storageMappings[property][value] = [];
+
+    if (!this.storageMappings[property].hasOwnProperty(value)) {
+      // Make sure, even if nothing was downloaded, we don't try to download on the next request.
+      this.storageMappings[property][value] = [];
+    }
 
     for (let id in items) {
       var item = items[id];
@@ -581,8 +582,8 @@ abstract class BaseStore extends EventEmitter {
                 property + ' and val ' + value + ' on path ' + path + ' with last ts ' + lastItemTimestamp);
 
     DataServices.OnChildAdded(path, this.onChildAdded.bind(this, property), lastItemTimestamp + 1);
-    DataServices.OnChildChanged(path, this.onChildChanged.bind(this, property));
-    DataServices.OnChildRemoved(path, this.onChildRemoved.bind(this, property, value));
+    // DataServices.OnChildChanged(path, this.onChildChanged.bind(this, property));
+    // DataServices.OnChildRemoved(path, this.onChildRemoved.bind(this, property, value));
   }
 }
 

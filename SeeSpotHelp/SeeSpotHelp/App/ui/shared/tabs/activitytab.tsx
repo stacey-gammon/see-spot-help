@@ -1,7 +1,7 @@
 'use strict'
 
 import * as React from 'react';
-import ActivityStore from '../../../stores/animalactivitystore';
+import ActivityStore from '../../../stores/activitystore';
 import VolunteerStore from '../../../stores/volunteerstore';
 import Permission from '../../../core/databaseobjects/permission';
 
@@ -34,15 +34,15 @@ export default class ActivityTab extends React.Component<propTypes, any> {
   }
 
   onChange() {
-    var activities = ActivityStore.getItemsByProperty(this.props.property,
-                                                      this.props.value,
-                                                      this.state.listLength);
-    this.setState(
-      {
-        activities: activities,
-        loaded: !this.areItemsDownloading()
-      }
-    );
+    ActivityStore.ensureItemsByProperty(this.props.property,
+                                        this.props.value,
+                                        this.state.listLength)
+        .then((activities) => {
+          this.setState({
+              activities: activities,
+              loaded: true
+            });
+        });
   }
 
   componentWillUnmount() {
